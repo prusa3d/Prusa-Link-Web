@@ -1,0 +1,7 @@
+specFileName: openapi.yaml
+apiTitle: Prusa Connect
+splitSpec: false
+codeSamples: false
+swaggerUI: true
+travis: false
+oasVersion: 3.0.1
