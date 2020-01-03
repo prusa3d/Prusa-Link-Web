@@ -1,0 +1,23 @@
+{
+  "name": "prusa-connect-web",
+  "version": "1.0.0",
+  "description": "This is a printer connect webservice. It is compatible with another 3D printer services, so many applications which use this service.",
+  "private": true,
+  "scripts": {
+    "start": "swagger-repo serve",
+    "test": "swagger-repo validate"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/prusa3d/Prusa-Connect-Web.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/prusa3d/Prusa-Connect-Web/issues"
+  },
+  "homepage": "https://github.com/prusa3d/Prusa-Connect-Web#readme",
+  "devDependencies": {
+    "swagger-repo": "^2.0.0-rc.15"
+  }
+}
