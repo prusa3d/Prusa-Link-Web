@@ -14,12 +14,10 @@ externalDocs:
   description: Find out more about API
   url: http://connect.prusa3d.cz
 tags:
-  - name: printer
-    description: Access to printer
   - name: octoprint
     description: Octoprint compatible
 paths:
-  /octoprint/api/connection:
+  /api/connection:
     get:
       tags:
         - octoprint
@@ -39,7 +37,7 @@ paths:
                   options:
                     $ref: "#/components/schemas/OctoConnOptions"
         403:
-          $ref: '#/components/responses/Unauthorized'
+          $ref: "#/components/responses/Unauthorized"
     post:
       tags:
         - octoprint
@@ -50,8 +48,8 @@ paths:
         204:
           description: No Content
         403:
-          $ref: '#/components/responses/Unauthorized'
-  /octoprint/api/timelapse:
+          $ref: "#/components/responses/Unauthorized"
+  /api/timelapse:
     get:
       tags:
         - octoprint
@@ -85,8 +83,8 @@ paths:
                   enabled: false
                   files: []
         403:
-          $ref: '#/components/responses/Unauthorized'
-  /octoprint/api/printerprofiles:
+          $ref: "#/components/responses/Unauthorized"
+  /api/printerprofiles:
     get:
       tags:
         - octoprint
@@ -104,8 +102,8 @@ paths:
                   profiles:
                     $ref: "#/components/schemas/OctoProfiles"
         403:
-          $ref: '#/components/responses/Unauthorized'
-  /octoprint/api/printer:
+          $ref: "#/components/responses/Unauthorized"
+  /api/printer:
     get:
       tags:
         - octoprint
@@ -135,8 +133,8 @@ paths:
                   state:
                     $ref: "#/components/schemas/OctoPrinterState"
         403:
-          $ref: '#/components/responses/Unauthorized'
-  /octoprint/api/printer/sd:
+          $ref: "#/components/responses/Unauthorized"
+  /api/printer/sd:
     get:
       tags:
         - octoprint
@@ -152,8 +150,8 @@ paths:
                 type: object
                 $ref: "#/components/schemas/OctoSDState"
         403:
-          $ref: '#/components/responses/Unauthorized'
-  /octoprint/api/job:
+          $ref: "#/components/responses/Unauthorized"
+  /api/job:
     get:
       tags:
         - octoprint
@@ -184,7 +182,7 @@ paths:
                         "Offline",
                       ]
         403:
-          $ref: '#/components/responses/Unauthorized'
+          $ref: "#/components/responses/Unauthorized"
         409:
           description: File not found or wrong format.
     post:
@@ -207,12 +205,12 @@ paths:
         204:
           description: No error
         403:
-          $ref: '#/components/responses/Unauthorized'
+          $ref: "#/components/responses/Unauthorized"
         409:
           description: If not is project, file not found or printer is printing.
-        501: 
+        501:
           description: Unsupported command.
-  /octoprint/api/system/commands:
+  /api/system/commands:
     get:
       tags:
         - octoprint
@@ -227,8 +225,8 @@ paths:
               schema:
                 $ref: "#/components/schemas/OctoCommands"
         403:
-          $ref: '#/components/responses/Unauthorized'
-  /octoprint/api/users:
+          $ref: "#/components/responses/Unauthorized"
+  /api/users:
     get:
       tags:
         - octoprint
@@ -248,8 +246,8 @@ paths:
                     items:
                       $ref: "#/components/schemas/OctoUsers"
         403:
-          $ref: '#/components/responses/Unauthorized'
-  /octoprint/api/downloads/{target}/{filename}:
+          $ref: "#/components/responses/Unauthorized"
+  /api/downloads/{target}/{filename}:
     parameters:
       - in: path
         name: target
@@ -282,12 +280,12 @@ paths:
                 type: string
                 format: binary
         403:
-          $ref: '#/components/responses/Unauthorized'
+          $ref: "#/components/responses/Unauthorized"
         404:
           description: File not found.
         415:
           description: Unsupported Media Type.
-  /octoprint/api/files:
+  /api/files:
     get:
       tags:
         - octoprint
@@ -301,6 +299,11 @@ paths:
           schema:
             type: string
           required: false
+        - in: query
+          name: recursive
+          schema:
+            type: boolean
+          required: false
       responses:
         200:
           description: OK
@@ -313,8 +316,8 @@ paths:
               schema:
                 type: string
         403:
-          $ref: '#/components/responses/Unauthorized'
-  /octoprint/api/files/{target}:
+          $ref: "#/components/responses/Unauthorized"
+  /api/files/{target}:
     parameters:
       - in: path
         name: target
@@ -339,6 +342,11 @@ paths:
           schema:
             type: string
           required: false
+        - in: query
+          name: recursive
+          schema:
+            type: boolean
+          required: false
       responses:
         200:
           description: OK
@@ -351,7 +359,7 @@ paths:
               schema:
                 type: string
         403:
-          $ref: '#/components/responses/Unauthorized'
+          $ref: "#/components/responses/Unauthorized"
         404:
           description: Not Found
     post:
@@ -380,14 +388,14 @@ paths:
         400:
           description: Could not create folder or file not found.
         403:
-          $ref: '#/components/responses/Unauthorized'
+          $ref: "#/components/responses/Unauthorized"
         409:
           description: File already exist.
         415:
           description: Unsupported Media Type.
         500:
           description: File is too big.
-  /octoprint/api/files/{target}/{filename}:
+  /api/files/{target}/{filename}:
     parameters:
       - in: path
         name: target
@@ -418,6 +426,11 @@ paths:
           schema:
             type: string
           required: false
+        - in: query
+          name: recursive
+          schema:
+            type: boolean
+          required: false
       responses:
         200:
           description: OK
@@ -432,7 +445,7 @@ paths:
         304:
           description: Not Modified.
         403:
-          $ref: '#/components/responses/Unauthorized'
+          $ref: "#/components/responses/Unauthorized"
         404:
           description: Not Found
     post:
@@ -452,14 +465,14 @@ paths:
         400:
           description: Mandatory parameter is missing.
         403:
-          $ref: '#/components/responses/Unauthorized'
+          $ref: "#/components/responses/Unauthorized"
         404:
           description: Not Found.
         409:
           description: If the file is currently being printed.
         415:
           description: Unsupported Media Type.
-        501: 
+        501:
           description: Unsupported command.
     delete:
       tags:
@@ -471,7 +484,7 @@ paths:
         204:
           description: No error
         403:
-          $ref: '#/components/responses/Unauthorized'
+          $ref: "#/components/responses/Unauthorized"
         404:
           description: If location is neither local nor sdcard or the requested file was not found
         409:
@@ -801,7 +814,7 @@ components:
         size: 873151
         date: 1574156567
         type: machinecode
-        typePath: [ machinecode, gcode ]
+        typePath: [machinecode, gcode]
         hash: 5f972cc1cfb91f91f7c70d0dff6a0462a9de1d41
         refs:
           resource: http://localhost/octoprint/api/files/local/internal/examples/harry_potter_hogwarts_a_mohimont.sl1
@@ -809,7 +822,7 @@ components:
         gcodeAnalysis:
           estimatedPrintTime: 2445.0
           dimensions:
-              height: 0.15
+            height: 0.15
           material: Prusa Orange Tough 0.05
     OctoFolderInfo:
       allOf:
@@ -832,7 +845,7 @@ components:
         name: examples
         size: 873151
         type": folder
-        typePath": [ folder ]
+        typePath": [folder]
         refs:
           resource: http://localhost/octoprint/api/files/local/internal/examples
     OctoFullFolderInfo:
@@ -957,3 +970,17 @@ components:
   responses:
     Unauthorized:
       description: Unauthorized
+    NotModified:
+      description: Not Modified
+    BadRequest:
+      description: Bad Request
+    NotFound:
+      description: Not Found
+    Conflict:
+      description: Conflict
+    UnsupportedMediaType:
+      description: Unsupported Media Type
+    InternalServerError:
+      description: Internal Server Error
+    NotImplemented:
+      description: Not Implemented
