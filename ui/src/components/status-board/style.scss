@@ -1,0 +1,10 @@
+$orange: #f8651b;
+$line-size: 0.1rem;
+
+.prusa-text-orange {
+  color: $orange;
+}
+
+.prusa-line {
+  border-bottom: $line-size solid gray;
+}

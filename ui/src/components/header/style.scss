@@ -1,0 +1,22 @@
+$gray: gray;
+$orange: #f8651b;
+$green: lime;
+$line-size: 0.1rem;
+
+.prusa-menu {
+    border-bottom: $line-size solid $gray;
+}
+
+.prusa-menu-item {
+    border-bottom: $line-size solid transparent;
+    padding-bottom: 0px;
+    padding-top: 0px;
+}
+
+.prusa-menu-item:hover, .prusa-menu-item.active:hover {
+    border-bottom: $line-size solid $green;
+}
+
+.prusa-menu-item.active {
+    border-bottom: $line-size solid $orange;
+}
