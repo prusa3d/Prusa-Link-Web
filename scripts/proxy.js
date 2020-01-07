@@ -11,4 +11,7 @@ app.use('/api', proxy({
 const bundler = new Bundler('ui/src/index.html');
 app.use(bundler.middleware());
 
-app.listen(Number(process.env.PORT || 1234));
+const port = Number(process.env.PORT || 1234)
+app.listen(port);
+
+console.log(`listen dev: http://localhost:${port}`)
