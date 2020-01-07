@@ -89,7 +89,7 @@ class StatusBoard extends Component {
     this.timer = setInterval(() => {
 
       if (this.state.status_progress == 0) {
-        fetch(baseURL + '/api/files/local/internal/harry_potter_hogwarts_anthony_mohimont.sl1', {
+        fetch('/api/files/local/internal/harry_potter_hogwarts_anthony_mohimont.sl1', {
           method: 'POST',
           headers: {
             "X-Api-Key": apiKey,
@@ -112,7 +112,7 @@ class StatusBoard extends Component {
 
 
 
-      fetch(baseURL + '/api/v2/properties?' + properties, {
+      fetch('/api/v2/properties?' + properties, {
         method: 'GET',
         headers: {
           "X-Api-Key": apiKey,

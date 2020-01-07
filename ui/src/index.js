@@ -7,7 +7,6 @@ export default App;
 
 const config = {
     apiKey: "developer",
-    baseURL: "http://localhost:8000",
     printer: "prusa-sl1",
     update_timer: 2000
 }
