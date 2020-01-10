@@ -7,7 +7,7 @@
     "api:dev": "swagger-repo serve",
     "api:test": "swagger-repo validate",
     "ui:dev": "node ./scripts/proxy.js",
-    "ui:build": "parcel build ui/src/index.html --no-source-maps"
+    "ui:build": "node node_modules/parcel-bundler/src/cli.js build ui/src/index.html --no-source-maps"
   },
   "repository": {
     "type": "git",

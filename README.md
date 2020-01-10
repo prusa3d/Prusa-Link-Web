@@ -33,12 +33,5 @@ npm run ui:dev
 npm run ui:build
 ```
 
-#### First time (create the .cache):
-```bash
-npm run ui:build
-rm -fr ./dist
-npm run ui:build
-```
-
 ### access-control-allow-origin
 The browser does not permit fetch data from a different port, then ./scripts/proxy.js resolves it (proxy: 8000 -> 8080). 
