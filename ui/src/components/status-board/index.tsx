@@ -1,4 +1,4 @@
-import { h, Fragment, FunctionalComponent, Component } from 'preact';
+import { h, Fragment, Component } from 'preact';
 import "./style.scss";
 
 interface StatusBoardItemProps {
@@ -17,25 +17,26 @@ interface StatusBoardTableProps {
 
 function timeConverter(timestamp: number) {
   var msec = timestamp;
-  var hh:string | number = Math.floor(msec / 1000 / 60 / 60);
+  var hh: string | number = Math.floor(msec / 1000 / 60 / 60);
   msec -= hh * 1000 * 60 * 60;
   var mm = Math.floor(msec / 1000 / 60);
   msec -= mm * 1000 * 60;
   var ss = Math.floor(msec / 1000);
   msec -= ss * 1000;
-  if(hh<10){
-    hh = '0'+hh;
+  if (hh < 10) {
+    hh = '0' + hh;
   }
-  if(mm<10){
-    mm = '0'+mm;
+  if (mm < 10) {
+    mm = '0' + mm;
   }
-  if(ss<10){
-    ss = '0'+ss;
+  if (ss < 10) {
+    ss = '0' + ss;
   }
   return hh + ':' + mm + ':' + ss;
 }
 
-const StatusBoardItem: FunctionalComponent = (props: StatusBoardItemProps) => {
+
+const StatusBoardItem = (props: StatusBoardItemProps) => {
   return (
     <div class="column is-one-third">
       <p class="subtitle is-6 has-text-grey">
@@ -48,7 +49,7 @@ const StatusBoardItem: FunctionalComponent = (props: StatusBoardItemProps) => {
   );
 };
 
-const StatusBoardTable: FunctionalComponent = (props: StatusBoardTableProps) => {
+const StatusBoardTable = (props: StatusBoardTableProps) => {
   return (
     <Fragment>
       <div class="columns">
@@ -65,12 +66,25 @@ const StatusBoardTable: FunctionalComponent = (props: StatusBoardTableProps) => 
   );
 };
 
+interface config {
+  apiKey: string,
+  update_timer: number
+}
 
-class StatusBoard extends Component {
+interface P {
+  config: config
+}
+
+interface S extends StatusBoardTableProps {
+  status_progress: number
+}
+
+class StatusBoard extends Component<P, S> {
+
+  timer = null;
 
   constructor() {
     super();
-    this.timer = null;
     this.state = {
       remaining_time: "00:00",
       estimated_end: "00:00",
@@ -84,7 +98,7 @@ class StatusBoard extends Component {
 
   componentDidMount() {
 
-    let { apiKey, baseURL, update_timer } = this.props.config;
+    let { apiKey, update_timer } = this.props.config;
 
     this.timer = setInterval(() => {
 

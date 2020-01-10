@@ -63,7 +63,7 @@ const StatusLeftItem = (props: StatusLeftItemProps) => {
   );
 };
 
-class StatusLeftBoard extends Component {
+class StatusLeftBoard extends Component<{}, StatusLeftBoardProps> {
 
   constructor() {
     super();
