@@ -3,8 +3,11 @@ import { Link } from "preact-router/match";
 import logo from "../../assets/connect_black.svg"
 import "./style.scss";
 
+interface S {
+    is_burger_active: boolean
+}
 
-class Header extends Component {
+class Header extends Component<{}, S> {
 
     constructor() {
         super();
