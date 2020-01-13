@@ -1,7 +1,7 @@
 import { h, Component } from "preact";
 import { Link } from "preact-router/match";
-import logo from "../../assets/connect_black.svg"
 import "./style.scss";
+const logo = require('../../assets/connect_black.svg');
 
 interface S {
     is_burger_active: boolean

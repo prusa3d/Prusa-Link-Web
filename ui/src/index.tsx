@@ -1,6 +1,6 @@
 import { h, render, Component, createContext } from "preact";
-import "./style";
-import App from "./components/app.tsx";
+import "./style/index.scss";
+import App from "./components/app";
 
 export const Config = createContext({});
 export default App;
@@ -13,5 +13,5 @@ const config = {
 
 render(
     <Config.Provider value={config}>
-        < App config={config} />
+        < App />
     </Config.Provider>, document.body);
