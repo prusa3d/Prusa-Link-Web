@@ -1,0 +1,15 @@
+$project-bottom-bg-color: hsl(130, 85%, 39%);
+$project-bottom-bg-hover-color: hsl(130, 38%, 46%);
+$text: hsl(0, 0%, 96%);
+
+.project-button {
+  color: $text;
+  background-color: $project-bottom-bg-color;
+  border-color: $project-bottom-bg-color;
+}
+
+.project-button:hover {
+  color: $text;
+  background-color: $project-bottom-bg-hover-color;
+  border-color: $project-bottom-bg-hover-color;
+}

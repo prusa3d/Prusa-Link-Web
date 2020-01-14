@@ -1,13 +1,12 @@
 import { h } from "preact";
 import { Route, Router, RouterOnChangeArgs } from "preact-router";
 
-import { Config } from "../index";
 import Home from "../routes/home";
-import Profile from "../routes/profile";
+// import Project from "../routes/project";
 import Header from "./header";
 import StatusLeftBoard from "./status-left";
 
-const App = () => {
+const App = props => {
     let currentUrl: string;
     const handleRoute = (e: RouterOnChangeArgs) => {
         currentUrl = e.url;
@@ -24,16 +23,12 @@ const App = () => {
                 <div class="column is-three-quarters">
                     <div class="columns is-centered">
                         <div class="column">
-                            <Config.Consumer>
-                                {config => {
-                                    return <StatusLeftBoard {...config} />
-                                }}
-                            </Config.Consumer>
+                            <StatusLeftBoard {...props.config} />
                         </div>
                         <div class="column is-three-quarters">
                             <Router onChange={handleRoute}>
                                 <Route path="/" component={Home} />
-                                <Route path="/profile/" component={Profile} />
+                                {/* <Route path="/projects/" component={Project} /> */}
                             </Router>
                         </div>
                     </div>

@@ -1,2 +1,24 @@
-@use 'bulma';
-@use 'base';
+@charset "utf-8";
+$body-background-color: hsl(0, 0%, 4%);
+$text: hsl(0, 0%, 96%);
+$text-light: hsl(0, 0%, 71%);
+$text-strong: hsl(0, 0%, 100%);
+$progress-bar-background-color: hsl(0, 0%, 48%);
+$progress-border-radius: 0px;
+$navbar-item-hover-background-color: $body-background-color;
+$navbar-background-color: $body-background-color;
+$navbar-item-hover-color: $text-strong;
+
+@import "../../../node_modules/bulma/sass/utilities/_all.sass";
+@import "../../../node_modules/bulma/sass/base/_all.sass";
+@import "../../../node_modules/bulma/sass/elements/box.sass";
+@import "../../../node_modules/bulma/sass/elements/button.sass";
+@import "../../../node_modules/bulma/sass/elements/container.sass";
+@import "../../../node_modules/bulma/sass/elements/image.sass";
+@import "../../../node_modules/bulma/sass/elements/progress.sass";
+@import "../../../node_modules/bulma/sass/elements/title.sass";
+@import "../../../node_modules/bulma/sass/components/media.sass";
+@import "../../../node_modules/bulma/sass/components/navbar.sass";
+@import "../../../node_modules/bulma/sass/layout/section.sass";
+@import "../../../node_modules/bulma/sass/grid/_all.sass";
+//@import "../../node_modules/bulma/bulma.sass";

@@ -1,4 +1,4 @@
-import { h, render, Component, createContext } from "preact";
+import { h, render, createContext } from "preact";
 import "./style/index.scss";
 import App from "./components/app";
 
@@ -13,5 +13,5 @@ const config = {
 
 render(
     <Config.Provider value={config}>
-        < App />
+        < App config={config} />
     </Config.Provider>, document.body);
