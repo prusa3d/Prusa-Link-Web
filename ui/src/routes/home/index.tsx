@@ -1,15 +1,131 @@
-import { h } from "preact";
-import StatusBoard from "../../components/status-board";
-import { Config } from "../../index";
+import { h, Fragment, Component } from 'preact';
+import { StatusBoardTable, StatusBoardTableProps } from '../../components/status-board/board';
+import { StatusProgress, StatusProgressProps } from "../../components/status-board/progress";
+import "./style.scss";
 
-const Home = () => {
-  return (
-    <Config.Consumer>
-      {config => {
-        return <StatusBoard config={config} />
-      }}
-    </Config.Consumer>
-  );
+
+function pad2(value) {
+  if (value < 10) {
+    return "0" + value
+  } else {
+    return "" + value
+  }
+}
+
+function formatTime(date) {
+  let hours = date.getUTCHours()
+  let minutes = date.getUTCMinutes()
+  if (hours > 0) {
+    return hours + " h " + pad2(minutes) + " mim"
+  }
+  return minutes + " mim"
+}
+
+
+interface S extends StatusBoardTableProps, StatusProgressProps {
+}
+
+class Home extends Component<{}, S> {
+
+  timer = null;
+
+  constructor() {
+    super();
+    this.state = {
+      remaining_time: "",
+      estimated_end: "00:00",
+      printing_time: "",
+      current_layer: 0,
+      total_layers: 0,
+      remaining_material: 0,
+      consumed_material: 0,
+      progress: 0,
+      project_name: ""
+    };
+  }
+
+  componentDidMount() {
+
+    this.timer = setInterval(() => {
+
+      fetch('/api')
+        .then(response => response.json())
+        .then(data => {
+
+          if (data.type == "items") {
+            let content = data.content;
+            let newState: { [propName: string]: string; } = {};
+
+            for (let item of Object.keys(content)) {
+              if (item.startsWith("time_r")) {
+
+                let remaining = new Date(content[item] * 1000 * 60);
+                newState["remaining_time"] = formatTime(remaining);
+
+                let now = new Date();
+                let end = new Date(now.getTime() + content[item] * 1000 * 60);
+                newState["estimated_end"] = pad2(end.getHours()) + ":" + pad2(end.getMinutes());
+
+              } else if (item.startsWith("time_e")) {
+                let elapsed = new Date(content[item] * 1000 * 60);
+                newState["printing_time"] = formatTime(elapsed);
+              }
+              else if (item.endsWith("ml")) {
+                let value = content[item];
+                let precision = value.toString().indexOf(".") + 1;
+                if (value.toString().length - precision > 3) {
+                  value = Number.parseFloat(content[item].toPrecision(precision));
+                }
+                if (item.endsWith("d_ml")) {
+                  newState["consumed_material"] = value;
+                } else if (item.endsWith("g_ml")) {
+                  newState["remaining_material"] = value;
+                } else {
+                  newState[item] = value;
+                }
+              } else {
+                if (!item.endsWith("mm") && item !== "resin_low" && item !== "exposure") {
+                  newState[item] = content[item];
+                }
+
+              }
+            }
+            if (Object.keys(newState).length > 0) {
+              this.setState(newState);
+            }
+
+          }
+
+        });
+
+    }, Number.parseInt(process.env.UPDATE_TIMER));
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.timer);
+  }
+
+  render() {
+    return (
+      <Fragment>
+        <div class="box has-background-black is-paddingless">
+          <p class="title is-5 prusa-text-orange prusa-line">
+            {process.env.PRINTER} <span class="subtitle is-6 has-text-grey">printer status</span>
+          </p>
+        </div>
+        <div class="columns">
+          <div class="column">
+            <StatusProgress progress={this.state.progress} project_name={this.state.project_name} />
+          </div>
+          <div class="column">
+            <StatusBoardTable {...this.state} />
+          </div>
+        </div>
+      </Fragment>
+    );
+  }
+
+
 };
 
 export default Home;

@@ -1,80 +1,37 @@
 import { h, Fragment, Component } from 'preact';
-import "./style.scss";
-const status_nozzle = require("../../assets/status_nozzle.svg");
-const status_heatbed = require("../../assets/status_heatbed.svg");
-const status_prnspeed = require("../../assets/status_prnspeed.svg");
-const status_prnflow = require("../../assets/status_prnflow.svg");
-const status_z_axis = require("../../assets/status_z_axis.svg");
-const status_material = require("../../assets/status_filament.svg");
+import StatusLeftItem from "./item";
 
-interface StatusLeftItemProps {
-  type: string,
-  value: string | number
-};
-
-interface StatusLeftBoardProps {
-  nozzle: string | number,
-  heatbed: string | number,
-  speed: string | number,
-  flow: string | number,
-  height: string | number,
-  material: string | number
+interface S {
+  [propName: string]: string;
 }
 
-const title_icon: { [id: string]: { title: string, icon_scr: string } } = {
-  nozzle: { title: "Nozzle Temperature", icon_scr: status_nozzle },
-  heatbed: { title: "Heatbed", icon_scr: status_heatbed },
-  speed: { title: "Printing Speed", icon_scr: status_prnspeed },
-  flow: { title: "Printing Flow", icon_scr: status_prnflow },
-  height: { title: "Z-Height", icon_scr: status_z_axis },
-  material: { title: "Material", icon_scr: status_material }
-};
-
-const StatusLeftItem = (props: StatusLeftItemProps) => {
-  let { title, icon_scr } = title_icon[props.type];
-
-  let className = "tile box has-background-black";
-  if (title[0] === "N") {
-    className += " not-padding-bottom";
-  } else {
-    className += " not-padding-top-bottom";
-  }
-
-  return (
-    <div
-      class={className}
-    >
-      <div class="media">
-        <figure class="media-left">
-          <p class="image is-16x16">
-            <img src={icon_scr} />
-          </p>
-        </figure>
-        <div class="media-content is-clipped">
-          <p class="subtitle is-6 has-text-white">
-            {title}
-          </p>
-          <p class="title is-5 has-text-white">
-            {props.value}
-          </p>
-        </div>
-      </div>
-    </div>
-  );
-};
-
-class StatusLeftBoard extends Component<{}, StatusLeftBoardProps> {
+class StatusLeftBoard extends Component<{}, S> {
 
   constructor() {
     super();
-    this.state = {
-      nozzle: "0/0°C",
-      heatbed: "0/0°C",
-      speed: "100%",
-      flow: "100%",
-      height: "23.15 mm",
-      material: "PLA"
-    };
+    if (process.env.PRINTER == "Prusa SL1") {
+      this.state = {
+        resin_remaining: "0 ml",
+        temp_cpu: "0°C",
+        temp_led: "0°C",
+        temp_amb: "0°C",
+        uv_led_fan: "0 RPM",
+        blower_fan: "0 RPM",
+        rear_fan: "0 RPM",
+        cover_state: "",
+      };
+
+    } else {
+      this.state = {
+        nozzle: "0/0°C",
+        heatbed: "0/0°C",
+        speed: "100%",
+        flow: "100%",
+        height: "23.15 mm",
+        material: "PLA"
+      };
+    }
+
   }
 
   // componentDidMount() {
@@ -97,16 +54,16 @@ class StatusLeftBoard extends Component<{}, StatusLeftBoardProps> {
   // }
 
   render() {
+
+    Object.keys(this.state).map(propType => console.log(propType));
+    const listItems = Object.keys(this.state).map(propType =>
+      <StatusLeftItem type={propType} value={this.state[propType]} />
+    );
+
     return (
       <Fragment>
-        <div class="box has-background-grey is-marginless is-paddingless is-radiusless prusa-line-top"></div>
         <div class="tile is-ancestor is-vertical">
-          <StatusLeftItem type="nozzle" value={this.state.nozzle} />
-          <StatusLeftItem type="heatbed" value={this.state.heatbed} />
-          <StatusLeftItem type="speed" value={this.state.speed} />
-          <StatusLeftItem type="flow" value={this.state.flow} />
-          <StatusLeftItem type="height" value={this.state.height} />
-          <StatusLeftItem type="material" value={this.state.material} />
+          {listItems}
         </div>
       </Fragment>
     );
