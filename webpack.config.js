@@ -43,6 +43,11 @@ module.exports = (env, args) => {
         devtool: devMode ? 'source-map' : false,
         resolve: {
             extensions: ['.ts', '.tsx', '.js', '.html'],
+            alias: {
+                'react': 'preact/compat',
+                "react-dom/test-utils": "preact/test-utils",
+                'react-dom': 'preact/compat'
+            }
         },
         module: {
             rules: [

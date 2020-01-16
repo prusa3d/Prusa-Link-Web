@@ -53,11 +53,6 @@
     "webpack-dev-server": "^3.10.1"
   },
   "dependencies": {
-    "preact": "^10.1.1"
-  },
-  "alias": {
-    "react": "preact/compat",
-    "react-dom/test-utils": "preact/test-utils",
-    "react-dom": "preact/compat"
+    "preact": "^10.2.1"
   }
 }
