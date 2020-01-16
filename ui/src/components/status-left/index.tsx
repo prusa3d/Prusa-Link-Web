@@ -1,11 +1,11 @@
 import { h, Fragment, Component } from 'preact';
 import "./style.scss";
-import status_nozzle from "../../assets/status_nozzle.svg";
-import status_heatbed from "../../assets/status_heatbed.svg";
-import status_prnspeed from "../../assets/status_prnspeed.svg";
-import status_prnflow from "../../assets/status_prnflow.svg";
-import status_z_axis from "../../assets/status_z_axis.svg";
-import status_material from "../../assets/status_filament.svg";
+const status_nozzle = require("../../assets/status_nozzle.svg");
+const status_heatbed = require("../../assets/status_heatbed.svg");
+const status_prnspeed = require("../../assets/status_prnspeed.svg");
+const status_prnflow = require("../../assets/status_prnflow.svg");
+const status_z_axis = require("../../assets/status_z_axis.svg");
+const status_material = require("../../assets/status_filament.svg");
 
 interface StatusLeftItemProps {
   type: string,

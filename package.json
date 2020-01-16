@@ -4,10 +4,12 @@
   "description": "This is a printer connect webservice. It is compatible with another 3D printer services, so many applications which use this service.",
   "private": true,
   "scripts": {
-    "api:dev": "swagger-repo serve",
+    "api:start": "swagger-repo serve",
     "api:test": "swagger-repo validate",
-    "ui:dev": "node ./scripts/proxy.js",
-    "ui:build": "node node_modules/parcel-bundler/src/cli.js build ui/src/index.html --no-source-maps"
+    "ui:build": "npm run ui:clean && npx webpack --config ./webpack.config.js --mode production --progress",
+    "ui:dev": "npm run ui:clean && npx webpack --config ./webpack.config.js --mode development",
+    "ui:start": "npx webpack-dev-server --config ./webpack.config.js --env.prod=1 --mode development",
+    "ui:clean": "rimraf ./dist"
   },
   "repository": {
     "type": "git",
@@ -20,21 +22,36 @@
   },
   "homepage": "https://github.com/prusa3d/Prusa-Connect-Web#readme",
   "devDependencies": {
-    "@babel/core": "^7.7.7",
-    "express": "^4.17.1",
-    "http-proxy-middleware": "^0.20.0",
-    "parcel-bundler": "^1.12.4",
-    "sass": "^1.24.2",
-    "swagger-repo": "^2.0.0-rc.15",
-    "typescript": "^3.7.4"
-  },
-  "dependencies": {
+    "autoprefixer": "^9.7.3",
     "bulma": "^0.8.0",
-    "preact": "^10.1.1",
+    "css-loader": "^3.4.2",
+    "cssnano": "^4.1.10",
+    "fork-ts-checker-webpack-plugin": "^3.1.1",
+    "glob-all": "^3.1.0",
+    "html-webpack-plugin": "^3.2.0",
+    "http-proxy-middleware": "^0.20.0",
+    "mini-css-extract-plugin": "^0.9.0",
+    "postcss-loader": "^3.0.0",
+    "postcss-preset-env": "^6.7.0",
     "preact-jsx-chai": "^2.3.2",
     "preact-markup": "^1.6.0",
     "preact-render-to-string": "^5.1.3",
-    "preact-router": "^3.1.0"
+    "preact-router": "^3.1.0",
+    "purgecss-webpack-plugin": "^1.6.0",
+    "react-scripts": "^3.3.0",
+    "rimraf": "^3.0.0",
+    "sass": "^1.24.2",
+    "sass-loader": "^8.0.1",
+    "svg-url-loader": "^3.0.3",
+    "swagger-repo": "^2.0.0-rc.15",
+    "ts-loader": "^6.2.1",
+    "typescript": "^3.7.4",
+    "webpack": "^4.41.5",
+    "webpack-cli": "^3.3.10",
+    "webpack-dev-server": "^3.10.1"
+  },
+  "dependencies": {
+    "preact": "^10.1.1"
   },
   "alias": {
     "react": "preact/compat",

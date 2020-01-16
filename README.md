@@ -8,12 +8,12 @@ npm install
 
 ## OpenAPI specification:
 
-### Run api dev
+### Run api
   - Documentation (ReDoc)
   - Documentation (SwaggerUI)
   - Swagger Editor
 ```bash
-npm run api:dev
+npm run api:start
 ```
 
 ### Validate api
@@ -23,7 +23,17 @@ npm run api:test
 
 ## UI
 
-### Run ui dev
+### Clean ui
+```bash
+npm run ui:clean
+```
+
+### Run ui
+```bash
+npm run ui:start
+```
+
+### Build dev
 ```bash
 npm run ui:dev
 ```
@@ -39,6 +49,3 @@ npm run ui:build
 rm -fr ./dist
 npm run ui:build
 ```
-
-### access-control-allow-origin
-The browser does not permit fetch data from a different port, then ./scripts/proxy.js resolves it (proxy: 8000 -> 8080). 

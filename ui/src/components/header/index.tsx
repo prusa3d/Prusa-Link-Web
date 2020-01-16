@@ -1,7 +1,7 @@
 import { h, Component } from "preact";
 import { Link } from "preact-router/match";
-import logo from "../../assets/connect_black.svg"
 import "./style.scss";
+const logo = require('../../assets/connect_black.svg');
 
 interface S {
     is_burger_active: boolean
@@ -54,13 +54,25 @@ class Header extends Component<{}, S> {
                 <div id="navbarBasicMenu" class={"navbar-menu " + extra_burger_class}>
                     <div class="navbar-end">
                         <Link class="navbar-item prusa-menu-item" activeClassName="active" href="/" onClick={this.onClickBurger}>
-                            status
+                            Dashboard
                         </Link>
-                        <Link class="navbar-item prusa-menu-item" activeClassName="active" href="/profile" onClick={this.onClickBurger}>
-                            projects
-                        </Link>
+                        {/* <Link class="navbar-item prusa-menu-item" activeClassName="active" href="/projects" onClick={this.onClickBurger}>
+                                projects
+                            </Link> */}
                         <div class="navbar-item has-text-grey">
-                            account
+                            Projects
+                        </div>
+                        <div class="navbar-item has-text-grey">
+                            Control
+                        </div>
+                        <div class="navbar-item has-text-grey">
+                            Temperatures
+                        </div>
+                        <div class="navbar-item has-text-grey">
+                            G-code
+                        </div>
+                        <div class="navbar-item has-text-grey">
+                            Account
                         </div>
                     </div>
                 </div>

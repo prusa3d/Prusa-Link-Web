@@ -67,6 +67,7 @@ const StatusBoardTable = (props: StatusBoardTableProps) => {
 };
 
 interface config {
+  printer: string;
   apiKey: string,
   update_timer: number
 }
@@ -175,7 +176,7 @@ class StatusBoard extends Component<P, S> {
       <Fragment>
         <div class="box has-background-black is-paddingless">
           <p class="title is-5 prusa-text-orange prusa-line">
-            PRUSA MINI <span class="subtitle is-6 has-text-grey">printer status</span>
+            Prusa SL1 <span class="subtitle is-6 has-text-grey">printer status</span>
           </p>
           <progress class="progress is-success is-medium" value={this.state.status_progress} max="100" />
         </div>

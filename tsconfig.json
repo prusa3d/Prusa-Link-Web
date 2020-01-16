@@ -3,11 +3,21 @@
     "outDir": "./build/",
     "noImplicitAny": false,
     "removeComments": true,
-    "module": "es6",
+    "module": "commonjs",
     "target": "es5",
+    "sourceMap": true,
     "jsx": "react",
     "allowJs": true,
     "jsxFactory": "h",
     "moduleResolution": "node",
-  }
+  },
+  "suppressImplicitAnyIndexErrors": true,
+  "lib": [
+    "dom",
+    "es2017"
+  ],
+  "baseUrl": ".",
+  "exclude": [
+    "dist"
+  ]
 }

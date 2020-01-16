@@ -1,6 +1,6 @@
-import { h, render, Component, createContext } from "preact";
-import "./style";
-import App from "./components/app.tsx";
+import { h, render, createContext } from "preact";
+import "./style/index.scss";
+import App from "./components/app";
 
 export const Config = createContext({});
 export default App;
