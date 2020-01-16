@@ -7,7 +7,7 @@ if (process.env.PRINTER == "Prusa SL1") {
   const tem_svg = require("../../assets/temperature_color.svg");
   const fan_svg = require("../../assets/fan_color.svg");
   title_icon = {
-    resin_remaining: { title: "remaining resin", icon_scr: require("../../assets/refill_color.svg") },
+    remaining_material: { title: "remaining resin", icon_scr: require("../../assets/refill_color.svg") },
     temp_cpu: { title: "CPU temperature", icon_scr: tem_svg },
     temp_led: { title: "UV led temperature", icon_scr: tem_svg },
     temp_amb: { title: "ambient temperature", icon_scr: tem_svg },

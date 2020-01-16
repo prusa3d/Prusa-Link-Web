@@ -24,10 +24,6 @@ class Project extends Component<P, S> {
         };
     }
 
-    // componentDidMount() {
-
-    // }
-
     render() {
         return (
             <Fragment>
@@ -38,7 +34,7 @@ class Project extends Component<P, S> {
                 </div>
                 <div class="columns">
                     <div class="column is-4 is-offset-4">
-                        <img src={under_construction}/>
+                        <img src={under_construction} />
                     </div>
                 </div>
             </Fragment>

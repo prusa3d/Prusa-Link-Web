@@ -27,7 +27,7 @@ interface S extends StatusBoardTableProps, StatusProgressProps {
 
 class Home extends Component<{}, S> {
 
-  timer = null;
+  ws = null;
 
   constructor() {
     super();
@@ -46,63 +46,75 @@ class Home extends Component<{}, S> {
 
   componentDidMount() {
 
-    this.timer = setInterval(() => {
 
-      fetch('/api')
-        .then(response => response.json())
-        .then(data => {
+    const parent = this;
+    // this.ws =  new WebSocket("ws://" + window.location.host + "/ws");
+    this.ws = new WebSocket("ws://localhost:8080/ws");
 
-          if (data.type == "items") {
-            let content = data.content;
-            let newState: { [propName: string]: string; } = {};
+    this.ws.onclose = () => {
+      this.setState({});
+    };
 
-            for (let item of Object.keys(content)) {
-              if (item.startsWith("time_r")) {
+    this.ws.onerror = (e) => {
+      parent.setState({});
+      console.log("Websocket error: " + e.data)
+    };
 
-                let remaining = new Date(content[item] * 1000 * 60);
-                newState["remaining_time"] = formatTime(remaining);
+    this.ws.onmessage = (e) => {
+      var data = JSON.parse(e.data);
+      if (data.type == "items") {
+        let content = data.content;
+        let newState: { [propName: string]: string; } = {};
 
-                let now = new Date();
-                let end = new Date(now.getTime() + content[item] * 1000 * 60);
-                newState["estimated_end"] = pad2(end.getHours()) + ":" + pad2(end.getMinutes());
+        for (let item of Object.keys(content)) {
+          if (item.startsWith("time_r")) {
 
-              } else if (item.startsWith("time_e")) {
-                let elapsed = new Date(content[item] * 1000 * 60);
-                newState["printing_time"] = formatTime(elapsed);
-              }
-              else if (item.endsWith("ml")) {
-                let value = content[item];
-                let precision = value.toString().indexOf(".") + 1;
-                if (value.toString().length - precision > 3) {
-                  value = Number.parseFloat(content[item].toPrecision(precision));
-                }
-                if (item.endsWith("d_ml")) {
-                  newState["consumed_material"] = value;
-                } else if (item.endsWith("g_ml")) {
-                  newState["remaining_material"] = value;
-                } else {
-                  newState[item] = value;
-                }
-              } else {
-                if (!item.endsWith("mm") && item !== "resin_low" && item !== "exposure") {
-                  newState[item] = content[item];
-                }
+            let remaining = new Date(content[item] * 1000 * 60);
+            newState["remaining_time"] = formatTime(remaining);
 
-              }
+            let now = new Date();
+            let end = new Date(now.getTime() + content[item] * 1000 * 60);
+            newState["estimated_end"] = pad2(end.getHours()) + ":" + pad2(end.getMinutes());
+
+          } else if (item.startsWith("time_e")) {
+            let elapsed = new Date(content[item] * 1000 * 60);
+            newState["printing_time"] = formatTime(elapsed);
+          }
+          else if (item.endsWith("ml")) {
+            let value = content[item];
+            let precision = value.toString().indexOf(".") + 1;
+            if (value.toString().length - precision > 3) {
+              value = Number.parseFloat(content[item].toPrecision(precision));
             }
-            if (Object.keys(newState).length > 0) {
-              this.setState(newState);
+            if (item.endsWith("d_ml")) {
+              newState["consumed_material"] = value;
+            } else if (item.endsWith("g_ml")) {
+              newState["remaining_material"] = value;
+            } else {
+              newState[item] = value;
+            }
+          } else {
+            if (item === "current_layer" ||
+              item === "total_layers" ||
+              item === "project_name" ||
+              item === "progress"
+            ) {
+              newState[item] = content[item];
             }
 
           }
+        }
+        if (Object.keys(newState).length > 0) {
+          this.setState(newState);
+        }
 
-        });
+      }
 
-    }, Number.parseInt(process.env.UPDATE_TIMER));
+    }
   }
 
   componentWillUnmount() {
-    clearInterval(this.timer);
+    this.ws.close();
   }
 
   render() {
