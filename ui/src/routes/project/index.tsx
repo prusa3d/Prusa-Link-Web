@@ -2,9 +2,6 @@ import { h, Fragment, Component } from "preact";
 import under_construction from "../../assets/under_construction.gif"
 import "./style.scss";
 
-interface P {
-    user: string;
-}
 
 interface S {
     parent_path: string;
@@ -12,7 +9,7 @@ interface S {
     root_path: string;
 }
 
-class Project extends Component<P, S> {
+class Project extends Component<{}, S> {
 
     container: any = null;
     constructor() {

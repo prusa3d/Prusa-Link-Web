@@ -1,4 +1,5 @@
 import { h, Fragment, Component } from 'preact';
+import { histUpdate } from "../app";
 import StatusLeftItem from "./item";
 
 interface S {
@@ -19,7 +20,7 @@ interface S {
 }
 
 
-class StatusLeftBoard extends Component<{}, S> {
+class StatusLeftBoard extends Component<histUpdate, S> {
 
   ws = null;
 
@@ -38,6 +39,10 @@ class StatusLeftBoard extends Component<{}, S> {
   }
 
   componentDidMount() {
+    this.connect();
+
+  }
+  connect = () => {
 
     // this.ws =  new WebSocket("ws://" + window.location.host + "/ws");
     this.ws = new WebSocket("ws://localhost:8080/ws");
@@ -46,9 +51,11 @@ class StatusLeftBoard extends Component<{}, S> {
       this.setState({});
     };
 
-    this.ws.onerror = (e) => {
+    let that = this;
+    this.ws.onerror = () => {
       this.setState({});
-      console.log("Websocket error: " + e.data)
+      this.ws.close();
+      setTimeout(function () { that.connect(); }, 3000);
     };
 
     this.ws.onmessage = (e) => {
@@ -56,6 +63,7 @@ class StatusLeftBoard extends Component<{}, S> {
       if (data.type == "items") {
         let content = data.content;
         let newState: { [propName: string]: string; } = {};
+        let newTemps = { temp_led: 0, temp_amb: 0, temp_cpu: 0 };
         for (let item of Object.keys(content)) {
           if (item.endsWith("g_ml") || item.startsWith("temp_")) {
             let value = content[item];
@@ -66,6 +74,7 @@ class StatusLeftBoard extends Component<{}, S> {
             if (item.endsWith("g_ml")) {
               newState["remaining_material"] = `${value} ml`;
             } else {
+              newTemps[item] = value;
               newState[item] = `${value}°C`;
             }
           } else if (item.endsWith("_fan")) {
@@ -76,6 +85,7 @@ class StatusLeftBoard extends Component<{}, S> {
         }
         if (Object.keys(newState).length > 0) {
           this.setState(newState);
+          this.props.updateTempHistory(newTemps);
         }
 
       }

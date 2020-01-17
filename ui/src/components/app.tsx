@@ -1,20 +1,65 @@
 import { h, Component } from "preact";
-import { Route, Router, RouterOnChangeArgs } from "preact-router";
+import { Router, RouterOnChangeArgs } from "preact-router";
 
 import Home from "../routes/home";
 import Project from "../routes/project";
 import Header from "./header";
 import StatusLeftBoard from "./status-left";
 
-interface S {
-    [propName: string]: string | number;
+interface temperaturesPoint {
+    x: Date;
+    y: number;
 }
 
-class App extends Component<{}, S> {
+export interface S {
+    temp_led: temperaturesPoint[];
+    temp_amb: temperaturesPoint[];
+    temp_cpu: temperaturesPoint[];
+    lock: number;
+}
+
+export interface histUpdate {
+    updateTempHistory(temperatures: { temp_led: number, temp_amb: number, temp_cpu: number }): void;
+}
+
+function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+class App extends Component<{}, S> implements histUpdate {
 
     constructor() {
         super();
-        this.state = {};
+        this.state = {
+            temp_led: [],
+            temp_amb: [],
+            temp_cpu: [],
+            lock: 0
+        };
+    }
+
+    updateTempHistory = async (temperatures) => {
+
+
+        const now = new Date().getTime();
+        let newState = {};
+        const isOlder = (dt) => now - dt.x > 180000; // 3min
+
+        for (let temp of Object.keys(temperatures)) {
+
+            let new_temp = this.state[temp].concat([{ x: now, y: temperatures[temp] }])
+            let minOlder = new_temp.findIndex(isOlder);
+            if (minOlder > -1) {
+                let maxOlder = new_temp.findIndex(e => !isOlder(e));
+                new_temp.splice(0, maxOlder);
+            }
+
+            newState[temp] = new_temp;
+
+        }
+
+        this.setState(newState);
+
     }
 
     render() {
@@ -35,12 +80,12 @@ class App extends Component<{}, S> {
                     <div class="column is-three-quarters">
                         <div class="columns is-centered">
                             <div class="column">
-                                <StatusLeftBoard {...this.state} />
+                                <StatusLeftBoard updateTempHistory={this.updateTempHistory} />
                             </div>
                             <div class="column is-three-quarters">
                                 <Router onChange={handleRoute}>
-                                    <Route path="/" component={Home} />
-                                    <Route path="/projects/" component={Project} />
+                                    <Home path="/" data={this.state} />
+                                    <Project path="/projects/" />
                                 </Router>
                             </div>
                         </div>

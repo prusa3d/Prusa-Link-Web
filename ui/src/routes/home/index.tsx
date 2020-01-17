@@ -1,6 +1,8 @@
 import { h, Fragment, Component } from 'preact';
 import { StatusBoardTable, StatusBoardTableProps } from '../../components/status-board/board';
 import { StatusProgress, StatusProgressProps } from "../../components/status-board/progress";
+import { TempProps, Temperature } from "../../components/temperature";
+
 import "./style.scss";
 
 
@@ -25,7 +27,7 @@ function formatTime(date) {
 interface S extends StatusBoardTableProps, StatusProgressProps {
 }
 
-class Home extends Component<{}, S> {
+class Home extends Component<TempProps, S> {
 
   ws = null;
 
@@ -42,12 +44,16 @@ class Home extends Component<{}, S> {
       progress: 0,
       project_name: ""
     };
+    this.connect = this.connect.bind(this);
   }
 
   componentDidMount() {
+    this.connect();
+  }
+
+  connect = () => {
 
 
-    const parent = this;
     // this.ws =  new WebSocket("ws://" + window.location.host + "/ws");
     this.ws = new WebSocket("ws://localhost:8080/ws");
 
@@ -55,9 +61,12 @@ class Home extends Component<{}, S> {
       this.setState({});
     };
 
-    this.ws.onerror = (e) => {
-      parent.setState({});
-      console.log("Websocket error: " + e.data)
+    let that = this;
+    this.ws.onerror = () => {
+      this.setState({});
+      this.ws.close();
+      setTimeout(function () { that.connect(); }, 3000);
+
     };
 
     this.ws.onmessage = (e) => {
@@ -128,6 +137,8 @@ class Home extends Component<{}, S> {
         <div class="columns">
           <div class="column">
             <StatusProgress progress={this.state.progress} project_name={this.state.project_name} />
+            <br />
+            <Temperature data={this.props.data} />
           </div>
           <div class="column">
             <StatusBoardTable {...this.state} />
