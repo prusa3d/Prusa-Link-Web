@@ -57,11 +57,11 @@ class Header extends Component<{}, S> {
                             Dashboard
                         </Link>
                         <Link class="navbar-item prusa-menu-item" activeClassName="active" href="/projects" onClick={this.onClickBurger}>
-                            projects
+                            Projects
                         </Link>
-                        <div class="navbar-item has-text-grey">
+                        <Link class="navbar-item prusa-menu-item" activeClassName="active" href="/temperatures" onClick={this.onClickBurger}>
                             Temperatures
-                        </div>
+                        </Link>
                         {/* <div class="navbar-item has-text-grey">
                             Account
                         </div> */}

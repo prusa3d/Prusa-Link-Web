@@ -5,8 +5,7 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const PurgecssPlugin = require('purgecss-webpack-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
-const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
-const FaviconsWebpackPlugin = require('favicons-webpack-plugin')
+const TerserPlugin = require('terser-webpack-plugin');
 
 
 module.exports = (env, args) => {
@@ -105,11 +104,11 @@ module.exports = (env, args) => {
             }
         },
         plugins: [
-            new FaviconsWebpackPlugin('./ui/src/assets/favicon.ico'),
             new webpack.DefinePlugin({
                 'process.env.APIKEY': JSON.stringify(apiKey),
                 'process.env.PRINTER': JSON.stringify(printer),
-                'process.env.UPDATE_TIMER': JSON.stringify(update_timer)
+                'process.env.UPDATE_TIMER': JSON.stringify(update_timer),
+                'process.env.DEVELOPMENT': JSON.stringify(devMode)
             }),
             new ForkTsCheckerWebpackPlugin(),
             new MiniCssExtractPlugin({
@@ -117,14 +116,16 @@ module.exports = (env, args) => {
                 chunkFilename: devMode ? '[id].css' : '[id].[hash].css',
             }),
             new HtmlWebpackPlugin({
-                title: `${printer} - Prusa Connect`
+                title: `${printer} - Prusa Connect`,
+                favicon: "./ui/src/assets/favicon.ico"
             }),
             new PurgecssPlugin({
                 paths: glob.sync(`${PATHS.src}/**/*`, { nodir: true }),
             })
         ],
         optimization: {
-            minimizer: [new UglifyJsPlugin()],
+            minimize: true,
+            minimizer: [new TerserPlugin()],
         },
     }
 }

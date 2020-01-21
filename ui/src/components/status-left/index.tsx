@@ -1,24 +1,49 @@
-import { h, Fragment, Component } from 'preact';
+import { h, Component } from 'preact';
 import { histUpdate } from "../app";
 import StatusLeftItem from "./item";
 
 interface S {
-  readonly remaining_material?: string;
-  readonly temp_cpu?: string;
-  readonly temp_led?: string;
-  readonly temp_amb?: string;
-  readonly uv_led_fan?: string;
-  readonly blower_fan?: string;
-  readonly rear_fan?: string;
-  readonly cover_state?: string;
-  readonly nozzle?: string;
-  readonly heatbed?: string;
-  readonly speed?: string;
-  readonly flow?: string;
-  readonly height?: string;
-  readonly material?: string;
+  remaining_material?: string;
+  temp_cpu?: string;
+  temp_led?: string;
+  temp_amb?: string;
+  uv_led_fan?: string;
+  blower_fan?: string;
+  rear_fan?: string;
+  cover_state?: string;
+  nozzle?: string;
+  heatbed?: string;
+  speed?: string;
+  flow?: string;
+  height?: string;
+  material?: string;
 }
 
+function numberFormat(value) {
+  let precision = value.toString().indexOf(".") + 1;
+  if (value.toString().length - precision > 3) {
+    return Number.parseFloat(value.toPrecision(precision));
+  } else {
+    return value;
+  }
+};
+
+function pad2(value) {
+  if (value < 10) {
+    return "0" + value
+  } else {
+    return "" + value
+  }
+};
+
+function formatTime(date) {
+  let hours = date.getUTCHours()
+  let minutes = date.getUTCMinutes()
+  if (hours > 0) {
+    return hours + " h " + pad2(minutes) + " mim"
+  }
+  return minutes + " mim"
+};
 
 class StatusLeftBoard extends Component<histUpdate, S> {
 
@@ -44,8 +69,11 @@ class StatusLeftBoard extends Component<histUpdate, S> {
   }
   connect = () => {
 
-    // this.ws =  new WebSocket("ws://" + window.location.host + "/ws");
-    this.ws = new WebSocket("ws://localhost:8080/ws");
+    if (process.env.DEVELOPMENT) {
+      this.ws = new WebSocket("ws://localhost:8080/ws");
+    } else {
+      this.ws = new WebSocket("ws://" + window.location.host + "/ws");
+    }
 
     this.ws.onclose = () => {
       this.setState({});
@@ -53,7 +81,6 @@ class StatusLeftBoard extends Component<histUpdate, S> {
 
     let that = this;
     this.ws.onerror = () => {
-      this.setState({});
       this.ws.close();
       setTimeout(function () { that.connect(); }, 3000);
     };
@@ -62,32 +89,86 @@ class StatusLeftBoard extends Component<histUpdate, S> {
       var data = JSON.parse(e.data);
       if (data.type == "items") {
         let content = data.content;
+
         let newState: { [propName: string]: string; } = {};
-        let newTemps = { temp_led: 0, temp_amb: 0, temp_cpu: 0 };
-        for (let item of Object.keys(content)) {
-          if (item.endsWith("g_ml") || item.startsWith("temp_")) {
-            let value = content[item];
-            let precision = value.toString().indexOf(".") + 1;
-            if (value.toString().length - precision > 3) {
-              value = Number.parseFloat(content[item].toPrecision(precision));
-            }
-            if (item.endsWith("g_ml")) {
-              newState["remaining_material"] = `${value} ml`;
-            } else {
-              newTemps[item] = value;
-              newState[item] = `${value}°C`;
-            }
-          } else if (item.endsWith("_fan")) {
-            newState[item] = `${content[item]} RPM`;
-          } else if (item == "cover_closed") {
-            newState["cover_state"] = content[item] ? "Closed" : "Opened";
+        let newTemps = {};
+        let newProgress_status = {};
+        let newProgress_bar = {};
+        let value = null;
+
+        // common properties
+        for (let item of ["temp_cpu", "temp_led", "temp_amb"]) {
+          value = content[item];
+          if (value) {
+            newTemps[item] = value;
+            newState[item] = `${numberFormat(value)}°C`;
           }
         }
-        if (Object.keys(newState).length > 0) {
-          this.setState(newState);
-          this.props.updateTempHistory(newTemps);
+
+        value = content["resin_remaining_ml"];
+        if (value) {
+          value = `${numberFormat(value)} ml`;
+          newState["remaining_material"] = value;
+          newProgress_status["remaining_material"] = value;
         }
 
+        // progress properties
+        value = content["time_remain_min"];
+        if (value) {
+          let remaining = new Date(value * 1000 * 60);
+          newProgress_status["remaining_time"] = formatTime(remaining);
+
+          let now = new Date();
+          let end = new Date(now.getTime() + value * 1000 * 60);
+          newProgress_status["estimated_end"] = pad2(end.getHours()) + ":" + pad2(end.getMinutes());
+        }
+
+        value = content["time_elapsed_min"];
+        if (value) {
+          let elapsed = new Date(value * 1000 * 60);
+          newProgress_status["printing_time"] = formatTime(elapsed);
+        }
+
+        value = content["resin_used_ml"];
+        if (value) {
+          newProgress_status["consumed_material"] = numberFormat(value);
+        }
+
+        for (let item of ["current_layer", "total_layers"]) {
+          value = content[item];
+          if (value) {
+            newProgress_status[item] = value;
+          }
+        }
+
+        for (let item of ["project_name", "progress"]) {
+          value = content[item];
+          if (value) {
+            newProgress_bar[item] = value;
+          }
+        }
+
+        // left board properties
+        for (let item of ["uv_led_fan", "blower_fan", "rear_fan"]) {
+          value = content[item];
+          if (value) {
+            newState[item] = `${value} RPM`;
+          }
+        }
+
+        value = content["cover_closed"];
+        if (value) {
+          newState["cover_state"] = value ? "Closed" : "Opened";
+        }
+
+        if (Object.keys(newState).length > 0) {
+          this.setState(newState);
+          this.props.updateData({
+            progress_bar: newProgress_bar,
+            progress_status: newProgress_status,
+            temperatures: newTemps
+          });
+        }
       }
     }
 
@@ -104,11 +185,10 @@ class StatusLeftBoard extends Component<histUpdate, S> {
     );
 
     return (
-      <Fragment>
-        <div class="tile is-ancestor is-vertical">
-          {listItems.length < 1 ? "Loading..." : listItems}
-        </div>
-      </Fragment>);
+      <div class="tile is-ancestor is-vertical">
+        {listItems.length < 1 ? "Loading..." : listItems}
+      </div>
+    );
 
   }
 

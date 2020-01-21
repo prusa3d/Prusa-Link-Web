@@ -1,64 +1,73 @@
 import { h, Component } from "preact";
-import { Router, RouterOnChangeArgs } from "preact-router";
+import { Router, Route, RouterOnChangeArgs } from "preact-router";
 
-import Home from "../routes/home";
+import { homeProps, Home } from "../routes/home";
 import Project from "../routes/project";
 import Header from "./header";
 import StatusLeftBoard from "./status-left";
-
-interface temperaturesPoint {
-    x: Date;
-    y: number;
-}
-
-export interface S {
-    temp_led: temperaturesPoint[];
-    temp_amb: temperaturesPoint[];
-    temp_cpu: temperaturesPoint[];
-    lock: number;
-}
+import Temperatures from "../routes/temperatures";
 
 export interface histUpdate {
-    updateTempHistory(temperatures: { temp_led: number, temp_amb: number, temp_cpu: number }): void;
+    updateData(data): void;
 }
 
-function sleep(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
-}
-
-class App extends Component<{}, S> implements histUpdate {
+class App extends Component<{}, homeProps> implements histUpdate {
 
     constructor() {
         super();
         this.state = {
-            temp_led: [],
-            temp_amb: [],
-            temp_cpu: [],
-            lock: 0
+            progress_status: {
+                remaining_time: "",
+                estimated_end: "00:00",
+                printing_time: "",
+                current_layer: 0,
+                total_layers: 0,
+                remaining_material: 0,
+                consumed_material: 0,
+            },
+            progress_bar: {
+                progress: 0,
+                project_name: ""
+            },
+            temperatures: {
+                temp_led: [],
+                temp_amb: [],
+                temp_cpu: []
+            }
         };
     }
 
-    updateTempHistory = async (temperatures) => {
+    updateData = async (data: homeProps) => {
 
+        this.setState((prevState, props) => {
 
-        const now = new Date().getTime();
-        let newState = {};
-        const isOlder = (dt) => now - dt.x > 180000; // 3min
+            const now = new Date().getTime();
+            let newTemperatures = {
+                temp_led: [],
+                temp_amb: [],
+                temp_cpu: []
+            };
+            const isOlder = (dt) => now - dt.x > 180000; // 3min
 
-        for (let temp of Object.keys(temperatures)) {
+            const temperatures = data.temperatures;
+            for (let temp of Object.keys(temperatures)) {
 
-            let new_temp = this.state[temp].concat([{ x: now, y: temperatures[temp] }])
-            let minOlder = new_temp.findIndex(isOlder);
-            if (minOlder > -1) {
-                let maxOlder = new_temp.findIndex(e => !isOlder(e));
-                new_temp.splice(0, maxOlder);
+                let new_temp = prevState.temperatures[temp].concat([{ x: now, y: temperatures[temp] }])
+                let minOlder = new_temp.findIndex(isOlder);
+                if (minOlder > -1) {
+                    let maxOlder = new_temp.findIndex(e => !isOlder(e));
+                    new_temp.splice(0, maxOlder);
+                }
+
+                newTemperatures[temp] = new_temp;
+
             }
-
-            newState[temp] = new_temp;
-
-        }
-
-        this.setState(newState);
+            return {
+                progress_bar: { ...prevState.progress_bar, ...data.progress_bar },
+                progress_status: { ...prevState.progress_status, ...data.progress_status },
+                temperatures: newTemperatures
+            };
+        });
 
     }
 
@@ -80,12 +89,13 @@ class App extends Component<{}, S> implements histUpdate {
                     <div class="column is-three-quarters">
                         <div class="columns is-centered">
                             <div class="column">
-                                <StatusLeftBoard updateTempHistory={this.updateTempHistory} />
+                                <StatusLeftBoard updateData={this.updateData} />
                             </div>
                             <div class="column is-three-quarters">
                                 <Router onChange={handleRoute}>
-                                    <Home path="/" data={this.state} />
-                                    <Project path="/projects/" />
+                                    <Home path="/" {...this.state} />
+                                    <Route path="/projects/" component={Project} />
+                                    <Route path="/temperatures/" component={Temperatures} temperatures={this.state.temperatures} />
                                 </Router>
                             </div>
                         </div>

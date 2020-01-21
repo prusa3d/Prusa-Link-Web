@@ -4,15 +4,14 @@ interface StatusBoardItemProps {
   title: string,
   value: string | number
 }
-
 export interface StatusBoardTableProps {
-  remaining_time: string,
-  estimated_end: string,
-  printing_time: string,
-  current_layer: number,
-  total_layers: number,
-  remaining_material: string | number,
-  consumed_material: string | number
+  readonly remaining_time: string,
+  readonly estimated_end: string,
+  readonly printing_time: string,
+  readonly current_layer: number,
+  readonly total_layers: number,
+  readonly remaining_material: string | number,
+  readonly consumed_material: string | number
 }
 
 const StatusBoardItem = (props: StatusBoardItemProps) => {

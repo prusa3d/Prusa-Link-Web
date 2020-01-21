@@ -1,12 +1,26 @@
 import { h } from 'preact';
 import { VictoryChart, VictoryLine, VictoryTheme, VictoryAxis, VictoryLegend } from 'victory'
-import { S } from "../app"
 
-export interface TempProps {
-    data: S;
+interface temperaturesPoint {
+    x: number;
+    y: number;
 }
 
-export const Temperature: preact.FunctionalComponent<TempProps> = props => {
+interface temperaturesWrapper {
+    temp_led: temperaturesPoint[];
+    temp_amb: temperaturesPoint[];
+    temp_cpu: temperaturesPoint[];
+}
+
+export interface TempProps {
+    temperatures: temperaturesWrapper;
+}
+
+interface P extends TempProps {
+    bigSize: boolean;
+}
+
+export const Temperature: preact.FunctionalComponent<P> = props => {
 
     const now = new Date().getTime();
     const updateNow = (arr, value) => {
@@ -14,24 +28,26 @@ export const Temperature: preact.FunctionalComponent<TempProps> = props => {
         return arr;
     };
 
-    const temp_led = props.data.temp_led.reduce(updateNow, []);
-    const temp_amb = props.data.temp_amb.reduce(updateNow, []);
-    const temp_cpu = props.data.temp_cpu.reduce(updateNow, []);
+    const temp_led = props.temperatures.temp_led.reduce(updateNow, []);
+    const temp_amb = props.temperatures.temp_amb.reduce(updateNow, []);
+    const temp_cpu = props.temperatures.temp_cpu.reduce(updateNow, []);
 
 
     return (
         <div class="box has-background-black is-paddingless">
-            <p class="prusa-line subtitle is-4 has-text-grey is-marginless" style={{ padding: 0 }}>
-                temperatures
+            {
+                !props.bigSize && <p class="prusa-line subtitle is-4 has-text-grey is-marginless" style={{ padding: 0 }}>
+                    temperatures
                 </p>
+            }
             <div class="is-paddingless" style={{ display: "flex", flexWrap: "wrap" }}>
                 <VictoryChart
                     theme={VictoryTheme.material}
                     style={{ parent: { maxWidth: "100%" } }}
-                    height={300}
-                    width={550}
+                    height={props.bigSize ? 400 : 300}
+                    width={props.bigSize ? 1000 : 550}
                 >
-                    <VictoryLegend x={355} y={280}
+                    <VictoryLegend x={props.bigSize ? 805 : 355} y={props.bigSize ? 380 : 280}
                         orientation="horizontal"
                         symbolSpacer={5}
                         gutter={20}
@@ -71,7 +87,7 @@ export const Temperature: preact.FunctionalComponent<TempProps> = props => {
                             grid: { stroke: "none" },
                             tickLabels: { fontSize: 15, padding: 5, fill: "white" }
                         }}
-                     tickValues={[-180, -150, -120, -90, -60, -30, -10]}
+                        tickValues={[-180, -150, -120, -90, -60, -30, -10]}
                     />
                     <VictoryAxis
                         dependentAxis
@@ -82,7 +98,7 @@ export const Temperature: preact.FunctionalComponent<TempProps> = props => {
                             grid: { stroke: "gray", strokeDasharray: "none" },
                             ticks: { stroke: "white", size: 5, },
                             tickLabels: { fontSize: 15, padding: 5, fill: "white" }
-                            
+
                         }}
                         orientation="left"
                         tickValues={[0, 50, 100, 150, 200]}

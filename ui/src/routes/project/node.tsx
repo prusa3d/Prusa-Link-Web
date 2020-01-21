@@ -2,7 +2,6 @@ import { h } from "preact";
 import * as style from "./style.scss";
 
 interface Props {
-    user: string;
 }
 
 const ProjectNode: preact.FunctionalComponent<Props> = props => {
