@@ -44,9 +44,9 @@ function formatTime(date) {
   let hours = date.getUTCHours()
   let minutes = date.getUTCMinutes()
   if (hours > 0) {
-    return hours + " h " + pad2(minutes) + " mim"
+    return hours + " h " + pad2(minutes) + " min"
   }
-  return minutes + " mim"
+  return minutes + " min"
 };
 
 class StatusLeftBoard extends Component<histUpdate, S> {
@@ -135,7 +135,7 @@ class StatusLeftBoard extends Component<histUpdate, S> {
 
         value = content["resin_used_ml"];
         if (value) {
-          newProgress_status["consumed_material"] = numberFormat(value);
+          newProgress_status["consumed_material"] = `${numberFormat(value)} ml`;
         }
 
         for (let item of ["current_layer", "total_layers"]) {

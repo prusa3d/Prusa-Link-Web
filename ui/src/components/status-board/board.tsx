@@ -41,8 +41,8 @@ export const StatusBoardTable = (props: StatusBoardTableProps) => {
       </div>
       <div class="columns">
         <StatusBoardItem title="layer" value={`${props.current_layer}/${props.total_layers}`} />
-        <StatusBoardItem title="remaining resin" value={`${props.remaining_material} ml`} />
-        <StatusBoardItem title="consumed resin" value={`${props.consumed_material} ml`} />
+        <StatusBoardItem title="remaining resin" value={props.remaining_material} />
+        <StatusBoardItem title="consumed resin" value={props.consumed_material} />
       </div>
     </Fragment>
   );
