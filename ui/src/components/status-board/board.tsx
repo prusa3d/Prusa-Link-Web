@@ -1,3 +1,7 @@
+// This file is part of Prusa-Connect-Web
+// Copyright (C) 2018-2019 Prusa Research s.r.o. - www.prusa3d.com
+// SPDX-License-Identifier: GPL-3.0-or-later
+
 import { h, Fragment } from 'preact';
 
 interface StatusBoardItemProps {
@@ -17,10 +21,10 @@ export interface StatusBoardTableProps {
 const StatusBoardItem = (props: StatusBoardItemProps) => {
   return (
     <div class="column is-one-third">
-      <p class="subtitle is-6 has-text-grey">
+      <p class="subtitle is-size-3 is-size-6-desktop has-text-grey">
         {props.title}
       </p>
-      <p class="title is-5 has-text-white">
+      <p class="title is-size-2 is-size-5-desktop has-text-white">
         {props.value}
       </p>
     </div>

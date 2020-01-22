@@ -1,3 +1,7 @@
+// This file is part of Prusa-Connect-Web
+// Copyright (C) 2018-2019 Prusa Research s.r.o. - www.prusa3d.com
+// SPDX-License-Identifier: GPL-3.0-or-later
+
 import { h, Component } from "preact";
 import { Router, Route, RouterOnChangeArgs } from "preact-router";
 
@@ -80,18 +84,18 @@ class App extends Component<{}, homeProps> implements histUpdate {
 
         return (
             <section id="app" class="section">
-                <div class="columns is-vcentered  is-centered">
-                    <div class="column is-three-quarters">
+                <div class="columns is-vcentered is-centered is-desktop">
+                    <div class="column is-three-quarters-desktop is-full-mobile">
                         <Header />
                     </div>
                 </div>
-                <div class="columns is-centered">
-                    <div class="column is-three-quarters">
-                        <div class="columns is-centered">
-                            <div class="column">
+                <div class="columns is-centered is-desktop">
+                    <div class="column is-three-quarters-desktop is-full-mobile">
+                        <div class="columns is-centered is-desktop">
+                            <div class="column is-full-mobile">
                                 <StatusLeftBoard updateData={this.updateData} />
                             </div>
-                            <div class="column is-three-quarters">
+                            <div class="column is-three-quarters-desktop is-full-mobile">
                                 <Router onChange={handleRoute}>
                                     <Home path="/" {...this.state} />
                                     <Route path="/projects/" component={Project} />

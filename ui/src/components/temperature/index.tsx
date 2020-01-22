@@ -1,3 +1,7 @@
+// This file is part of Prusa-Connect-Web
+// Copyright (C) 2018-2019 Prusa Research s.r.o. - www.prusa3d.com
+// SPDX-License-Identifier: GPL-3.0-or-later
+
 import { h } from 'preact';
 import { VictoryChart, VictoryLine, VictoryTheme, VictoryAxis, VictoryLegend } from 'victory'
 
@@ -36,7 +40,7 @@ export const Temperature: preact.FunctionalComponent<P> = props => {
     return (
         <div class="box has-background-black is-paddingless">
             {
-                !props.bigSize && <p class="prusa-line subtitle is-4 has-text-grey is-marginless" style={{ padding: 0 }}>
+                !props.bigSize && <p class="prusa-line subtitle is-size-2 is-size-4-desktop has-text-grey is-marginless" style={{ padding: 0 }}>
                     temperatures
                 </p>
             }

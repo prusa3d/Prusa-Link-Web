@@ -1,5 +1,8 @@
+// This file is part of Prusa-Connect-Web
+// Copyright (C) 2018-2019 Prusa Research s.r.o. - www.prusa3d.com
+// SPDX-License-Identifier: GPL-3.0-or-later
+
 import { h } from 'preact';
-import "./style.scss";
 
 let title_icon: { [id: string]: { title: string, icon_scr: string } } = {};
 if (process.env.PRINTER == "Prusa SL1") {
@@ -37,24 +40,17 @@ interface S {
 const StatusLeftItem: preact.FunctionalComponent<S> = props => {
   let { title, icon_scr } = title_icon[props.type];
 
-  let className = "tile box has-background-black";
-  if (title[0] === "N") {
-    className += " not-padding-bottom";
-  } else {
-    className += " not-padding-top-bottom";
-  }
-
   return (
     <div
-      class={className}
+      class="column is-half-touch is-full-desktop"
     >
       <div class="media">
         <img class="media-left image is-24x24" src={icon_scr} />
         <div class="media-content is-clipped">
-          <p class="subtitle is-5 has-text-grey">
+          <p class="subtitle is-size-3 is-size-5-desktop has-text-grey">
             {title}
           </p>
-          <p class="title is-5 has-text-white">
+          <p class="title is-size-2 is-size-5-desktop has-text-white">
             {props.value}
           </p>
         </div>

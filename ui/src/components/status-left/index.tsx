@@ -1,3 +1,7 @@
+// This file is part of Prusa-Connect-Web
+// Copyright (C) 2018-2019 Prusa Research s.r.o. - www.prusa3d.com
+// SPDX-License-Identifier: GPL-3.0-or-later
+
 import { h, Component } from 'preact';
 import { histUpdate } from "../app";
 import StatusLeftItem from "./item";
@@ -185,7 +189,7 @@ class StatusLeftBoard extends Component<histUpdate, S> {
     );
 
     return (
-      <div class="tile is-ancestor is-vertical">
+      <div class="columns is-multiline is-mobile">
         {listItems.length < 1 ? "Loading..." : listItems}
       </div>
     );

@@ -1,7 +1,10 @@
+// This file is part of Prusa-Connect-Web
+// Copyright (C) 2018-2019 Prusa Research s.r.o. - www.prusa3d.com
+// SPDX-License-Identifier: GPL-3.0-or-later
+
 import { h, Component } from "preact";
 import { Link } from "preact-router/match";
 import "./style.scss";
-const logo = require('../../assets/connect_black.svg');
 
 interface S {
     is_burger_active: boolean
@@ -33,10 +36,9 @@ class Header extends Component<{}, S> {
                 aria-label="main navigation">
                 <div class="navbar-brand">
                     <a
-                        class="navbar-item is-shadowless is-paddingless"
+                        class="navbar-item navbar-logo"
                         href="https://www.prusa3d.com/"
                     >
-                        <img src={logo} />
                     </a>
                     <a
                         role="button"
@@ -53,13 +55,13 @@ class Header extends Component<{}, S> {
                 </div>
                 <div id="navbarBasicMenu" class={"navbar-menu " + extra_burger_class}>
                     <div class="navbar-end">
-                        <Link class="navbar-item prusa-menu-item" activeClassName="active" href="/" onClick={this.onClickBurger}>
+                        <Link class="navbar-item prusa-menu-item is-size-3 is-size-6-desktop" activeClassName="active" href="/" onClick={this.onClickBurger}>
                             Dashboard
                         </Link>
-                        <Link class="navbar-item prusa-menu-item" activeClassName="active" href="/projects" onClick={this.onClickBurger}>
+                        <Link class="navbar-item prusa-menu-item is-size-3 is-size-6-desktop" activeClassName="active" href="/projects" onClick={this.onClickBurger}>
                             Projects
                         </Link>
-                        <Link class="navbar-item prusa-menu-item" activeClassName="active" href="/temperatures" onClick={this.onClickBurger}>
+                        <Link class="navbar-item prusa-menu-item is-size-3 is-size-6-desktop" activeClassName="active" href="/temperatures" onClick={this.onClickBurger}>
                             Temperatures
                         </Link>
                         {/* <div class="navbar-item has-text-grey">

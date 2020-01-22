@@ -1,7 +1,10 @@
+// This file is part of Prusa-Connect-Web
+// Copyright (C) 2018-2019 Prusa Research s.r.o. - www.prusa3d.com
+// SPDX-License-Identifier: GPL-3.0-or-later
+
 import { h, Fragment, Component } from "preact";
 import under_construction from "../../assets/under_construction.gif"
 import "./style.scss";
-
 
 interface S {
     parent_path: string;
@@ -25,8 +28,8 @@ class Project extends Component<{}, S> {
         return (
             <Fragment>
                 <div class="box has-background-black is-paddingless">
-                    <p class="title is-5 prusa-text-orange prusa-line">
-                        Under construction <span class="subtitle is-6 has-text-grey">project files</span>
+                    <p class="title is-size-2 is-size-5-desktop prusa-text-orange prusa-line">
+                        Under construction <span class="subtitle is-size-3 is-size-6-desktop has-text-grey">project files</span>
                     </p>
                 </div>
                 <div class="columns">
