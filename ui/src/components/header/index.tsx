@@ -55,13 +55,13 @@ class Header extends Component<{}, S> {
                 </div>
                 <div id="navbarBasicMenu" class={"navbar-menu " + extra_burger_class}>
                     <div class="navbar-end">
-                        <Link class="navbar-item prusa-menu-item is-size-3 is-size-6-desktop" activeClassName="active" href="/" onClick={this.onClickBurger}>
+                        <Link class="navbar-item prusa-menu-item is-size-2 is-size-6-desktop" activeClassName="active" href="/" onClick={this.onClickBurger}>
                             Dashboard
                         </Link>
-                        <Link class="navbar-item prusa-menu-item is-size-3 is-size-6-desktop" activeClassName="active" href="/projects" onClick={this.onClickBurger}>
+                        <Link class="navbar-item prusa-menu-item is-size-2 is-size-6-desktop" activeClassName="active" href="/projects" onClick={this.onClickBurger}>
                             Projects
                         </Link>
-                        <Link class="navbar-item prusa-menu-item is-size-3 is-size-6-desktop" activeClassName="active" href="/temperatures" onClick={this.onClickBurger}>
+                        <Link class="navbar-item prusa-menu-item is-size-2 is-size-6-desktop" activeClassName="active" href="/temperatures" onClick={this.onClickBurger}>
                             Temperatures
                         </Link>
                         {/* <div class="navbar-item has-text-grey">

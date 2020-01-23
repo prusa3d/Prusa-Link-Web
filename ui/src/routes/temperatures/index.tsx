@@ -14,8 +14,8 @@ const Temperatures: preact.FunctionalComponent<TempProps> = props => {
                 </p>
             </div>
 
-            <div class="columns">
-                <div class="is-8 is-offset-2">
+            <div class="columns is-centered">
+                <div class="column is-full">
                     <Temperature temperatures={props.temperatures} bigSize={true} />
                 </div>
             </div>

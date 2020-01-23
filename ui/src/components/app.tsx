@@ -51,7 +51,7 @@ class App extends Component<{}, homeProps> implements histUpdate {
                 temp_amb: [],
                 temp_cpu: []
             };
-            const isOlder = (dt) => now - dt.x > 180000; // 3min
+            const isOlder = (dt) => now - dt.x > 200000; // ~ 3min
 
             const temperatures = data.temperatures;
             for (let temp of Object.keys(temperatures)) {

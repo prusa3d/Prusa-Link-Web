@@ -103,7 +103,7 @@ class StatusLeftBoard extends Component<histUpdate, S> {
         // common properties
         for (let item of ["temp_cpu", "temp_led", "temp_amb"]) {
           value = content[item];
-          if (value) {
+          if (value || value === 0) {
             newTemps[item] = value;
             newState[item] = `${numberFormat(value)}°C`;
           }

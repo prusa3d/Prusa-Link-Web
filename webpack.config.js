@@ -121,7 +121,8 @@ module.exports = (env, args) => {
             }),
             new HtmlWebpackPlugin({
                 title: `${printer} - Prusa Connect`,
-                favicon: "./ui/src/assets/favicon.ico"
+                favicon: "./ui/src/assets/favicon.ico",
+                template: "./ui/src/index.html"
             }),
             new PurgecssPlugin({
                 paths: glob.sync(`${PATHS.src}/**/*`, { nodir: true }),
