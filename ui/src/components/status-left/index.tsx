@@ -1,117 +1,203 @@
-import { h, Fragment, Component } from 'preact';
-import "./style.scss";
-const status_nozzle = require("../../assets/status_nozzle.svg");
-const status_heatbed = require("../../assets/status_heatbed.svg");
-const status_prnspeed = require("../../assets/status_prnspeed.svg");
-const status_prnflow = require("../../assets/status_prnflow.svg");
-const status_z_axis = require("../../assets/status_z_axis.svg");
-const status_material = require("../../assets/status_filament.svg");
+// This file is part of Prusa-Connect-Web
+// Copyright (C) 2018-2019 Prusa Research s.r.o. - www.prusa3d.com
+// SPDX-License-Identifier: GPL-3.0-or-later
 
-interface StatusLeftItemProps {
-  type: string,
-  value: string | number
-};
+import { h, Component } from 'preact';
+import { histUpdate } from "../app";
+import StatusLeftItem from "./item";
 
-interface StatusLeftBoardProps {
-  nozzle: string | number,
-  heatbed: string | number,
-  speed: string | number,
-  flow: string | number,
-  height: string | number,
-  material: string | number
+interface S {
+  remaining_material?: string;
+  temp_cpu?: string;
+  temp_led?: string;
+  temp_amb?: string;
+  uv_led_fan?: string;
+  blower_fan?: string;
+  rear_fan?: string;
+  cover_state?: string;
+  nozzle?: string;
+  heatbed?: string;
+  speed?: string;
+  flow?: string;
+  height?: string;
+  material?: string;
 }
 
-const title_icon: { [id: string]: { title: string, icon_scr: string } } = {
-  nozzle: { title: "Nozzle Temperature", icon_scr: status_nozzle },
-  heatbed: { title: "Heatbed", icon_scr: status_heatbed },
-  speed: { title: "Printing Speed", icon_scr: status_prnspeed },
-  flow: { title: "Printing Flow", icon_scr: status_prnflow },
-  height: { title: "Z-Height", icon_scr: status_z_axis },
-  material: { title: "Material", icon_scr: status_material }
-};
-
-const StatusLeftItem = (props: StatusLeftItemProps) => {
-  let { title, icon_scr } = title_icon[props.type];
-
-  let className = "tile box has-background-black";
-  if (title[0] === "N") {
-    className += " not-padding-bottom";
+function numberFormat(value) {
+  let precision = value.toString().indexOf(".") + 1;
+  if (value.toString().length - precision > 3) {
+    return Number.parseFloat(value.toPrecision(precision));
   } else {
-    className += " not-padding-top-bottom";
+    return value;
   }
-
-  return (
-    <div
-      class={className}
-    >
-      <div class="media">
-        <figure class="media-left">
-          <p class="image is-16x16">
-            <img src={icon_scr} />
-          </p>
-        </figure>
-        <div class="media-content is-clipped">
-          <p class="subtitle is-6 has-text-white">
-            {title}
-          </p>
-          <p class="title is-5 has-text-white">
-            {props.value}
-          </p>
-        </div>
-      </div>
-    </div>
-  );
 };
 
-class StatusLeftBoard extends Component<{}, StatusLeftBoardProps> {
+function pad2(value) {
+  if (value < 10) {
+    return "0" + value
+  } else {
+    return "" + value
+  }
+};
+
+function formatTime(date) {
+  let hours = date.getUTCHours()
+  let minutes = date.getUTCMinutes()
+  if (hours > 0) {
+    return hours + " h " + pad2(minutes) + " min"
+  }
+  return minutes + " min"
+};
+
+class StatusLeftBoard extends Component<histUpdate, S> {
+
+  ws = null;
 
   constructor() {
     super();
     this.state = {
-      nozzle: "0/0°C",
-      heatbed: "0/0°C",
-      speed: "100%",
-      flow: "100%",
-      height: "23.15 mm",
-      material: "PLA"
+      remaining_material: "0 ml",
+      temp_cpu: "0°C",
+      temp_led: "0°C",
+      temp_amb: "0°C",
+      uv_led_fan: "0 RPM",
+      blower_fan: "0 RPM",
+      rear_fan: "0 RPM",
+      cover_state: "",
     };
   }
 
-  // componentDidMount() {
+  componentDidMount() {
+    this.connect();
 
-  //   let { apiKey, baseURL } = this.props.config;
+  }
+  connect = () => {
 
-  //   fetch(baseURL + '/octoprint/api/printer', { headers: { "X-Api-Key": apiKey } })
-  //     .then(response => response.json())
-  //     .then(data => this.setState({ data }));
+    if (process.env.DEVELOPMENT) {
+      this.ws = new WebSocket("ws://localhost:8080/ws");
+    } else {
+      this.ws = new WebSocket("ws://" + window.location.host + "/ws");
+    }
 
+    this.ws.onclose = () => {
+      this.setState({});
+    };
 
-  //   // this.timer = setInterval(() => {
-  //   //   this.setState({ time: Date.now() });
-  //   // }, 1000);
-  // }
+    let that = this;
+    this.ws.onerror = () => {
+      this.ws.close();
+      setTimeout(function () { that.connect(); }, 3000);
+    };
 
+    this.ws.onmessage = (e) => {
+      var data = JSON.parse(e.data);
+      if (data.type == "items") {
+        let content = data.content;
 
-  // componentWillUnmount() {
-  //   // clearInterval(this.timer);
-  // }
+        let newState: { [propName: string]: string; } = {};
+        let newTemps = {};
+        let newProgress_status = {};
+        let newProgress_bar = {};
+        let value = null;
+
+        // common properties
+        for (let item of ["temp_cpu", "temp_led", "temp_amb"]) {
+          value = content[item];
+          if (value || value === 0) {
+            newTemps[item] = value;
+            newState[item] = `${numberFormat(value)}°C`;
+          }
+        }
+
+        value = content["resin_remaining_ml"];
+        if (value) {
+          value = `${numberFormat(value)} ml`;
+          newState["remaining_material"] = value;
+          newProgress_status["remaining_material"] = value;
+        }
+
+        // progress properties
+        value = content["time_remain_min"];
+        if (value) {
+          let remaining = new Date(value * 1000 * 60);
+          newProgress_status["remaining_time"] = formatTime(remaining);
+
+          let now = new Date();
+          let end = new Date(now.getTime() + value * 1000 * 60);
+          newProgress_status["estimated_end"] = pad2(end.getHours()) + ":" + pad2(end.getMinutes());
+        }
+
+        value = content["time_elapsed_min"];
+        if (value) {
+          let elapsed = new Date(value * 1000 * 60);
+          newProgress_status["printing_time"] = formatTime(elapsed);
+        }
+
+        value = content["resin_used_ml"];
+        if (value) {
+          newProgress_status["consumed_material"] = `${numberFormat(value)} ml`;
+        }
+
+        for (let item of ["current_layer", "total_layers"]) {
+          value = content[item];
+          if (value) {
+            newProgress_status[item] = value;
+          }
+        }
+
+        for (let item of ["project_name", "progress"]) {
+          value = content[item];
+          if (value) {
+            newProgress_bar[item] = value;
+          }
+        }
+
+        // left board properties
+        for (let item of ["uv_led_fan", "blower_fan", "rear_fan"]) {
+          value = content[item];
+          if (value) {
+            newState[item] = `${value} RPM`;
+          }
+        }
+
+        value = content["cover_closed"];
+        if (value) {
+          newState["cover_state"] = value ? "Closed" : "Opened";
+        }
+
+        if (Object.keys(newState).length > 0) {
+          this.setState(newState);
+          this.props.updateData({
+            progress_bar: newProgress_bar,
+            progress_status: newProgress_status,
+            temperatures: newTemps
+          });
+        }
+      }
+    }
+
+  }
+
+  componentWillUnmount() {
+    this.ws.close();
+  }
 
   render() {
-    return (
-      <Fragment>
-        <div class="box has-background-grey is-marginless is-paddingless is-radiusless prusa-line-top"></div>
-        <div class="tile is-ancestor is-vertical">
-          <StatusLeftItem type="nozzle" value={this.state.nozzle} />
-          <StatusLeftItem type="heatbed" value={this.state.heatbed} />
-          <StatusLeftItem type="speed" value={this.state.speed} />
-          <StatusLeftItem type="flow" value={this.state.flow} />
-          <StatusLeftItem type="height" value={this.state.height} />
-          <StatusLeftItem type="material" value={this.state.material} />
-        </div>
-      </Fragment>
+
+    const listItems = Object.keys(this.state).map(propType =>
+      <StatusLeftItem type={propType} value={this.state[propType]} />
     );
+
+    return (
+      <div class="columns is-multiline is-mobile">
+        {listItems.length < 1 ? "Loading..." : listItems}
+      </div>
+    );
+
   }
+
 }
+
 
 
 export default StatusLeftBoard;

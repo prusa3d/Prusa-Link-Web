@@ -1,3 +1,7 @@
+// This file is part of Prusa-Connect-Web
+// Copyright (C) 2018-2019 Prusa Research s.r.o. - www.prusa3d.com
+// SPDX-License-Identifier: GPL-3.0-or-later
+
 @charset "utf-8";
 $body-background-color: hsl(0, 0%, 4%);
 $text: hsl(0, 0%, 96%);
@@ -8,6 +12,7 @@ $progress-border-radius: 0px;
 $navbar-item-hover-background-color: $body-background-color;
 $navbar-background-color: $body-background-color;
 $navbar-item-hover-color: $text-strong;
+$success: #f8651b;
 
 @import "../../../node_modules/bulma/sass/utilities/_all.sass";
 @import "../../../node_modules/bulma/sass/base/_all.sass";

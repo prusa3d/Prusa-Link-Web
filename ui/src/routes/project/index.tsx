@@ -1,9 +1,10 @@
-import { h, Component } from "preact";
-import "./style.scss";
+// This file is part of Prusa-Connect-Web
+// Copyright (C) 2018-2019 Prusa Research s.r.o. - www.prusa3d.com
+// SPDX-License-Identifier: GPL-3.0-or-later
 
-interface P {
-    user: string;
-}
+import { h, Fragment, Component } from "preact";
+import under_construction from "../../assets/under_construction.gif"
+import "./style.scss";
 
 interface S {
     parent_path: string;
@@ -11,7 +12,7 @@ interface S {
     root_path: string;
 }
 
-class Project extends Component<P, S> {
+class Project extends Component<{}, S> {
 
     container: any = null;
     constructor() {
@@ -23,12 +24,21 @@ class Project extends Component<P, S> {
         };
     }
 
-    // componentDidMount() {
-
-    // }
-
     render() {
-        return (<div>Under construction</div>);
+        return (
+            <Fragment>
+                <div class="box has-background-black is-paddingless">
+                    <p class="title is-size-2 is-size-5-desktop prusa-text-orange prusa-line">
+                        Under construction <span class="subtitle is-size-3 is-size-6-desktop has-text-grey">project files</span>
+                    </p>
+                </div>
+                <div class="columns">
+                    <div class="column is-4 is-offset-4">
+                        <img src={under_construction} />
+                    </div>
+                </div>
+            </Fragment>
+        );
     }
 }
 

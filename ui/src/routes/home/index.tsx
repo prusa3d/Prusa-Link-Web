@@ -1,15 +1,40 @@
-import { h } from "preact";
-import StatusBoard from "../../components/status-board";
-import { Config } from "../../index";
+// This file is part of Prusa-Connect-Web
+// Copyright (C) 2018-2019 Prusa Research s.r.o. - www.prusa3d.com
+// SPDX-License-Identifier: GPL-3.0-or-later
 
-const Home = () => {
+import { h, Fragment } from 'preact';
+import { StatusBoardTable, StatusBoardTableProps } from '../../components/status-board/board';
+import { StatusProgress, StatusProgressProps } from "../../components/status-board/progress";
+import { TempProps, Temperature } from "../../components/temperature";
+import "./style.scss";
+
+
+export interface homeProps extends TempProps {
+  progress_bar: StatusProgressProps;
+  progress_status: StatusBoardTableProps;
+
+}
+
+export const Home: preact.FunctionalComponent<homeProps> = props => {
   return (
-    <Config.Consumer>
-      {config => {
-        return <StatusBoard config={config} />
-      }}
-    </Config.Consumer>
+    <Fragment>
+      <div class="box has-background-black is-paddingless">
+        <p class="title is-size-2 is-size-5-desktop prusa-text-orange prusa-line">
+          {process.env.PRINTER} <span class="subtitle title is-size-3 is-size-6-desktop has-text-grey">printer status</span>
+        </p>
+      </div>
+      <div class="columns is-desktop is-centered">
+        <div class="column">
+          <StatusProgress {...props.progress_bar} />
+          <br />
+          <Temperature temperatures={props.temperatures} bigSize={false} />
+        </div>
+        <div class="column">
+          <StatusBoardTable {...props.progress_status} />
+        </div>
+      </div>
+    </Fragment>
   );
 };
 
-export default Home;
+

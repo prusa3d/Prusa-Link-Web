@@ -1,17 +1,11 @@
-import { h, render, createContext } from "preact";
+// This file is part of Prusa-Connect-Web
+// Copyright (C) 2018-2019 Prusa Research s.r.o. - www.prusa3d.com
+// SPDX-License-Identifier: GPL-3.0-or-later
+
+import { h, render } from "preact";
 import "./style/index.scss";
 import App from "./components/app";
 
-export const Config = createContext({});
 export default App;
 
-const config = {
-    apiKey: "developer",
-    printer: "prusa-sl1",
-    update_timer: 2000
-}
-
-render(
-    <Config.Provider value={config}>
-        < App config={config} />
-    </Config.Provider>, document.body);
+render(< App />, document.body);
