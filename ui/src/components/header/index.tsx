@@ -4,6 +4,7 @@
 
 import { h, Component } from "preact";
 import { Link } from "preact-router/match";
+import { Text } from 'preact-i18n';
 import "./style.scss";
 
 interface S {
@@ -56,13 +57,13 @@ class Header extends Component<{}, S> {
                 <div id="navbarBasicMenu" class={"navbar-menu " + extra_burger_class}>
                     <div class="navbar-end">
                         <Link class="navbar-item prusa-menu-item is-size-2 is-size-6-desktop" activeClassName="active" href="/" onClick={this.onClickBurger}>
-                            Dashboard
+                            <Text id="header.dashboard">Dashboard</Text>
                         </Link>
                         <Link class="navbar-item prusa-menu-item is-size-2 is-size-6-desktop" activeClassName="active" href="/projects" onClick={this.onClickBurger}>
-                            Projects
+                            <Text id="header.projects">Projects</Text>
                         </Link>
                         <Link class="navbar-item prusa-menu-item is-size-2 is-size-6-desktop" activeClassName="active" href="/temperatures" onClick={this.onClickBurger}>
-                            Temperatures
+                            <Text id="header.temperatures">Temperatures</Text>
                         </Link>
                         {/* <div class="navbar-item has-text-grey">
                             Account

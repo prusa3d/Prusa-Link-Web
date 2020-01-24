@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import { h, Fragment } from "preact";
+import { Text } from 'preact-i18n';
 import { TempProps, Temperature } from "../../components/temperature";
 
 const Temperatures: preact.FunctionalComponent<TempProps> = props => {
@@ -10,7 +11,9 @@ const Temperatures: preact.FunctionalComponent<TempProps> = props => {
         <Fragment>
             <div class="box has-background-black is-paddingless">
                 <p class="title is-size-2 is-size-5-desktop prusa-text-orange prusa-line">
-                    {process.env.PRINTER} <span class="subtitle is-size-3 is-size-6-desktop has-text-grey">printer temperatures</span>
+                    {process.env.PRINTER} <span class="subtitle is-size-3 is-size-6-desktop has-text-grey">
+                        <Text id="temperature.subtitle">printer temperatures</Text>
+                    </span>
                 </p>
             </div>
 

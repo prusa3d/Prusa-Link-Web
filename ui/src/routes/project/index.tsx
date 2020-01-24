@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import { h, Fragment, Component } from "preact";
+import { Text } from 'preact-i18n';
 import under_construction from "../../assets/under_construction.gif"
 import "./style.scss";
 
@@ -29,7 +30,9 @@ class Project extends Component<{}, S> {
             <Fragment>
                 <div class="box has-background-black is-paddingless">
                     <p class="title is-size-2 is-size-5-desktop prusa-text-orange prusa-line">
-                        Under construction <span class="subtitle is-size-3 is-size-6-desktop has-text-grey">project files</span>
+                        Under construction <span class="subtitle is-size-3 is-size-6-desktop has-text-grey">
+                            <Text id="project.subtitle">project files</Text>
+                        </span>
                     </p>
                 </div>
                 <div class="columns">

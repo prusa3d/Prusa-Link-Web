@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import { h } from 'preact';
+import { Text, withText } from 'preact-i18n';
 import { VictoryChart, VictoryLine, VictoryTheme, VictoryAxis, VictoryLegend } from 'victory'
 
 interface temperaturesPoint {
@@ -24,7 +25,12 @@ interface P extends TempProps {
     bigSize: boolean;
 }
 
-export const Temperature: preact.FunctionalComponent<P> = props => {
+
+export const Temperature: preact.FunctionalComponent<P> = withText({
+    title: 'temperature.title',
+    label_x: 'temperature.label_x',
+    label_y: 'temperature.label_y'
+})(props => {
 
     const now = new Date().getTime();
     const updateNow = (arr, value) => {
@@ -36,12 +42,11 @@ export const Temperature: preact.FunctionalComponent<P> = props => {
     const temp_amb = props.temperatures.temp_amb.reduce(updateNow, []);
     const temp_cpu = props.temperatures.temp_cpu.reduce(updateNow, []);
 
-
     return (
         <div class="box has-background-black is-paddingless">
             {
                 !props.bigSize && <p class="prusa-line subtitle is-size-2 is-size-4-desktop has-text-grey is-marginless" style={{ padding: 0 }}>
-                    temperatures
+                    {props.title}
                 </p>
             }
             <div class="is-paddingless" style={{ display: "flex", flexWrap: "wrap" }}>
@@ -83,7 +88,7 @@ export const Temperature: preact.FunctionalComponent<P> = props => {
                         data={temp_cpu}
                     />
                     <VictoryAxis
-                        label="Time (s)"
+                        label={props.label_x}
                         style={{
                             axis: { stroke: "white" },
                             axisLabel: { fontSize: 15, padding: 30, fill: "white" },
@@ -95,7 +100,7 @@ export const Temperature: preact.FunctionalComponent<P> = props => {
                     />
                     <VictoryAxis
                         dependentAxis
-                        label="Temperature (°C)"
+                        label={props.label_y}
                         style={{
                             axis: { stroke: "white" },
                             axisLabel: { fontSize: 15, padding: 35, fill: "white" },
@@ -111,5 +116,5 @@ export const Temperature: preact.FunctionalComponent<P> = props => {
             </div>
         </div>
     );
-}
+});
 

@@ -3,7 +3,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import { h, Component } from 'preact';
-import { histUpdate } from "../app";
+import { histUpdate } from "../container";
 import StatusLeftItem from "./item";
 
 interface S {
@@ -14,7 +14,7 @@ interface S {
   uv_led_fan?: string;
   blower_fan?: string;
   rear_fan?: string;
-  cover_state?: string;
+  cover_state?: boolean;
   nozzle?: string;
   heatbed?: string;
   speed?: string;
@@ -63,7 +63,7 @@ class StatusLeftBoard extends Component<histUpdate, S> {
       uv_led_fan: "0 RPM",
       blower_fan: "0 RPM",
       rear_fan: "0 RPM",
-      cover_state: "",
+      cover_state: false,
     };
   }
 
@@ -94,7 +94,7 @@ class StatusLeftBoard extends Component<histUpdate, S> {
       if (data.type == "items") {
         let content = data.content;
 
-        let newState: { [propName: string]: string; } = {};
+        let newState: { [propName: string]: string | boolean; } = {};
         let newTemps = {};
         let newProgress_status = {};
         let newProgress_bar = {};
@@ -161,8 +161,8 @@ class StatusLeftBoard extends Component<histUpdate, S> {
         }
 
         value = content["cover_closed"];
-        if (value) {
-          newState["cover_state"] = value ? "Closed" : "Opened";
+        if (typeof (value) == "boolean") {
+          newState["cover_state"] = value;
         }
 
         if (Object.keys(newState).length > 0) {

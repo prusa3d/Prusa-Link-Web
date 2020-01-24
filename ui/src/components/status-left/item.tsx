@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import { h } from 'preact';
+import { Text } from 'preact-i18n';
 
 let title_icon: { [id: string]: { title: string, icon_scr: string } } = {};
 if (process.env.PRINTER == "Prusa SL1") {
@@ -48,10 +49,13 @@ const StatusLeftItem: preact.FunctionalComponent<S> = props => {
         <img class="media-left image is-24x24" src={icon_scr} />
         <div class="media-content is-clipped">
           <p class="subtitle is-size-3 is-size-5-desktop has-text-grey">
-            {title}
+            <Text id={`status-left.${props.type}`}>{title}</Text>
           </p>
           <p class="title is-size-2 is-size-5-desktop has-text-white">
-            {props.value}
+            {
+              props.type == "cover_state" ?
+                <Text id={`status-left.cover_state_${props.value}`}>Closed</Text> : props.value
+            }
           </p>
         </div>
       </div>

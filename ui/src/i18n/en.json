@@ -1,0 +1,45 @@
+{
+    "header": {
+        "dashboard": "Dashboard",
+        "projects": "Projects",
+        "temperatures": "Temperatures"
+    },
+    "status-left": {
+        "remaining_material": "remaining resin",
+        "temp_cpu": "CPU temperature",
+        "temp_led": "UV led temperature",
+        "temp_amb": "ambient temperature",
+        "uv_led_fan": "UV LED fan",
+        "blower_fan": "blower fan",
+        "rear_fan": "rear fan",
+        "cover_state": "cover state",
+        "nozzle": "Nozzle Temperature",
+        "heatbed": "Heatbed",
+        "speed": "Printing Speed",
+        "flow": "Printing Flow",
+        "height": "Z-Height",
+        "material": "Material",
+        "cover_state_false": "Closed",
+        "cover_state_true": "Opened"
+    },
+    "home": {
+        "subtitle": "printer status"
+    },
+    "status-board": {
+        "remaining-time": "remaining time",
+        "estimated-end": "estimated end",
+        "printing-time": "printing time",
+        "layer": "layer",
+        "remaining-resin": "remaining resin",
+        "consumed-resin": "consumed resin"
+    },
+    "temperature": {
+        "title": "temperatures",
+        "subtitle": "printer temperatures",
+        "label_x": "Time (s)",
+        "label_y": "Temperature (°C)"
+    },
+    "project": {
+        "subtitle": "project files"
+    }
+}
