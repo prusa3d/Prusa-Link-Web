@@ -170,7 +170,7 @@ class StatusLeftBoard extends Component<histUpdate, S> {
           this.props.updateData({
             progress_bar: newProgress_bar,
             progress_status: newProgress_status,
-            temperatures: newTemps
+            temperatures: [[new Date().getTime(), newTemps["temp_cpu"], newTemps["temp_led"], newTemps["temp_amb"]]]
           });
         }
       }
