@@ -103,8 +103,7 @@ module.exports = (env, args) => {
             compress: true,
             port: 1234,
             proxy: {
-                '/api': 'http://localhost:8080',
-                '/ws': 'http://localhost:8080'
+                '/api': 'http://localhost:8080'
             }
         },
         plugins: [

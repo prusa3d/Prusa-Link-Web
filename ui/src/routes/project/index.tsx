@@ -4,26 +4,10 @@
 
 import { h, Fragment, Component } from "preact";
 import { Text } from 'preact-i18n';
-import under_construction from "../../assets/under_construction.gif"
-import "./style.scss";
+import TreeNode from "../../components/treenode";
 
-interface S {
-    parent_path: string;
-    current_path: string;
-    root_path: string;
-}
 
-class Project extends Component<{}, S> {
-
-    container: any = null;
-    constructor() {
-        super();
-        this.state = {
-            parent_path: null,
-            current_path: null,
-            root_path: null
-        };
-    }
+class Project extends Component<{}, {}> {
 
     render() {
         return (
@@ -35,11 +19,7 @@ class Project extends Component<{}, S> {
                         </span>
                     </p>
                 </div>
-                <div class="columns">
-                    <div class="column is-4 is-offset-4">
-                        <img src={under_construction} />
-                    </div>
-                </div>
+                <TreeNode />
             </Fragment>
         );
     }
