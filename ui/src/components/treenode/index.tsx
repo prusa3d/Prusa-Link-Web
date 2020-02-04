@@ -55,6 +55,8 @@ let state = {
 };
 
 class TreeNode extends Component<{}, S> {
+
+    timer: any;
     constructor() {
         super();
         this.state = state;
@@ -165,7 +167,6 @@ class TreeNode extends Component<{}, S> {
                 "X-Api-Key": process.env.APIKEY,
                 "If-None-Match": this.state.eTag
             },
-
         });
 
         if (response.ok) {
@@ -189,12 +190,23 @@ class TreeNode extends Component<{}, S> {
 
     componentDidMount() {
         this.connect();
+        this.timer = setInterval(this.connect, Number(process.env.UPDATE_TIMER));
     }
 
     componentWillUnmount() {
         state = this.state;
+        clearInterval(this.timer);
     }
 
+    componentDidCatch(error) {
+        this.setState({
+            parent_path: null,
+            current_path: null,
+            current_view: [],
+            container: null,
+            eTag: null
+        });
+    }
 
     render() {
 

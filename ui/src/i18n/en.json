@@ -1,9 +1,4 @@
 {
-    "header": {
-        "dashboard": "Dashboard",
-        "projects": "Projects",
-        "temperatures": "Temperatures"
-    },
     "status-left": {
         "remaining_material": "remaining resin",
         "temp_cpu": "CPU temperature",
@@ -23,6 +18,7 @@
         "cover_state_true": "Opened"
     },
     "home": {
+        "title": "Dashboard",
         "subtitle": "printer status"
     },
     "status-board": {
@@ -40,6 +36,7 @@
         "label_y": "Temperature (°C)"
     },
     "project": {
+        "title": "Projects",
         "subtitle": "project files"
     }
 }

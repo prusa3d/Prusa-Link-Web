@@ -14,7 +14,7 @@ class Project extends Component<{}, {}> {
             <Fragment>
                 <div class="box has-background-black is-paddingless">
                     <p class="title is-size-2 is-size-5-desktop prusa-text-orange prusa-line">
-                        Under construction <span class="subtitle is-size-3 is-size-6-desktop has-text-grey">
+                    <Text id="project.title">Projects</Text> <span class="subtitle is-size-3 is-size-6-desktop has-text-grey">
                             <Text id="project.subtitle">project files</Text>
                         </span>
                     </p>

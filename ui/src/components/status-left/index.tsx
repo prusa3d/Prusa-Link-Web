@@ -51,8 +51,7 @@ function formatTime(date) {
 
 class StatusLeftBoard extends Component<histUpdate, S> {
 
-  ws = null;
-
+  timer: any;
   constructor() {
     super();
     this.state = {
@@ -68,31 +67,22 @@ class StatusLeftBoard extends Component<histUpdate, S> {
   }
 
   componentDidMount() {
-    this.connect();
+    this.timer = setInterval(this.connect, Number(process.env.UPDATE_TIMER));
+  }
 
+  componentWillUnmount() {
+    clearInterval(this.timer);
   }
   connect = () => {
 
-    if (process.env.DEVELOPMENT) {
-      this.ws = new WebSocket("ws://localhost:8080/ws");
-    } else {
-      this.ws = new WebSocket("ws://" + window.location.host + "/ws");
-    }
-
-    this.ws.onclose = () => {
-      this.setState({});
-    };
-
-    let that = this;
-    this.ws.onerror = () => {
-      this.ws.close();
-      setTimeout(function () { that.connect(); }, 3000);
-    };
-
-    this.ws.onmessage = (e) => {
-      var data = JSON.parse(e.data);
-      if (data.type == "items") {
-        let content = data.content;
+    fetch('/api/job/progress', {
+      method: 'GET',
+      headers: {
+        "X-Api-Key": process.env.APIKEY,
+      }
+    })
+      .then(response => response.json())
+      .then(data => {
 
         let newState: { [propName: string]: string | boolean; } = {};
         let newTemps = {};
@@ -102,14 +92,14 @@ class StatusLeftBoard extends Component<histUpdate, S> {
 
         // common properties
         for (let item of ["temp_cpu", "temp_led", "temp_amb"]) {
-          value = content[item];
+          value = data[item];
           if (value || value === 0) {
             newTemps[item] = value;
             newState[item] = `${numberFormat(value)}°C`;
           }
         }
 
-        value = content["resin_remaining_ml"];
+        value = data["resin_remaining_ml"];
         if (value) {
           value = `${numberFormat(value)} ml`;
           newState["remaining_material"] = value;
@@ -117,7 +107,7 @@ class StatusLeftBoard extends Component<histUpdate, S> {
         }
 
         // progress properties
-        value = content["time_remain_min"];
+        value = data["time_remain_min"];
         if (value) {
           let remaining = new Date(value * 1000 * 60);
           newProgress_status["remaining_time"] = formatTime(remaining);
@@ -127,26 +117,26 @@ class StatusLeftBoard extends Component<histUpdate, S> {
           newProgress_status["estimated_end"] = pad2(end.getHours()) + ":" + pad2(end.getMinutes());
         }
 
-        value = content["time_elapsed_min"];
+        value = data["time_elapsed_min"];
         if (value) {
           let elapsed = new Date(value * 1000 * 60);
           newProgress_status["printing_time"] = formatTime(elapsed);
         }
 
-        value = content["resin_used_ml"];
+        value = data["resin_used_ml"];
         if (value) {
           newProgress_status["consumed_material"] = `${numberFormat(value)} ml`;
         }
 
         for (let item of ["current_layer", "total_layers"]) {
-          value = content[item];
+          value = data[item];
           if (value) {
             newProgress_status[item] = value;
           }
         }
 
         for (let item of ["project_name", "progress"]) {
-          value = content[item];
+          value = data[item];
           if (value) {
             newProgress_bar[item] = value;
           }
@@ -154,13 +144,13 @@ class StatusLeftBoard extends Component<histUpdate, S> {
 
         // left board properties
         for (let item of ["uv_led_fan", "blower_fan", "rear_fan"]) {
-          value = content[item];
+          value = data[item];
           if (value) {
             newState[item] = `${value} RPM`;
           }
         }
 
-        value = content["cover_closed"];
+        value = data["cover_closed"];
         if (typeof (value) == "boolean") {
           newState["cover_state"] = value;
         }
@@ -174,12 +164,7 @@ class StatusLeftBoard extends Component<histUpdate, S> {
           });
         }
       }
-    }
-
-  }
-
-  componentWillUnmount() {
-    this.ws.close();
+      );
   }
 
   render() {
