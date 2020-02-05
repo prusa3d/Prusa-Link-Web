@@ -4,10 +4,10 @@
 
 import { h, Fragment } from 'preact';
 import { Text } from 'preact-i18n';
+import Title from "../../components/title"
 import { StatusBoardTable, StatusBoardTableProps } from '../../components/status-board/board';
 import { StatusProgress, StatusProgressProps } from "../../components/status-board/progress";
 import { TempProps, Temperature } from "../../components/temperature";
-import "./style.scss";
 
 export interface homeProps extends TempProps {
   progress_bar: StatusProgressProps;
@@ -18,14 +18,7 @@ export interface homeProps extends TempProps {
 export const Home: preact.FunctionalComponent<homeProps> = props => {
   return (
     <Fragment>
-      <div class="box has-background-black is-paddingless">
-        <p class="title is-size-2 is-size-5-desktop prusa-text-orange prusa-line">
-          {process.env.PRINTER}
-          <span class="subtitle title is-size-3 is-size-6-desktop has-text-grey">
-            <Text id="home.subtitle">printer status</Text>
-          </span>
-        </p>
-      </div>
+      <Title id="home.subtitle" default_text="printer status" />
       <div class="columns is-desktop is-centered">
         <div class="column">
           <StatusProgress {...props.progress_bar} />

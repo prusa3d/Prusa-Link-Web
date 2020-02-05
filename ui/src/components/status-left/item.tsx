@@ -6,7 +6,7 @@ import { h } from 'preact';
 import { Text } from 'preact-i18n';
 
 let title_icon: { [id: string]: { title: string, icon_scr: string } } = {};
-if (process.env.PRINTER == "Prusa SL1") {
+if (process.env.PRINTER == "Original Prusa SL1") {
 
   const tem_svg = require("../../assets/temperature_color.svg");
   const fan_svg = require("../../assets/fan_color.svg");
