@@ -6,14 +6,13 @@ import { h } from "preact";
 
 interface Props {
     display: string;
-    path: string;
-    onSelectFolder(path:string): void;
+    onSelectFolder(): void;
 }
 
 const FolderNode: preact.FunctionalComponent<Props> = props => {
 
     return (
-        <div class="column is-full tree-node-item" onClick={() => props.onSelectFolder(props.path)}>
+        <div class="column is-full tree-node-item" onClick={() => props.onSelectFolder()}>
             <div class="media">
                 <figure class="media-left image is-48x48 project-icon-desktop">
                     <img src={require("../../assets/projects_small.svg")} />

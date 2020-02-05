@@ -2,11 +2,13 @@
 // Copyright (C) 2018-2019 Prusa Research s.r.o. - www.prusa3d.com
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-import { h, Component } from "preact";
+import { h, Component, Fragment } from "preact";
 import "./style.scss";
+import { FileProperties } from "./projectProperties";
 import FolderUp from "./folderUp";
 import ProjectNode from "./projectNode";
 import FolderNode from "./folderNode";
+import ProjectView from "./projectView";
 
 interface nodeInfo {
     path: string;
@@ -18,10 +20,7 @@ interface nodeFolder extends nodeInfo {
     children: nodeTree;
 }
 
-interface nodeFile extends nodeInfo {
-    printing_time: number;
-    material: string;
-    leyer_height: number;
+interface nodeFile extends nodeInfo, FileProperties {
 }
 
 interface nodeTree {
@@ -31,7 +30,7 @@ interface nodeTree {
 interface S {
     parent_path: string;
     current_path: string;
-    current_view: Array<nodeFolder | nodeFile>;
+    current_view: Array<nodeFolder | nodeFile> | nodeFile;
     eTag: string;
     container: nodeTree;
 }
@@ -49,7 +48,7 @@ const sortByType = (a: nodeInfo, b: nodeInfo) => {
 let state = {
     parent_path: null,
     current_path: null,
-    current_view: [],
+    current_view: null,
     container: null,
     eTag: null
 };
@@ -73,7 +72,8 @@ class TreeNode extends Component<{}, S> {
     }
 
     onSelectFolder = (path: string) => {
-        const folder: nodeFolder = this.state.current_view.find(e => e.path === path) as nodeFolder;
+        const folder: nodeFolder = (this.state.current_view as Array<nodeFolder | nodeFile>)
+            .find(e => e.path === path) as nodeFolder;
         let children = folder.children;
         if (Object.keys(children).length > 0) {
             const newView = this.createView(null, children);
@@ -87,7 +87,14 @@ class TreeNode extends Component<{}, S> {
     }
 
     onSelectFile = (path: string) => {
-        console.log(path)
+        const file: nodeFile = (this.state.current_view as Array<nodeFolder | nodeFile>)
+            .find(e => e.path === path) as nodeFile;
+        this.setState((prevState, props) => ({
+            ...prevState,
+            current_view: file,
+            parent_path: this.state.current_path,
+            current_path: path
+        }));
     }
 
     createView = (path: string, container: nodeTree) => {
@@ -97,11 +104,18 @@ class TreeNode extends Component<{}, S> {
         let views = [];
         if (path) {
             const path_steps = path.split('/');
-            for (let step of path_steps) {
-                let view: nodeFolder = current_view[step] as nodeFolder;
-                current_view = view.children;
-            }
             parent_path = path.substring(0, path.lastIndexOf('/'));
+            for (let step of path_steps) {
+                let view = current_view[step] as nodeInfo;
+                if (view.isFolder) {
+                    current_view = (view as nodeFolder).children;
+                } else {
+                    return {
+                        parent_path: parent_path,
+                        current_view: view as nodeFile
+                    }
+                }
+            }
         }
         for (let path_key in current_view) {
             views.push(current_view[path_key]);
@@ -134,8 +148,12 @@ class TreeNode extends Component<{}, S> {
             } else {
                 let gcodeAnalysis = file_or_folder["gcodeAnalysis"];
                 if (gcodeAnalysis) {
-                    obj["printing_time"] = gcodeAnalysis["estimatedPrintTime"];
-                    obj["material"] = gcodeAnalysis["material"];
+                    let hours = gcodeAnalysis["estimatedPrintTime"] / 3600;
+                    let h = Math.trunc(hours);
+                    let m = Math.round((hours - h) * 60);
+                    obj["printing_time"] = (h > 0 ? `${h}h ` : "") + `${m > 9 ? m : `0${m}`}m`;
+                    let material = gcodeAnalysis["material"];
+                    obj["material"] = material.substring(0, material.indexOf('@') || material.length).trim()
                     obj["leyer_height"] = gcodeAnalysis["dimensions"]["height"];
                 }
             }
@@ -208,32 +226,41 @@ class TreeNode extends Component<{}, S> {
         });
     }
 
-    render() {
+    render({ }, { current_view, current_path, ...others }) {
 
-        const listNodes = this.state.current_view.map(node => {
-            if (node.isFolder) {
-                return <FolderNode
-                    path={node.path}
-                    display={node.display}
-                    onSelectFolder={this.onSelectFolder} />
-            } else {
-                return <ProjectNode
-                    path={node.path}
-                    display={node.display}
-                    printing_time={(node as nodeFile).printing_time}
-                    material={(node as nodeFile).material}
-                    leyer_height={(node as nodeFile).leyer_height}
-                    onSelectFile={this.onSelectFile}
-                />
-            }
+        const showTree = Array.isArray(current_view);
+        let listNodes = [];
+        if (showTree) {
+            listNodes = current_view.map(node => {
+                if (node.isFolder) {
+                    return <FolderNode
+                        display={node.display}
+                        onSelectFolder={() => this.onSelectFolder(node.path)} />
+                } else {
+                    return <ProjectNode
+                        {...(node as nodeFile)}
+                        onSelectFile={() => this.onSelectFile(node.path)}
+                    />
+                }
+            });
         }
-        );
 
         return (
-            <div class="columns is-multiline is-mobile">
-                {this.state.current_path && <FolderUp onUpFolder={this.onUpFolder} />}
-                {listNodes}
-            </div>
+            <Fragment>
+                {
+                    showTree ?
+                        <div class="columns is-multiline is-mobile">
+                            {current_path && <FolderUp onUpFolder={this.onUpFolder} />}
+                            {listNodes}
+                        </div>
+                        :
+                        <ProjectView
+                            onBack={this.onUpFolder}
+                            {...current_view}
+                            path={"path"}
+                        />
+                }
+            </Fragment>
         );
     }
 }

@@ -1,6 +1,5 @@
 {
     "status-left": {
-        "remaining_material": "remaining resin",
         "temp_cpu": "CPU temperature",
         "temp_led": "UV led temperature",
         "temp_amb": "ambient temperature",
@@ -37,6 +36,10 @@
     },
     "project": {
         "title": "Projects",
-        "subtitle": "project files"
+        "subtitle": "project files",
+        "material": "Material",
+        "leyer-height": "leyer height",
+        "back": "BACK",
+        "start_print": "START PRINT"
     }
 }

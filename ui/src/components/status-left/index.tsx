@@ -7,7 +7,6 @@ import { histUpdate } from "../container";
 import StatusLeftItem from "./item";
 
 interface S {
-  remaining_material?: string;
   temp_cpu?: string;
   temp_led?: string;
   temp_amb?: string;
@@ -55,7 +54,6 @@ class StatusLeftBoard extends Component<histUpdate, S> {
   constructor() {
     super();
     this.state = {
-      remaining_material: "0 ml",
       temp_cpu: "0°C",
       temp_led: "0°C",
       temp_amb: "0°C",
@@ -102,7 +100,6 @@ class StatusLeftBoard extends Component<histUpdate, S> {
         value = data["resin_remaining_ml"];
         if (value) {
           value = `${numberFormat(value)} ml`;
-          newState["remaining_material"] = value;
           newProgress_status["remaining_material"] = value;
         }
 
