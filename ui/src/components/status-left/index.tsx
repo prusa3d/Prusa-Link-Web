@@ -94,57 +94,53 @@ class StatusLeftBoard extends Component<histUpdate, S> {
           if (value || value === 0) {
             newTemps[item] = value;
             newState[item] = `${numberFormat(value)}°C`;
+          } else {
+            newState[item] = "0°C";
           }
         }
 
         value = data["resin_remaining_ml"];
-        if (value) {
-          value = `${numberFormat(value)} ml`;
-          newProgress_status["remaining_material"] = value;
-        }
+        newProgress_status["remaining_material"] = value ? `${numberFormat(value)} ml` : "0 ml";
 
         // progress properties
         value = data["time_remain_min"];
-        if (value) {
+        if (value || value === 0) {
           let remaining = new Date(value * 1000 * 60);
           newProgress_status["remaining_time"] = formatTime(remaining);
 
           let now = new Date();
           let end = new Date(now.getTime() + value * 1000 * 60);
           newProgress_status["estimated_end"] = pad2(end.getHours()) + ":" + pad2(end.getMinutes());
+        } else {
+          newProgress_status["remaining_time"] = "";
+          newProgress_status["estimated_end"] = "00:00";
         }
 
         value = data["time_elapsed_min"];
         if (value) {
           let elapsed = new Date(value * 1000 * 60);
           newProgress_status["printing_time"] = formatTime(elapsed);
+        } else {
+          newProgress_status["printing_time"] = "";
         }
 
         value = data["resin_used_ml"];
-        if (value) {
-          newProgress_status["consumed_material"] = `${numberFormat(value)} ml`;
-        }
+        newProgress_status["consumed_material"] = value ? `${numberFormat(value)} ml` : "0 ml";
 
         for (let item of ["current_layer", "total_layers"]) {
           value = data[item];
-          if (value) {
-            newProgress_status[item] = value;
-          }
+          newProgress_status[item] = value ? value : 0;
         }
 
-        for (let item of ["project_name", "progress"]) {
-          value = data[item];
-          if (value) {
-            newProgress_bar[item] = value;
-          }
-        }
+        value = data["project_name"];
+        newProgress_bar["project_name"] = value ? value : "";
+        value = data["progress"];
+        newProgress_bar["progress"] = value ? value : 0;
 
         // left board properties
         for (let item of ["uv_led_fan", "blower_fan", "rear_fan"]) {
           value = data[item];
-          if (value) {
-            newState[item] = `${value} RPM`;
-          }
+          newState[item] = value ? `${value} RPM` : "0 RPM";
         }
 
         value = data["cover_closed"];

@@ -248,17 +248,19 @@ class TreeNode extends Component<{}, S> {
         return (
             <Fragment>
                 {
-                    showTree ?
-                        <div class="columns is-multiline is-mobile">
-                            {current_path && <FolderUp onUpFolder={this.onUpFolder} />}
-                            {listNodes}
-                        </div>
-                        :
-                        <ProjectView
-                            onBack={this.onUpFolder}
-                            {...current_view}
-                            path={"path"}
-                        />
+                    current_view ?
+                        showTree ?
+                            <div class="columns is-multiline is-mobile">
+                                {current_path && <FolderUp onUpFolder={this.onUpFolder} />}
+                                {listNodes}
+                            </div>
+                            :
+                            <ProjectView
+                                onBack={this.onUpFolder}
+                                {...current_view}
+                                path={"path"}
+                            />
+                        : null
                 }
             </Fragment>
         );

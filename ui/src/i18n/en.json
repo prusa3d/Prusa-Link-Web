@@ -17,8 +17,9 @@
         "cover_state_true": "Opened"
     },
     "home": {
-        "title": "Dashboard",
-        "subtitle": "printer status"
+        "title": "Printer status:",
+        "status-idle": "Idle",
+        "status-priting": "Priting"
     },
     "status-board": {
         "remaining-time": "remaining time",
@@ -29,17 +30,19 @@
         "consumed-resin": "consumed resin"
     },
     "temperature": {
-        "title": "temperatures",
-        "subtitle": "printer temperatures",
+        "title": "Printer temperatures",
         "label_x": "Time (s)",
         "label_y": "Temperature (°C)"
     },
     "project": {
-        "title": "Projects",
-        "subtitle": "project files",
+        "title": "Project files",
         "material": "Material",
         "leyer-height": "leyer height",
         "back": "BACK",
         "start_print": "START PRINT"
+    },
+    "notification": {
+        "welcome-part1": "Welcome to the web interface of your",
+        "welcome-part2": "Please note that values are shown only when the printer is printing."
     }
 }

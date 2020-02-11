@@ -39,7 +39,8 @@ class Container extends Component<{ definition: any }, S> implements histUpdate 
                 progress: 0,
                 project_name: ""
             },
-            temperatures: []
+            temperatures: [],
+            showWelcome: true
         };
     }
 
@@ -64,6 +65,10 @@ class Container extends Component<{ definition: any }, S> implements histUpdate 
 
     }
 
+    closeWelcome = () => {
+        this.setState(prev => ({ ...prev, showWelcome: false }));
+    }
+
     render() {
 
         const handleRoute = (e: RouterOnChangeArgs) => {
@@ -86,7 +91,7 @@ class Container extends Component<{ definition: any }, S> implements histUpdate 
                                 </div>
                                 <div class="column is-three-quarters-desktop is-full-mobile">
                                     <Router onChange={handleRoute}>
-                                        <Home path="/" {...this.state} />
+                                        <Home path="/" {...this.state} closeWelcome={this.closeWelcome} />
                                         <Route path="/projects/" component={Project} />
                                         <Route path="/temperatures/" component={Temperatures} temperatures={this.state.temperatures} />
                                     </Router>

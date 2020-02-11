@@ -9,7 +9,7 @@ import { TempProps, Temperature } from "../../components/temperature";
 const Temperatures: preact.FunctionalComponent<TempProps> = props => {
     return (
         <Fragment>
-            <Title id="temperature.subtitle" default_text="printer temperatures" />
+            <Title id="temperature.title" default_text="Printer temperatures" />
             <div class="columns is-centered">
                 <div class="column is-full">
                     <Temperature temperatures={props.temperatures} bigSize={true} />

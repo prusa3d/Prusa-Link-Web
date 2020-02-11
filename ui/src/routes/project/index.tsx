@@ -12,7 +12,7 @@ class Project extends Component<{}, {}> {
     render() {
         return (
             <Fragment>
-                <Title id="project.subtitle" default_text="project files" />
+                <Title id="project.title" default_text="Project files" />
                 <TreeNode />
             </Fragment>
         );

@@ -9,17 +9,22 @@ import "./style.scss";
 interface P {
     id: string;
     default_text: string;
+    children?: any;
 }
 
-const Title: preact.FunctionalComponent<P> = ({ id, default_text }) => {
+const Title: preact.FunctionalComponent<P> = ({ id, default_text, children }) => {
 
     return (
-        <div class="box has-background-black is-paddingless">
-            <p class="title is-size-2 is-size-5-desktop prusa-text-orange prusa-line">
-                {process.env.PRINTER} <span class="subtitle is-size-3 is-size-6-desktop has-text-grey">
+        <div class="box has-background-black is-paddingless prusa-line">
+            <div class="columns is-centered">
+                <div class="column title is-size-3 is-size-4-desktop has-text-grey botton-paddingless">
                     <Text id={id}>{default_text}</Text>
-                </span>
-            </p>
+                    {children}
+                </div>
+                <div class="column has-text-right title is-size-2 is-size-4-desktop prusa-text-orange botton-paddingless">
+                    {process.env.PRINTER}
+                </div>
+            </div>
         </div>
     );
 }
