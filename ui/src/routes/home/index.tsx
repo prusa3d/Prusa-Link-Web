@@ -23,7 +23,11 @@ export const Home: preact.FunctionalComponent<P> = props => {
   return (
     <Fragment>
       <Title title="Printer status:" >
-        <span class="title is-size-3 is-size-4-desktop"> Priting</span>
+        {
+          props.progress_bar.project_name == "" 
+          ? <span class="title is-size-3 is-size-4-desktop"> Idle</span>
+          : <span class="title is-size-3 is-size-4-desktop prusa-text-orange"> Priting</span>
+        }
       </Title>
       <Welcome show={props.showWelcome} close={props.closeWelcome} />
       <div class="columns is-desktop is-centered">

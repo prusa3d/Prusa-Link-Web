@@ -141,12 +141,10 @@ class StatusLeftBoard extends Component<histUpdate, S> {
           }
         }
 
-        for (let item of ["project_name", "progress"]) {
-          value = content[item];
-          if (value) {
-            newProgress_bar[item] = value;
-          }
-        }
+        value = content["project_name"];
+        newProgress_bar["project_name"] = value ? value : "";
+        value = content["progress"];
+        newProgress_bar["progress"] = value ? value : 0;
 
         // left board properties
         for (let item of ["uv_led_fan", "blower_fan", "rear_fan"]) {
