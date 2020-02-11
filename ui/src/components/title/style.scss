@@ -5,10 +5,15 @@
 $orange: #f8651b;
 $line-size: 0.1rem;
 
+.botton-paddingless {
+  padding-bottom: 0px;
+}
+
 .prusa-text-orange {
   color: $orange;
 }
 
 .prusa-line {
   border-bottom: $line-size solid gray;
+  border-radius: 0px;
 }

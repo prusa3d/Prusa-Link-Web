@@ -6,23 +6,26 @@ import { h, Fragment } from 'preact';
 import { StatusBoardTable, StatusBoardTableProps } from '../../components/status-board/board';
 import { StatusProgress, StatusProgressProps } from "../../components/status-board/progress";
 import { TempProps, Temperature } from "../../components/temperature";
-import "./style.scss";
-
+import Title from "../../components/title"
+import Welcome from "../../components/notification/welcome"
 
 export interface homeProps extends TempProps {
   progress_bar: StatusProgressProps;
   progress_status: StatusBoardTableProps;
-
+  showWelcome: boolean;
 }
 
-export const Home: preact.FunctionalComponent<homeProps> = props => {
+interface P extends homeProps{
+  closeWelcome():void;
+}
+
+export const Home: preact.FunctionalComponent<P> = props => {
   return (
     <Fragment>
-      <div class="box has-background-black is-paddingless">
-        <p class="title is-size-2 is-size-5-desktop prusa-text-orange prusa-line">
-          {process.env.PRINTER} <span class="subtitle title is-size-3 is-size-6-desktop has-text-grey">printer status</span>
-        </p>
-      </div>
+      <Title title="Printer status:" >
+        <span class="title is-size-3 is-size-4-desktop"> Priting</span>
+      </Title>
+      <Welcome show={props.showWelcome} close={props.closeWelcome} />
       <div class="columns is-desktop is-centered">
         <div class="column">
           <StatusProgress {...props.progress_bar} />

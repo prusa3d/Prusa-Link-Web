@@ -4,6 +4,7 @@
 
 import { h, Fragment, Component } from "preact";
 import under_construction from "../../assets/under_construction.gif"
+import Title from "../../components/title"
 import "./style.scss";
 
 interface S {
@@ -27,11 +28,9 @@ class Project extends Component<{}, S> {
     render() {
         return (
             <Fragment>
-                <div class="box has-background-black is-paddingless">
-                    <p class="title is-size-2 is-size-5-desktop prusa-text-orange prusa-line">
-                        Under construction <span class="subtitle is-size-3 is-size-6-desktop has-text-grey">project files</span>
-                    </p>
-                </div>
+                <Title title="Project files">
+                    <span class="title is-size-5 is-size-6-desktop prusa-text-orange"> Under construction</span>
+                </Title>
                 <div class="columns">
                     <div class="column is-4 is-offset-4">
                         <img src={under_construction} />
