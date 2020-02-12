@@ -3,7 +3,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import { h, Component } from 'preact';
-import { histUpdate } from "../container";
 import StatusLeftItem from "./item";
 
 interface S {
@@ -22,6 +21,11 @@ interface S {
   material?: string;
 }
 
+interface P {
+  updateData(data: any): void;
+  clearData(): void;
+}
+
 function numberFormat(value) {
   let precision = value.toString().indexOf(".") + 1;
   if (value.toString().length - precision > 3) {
@@ -31,37 +35,34 @@ function numberFormat(value) {
   }
 };
 
-function pad2(value) {
-  if (value < 10) {
-    return "0" + value
-  } else {
-    return "" + value
-  }
-};
 
 function formatTime(date) {
-  let hours = date.getUTCHours()
-  let minutes = date.getUTCMinutes()
-  if (hours > 0) {
-    return hours + " h " + pad2(minutes) + " min"
-  }
-  return minutes + " min"
+  let hours = "0" + date.getHours();
+  let minutes = "0" + date.getMinutes();
+  return hours.substr(-2) + ':' + minutes.substr(-2);
 };
 
-class StatusLeftBoard extends Component<histUpdate, S> {
+const initState = {
+  temp_cpu: "0°C",
+  temp_led: "0°C",
+  temp_amb: "0°C",
+  uv_led_fan: "0 RPM",
+  blower_fan: "0 RPM",
+  rear_fan: "0 RPM",
+  cover_state: false,
+};
+
+class StatusLeftBoard extends Component<P, S> {
 
   timer: any;
   constructor() {
     super();
-    this.state = {
-      temp_cpu: "0°C",
-      temp_led: "0°C",
-      temp_amb: "0°C",
-      uv_led_fan: "0 RPM",
-      blower_fan: "0 RPM",
-      rear_fan: "0 RPM",
-      cover_state: false,
-    };
+    this.state = initState;
+  }
+
+  clearData = () => {
+    this.props.clearData();
+    this.setState(prev => ({ ...initState }));
   }
 
   componentDidMount() {
@@ -77,6 +78,8 @@ class StatusLeftBoard extends Component<histUpdate, S> {
       method: 'GET',
       headers: {
         "X-Api-Key": process.env.APIKEY,
+        "Content-Type": "application/json",
+        "Accept": "application/json"
       }
     })
       .then(response => response.json())
@@ -88,44 +91,32 @@ class StatusLeftBoard extends Component<histUpdate, S> {
         let newProgress_bar = {};
         let value = null;
 
-        // common properties
-        for (let item of ["temp_cpu", "temp_led", "temp_amb"]) {
-          value = data[item];
-          if (value || value === 0) {
-            newTemps[item] = value;
-            newState[item] = `${numberFormat(value)}°C`;
-          } else {
-            newState[item] = "0°C";
-          }
-        }
-
-        value = data["resin_remaining_ml"];
-        newProgress_status["remaining_material"] = value ? `${numberFormat(value)} ml` : "0 ml";
-
         // progress properties
-        value = data["time_remain_min"];
+        value = data["time_remain"];
         if (value || value === 0) {
-          let remaining = new Date(value * 1000 * 60);
+          let remaining = new Date(value);
           newProgress_status["remaining_time"] = formatTime(remaining);
 
           let now = new Date();
-          let end = new Date(now.getTime() + value * 1000 * 60);
-          newProgress_status["estimated_end"] = pad2(end.getHours()) + ":" + pad2(end.getMinutes());
+          let end = new Date(now.getTime() + value);
+          newProgress_status["estimated_end"] = ("0" + end.getHours()).substr(-2) + ":" + ("0" + end.getMinutes()).substr(-2);
         } else {
           newProgress_status["remaining_time"] = "";
           newProgress_status["estimated_end"] = "00:00";
         }
 
-        value = data["time_elapsed_min"];
+        value = data["time_elapsed"];
         if (value) {
-          let elapsed = new Date(value * 1000 * 60);
+          let elapsed = new Date(value);
           newProgress_status["printing_time"] = formatTime(elapsed);
         } else {
           newProgress_status["printing_time"] = "";
         }
 
-        value = data["resin_used_ml"];
+        value = data["material_used_ml"];
         newProgress_status["consumed_material"] = value ? `${numberFormat(value)} ml` : "0 ml";
+        value = data["material_remaining_ml"];
+        newProgress_status["remaining_material"] = value ? `${numberFormat(value)} ml` : "0 ml";
 
         for (let item of ["current_layer", "total_layers"]) {
           value = data[item];
@@ -138,6 +129,16 @@ class StatusLeftBoard extends Component<histUpdate, S> {
         newProgress_bar["progress"] = value ? value : 0;
 
         // left board properties
+        for (let item of ["temp_cpu", "temp_led", "temp_amb"]) {
+          value = data[item];
+          if (value) {
+            newTemps[item] = value;
+            newState[item] = `${numberFormat(value)}°C`;
+          } else {
+            newState[item] = "0°C";
+          }
+        }
+
         for (let item of ["uv_led_fan", "blower_fan", "rear_fan"]) {
           value = data[item];
           newState[item] = value ? `${value} RPM` : "0 RPM";
@@ -156,8 +157,7 @@ class StatusLeftBoard extends Component<histUpdate, S> {
             temperatures: [[new Date().getTime(), newTemps["temp_cpu"], newTemps["temp_led"], newTemps["temp_amb"]]]
           });
         }
-      }
-      );
+      }).catch(e => this.clearData());
   }
 
   render() {

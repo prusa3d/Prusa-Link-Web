@@ -12,39 +12,39 @@ import Header from "./header";
 import StatusLeftBoard from "./status-left";
 import Temperatures from "../routes/temperatures";
 
-export interface histUpdate {
-    updateData(data): void;
-}
-
 interface S extends homeProps {
     currentUrl: string;
 }
 
-class Container extends Component<{ definition: any }, S> implements histUpdate {
+const initState = {
+    progress_status: {
+        remaining_time: "",
+        estimated_end: "00:00",
+        printing_time: "",
+        current_layer: 0,
+        total_layers: 0,
+        remaining_material: 0,
+        consumed_material: 0,
+    },
+    progress_bar: {
+        progress: 0,
+        project_name: ""
+    },
+    temperatures: []
+}
+
+class Container extends Component<{ definition: any }, S> {
 
     constructor() {
         super();
         this.state = {
+            ...initState,
             currentUrl: "/",
-            progress_status: {
-                remaining_time: "",
-                estimated_end: "00:00",
-                printing_time: "",
-                current_layer: 0,
-                total_layers: 0,
-                remaining_material: 0,
-                consumed_material: 0,
-            },
-            progress_bar: {
-                progress: 0,
-                project_name: ""
-            },
-            temperatures: [],
             showWelcome: true
         };
     }
 
-    updateData = async (data: homeProps) => {
+    updateData = (data: homeProps) => {
 
         this.setState((prevState, props) => {
 
@@ -63,6 +63,10 @@ class Container extends Component<{ definition: any }, S> implements histUpdate 
             };
         });
 
+    }
+
+    clearData = () => {
+        this.setState(prev => ({ ...prev, ...initState }));
     }
 
     closeWelcome = () => {
@@ -87,7 +91,7 @@ class Container extends Component<{ definition: any }, S> implements histUpdate 
                         <div class="column is-three-quarters-desktop is-full-mobile">
                             <div class="columns is-centered is-desktop">
                                 <div class="column is-full-mobile">
-                                    <StatusLeftBoard updateData={this.updateData} />
+                                    <StatusLeftBoard updateData={this.updateData} clearData={this.clearData} />
                                 </div>
                                 <div class="column is-three-quarters-desktop is-full-mobile">
                                     <Router onChange={handleRoute}>

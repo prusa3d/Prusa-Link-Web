@@ -10,16 +10,27 @@ import preview from "../../thumbnail800x480.png";
 
 interface P extends FileProperties {
     onBack(): void;
-    path: string;
+    url: string;
     display: string;
 }
 
 const ProjectView: preact.FunctionalComponent<P> = props => {
 
-    const { display, onBack, path, ...properties } = props;
+    const { display, onBack, url, ...properties } = props;
 
     const onStartPrint = () => {
-        console.log(path)
+
+        fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                "X-Api-Key": process.env.APIKEY,
+            },
+            body: JSON.stringify({
+                "command": "select",
+                "print": true
+            })
+        });
     }
 
     return (
@@ -39,7 +50,7 @@ const ProjectView: preact.FunctionalComponent<P> = props => {
                 <button onClick={e => onBack()} class="button is-success is-size-5 is-size-6-desktop">
                     <Text id="project.back">BACK</Text>
                 </button>
-                <button class="button project-button is-pulled-right is-size-5 is-size-6-desktop">
+                <button class="button project-button is-pulled-right is-size-5 is-size-6-desktop" onClick={e => onStartPrint()}>
                     <Text id="project.start_print">START PRINT</Text>
                 </button>
             </div>

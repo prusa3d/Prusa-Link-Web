@@ -216,7 +216,7 @@ class TreeNode extends Component<{}, S> {
         clearInterval(this.timer);
     }
 
-    componentDidCatch(error) {
+    componentDidCatch(error: any) {
         this.setState({
             parent_path: null,
             current_path: null,
@@ -226,12 +226,19 @@ class TreeNode extends Component<{}, S> {
         });
     }
 
+    createLink = (path: string) => {
+        if (path[0] === "u") {
+            return "/api/files/sdcard" + path.substring(3)
+        }
+        return "/api/files/" + path;
+    }
+
     render({ }, { current_view, current_path, ...others }) {
 
         const showTree = Array.isArray(current_view);
         let listNodes = [];
         if (showTree) {
-            listNodes = current_view.map(node => {
+            listNodes = current_view.map((node: nodeInfo) => {
                 if (node.isFolder) {
                     return <FolderNode
                         display={node.display}
@@ -258,7 +265,7 @@ class TreeNode extends Component<{}, S> {
                             <ProjectView
                                 onBack={this.onUpFolder}
                                 {...current_view}
-                                path={"path"}
+                                url={this.createLink((current_view as nodeFile).path)}
                             />
                         : null
                 }

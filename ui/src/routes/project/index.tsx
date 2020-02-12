@@ -9,6 +9,8 @@ import TreeNode from "../../components/treenode";
 
 class Project extends Component<{}, {}> {
 
+    shouldComponentUpdate = () => false;
+
     render() {
         return (
             <Fragment>
