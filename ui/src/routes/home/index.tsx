@@ -15,8 +15,8 @@ export interface homeProps extends TempProps {
   showWelcome: boolean;
 }
 
-interface P extends homeProps{
-  closeWelcome():void;
+interface P extends homeProps {
+  closeWelcome(): void;
 }
 
 export const Home: preact.FunctionalComponent<P> = props => {
@@ -24,9 +24,9 @@ export const Home: preact.FunctionalComponent<P> = props => {
     <Fragment>
       <Title title="Printer status:" >
         {
-          props.progress_bar.project_name == "" 
-          ? <span class="title is-size-3 is-size-4-desktop"> Idle</span>
-          : <span class="title is-size-3 is-size-4-desktop prusa-text-orange"> Priting</span>
+          props.progress_bar.project_name == ""
+            ? <span class="title is-size-3 is-size-4-desktop"> Idle</span>
+            : <span class="title is-size-3 is-size-4-desktop prusa-text-orange"> Priting</span>
         }
       </Title>
       <Welcome show={props.showWelcome} close={props.closeWelcome} />
