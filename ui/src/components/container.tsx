@@ -3,7 +3,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import { h, Component } from "preact";
-import { Router, Route, RouterOnChangeArgs } from "preact-router";
+import { Router, RouterOnChangeArgs } from "preact-router";
 import { IntlProvider } from 'preact-i18n';
 
 import { homeProps, Home } from "../routes/home";
@@ -96,8 +96,12 @@ class Container extends Component<{ definition: any }, S> {
                                 <div class="column is-three-quarters-desktop is-full-mobile">
                                     <Router onChange={handleRoute}>
                                         <Home path="/" {...this.state} closeWelcome={this.closeWelcome} />
-                                        <Route path="/projects/" component={Project} />
-                                        <Route path="/temperatures/" component={Temperatures} temperatures={this.state.temperatures} />
+                                        <Project
+                                            path="/projects/"
+                                            progress_bar={this.state.progress_bar}
+                                            progress_status={this.state.progress_status}
+                                        />
+                                        <Temperatures path="/temperatures/" temperatures={this.state.temperatures} />
                                     </Router>
                                 </div>
                             </div>
