@@ -3,8 +3,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import { h, Component } from "preact";
-import { IntlProvider } from 'preact-i18n';
-import { Text } from 'preact-i18n';
 import Container from "./container";
 import defaultDefinition from '../i18n/en.json';
 
