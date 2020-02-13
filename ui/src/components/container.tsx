@@ -39,8 +39,7 @@ class Container extends Component<{ definition: any }, S> {
         super();
         this.state = {
             ...initState,
-            currentUrl: "/",
-            showWelcome: true
+            currentUrl: "/"
         };
     }
 
@@ -69,10 +68,6 @@ class Container extends Component<{ definition: any }, S> {
         this.setState(prev => ({ ...prev, ...initState }));
     }
 
-    closeWelcome = () => {
-        this.setState(prev => ({ ...prev, showWelcome: false }));
-    }
-
     render() {
 
         const handleRoute = (e: RouterOnChangeArgs) => {
@@ -95,7 +90,7 @@ class Container extends Component<{ definition: any }, S> {
                                 </div>
                                 <div class="column is-three-quarters-desktop is-full-mobile">
                                     <Router onChange={handleRoute}>
-                                        <Home path="/" {...this.state} closeWelcome={this.closeWelcome} />
+                                        <Home path="/" {...this.state} />
                                         <Project
                                             path="/projects/"
                                             progress_bar={this.state.progress_bar}

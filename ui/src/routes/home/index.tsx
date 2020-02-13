@@ -13,14 +13,9 @@ import { TempProps, Temperature } from "../../components/temperature";
 export interface homeProps extends TempProps {
   progress_bar: StatusProgressProps;
   progress_status: StatusBoardTableProps;
-  showWelcome: boolean;
 }
 
-interface P extends homeProps {
-  closeWelcome(): void;
-}
-
-export const Home: preact.FunctionalComponent<P> = props => {
+export const Home: preact.FunctionalComponent<homeProps> = props => {
   return (
     <Fragment>
       <Title id="home.title" default_text="Printer status:" >
@@ -30,7 +25,7 @@ export const Home: preact.FunctionalComponent<P> = props => {
             : <span class="title is-size-3 is-size-4-desktop prusa-text-orange"> <Text id="home.status-priting">Priting</Text></span>
         }
       </Title>
-      <Welcome show={props.showWelcome} close={props.closeWelcome} />
+      <Welcome />
       <div class="columns is-desktop is-centered">
         <div class="column">
           <StatusProgress {...props.progress_bar} />
