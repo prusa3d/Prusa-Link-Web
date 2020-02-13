@@ -3,24 +3,27 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import { h, Component } from 'preact';
-import { histUpdate } from "../app";
 import StatusLeftItem from "./item";
 
 interface S {
-  remaining_material?: string;
   temp_cpu?: string;
   temp_led?: string;
   temp_amb?: string;
   uv_led_fan?: string;
   blower_fan?: string;
   rear_fan?: string;
-  cover_state?: string;
+  cover_state?: boolean;
   nozzle?: string;
   heatbed?: string;
   speed?: string;
   flow?: string;
   height?: string;
   material?: string;
+}
+
+interface P {
+  updateData(data: any): void;
+  clearData(): void;
 }
 
 function numberFormat(value) {
@@ -32,137 +35,118 @@ function numberFormat(value) {
   }
 };
 
-function pad2(value) {
-  if (value < 10) {
-    return "0" + value
-  } else {
-    return "" + value
-  }
-};
 
 function formatTime(date) {
-  let hours = date.getUTCHours()
-  let minutes = date.getUTCMinutes()
-  if (hours > 0) {
-    return hours + " h " + pad2(minutes) + " min"
-  }
-  return minutes + " min"
+  let hours = "0" + date.getHours();
+  let minutes = "0" + date.getMinutes();
+  return hours.substr(-2) + ':' + minutes.substr(-2);
 };
 
-class StatusLeftBoard extends Component<histUpdate, S> {
+const initState = {
+  temp_cpu: "0°C",
+  temp_led: "0°C",
+  temp_amb: "0°C",
+  uv_led_fan: "0 RPM",
+  blower_fan: "0 RPM",
+  rear_fan: "0 RPM",
+  cover_state: false,
+};
 
-  ws = null;
+class StatusLeftBoard extends Component<P, S> {
 
+  timer: any;
   constructor() {
     super();
-    this.state = {
-      remaining_material: "0 ml",
-      temp_cpu: "0°C",
-      temp_led: "0°C",
-      temp_amb: "0°C",
-      uv_led_fan: "0 RPM",
-      blower_fan: "0 RPM",
-      rear_fan: "0 RPM",
-      cover_state: "",
-    };
+    this.state = initState;
+  }
+
+  clearData = () => {
+    this.props.clearData();
+    this.setState(prev => ({ ...initState }));
   }
 
   componentDidMount() {
-    this.connect();
+    this.timer = setInterval(this.connect, Number(process.env.UPDATE_TIMER));
+  }
 
+  componentWillUnmount() {
+    clearInterval(this.timer);
   }
   connect = () => {
 
-    if (process.env.DEVELOPMENT) {
-      this.ws = new WebSocket("ws://localhost:8080/ws");
-    } else {
-      this.ws = new WebSocket("ws://" + window.location.host + "/ws");
-    }
+    fetch('/api/job/progress', {
+      method: 'GET',
+      headers: {
+        "X-Api-Key": process.env.APIKEY,
+        "Content-Type": "application/json",
+        "Accept": "application/json"
+      }
+    })
+      .then(response => response.json())
+      .then(data => {
 
-    this.ws.onclose = () => {
-      this.setState({});
-    };
-
-    let that = this;
-    this.ws.onerror = () => {
-      this.ws.close();
-      setTimeout(function () { that.connect(); }, 3000);
-    };
-
-    this.ws.onmessage = (e) => {
-      var data = JSON.parse(e.data);
-      if (data.type == "items") {
-        let content = data.content;
-
-        let newState: { [propName: string]: string; } = {};
+        let newState: { [propName: string]: string | boolean; } = {};
         let newTemps = {};
         let newProgress_status = {};
         let newProgress_bar = {};
         let value = null;
 
-        // common properties
-        for (let item of ["temp_cpu", "temp_led", "temp_amb"]) {
-          value = content[item];
-          if (value || value === 0) {
-            newTemps[item] = value;
-            newState[item] = `${numberFormat(value)}°C`;
-          }
-        }
-
-        value = content["resin_remaining_ml"];
-        if (value) {
-          value = `${numberFormat(value)} ml`;
-          newState["remaining_material"] = value;
-          newProgress_status["remaining_material"] = value;
-        }
-
         // progress properties
-        value = content["time_remain_min"];
-        if (value) {
-          let remaining = new Date(value * 1000 * 60);
+        value = data["time_remain"];
+        if (value || value === 0) {
+          let remaining = new Date(value);
           newProgress_status["remaining_time"] = formatTime(remaining);
 
           let now = new Date();
-          let end = new Date(now.getTime() + value * 1000 * 60);
-          newProgress_status["estimated_end"] = pad2(end.getHours()) + ":" + pad2(end.getMinutes());
+          let end = new Date(now.getTime() + value);
+          newProgress_status["estimated_end"] = ("0" + end.getHours()).substr(-2) + ":" + ("0" + end.getMinutes()).substr(-2);
+        } else {
+          newProgress_status["remaining_time"] = "";
+          newProgress_status["estimated_end"] = "00:00";
         }
 
-        value = content["time_elapsed_min"];
+        value = data["time_elapsed"];
         if (value) {
-          let elapsed = new Date(value * 1000 * 60);
+          let elapsed = new Date(value);
           newProgress_status["printing_time"] = formatTime(elapsed);
+        } else {
+          newProgress_status["printing_time"] = "";
         }
 
-        value = content["resin_used_ml"];
-        if (value) {
-          newProgress_status["consumed_material"] = `${numberFormat(value)} ml`;
-        }
+        value = data["material_used_ml"];
+        newProgress_status["consumed_material"] = value ? `${numberFormat(value)} ml` : "0 ml";
+        value = data["material_remaining_ml"];
+        newProgress_status["remaining_material"] = value ? `${numberFormat(value)} ml` : "0 ml";
 
         for (let item of ["current_layer", "total_layers"]) {
-          value = content[item];
-          if (value) {
-            newProgress_status[item] = value;
-          }
+          value = data[item];
+          newProgress_status[item] = value ? value : 0;
         }
 
-        for (let item of ["project_name", "progress"]) {
-          value = content[item];
-          if (value) {
-            newProgress_bar[item] = value;
-          }
-        }
+        value = data["project_name"];
+        newProgress_bar["project_name"] = value ? value : "";
+        value = data["progress"];
+        newProgress_bar["progress"] = value ? value : 0;
 
         // left board properties
-        for (let item of ["uv_led_fan", "blower_fan", "rear_fan"]) {
-          value = content[item];
+        for (let item of ["temp_cpu", "temp_led", "temp_amb"]) {
+          value = data[item];
           if (value) {
-            newState[item] = `${value} RPM`;
+            newTemps[item] = value;
+            newState[item] = `${numberFormat(value)}°C`;
+          } else {
+            newState[item] = "0°C";
           }
         }
 
-        value = content["cover_closed"];
-        if (value) {
-          newState["cover_state"] = value ? "Closed" : "Opened";
+        for (let item of ["uv_led_fan", "blower_fan", "rear_fan"]) {
+          value = data[item];
+          newState[item] = value ? `${value} RPM` : "0 RPM";
+        }
+
+        value = data["cover_closed"];
+        if (typeof (value) == "boolean") {
+          newState["cover_state"] = value;
         }
 
         if (Object.keys(newState).length > 0) {
@@ -170,16 +154,10 @@ class StatusLeftBoard extends Component<histUpdate, S> {
           this.props.updateData({
             progress_bar: newProgress_bar,
             progress_status: newProgress_status,
-            temperatures: newTemps
+            temperatures: [[new Date().getTime(), newTemps["temp_cpu"], newTemps["temp_led"], newTemps["temp_amb"]]]
           });
         }
-      }
-    }
-
-  }
-
-  componentWillUnmount() {
-    this.ws.close();
+      }).catch(e => this.clearData());
   }
 
   render() {

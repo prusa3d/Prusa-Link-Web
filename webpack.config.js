@@ -16,7 +16,7 @@ module.exports = (env, args) => {
     let devMode = false;
     // Global variables
     let apiKey = "developer";
-    let printer = "Prusa SL1";
+    let printer = "Original Prusa SL1";
     let update_timer = 2000;
 
     if (args && args.mode === 'production') {
@@ -103,8 +103,7 @@ module.exports = (env, args) => {
             compress: true,
             port: 1234,
             proxy: {
-                '/api': 'http://localhost:8080',
-                '/ws': 'http://localhost:8080'
+                '/api': 'http://localhost:8080'
             }
         },
         plugins: [

@@ -1,0 +1,58 @@
+// This file is part of Prusa-Connect-Web
+// Copyright (C) 2018-2019 Prusa Research s.r.o. - www.prusa3d.com
+// SPDX-License-Identifier: GPL-3.0-or-later
+
+$line-color: gray;
+$line-size: 0.08rem;
+$project-bottom-bg-color: hsl(130, 85%, 39%);
+$project-bottom-bg-hover-color: hsl(130, 38%, 46%);
+$text: hsl(0, 0%, 96%);
+$background-color-selection: #313131;
+
+%selection {
+  background-color: $background-color-selection;
+  cursor: pointer;
+}
+
+.project-button-container {
+  padding-top: 1.5rem;
+}
+
+.project-button {
+  color: $text;
+  background-color: $project-bottom-bg-color;
+  border-color: $project-bottom-bg-color;
+}
+
+.project-button:hover {
+  color: $text;
+  background-color: $project-bottom-bg-hover-color;
+  border-color: $project-bottom-bg-hover-color;
+}
+
+.tree-node-item {
+  padding-bottom: 0.5rem;
+  padding-top: 0.5rem;
+  border-bottom: $line-size solid $line-color;
+}
+
+.tree-node-item:hover {
+  @extend %selection;
+}
+
+.tree-node-select:hover {
+  @extend %selection;
+}
+
+.project-preview {
+  max-width: 112px;
+  width: 100%;
+  height: auto;
+}
+
+@media screen and (min-width: 1024px) {
+  .project-icon-desktop {
+    height: 28px !important;
+    width: 28px !important;
+  }
+}

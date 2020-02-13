@@ -3,109 +3,37 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import { h, Component } from "preact";
-import { Router, Route, RouterOnChangeArgs } from "preact-router";
+import Container from "./container";
+import defaultDefinition from '../i18n/en.json';
 
-import { homeProps, Home } from "../routes/home";
-import Project from "../routes/project";
-import Header from "./header";
-import StatusLeftBoard from "./status-left";
-import Temperatures from "../routes/temperatures";
-
-export interface histUpdate {
-    updateData(data): void;
+interface S {
+    definition: any;
 }
 
-class App extends Component<{}, homeProps> implements histUpdate {
+class App extends Component<{}, S>  {
 
-    constructor() {
-        super();
-        this.state = {
-            progress_status: {
-                remaining_time: "",
-                estimated_end: "00:00",
-                printing_time: "",
-                current_layer: 0,
-                total_layers: 0,
-                remaining_material: 0,
-                consumed_material: 0,
-            },
-            progress_bar: {
-                progress: 0,
-                project_name: ""
-            },
-            temperatures: {
-                temp_led: [],
-                temp_amb: [],
-                temp_cpu: []
-            }
-        };
+    state = {
+        definition: defaultDefinition
     }
 
-    updateData = async (data: homeProps) => {
+    // componentDidMount() {
 
-        this.setState((prevState, props) => {
+    //     const lang = window.navigator.language.slice(0, 2);
+    //     if (lang !== 'en' && "cs-de-es-fr-it-pl".indexOf(lang) > 0) {
+    //         this.changeLanguage(lang);
+    //     }
 
-            const now = new Date().getTime();
-            let newTemperatures = {
-                temp_led: [],
-                temp_amb: [],
-                temp_cpu: []
-            };
-            const isOlder = (dt) => now - dt.x > 200000; // ~ 3min
+    // }
 
-            const temperatures = data.temperatures;
-            for (let temp of Object.keys(temperatures)) {
+    changeLanguage = (lang) => {
 
-                let new_temp = prevState.temperatures[temp].concat([{ x: now, y: temperatures[temp] }])
-                let minOlder = new_temp.findIndex(isOlder);
-                if (minOlder > -1) {
-                    let maxOlder = new_temp.findIndex(e => !isOlder(e));
-                    new_temp.splice(0, maxOlder);
-                }
-
-                newTemperatures[temp] = new_temp;
-
-            }
-            return {
-                progress_bar: { ...prevState.progress_bar, ...data.progress_bar },
-                progress_status: { ...prevState.progress_status, ...data.progress_status },
-                temperatures: newTemperatures
-            };
-        });
-
-    }
+        import(`../i18n/${lang}.json`)
+            .then(definition => this.setState({ definition }));
+    };
 
     render() {
-
-        let currentUrl: string;
-        const handleRoute = (e: RouterOnChangeArgs) => {
-            currentUrl = e.url;
-        };
-
         return (
-            <section id="app" class="section">
-                <div class="columns is-vcentered is-centered is-desktop">
-                    <div class="column is-three-quarters-desktop is-full-mobile">
-                        <Header />
-                    </div>
-                </div>
-                <div class="columns is-centered is-desktop">
-                    <div class="column is-three-quarters-desktop is-full-mobile">
-                        <div class="columns is-centered is-desktop">
-                            <div class="column is-full-mobile">
-                                <StatusLeftBoard updateData={this.updateData} />
-                            </div>
-                            <div class="column is-three-quarters-desktop is-full-mobile">
-                                <Router onChange={handleRoute}>
-                                    <Home path="/" {...this.state} />
-                                    <Route path="/projects/" component={Project} />
-                                    <Route path="/temperatures/" component={Temperatures} temperatures={this.state.temperatures} />
-                                </Router>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
+            <Container definition={this.state.definition} />
         );
     }
 }

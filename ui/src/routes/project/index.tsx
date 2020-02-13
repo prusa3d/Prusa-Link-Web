@@ -3,40 +3,23 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import { h, Fragment, Component } from "preact";
-import under_construction from "../../assets/under_construction.gif"
-import "./style.scss";
+import Title from "../../components/title"
+import TreeNode from "../../components/treenode";
+import { Job, JobProps } from "../../components/job";
 
-interface S {
-    parent_path: string;
-    current_path: string;
-    root_path: string;
-}
 
-class Project extends Component<{}, S> {
 
-    container: any = null;
-    constructor() {
-        super();
-        this.state = {
-            parent_path: null,
-            current_path: null,
-            root_path: null
-        };
-    }
+class Project extends Component<JobProps, {}> {
 
     render() {
         return (
             <Fragment>
-                <div class="box has-background-black is-paddingless">
-                    <p class="title is-size-2 is-size-5-desktop prusa-text-orange prusa-line">
-                        Under construction <span class="subtitle is-size-3 is-size-6-desktop has-text-grey">project files</span>
-                    </p>
-                </div>
-                <div class="columns">
-                    <div class="column is-4 is-offset-4">
-                        <img src={under_construction} />
-                    </div>
-                </div>
+                <Title id="project.title" default_text="Project files" />
+                {
+                    this.props.progress_bar.project_name == ""
+                        ? <TreeNode />
+                        : <Job {...this.props} />
+                }
             </Fragment>
         );
     }
