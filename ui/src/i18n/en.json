@@ -44,5 +44,6 @@
     "notification": {
         "welcome-part1": "Welcome to the web interface of your",
         "welcome-part2": "Please note that values are shown only when the printer is printing."
-    }
+    },
+    "under-construction": "Under construction"
 }
