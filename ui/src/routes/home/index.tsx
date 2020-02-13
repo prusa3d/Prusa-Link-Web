@@ -12,14 +12,9 @@ import Welcome from "../../components/notification/welcome"
 export interface homeProps extends TempProps {
   progress_bar: StatusProgressProps;
   progress_status: StatusBoardTableProps;
-  showWelcome: boolean;
 }
 
-interface P extends homeProps {
-  closeWelcome(): void;
-}
-
-export const Home: preact.FunctionalComponent<P> = props => {
+export const Home: preact.FunctionalComponent<homeProps> = props => {
   return (
     <Fragment>
       <Title title="Printer status:" >
@@ -29,7 +24,7 @@ export const Home: preact.FunctionalComponent<P> = props => {
             : <span class="title is-size-3 is-size-4-desktop prusa-text-orange"> Priting</span>
         }
       </Title>
-      <Welcome show={props.showWelcome} close={props.closeWelcome} />
+      <Welcome />
       <div class="columns is-desktop is-centered">
         <div class="column">
           <StatusProgress {...props.progress_bar} />

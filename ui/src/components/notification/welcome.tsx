@@ -2,29 +2,44 @@
 // Copyright (C) 2018-2019 Prusa Research s.r.o. - www.prusa3d.com
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-import { h } from 'preact';
+import { h, Component } from 'preact';
 
-interface P {
-    show: boolean;
-    close(): void;
+interface S {
+    showWelcome: boolean;
 }
 
-const Welcome: preact.FunctionalComponent<P> = props => {
-    return (
-        <div class={props.show ? "modal is-active" : "modal"}>
+class Welcome extends Component<{}, S>{
+
+    constructor() {
+        super();
+        const cookieValue = document.cookie.replace(/(?:(?:^|.*;\s*)showWelcome\s*\=\s*([^;]*).*$)|^.*$/, "$1");
+        this.state = {
+            showWelcome: cookieValue === "" ? true : false
+        };
+    }
+
+    shouldComponentUpdate = () => this.state.showWelcome;
+
+    onClose = () => {
+        document.cookie = "showWelcome=false";
+        this.setState(prev => ({ showWelcome: false }));
+    }
+
+    render({ }, { showWelcome }) {
+        return (<div class={showWelcome ? "modal is-active" : "modal"}>
             <div class="modal-background"></div>
             <div class="modal-content">
                 <div class="box has-background-grey-dark">
-                    <button class="delete is-pulled-right" onClick={e => props.close()}></button>
+                    <button class="delete is-pulled-right" onClick={e => this.onClose()}></button>
                     <p class="subtitle is-size-3 is-size-6-desktop">
                         Welcome to the web interface of your <span class=" prusa-text-orange">{process.env.PRINTER}</span>.
-                        <br />
-                        Please note that values are shown only when the printer is printing.
-                    </p>
+                <br />
+                Please note that values are shown only when the printer is printing.
+            </p>
                 </div>
             </div>
-        </div>
-    );
-};
+        </div>)
+    }
+}
 
 export default Welcome;

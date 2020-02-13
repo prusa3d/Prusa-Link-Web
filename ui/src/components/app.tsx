@@ -38,7 +38,6 @@ class App extends Component<{}, homeProps> implements histUpdate {
                 temp_amb: [],
                 temp_cpu: []
             },
-            showWelcome: true
         };
     }
 
@@ -76,10 +75,6 @@ class App extends Component<{}, homeProps> implements histUpdate {
 
     }
 
-    closeWelcome = () => {
-        this.setState(prev => ({ ...prev, showWelcome: false }));
-    }
-
     render() {
 
         let currentUrl: string;
@@ -102,7 +97,7 @@ class App extends Component<{}, homeProps> implements histUpdate {
                             </div>
                             <div class="column is-three-quarters-desktop is-full-mobile">
                                 <Router onChange={handleRoute}>
-                                    <Home path="/" {...this.state} closeWelcome={this.closeWelcome} />
+                                    <Home path="/" {...this.state} />
                                     <Route path="/projects/" component={Project} />
                                     <Route path="/temperatures/" component={Temperatures} temperatures={this.state.temperatures} />
                                 </Router>
