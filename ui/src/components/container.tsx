@@ -7,8 +7,7 @@ import { Router, RouterOnChangeArgs } from "preact-router";
 import { IntlProvider } from 'preact-i18n';
 
 import { homeProps, Home } from "../routes/home";
-//import Project from "../routes/project";
-import UnderConstruction from "./under-construction";
+import Project from "../routes/project";
 import Header from "./header";
 import StatusLeftBoard from "./status-left";
 import Temperatures from "../routes/temperatures";
@@ -92,12 +91,11 @@ class Container extends Component<{ definition: any }, S> {
                                 <div class="column is-three-quarters-desktop is-full-mobile">
                                     <Router onChange={handleRoute}>
                                         <Home path="/" {...this.state} />
-                                        <UnderConstruction path="/projects/" />
-                                        {/* <Project
+                                        <Project
                                             path="/projects/"
                                             progress_bar={this.state.progress_bar}
                                             progress_status={this.state.progress_status}
-                                        /> */}
+                                        />
                                         <Temperatures path="/temperatures/" temperatures={this.state.temperatures} />
                                     </Router>
                                 </div>
