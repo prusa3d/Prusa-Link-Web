@@ -5,6 +5,7 @@
   "private": true,
   "scripts": {
     "api:start": "swagger-repo serve",
+    "api:build": "swagger-repo build -o docs",
     "api:test": "swagger-repo validate",
     "ui:build": "npm run ui:clean && npx webpack --config ./webpack.config.js --mode production --env.apiKey=developer --env.printer='Original Prusa SL1' --progress",
     "ui:dev": "npm run ui:clean && npx webpack --config ./webpack.config.js --mode development",
