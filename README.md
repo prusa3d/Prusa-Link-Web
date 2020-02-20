@@ -1,4 +1,4 @@
-# Prusa-Connect-Web
+# Prusa-Connect-Local
 This is a printer connect webservice. It is compatible with another 3D printer services, so many applications which use this service.
 
 ### Install
@@ -40,12 +40,6 @@ npm run ui:dev
 
 ### Build ui
 ```bash
-npm run ui:build
-```
-
-#### First time (create the .cache):
-```bash
-npm run ui:build
 rm -fr ./dist
 npm run ui:build
 ```
