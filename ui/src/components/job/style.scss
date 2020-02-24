@@ -1,0 +1,19 @@
+// This file is part of Prusa-Connect-Web
+// Copyright (C) 2018-2019 Prusa Research s.r.o. - www.prusa3d.com
+// SPDX-License-Identifier: GPL-3.0-or-later
+
+.prusa-job-button {
+  border-color: transparent;
+  &:hover {
+    border-color: transparent;
+  }
+}
+
+.prusa-flex-no-grow {
+  flex-grow: 0;
+}
+
+.prusa-job-buttons-tab {
+  margin-top: 2rem;
+}
+

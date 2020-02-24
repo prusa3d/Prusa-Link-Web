@@ -9,6 +9,7 @@ import Welcome from "../../components/notification/welcome"
 import { StatusBoardTable, StatusBoardTableProps } from '../../components/status-board/board';
 import { StatusProgress, StatusProgressProps } from "../../components/status-board/progress";
 import { TempProps, Temperature } from "../../components/temperature";
+import Upload from "../../components/upload";
 
 export interface homeProps extends TempProps {
   progress_bar: StatusProgressProps;
@@ -29,6 +30,8 @@ export const Home: preact.FunctionalComponent<homeProps> = props => {
       <div class="columns is-desktop is-centered">
         <div class="column">
           <StatusProgress {...props.progress_bar} />
+          <br />
+          <Upload/>
           <br />
           <Temperature temperatures={props.temperatures} bigSize={false} />
         </div>

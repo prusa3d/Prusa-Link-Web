@@ -35,11 +35,16 @@ function numberFormat(value) {
   }
 };
 
-
-function formatTime(date) {
-  let hours = "0" + date.getHours();
-  let minutes = "0" + date.getMinutes();
-  return hours.substr(-2) + ':' + minutes.substr(-2);
+function formatTime(date: number) {
+  const minutes = Math.floor((date / (1000 * 60)) % 60);
+  const hours = Math.floor((date / (1000 * 60 * 60)) % 24);
+  if (hours > 0) {
+    return hours + " h " + ("0" + Math.floor((date / (1000 * 60)) % 60)).substr(-2) + " min"
+  }
+  if (minutes > 0) {
+    return minutes + " min"
+  }
+  return ""
 };
 
 const initState = {
@@ -74,7 +79,7 @@ class StatusLeftBoard extends Component<P, S> {
   }
   connect = () => {
 
-    fetch('/api/job/progress', {
+    fetch('/api/telemetry', {
       method: 'GET',
       headers: {
         "X-Api-Key": process.env.APIKEY,
@@ -94,8 +99,7 @@ class StatusLeftBoard extends Component<P, S> {
         // progress properties
         value = data["time_remain"];
         if (value || value === 0) {
-          let remaining = new Date(value);
-          newProgress_status["remaining_time"] = formatTime(remaining);
+          newProgress_status["remaining_time"] = formatTime(value);
 
           let now = new Date();
           let end = new Date(now.getTime() + value);
@@ -107,8 +111,7 @@ class StatusLeftBoard extends Component<P, S> {
 
         value = data["time_elapsed"];
         if (value) {
-          let elapsed = new Date(value);
-          newProgress_status["printing_time"] = formatTime(elapsed);
+          newProgress_status["printing_time"] = formatTime(value);
         } else {
           newProgress_status["printing_time"] = "";
         }
@@ -175,7 +178,6 @@ class StatusLeftBoard extends Component<P, S> {
   }
 
 }
-
 
 
 export default StatusLeftBoard;

@@ -228,9 +228,16 @@ class Tree extends Component<{}, S> {
 
     createLink = (path: string) => {
         if (path[0] === "u") {
-            return "/api/files/sdcard" + path.substring(3)
+            return "/api/files/sdcard" + path.substring(3);
         }
         return "/api/files/" + path;
+    }
+
+    createPreview = (path: string) => {
+        if (path[0] === "u") {
+            return "/api/files/preview/sdcard" + path.substring(3) + ".png";
+        }
+        return "/api/files/preview/" + path + ".png";
     }
 
     render({ }, { current_view, current_path, ...others }) {
@@ -247,10 +254,14 @@ class Tree extends Component<{}, S> {
                     return <ProjectNode
                         {...(node as nodeFile)}
                         onSelectFile={() => this.onSelectFile(node.path)}
+                        preview_src={this.createPreview(node.path)}
                     />
                 }
             });
         }
+
+        console.log(this.createLink(current_path));
+        
 
         return (
             <Fragment>
@@ -266,6 +277,7 @@ class Tree extends Component<{}, S> {
                                 onBack={this.onUpFolder}
                                 {...current_view}
                                 url={this.createLink((current_view as nodeFile).path)}
+                                preview_src={this.createPreview((current_view as nodeFile).path)}
                             />
                         : null
                 }

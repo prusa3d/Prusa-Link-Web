@@ -27,6 +27,7 @@ module.exports = (env, args) => {
         update_timer = (typeof env.update_timer !== "undefined") ? env.update_timer : update_timer;
     } else {
         devMode = true;
+        printer = (typeof env.printer !== "undefined") ? env.printer : printer;
         console.log('== Development mode');
     }
     console.log(`* printer: ${printer}`);

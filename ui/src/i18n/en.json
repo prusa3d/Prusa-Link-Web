@@ -39,7 +39,10 @@
         "material": "Material",
         "leyer-height": "leyer height",
         "back": "BACK",
-        "start_print": "START PRINT"
+        "start_print": "START PRINT",
+        "change-exposure": "change exposure times",
+        "refill-resin": "refill resin",
+        "cancel-print": "cancel print"
     },
     "notification": {
         "welcome-part1": "Welcome to the web interface of your",
