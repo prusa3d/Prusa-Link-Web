@@ -6,6 +6,7 @@ import { h, Component } from "preact";
 import { Router, RouterOnChangeArgs } from "preact-router";
 import { IntlProvider } from 'preact-i18n';
 
+import { update, printerState, initPrinterState } from "../components/telemetry";
 import { homeProps, Home } from "../routes/home";
 //import Project from "../routes/project";
 import UnderConstruction from "./under-construction";
@@ -15,13 +16,13 @@ import Temperatures from "../routes/temperatures";
 
 interface S extends homeProps {
     currentUrl: string;
+    printer_state: printerState;
 }
 
 const initState = {
     progress_status: {
-        remaining_time: "",
-        estimated_end: "00:00",
-        printing_time: "",
+        remaining_time: 0,
+        printing_time: 0,
         current_layer: 0,
         total_layers: 0,
         remaining_material: 0,
@@ -31,20 +32,19 @@ const initState = {
         progress: 0,
         project_name: ""
     },
+    printer_state: initPrinterState,
     temperatures: []
 }
 
 class Container extends Component<{ definition: any }, S> {
 
-    constructor() {
-        super();
-        this.state = {
-            ...initState,
-            currentUrl: "/"
-        };
-    }
+    timer = null;
+    state = {
+        ...initState,
+        currentUrl: "/"
+    };
 
-    updateData = (data: homeProps) => {
+    updateData = (data) => {
 
         this.setState((prevState, props) => {
 
@@ -57,6 +57,7 @@ class Container extends Component<{ definition: any }, S> {
             }
 
             return {
+                printer_state: { ...prevState.printer_state, ...data.printer_state },
                 progress_bar: { ...prevState.progress_bar, ...data.progress_bar },
                 progress_status: { ...prevState.progress_status, ...data.progress_status },
                 temperatures: prevState.temperatures.slice(indexOlder).concat(data.temperatures)
@@ -67,6 +68,14 @@ class Container extends Component<{ definition: any }, S> {
 
     clearData = () => {
         this.setState(prev => ({ ...prev, ...initState }));
+    }
+
+    componentDidMount() {
+        this.timer = setInterval(update(this.updateData, this.clearData), Number(process.env.UPDATE_TIMER));
+    }
+
+    componentWillUnmount() {
+        clearInterval(this.timer);
     }
 
     render() {
@@ -87,17 +96,20 @@ class Container extends Component<{ definition: any }, S> {
                         <div class="column is-three-quarters-desktop is-full-mobile">
                             <div class="columns is-centered is-desktop">
                                 <div class="column is-full-mobile">
-                                    <StatusLeftBoard updateData={this.updateData} clearData={this.clearData} />
+                                    <StatusLeftBoard printer_state={this.state.printer_state} />
                                 </div>
                                 <div class="column is-three-quarters-desktop is-full-mobile">
                                     <Router onChange={handleRoute}>
                                         <Home path="/" {...this.state} />
-                                        <UnderConstruction path="/projects/" />
-                                        {/* <Project
+                                         {
+                                            process.env.PRINTER != "Original Prusa Mini" &&
+                                            <UnderConstruction path="/projects/" />
+                                        }
+                                         {/* <Project
                                             path="/projects/"
                                             progress_bar={this.state.progress_bar}
                                             progress_status={this.state.progress_status}
-                                        /> */}
+                                        />  */}
                                         <Temperatures path="/temperatures/" temperatures={this.state.temperatures} />
                                     </Router>
                                 </div>

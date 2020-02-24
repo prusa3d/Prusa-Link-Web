@@ -20,25 +20,21 @@ export const Temperature: preact.FunctionalComponent<P> = withText({
 })(props => {
 
     let temperatures = props.temperatures;
-    let temp_cpu_d = "";
-    let temp_led_d = "";
-    let temp_amb_d = "";
+    let temp_lines = [];
 
     if (temperatures.length > 1) {
-
         const now = new Date().getTime();
         let xy = temperatures[0];
         let x = 500 - 2.66 * (now - xy[0]) / 1000;
-        temp_cpu_d = `M${x},${250 - xy[1]}`;
-        temp_led_d = `M${x},${250 - xy[2]}`;
-        temp_amb_d = `M${x},${250 - xy[3]}`;
-
+        for (let i = 1; i < xy.length; i++) {
+            temp_lines.push(`M${x},${250 - xy[i]}`);
+        }
         for (let i = 1; i < temperatures.length; i++) {
             xy = temperatures[i];
             x = 500 - 2.66 * (now - xy[0]) / 1000;
-            temp_cpu_d = temp_cpu_d + `L${x},${250 - xy[1]}`;
-            temp_led_d = temp_led_d + `L${x},${250 - xy[2]}`;
-            temp_amb_d = temp_amb_d + `L${x},${250 - xy[3]}`;
+            for (let i = 0; i < temp_lines.length; i++) {
+                temp_lines[i] = temp_lines[i] + `L${x},${250 - xy[i + 1]}`;
+            }
         }
     }
 
@@ -55,27 +51,33 @@ export const Temperature: preact.FunctionalComponent<P> = withText({
                         y="280" width="170.85467128027682" height="20.75" style="fill: none;"></rect>
                     <path d="M 360, 285 m -6, 0 a 6, 6 0 1,0 12,0 a 6, 6 0 1,0 -12,0" role="presentation"
                         shapeRendering="auto" class="temp-legend-led"></path>
-                    <path d="M 416.9515570934256, 285 m -6, 0 a 6, 6 0 1,0 12,0 a 6, 6 0 1,0 -12,0"
-                        role="presentation" shapeRendering="auto" class="temp-legend-amb"></path>
+                    {
+                        process.env.PRINTER == "Original Prusa SL1" &&
+                        <path d="M 416.9515570934256, 285 m -6, 0 a 6, 6 0 1,0 12,0 a 6, 6 0 1,0 -12,0"
+                            role="presentation" shapeRendering="auto" class="temp-legend-amb"></path>
+                    }
                     <path d="M 473.9031141868512, 285 m -6, 0 a 6, 6 0 1,0 12,0 a 6, 6 0 1,0 -12,0"
                         role="presentation" shapeRendering="auto" class="temp-legend-cpu"></path>
                     <text direction="inherit" dx="0" dy="5.324999999999999" x="368" y="285"
                         id="chart-legend-0-labels-0">
                         <tspan x="368" dx="0" text-anchor="start" class="temp-text">
-                            led
-                            </tspan>
+                            {process.env.PRINTER == "Original Prusa SL1" ? "led" : "nozzle"}
+                        </tspan>
                     </text>
-                    <text direction="inherit" dx="0" dy="5.324999999999999" x="424.9515570934256" y="285"
-                        id="chart-legend-0-labels-1">
-                        <tspan x="424.9515570934256" dx="0" text-anchor="start" class="temp-text">
-                            amb
+                    {
+                        process.env.PRINTER == "Original Prusa SL1" &&
+                        <text direction="inherit" dx="0" dy="5.324999999999999" x="424.9515570934256" y="285"
+                            id="chart-legend-0-labels-1">
+                            <tspan x="424.9515570934256" dx="0" text-anchor="start" class="temp-text">
+                                amb
                                 </tspan>
-                    </text>
+                        </text>
+                    }
                     <text direction="inherit" dx="0" dy="5.324999999999999" x="481.9031141868512" y="285"
                         id="chart-legend-0-labels-2">
                         <tspan x="481.9031141868512" dx="0" text-anchor="start" class="temp-text">
-                            cpu
-                                </tspan>
+                            {process.env.PRINTER == "Original Prusa SL1" ? "cpu" : "bed"}
+                        </tspan>
                     </text>
                 </g>
                 <g clip-path="url(#victory-clip-38)" class="temp-g-label">
@@ -86,22 +88,25 @@ export const Temperature: preact.FunctionalComponent<P> = withText({
                         </clipPath>
                     </defs>
                     <path class="temp-line-led"
-                        d={temp_led_d}
+                        d={temp_lines[1]}
                         role="presentation" shapeRendering="auto">
                     </path>
                 </g>
-                <g clip-path="url(#victory-clip-39)" class="temp-g-label">
-                    <defs>
-                        <clipPath id="victory-clip-39">
-                            <rect vector-effect="non-scaling-stroke" x="50" y="50" width="450" height="200">
-                            </rect>
-                        </clipPath>
-                    </defs>
-                    <path class="temp-line-amb"
-                        d={temp_amb_d}
-                        role="presentation" shapeRendering="auto">
-                    </path>
-                </g>
+                {
+                    process.env.PRINTER == "Original Prusa SL1" &&
+                    <g clip-path="url(#victory-clip-39)" class="temp-g-label">
+                        <defs>
+                            <clipPath id="victory-clip-39">
+                                <rect vector-effect="non-scaling-stroke" x="50" y="50" width="450" height="200">
+                                </rect>
+                            </clipPath>
+                        </defs>
+                        <path class="temp-line-amb"
+                            d={temp_lines[2]}
+                            role="presentation" shapeRendering="auto">
+                        </path>
+                    </g>
+                }
                 <g clip-path="url(#victory-clip-40)" class="temp-g-label">
                     <defs>
                         <clipPath id="victory-clip-40">
@@ -110,7 +115,7 @@ export const Temperature: preact.FunctionalComponent<P> = withText({
                         </clipPath>
                     </defs>
                     <path class="temp-line-cpu"
-                        d={temp_cpu_d}
+                        d={temp_lines[0]}
                         role="presentation" shapeRendering="auto">
                     </path>
                 </g>

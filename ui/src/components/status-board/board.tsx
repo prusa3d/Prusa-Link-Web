@@ -4,6 +4,7 @@
 
 import { h, Fragment } from 'preact';
 import { Text } from 'preact-i18n';
+import { numberFormat, formatTime, formatTimeEnd } from "../utils/index";
 
 interface StatusBoardItemProps {
   id: string,
@@ -11,13 +12,12 @@ interface StatusBoardItemProps {
   value: string | number
 }
 export interface StatusBoardTableProps {
-  readonly remaining_time: string,
-  readonly estimated_end: string,
-  readonly printing_time: string,
+  readonly remaining_time: number,
+  readonly printing_time: number,
   readonly current_layer: number,
   readonly total_layers: number,
-  readonly remaining_material: string | number,
-  readonly consumed_material: string | number
+  readonly remaining_material?: number,
+  readonly consumed_material?: number
 }
 
 const StatusBoardItem = (props: StatusBoardItemProps) => {
@@ -33,18 +33,31 @@ const StatusBoardItem = (props: StatusBoardItemProps) => {
   );
 };
 
-export const StatusBoardTable = (props: StatusBoardTableProps) => {
+export const StatusBoardTable = ({
+  remaining_time,
+  printing_time,
+  current_layer,
+  total_layers,
+  remaining_material,
+  consumed_material
+}: StatusBoardTableProps) => {
   return (
     <Fragment>
       <div class="columns">
-        <StatusBoardItem id="remaining-time" title="remaining time" value={props.remaining_time} />
-        <StatusBoardItem id="estimated-end" title="estimated end" value={props.estimated_end} />
-        <StatusBoardItem id="printing-time" title="printing time" value={props.printing_time} />
+        <StatusBoardItem id="remaining-time" title="remaining time" value={remaining_time > 0 ? formatTime(remaining_time) : ""} />
+        <StatusBoardItem id="estimated-end" title="estimated end" value={remaining_time > 0 ? formatTimeEnd(remaining_time) : ""} />
+        <StatusBoardItem id="printing-time" title="printing time" value={printing_time > 0 ? formatTime(printing_time) : ""} />
       </div>
       <div class="columns">
-        <StatusBoardItem id="layer" title="layer" value={`${props.current_layer}/${props.total_layers}`} />
-        <StatusBoardItem id="remaining-resin" title="remaining resin" value={props.remaining_material} />
-        <StatusBoardItem id="consumed-resin" title="consumed resin" value={props.consumed_material} />
+        <StatusBoardItem id="layer" title="layer" value={current_layer > 0 ? `${current_layer}/${total_layers}` : "0/0"} />
+        {
+          process.env.PRINTER != "Original Prusa Mini" &&
+          <StatusBoardItem id="remaining-resin" title="remaining resin" value={`${numberFormat(remaining_material)} ml`} />
+        }
+        {
+          process.env.PRINTER != "Original Prusa Mini" &&
+          <StatusBoardItem id="consumed-resin" title="consumed resin" value={`${numberFormat(consumed_material)} ml`} />
+        }
       </div>
     </Fragment>
   );

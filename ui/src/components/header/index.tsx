@@ -59,15 +59,15 @@ class Header extends Component<{}, S> {
                         <Link class="navbar-item prusa-menu-item is-size-2 is-size-6-desktop" activeClassName="active" href="/" onClick={this.onClickBurger}>
                             <Text id="home.title">Dashboard</Text>
                         </Link>
-                        <Link class="navbar-item prusa-menu-item is-size-2 is-size-6-desktop" activeClassName="active" href="/projects" onClick={this.onClickBurger}>
-                            <Text id="projects.title">Projects</Text>
-                        </Link>
+                        {
+                            process.env.PRINTER != "Original Prusa Mini" &&
+                            <Link class="navbar-item prusa-menu-item is-size-2 is-size-6-desktop" activeClassName="active" href="/projects" onClick={this.onClickBurger}>
+                                <Text id="projects.title">Projects</Text>
+                            </Link>
+                        }
                         <Link class="navbar-item prusa-menu-item is-size-2 is-size-6-desktop" activeClassName="active" href="/temperatures" onClick={this.onClickBurger}>
                             <Text id="temperatures.title">Temperatures</Text>
                         </Link>
-                        {/* <div class="navbar-item has-text-grey">
-                            Account
-                        </div> */}
                     </div>
                 </div>
             </nav>
