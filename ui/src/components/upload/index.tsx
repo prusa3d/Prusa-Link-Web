@@ -2,12 +2,14 @@
 // Copyright (C) 2018-2019 Prusa Research s.r.o. - www.prusa3d.com
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-import { h, Component } from "preact";
+import { h, Component, createRef } from "preact";
 import { Text } from 'preact-i18n';
 import "./style.scss";
 const icon_download = require("../../assets/download.svg")
 
 interface P {
+    url: string;
+    path: string;
 }
 
 interface S {
@@ -16,6 +18,7 @@ interface S {
 
 class Upload extends Component<P, S> {
 
+    ref = createRef();
     state = { active: false };
 
     handleDragEnter = (e: DragEvent) => {
@@ -45,24 +48,45 @@ class Upload extends Component<P, S> {
         this.handleFiles(files);
     };
 
+    onclickFile = (e: MouseEvent) => {
+        e.preventDefault();
+        e.stopPropagation();
+        const fileInput = this.ref.current;
+        if (e.isTrusted && fileInput) {
+            fileInput.click();
+        }
+    }
+
+    handleInput = (e: Event) => {
+        e.preventDefault();
+        e.stopPropagation();
+        // @ts-ignore
+        const files = e.target.files;
+        if (files)
+            this.handleFiles(files);
+    }
+
     handleFiles = (files) => {
         ([...files]).forEach(this.uploadFile);
     }
 
     uploadFile = (file: File) => {
-        console.log(file);
 
-        // let url = 'YOUR URL HERE'
-        // let formData = new FormData()
+        let { url, path } = this.props;
+        url = url ? url : "/api/files/local";
+        path = path ? path : "";
 
-        // formData.append('file', file)
+        let formData = new FormData()
+        formData.append('path', path)
+        formData.append('file', file)
 
-        // fetch(url, {
-        //     method: 'POST',
-        //     body: formData
-        // })
-        //     .then(() => { /* Done. Inform the user */ })
-        //     .catch(() => { /* Error. Inform the user */ })
+        fetch(url, {
+            method: 'POST',
+            body: formData,
+            headers: {
+                "X-Api-Key": process.env.APIKEY,
+            },
+        });
 
     }
 
@@ -82,15 +106,19 @@ class Upload extends Component<P, S> {
                 </p>
                 </div>
                 <div class="column is-10 is-offset-1">
-                    <div class={`"columns is-multiline is-mobile prusa-border-dashed ${active ? "prusa-active-upload" : ""}`}>
+                    <div
+                        class={`"columns is-multiline is-mobile prusa-border-dashed ${active ? "prusa-active-upload" : ""}`}
+                        onClick={e => this.onclickFile(e)}
+                    >
                         <div class="column is-offset-5">
                             <img class="image is-48x48 project-icon-desktop prusa-img-upload" src={icon_download} />
                         </div>
                         <div class="column is-6-touch is-offset-4-touch is-10-desktop is-offset-2-desktop subtitle is-size-5 is-size-6-desktop">
                             Choose a *.sl1 or drop it here.
-                    </div>
+                        </div>
                     </div>
                 </div>
+                <input ref={this.ref} style="display:none" type="file" multiple onInput={e => this.handleInput(e)} />
             </div>
         );
     }

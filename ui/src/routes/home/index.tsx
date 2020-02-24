@@ -31,7 +31,7 @@ export const Home: preact.FunctionalComponent<homeProps> = props => {
         <div class="column">
           <StatusProgress {...props.progress_bar} />
           <br />
-          <Upload/>
+          <Upload url={null} path={null} />
           <br />
           <Temperature temperatures={props.temperatures} bigSize={false} />
         </div>

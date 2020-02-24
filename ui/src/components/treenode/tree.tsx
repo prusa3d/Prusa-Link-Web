@@ -240,6 +240,13 @@ class Tree extends Component<{}, S> {
         return "/api/files/preview/" + path + ".png";
     }
 
+    createUploadLink = (path: string) => {
+        if (path[0] === "u") {
+            return { url: "/api/files/sdcard", path: path.substring(3) }
+        }
+        return { url: "/api/files/local", path: path.substring(5) }
+    }
+
     render({ }, { current_view, current_path, ...others }) {
 
         const showTree = Array.isArray(current_view);
@@ -260,16 +267,18 @@ class Tree extends Component<{}, S> {
             });
         }
 
-        console.log(this.createLink(current_path));
-        
-
         return (
             <Fragment>
                 {
                     current_view ?
                         showTree ?
                             <div class="columns is-multiline is-mobile">
-                                {current_path && <FolderUp onUpFolder={this.onUpFolder} />}
+                                {current_path &&
+                                    <FolderUp
+                                        upload_info={this.createUploadLink(current_path)}
+                                        onUpFolder={this.onUpFolder}
+                                    />
+                                }
                                 {listNodes}
                             </div>
                             :

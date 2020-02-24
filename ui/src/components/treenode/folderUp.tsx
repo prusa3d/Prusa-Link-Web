@@ -4,8 +4,14 @@
 
 import { h, Fragment } from "preact";
 import Upload from "../upload";
+
+interface upload_info{
+    url: string;
+    path:string;
+}
 interface Props {
     onUpFolder(): void;
+    upload_info?: upload_info;
 }
 
 const FolderUp: preact.FunctionalComponent<Props> = props => {
@@ -13,7 +19,7 @@ const FolderUp: preact.FunctionalComponent<Props> = props => {
     return (
         <Fragment>
             <div class="column is-full-touch is-half-desktop">
-                <Upload />
+                <Upload {...props.upload_info} />
             </div>
             <div class="column is-full tree-node-select" onClick={e => { e.preventDefault(); props.onUpFolder(); }} >
                 <div class="media">
