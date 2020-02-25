@@ -68,6 +68,12 @@ class Header extends Component<{}, S> {
                         <Link class="navbar-item prusa-menu-item is-size-2 is-size-6-desktop" activeClassName="active" href="/temperatures" onClick={this.onClickBurger}>
                             <Text id="temperatures.title">Temperatures</Text>
                         </Link>
+                        {
+                            process.env.PRINTER == "Original Prusa Mini" &&
+                            <Link class="navbar-item prusa-menu-item is-size-2 is-size-6-desktop" activeClassName="active" href="/g-code" onClick={this.onClickBurger}>
+                                G-code
+                            </Link>
+                        }
                     </div>
                 </div>
             </nav>

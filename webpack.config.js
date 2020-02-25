@@ -11,23 +11,27 @@ const HtmlWebpackPlugin = require('html-webpack-plugin')
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
 
+const printers = {
+    sl1: "Original Prusa SL1",
+    mini: "Original Prusa Mini"
+}
 
 module.exports = (env, args) => {
     let devMode = false;
     // Global variables
     let apiKey = "developer";
-    let printer = "Original Prusa SL1";
+    let printer = printers["sl1"];
     let update_timer = 5000;
 
     if (args && args.mode === 'production') {
         console.log('== Production mode');
 
         apiKey = (typeof env.apiKey !== "undefined") ? env.apiKey : apiKey;
-        printer = (typeof env.printer !== "undefined") ? env.printer : printer;
+        printer = (typeof env.printer !== "undefined") ? printers[env.printer] : printer;
         update_timer = (typeof env.update_timer !== "undefined") ? env.update_timer : update_timer;
     } else {
         devMode = true;
-        printer = (typeof env.printer !== "undefined") ? env.printer : printer;
+        printer = (typeof env.printer !== "undefined") ? printers[env.printer] : printer;
         console.log('== Development mode');
     }
     console.log(`* printer: ${printer}`);

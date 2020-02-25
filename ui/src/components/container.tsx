@@ -12,11 +12,8 @@ import { homeProps, Home } from "../routes/home";
 import Header from "./header";
 import StatusLeftBoard from "./status-left";
 import Temperatures from "../routes/temperatures";
-
-let UnderConstruction:any;
-if (process.env.PRINTER != "Original Prusa Mini"){
-    UnderConstruction = require("./under-construction");
-}
+import UnderConstruction from "./under-construction";
+import GCode from "../routes/g-code"
 
 interface S extends homeProps {
     currentUrl: string;
@@ -105,16 +102,20 @@ class Container extends Component<{ definition: any }, S> {
                                 <div class="column is-three-quarters-desktop is-full-mobile">
                                     <Router onChange={handleRoute}>
                                         <Home path="/" {...this.state} />
-                                         {
+                                        {
                                             process.env.PRINTER != "Original Prusa Mini" &&
                                             <UnderConstruction path="/projects/" />
                                         }
-                                         {/* <Project
+                                        {/* <Project
                                             path="/projects/"
                                             progress_bar={this.state.progress_bar}
                                             progress_status={this.state.progress_status}
                                         />  */}
                                         <Temperatures path="/temperatures/" temperatures={this.state.temperatures} />
+                                        {
+                                            process.env.PRINTER == "Original Prusa Mini" &&
+                                            <GCode path="/g-code/" />
+                                        }
                                     </Router>
                                 </div>
                             </div>
