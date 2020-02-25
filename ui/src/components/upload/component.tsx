@@ -14,29 +14,33 @@ interface P {
 
 interface S {
     active: boolean;
+    files: number;
 }
 
 class Upload extends Component<P, S> {
 
     ref = createRef();
-    state = { active: false };
+    state = {
+        active: false,
+        files: 0
+    };
 
     handleDragEnter = (e: DragEvent) => {
         e.preventDefault();
         e.stopPropagation();
-        this.setState({ active: true });
+        this.setState(prev => ({ ...prev, active: true }));
     };
 
     handleDragLeave = (e: DragEvent) => {
         e.preventDefault();
         e.stopPropagation();
-        this.setState({ active: false });
+        this.setState(prev => ({ ...prev, active: false }));
     };
 
     handleDragOver = (e: DragEvent) => {
         e.preventDefault();
         e.stopPropagation();
-        this.setState({ active: true });
+        this.setState(prev => ({ ...prev, active: true }));
     };
 
     handleDrop = (e: DragEvent) => {
@@ -44,7 +48,7 @@ class Upload extends Component<P, S> {
         e.stopPropagation();
         let dt = e.dataTransfer;
         let files = dt.files;
-        this.setState({ active: false });
+        this.setState(prev => ({ ...prev, active: false }));
         this.handleFiles(files);
     };
 
@@ -76,21 +80,27 @@ class Upload extends Component<P, S> {
         url = url ? url : "/api/files/local";
         path = path ? path : "";
 
-        let formData = new FormData()
+        const formData = new FormData()
         formData.append('path', path)
         formData.append('file', file)
 
-        fetch(url, {
-            method: 'POST',
-            body: formData,
-            headers: {
-                "X-Api-Key": process.env.APIKEY,
-            },
-        });
+        const request = new XMLHttpRequest();
+        request.open('POST', url);
+        request.setRequestHeader("X-Api-Key", process.env.APIKEY);
 
+        const that = this;
+        request.onloadstart = function (e: ProgressEvent) {
+            that.setState(prev => ({ ...prev, files: prev.files + 1 }));
+        }
+
+        request.onloadend = function (e: ProgressEvent) {
+            that.setState(prev => ({ ...prev, files: prev.files - 1 }));
+        }
+
+        request.send(formData);
     }
 
-    render({ }, { active }) {
+    render({ }, { active, files }) {
 
         return (
             <div
@@ -111,7 +121,10 @@ class Upload extends Component<P, S> {
                         onClick={e => this.onclickFile(e)}
                     >
                         <div class="column is-offset-5">
-                            <img class="image is-48x48 project-icon-desktop prusa-img-upload" src={icon_download} />
+                            <img
+                                class={`image is-48x48 project-icon-desktop prusa-img-upload ${files > 0 ? "prusa-effect-pulse" : ""}`}
+                                src={icon_download}
+                            />
                         </div>
                         <div class="column is-6-touch is-offset-4-touch is-10-desktop is-offset-2-desktop subtitle is-size-5 is-size-6-desktop">
                             Choose a *.sl1 or drop it here.
