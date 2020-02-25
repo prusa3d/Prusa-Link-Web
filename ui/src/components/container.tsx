@@ -9,10 +9,14 @@ import { IntlProvider } from 'preact-i18n';
 import { update, printerState, initPrinterState } from "../components/telemetry";
 import { homeProps, Home } from "../routes/home";
 //import Project from "../routes/project";
-import UnderConstruction from "./under-construction";
 import Header from "./header";
 import StatusLeftBoard from "./status-left";
 import Temperatures from "../routes/temperatures";
+
+let UnderConstruction:any;
+if (process.env.PRINTER != "Original Prusa Mini"){
+    UnderConstruction = require("./under-construction");
+}
 
 interface S extends homeProps {
     currentUrl: string;

@@ -9,7 +9,11 @@ import Welcome from "../../components/notification/welcome"
 import { StatusBoardTable, StatusBoardTableProps } from '../../components/status-board/board';
 import { StatusProgress, StatusProgressProps } from "../../components/status-board/progress";
 import { TempProps, Temperature } from "../../components/temperature";
-import Upload from "../../components/upload";
+
+let Upload;
+if (process.env.PRINTER != "Original Prusa Mini") {
+  Upload = require("../../components/upload");
+}
 
 export interface homeProps extends TempProps {
   progress_bar: StatusProgressProps;

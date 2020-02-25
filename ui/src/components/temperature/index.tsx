@@ -49,7 +49,7 @@ export const Temperature: preact.FunctionalComponent<P> = withText({
                 <g>
                     <rect vector-effect="non-scaling-stroke" role="presentation" shapeRendering="auto" x="355"
                         y="280" width="170.85467128027682" height="20.75" style="fill: none;"></rect>
-                    <path d="M 360, 285 m -6, 0 a 6, 6 0 1,0 12,0 a 6, 6 0 1,0 -12,0" role="presentation"
+                    <path d={`M ${process.env.PRINTER == "Original Prusa SL1" ? 360 : 410}, 285 m -6, 0 a 6, 6 0 1,0 12,0 a 6, 6 0 1,0 -12,0`} role="presentation"
                         shapeRendering="auto" class="temp-legend-led"></path>
                     {
                         process.env.PRINTER == "Original Prusa SL1" &&
@@ -60,7 +60,7 @@ export const Temperature: preact.FunctionalComponent<P> = withText({
                         role="presentation" shapeRendering="auto" class="temp-legend-cpu"></path>
                     <text direction="inherit" dx="0" dy="5.324999999999999" x="368" y="285"
                         id="chart-legend-0-labels-0">
-                        <tspan x="368" dx="0" text-anchor="start" class="temp-text">
+                        <tspan x={process.env.PRINTER == "Original Prusa SL1" ? "368" : "420"} dx="0" text-anchor="start" class="temp-text">
                             {process.env.PRINTER == "Original Prusa SL1" ? "led" : "nozzle"}
                         </tspan>
                     </text>
