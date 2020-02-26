@@ -17,15 +17,16 @@ const GCode: preact.FunctionalComponent<P> = props => {
     e.preventDefault();
     e.stopPropagation();
     const input = ref.current;
-
     if (input) {
+      const command = input.value;
       fetch("/api/g-code", {
         method: 'POST',
         headers: {
+          "Content-Type": "application/json",
           "X-Api-Key": process.env.APIKEY,
         },
         body: JSON.stringify({
-          "command": input.value
+          "command": command
         })
       });
     }
