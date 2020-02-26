@@ -5,7 +5,9 @@
 import { h, Component, createRef } from "preact";
 import { Text } from 'preact-i18n';
 import "./style.scss";
-const icon_download = require("../../assets/download.svg")
+
+import Static from "./static"
+import Dynamic from "./dynamic"
 
 interface P {
     url: string;
@@ -14,7 +16,7 @@ interface P {
 
 interface S {
     active: boolean;
-    files: number;
+    progress: { [index: string]: { [property: string]: number } };
 }
 
 class Upload extends Component<P, S> {
@@ -22,7 +24,7 @@ class Upload extends Component<P, S> {
     ref = createRef();
     state = {
         active: false,
-        files: 0
+        progress: {}
     };
 
     handleDragEnter = (e: DragEvent) => {
@@ -79,6 +81,7 @@ class Upload extends Component<P, S> {
         let { url, path } = this.props;
         url = url ? url : "/api/files/local";
         path = path ? path : "";
+        const index = url + path + file.name;
 
         const formData = new FormData()
         formData.append('path', path)
@@ -88,20 +91,37 @@ class Upload extends Component<P, S> {
         request.open('POST', url);
         request.setRequestHeader("X-Api-Key", process.env.APIKEY);
 
+        request.onprogress = function (e: ProgressEvent) {
+            that.setState(prev => {
+                const progress = prev.progress;
+                const current = progress[index];
+                current["loaded"] = current["loaded"] + e.loaded;
+                current["total"] = e.total;
+                return { ...prev, progress: progress }
+            });
+        }
+
         const that = this;
         request.onloadstart = function (e: ProgressEvent) {
-            that.setState(prev => ({ ...prev, files: prev.files + 1 }));
+            that.setState(prev => {
+                const progress = prev.progress;
+                progress[index] = { loaded: 0, total: 0 }
+                return { ...prev, progress: progress }
+            });
         }
 
         request.onloadend = function (e: ProgressEvent) {
-            that.setState(prev => ({ ...prev, files: prev.files - 1 }));
+            that.setState(prev => {
+                const progress = prev.progress;
+                delete progress[index];
+                return { ...prev, progress: progress }
+            });
         }
 
         request.send(formData);
     }
 
-    render({ }, { active, files }) {
-
+    render({ }, { active, progress }) {
         return (
             <div
                 class="columns is-multiline is-mobile"
@@ -116,20 +136,11 @@ class Upload extends Component<P, S> {
                 </p>
                 </div>
                 <div class="column is-10 is-offset-1">
-                    <div
-                        class={`"columns is-multiline is-mobile prusa-border-dashed ${active ? "prusa-active-upload" : ""}`}
-                        onClick={e => this.onclickFile(e)}
-                    >
-                        <div class="column is-offset-5">
-                            <img
-                                class={`image is-48x48 project-icon-desktop prusa-img-upload ${files > 0 ? "prusa-effect-pulse" : ""}`}
-                                src={icon_download}
-                            />
-                        </div>
-                        <div class="column is-6-touch is-offset-4-touch is-10-desktop is-offset-2-desktop subtitle is-size-5 is-size-6-desktop">
-                            Choose a *.sl1 or drop it here.
-                        </div>
-                    </div>
+                    {
+                        Object.keys(progress).length > 0
+                            ? <Dynamic progress={progress} />
+                            : <Static active={active} onclickFile={this.onclickFile} />
+                    }
                 </div>
                 <input ref={this.ref} style="display:none" type="file" multiple onInput={e => this.handleInput(e)} />
             </div>
