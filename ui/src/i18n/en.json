@@ -2,11 +2,11 @@
     "status-left": {
         "temp_cpu": "CPU temperature",
         "temp_led": "UV led temperature",
-        "temp_amb": "ambient temperature",
+        "temp_amb": "Ambient temperature",
         "uv_led_fan": "UV LED fan",
-        "blower_fan": "blower fan",
-        "rear_fan": "rear fan",
-        "cover_state": "cover state",
+        "blower_fan": "Blower fan",
+        "rear_fan": "Rear fan",
+        "cover_state": "Cover state",
         "nozzle": "Nozzle Temperature",
         "heatbed": "Heatbed",
         "speed": "Printing Speed",
@@ -22,17 +22,17 @@
         "status-priting": "Priting"
     },
     "status-board": {
-        "remaining-time": "remaining time",
-        "estimated-end": "estimated end",
-        "printing-time": "printing time",
-        "layer": "layer",
-        "remaining-resin": "remaining resin",
-        "consumed-resin": "consumed resin"
+        "remaining-time": "Remaining time",
+        "estimated-end": "Rstimated end",
+        "printing-time": "Printing time",
+        "layer": "Layer",
+        "remaining-resin": "Remaining resin",
+        "consumed-resin": "Consumed resin"
     },
     "temperature": {
         "title": "Printer temperatures",
-        "label_x": "Time (s)",
-        "label_y": "Temperature (°C)"
+        "label_x": "Time [s]",
+        "label_y": "Temperature [°C]"
     },
     "project": {
         "title": "Project files",

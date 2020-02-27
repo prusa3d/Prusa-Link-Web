@@ -44,19 +44,19 @@ export const StatusBoardTable = ({
   return (
     <Fragment>
       <div class="columns">
-        <StatusBoardItem id="remaining-time" title="remaining time" value={remaining_time > 0 ? formatTime(remaining_time) : ""} />
-        <StatusBoardItem id="estimated-end" title="estimated end" value={remaining_time > 0 ? formatTimeEnd(remaining_time) : ""} />
-        <StatusBoardItem id="printing-time" title="printing time" value={printing_time > 0 ? formatTime(printing_time) : ""} />
+        <StatusBoardItem id="remaining-time" title="Remaining time" value={remaining_time > 0 ? formatTime(remaining_time) : "0 min"} />
+        <StatusBoardItem id="estimated-end" title="Estimated end" value={remaining_time > 0 ? formatTimeEnd(remaining_time) : "00:00"} />
+        <StatusBoardItem id="printing-time" title="Printing time" value={printing_time > 0 ? formatTime(printing_time) : "0 min"} />
       </div>
       <div class="columns">
-        <StatusBoardItem id="layer" title="layer" value={current_layer > 0 ? `${current_layer}/${total_layers}` : "0/0"} />
+        <StatusBoardItem id="layer" title="Layer" value={current_layer > 0 ? `${current_layer}/${total_layers}` : "0/0"} />
         {
           process.env.PRINTER != "Original Prusa Mini" &&
-          <StatusBoardItem id="remaining-resin" title="remaining resin" value={`${numberFormat(remaining_material)} ml`} />
+          <StatusBoardItem id="remaining-resin" title="Remaining resin" value={`${numberFormat(remaining_material)} ml`} />
         }
         {
           process.env.PRINTER != "Original Prusa Mini" &&
-          <StatusBoardItem id="consumed-resin" title="consumed resin" value={`${numberFormat(consumed_material)} ml`} />
+          <StatusBoardItem id="consumed-resin" title="Consumed resin" value={`${numberFormat(consumed_material)} ml`} />
         }
       </div>
     </Fragment>

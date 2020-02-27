@@ -13,7 +13,6 @@ import Header from "./header";
 import StatusLeftBoard from "./status-left";
 import Temperatures from "../routes/temperatures";
 import UnderConstruction from "./under-construction";
-import GCode from "../routes/g-code"
 
 interface S extends homeProps {
     currentUrl: string;
@@ -112,10 +111,6 @@ class Container extends Component<{ definition: any }, S> {
                                             progress_status={this.state.progress_status}
                                         />  */}
                                         <Temperatures path="/temperatures/" temperatures={this.state.temperatures} />
-                                        {
-                                            process.env.PRINTER == "Original Prusa Mini" &&
-                                            <GCode path="/g-code/" />
-                                        }
                                     </Router>
                                 </div>
                             </div>

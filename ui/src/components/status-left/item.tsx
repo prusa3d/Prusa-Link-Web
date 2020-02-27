@@ -28,20 +28,20 @@ if (process.env.PRINTER == "Original Prusa SL1") {
   };
 
   title_icon = {
-    temp_cpu: { title: "CPU temperature", icon_scr: tem_svg, format: formatUnit("°C") },
-    temp_led: { title: "UV led temperature", icon_scr: tem_svg, format: formatUnit("°C") },
-    temp_amb: { title: "ambient temperature", icon_scr: tem_svg, format: formatUnit("°C") },
+    temp_cpu: { title: "CPU temperature", icon_scr: tem_svg, format: formatUnit(" °C") },
+    temp_led: { title: "UV led temperature", icon_scr: tem_svg, format: formatUnit(" °C") },
+    temp_amb: { title: "Ambient temperature", icon_scr: tem_svg, format: formatUnit(" °C") },
     uv_led_fan: { title: "UV LED fan", icon_scr: fan_svg, format: addUnit(" RPM") },
-    blower_fan: { title: "blower fan", icon_scr: fan_svg, format: addUnit(" RPM") },
-    rear_fan: { title: "rear fan", icon_scr: fan_svg, format: addUnit(" RPM") },
-    cover_state: { title: "cover state", icon_scr: require("../../assets/cover_color.svg"), format: formatCover },
+    blower_fan: { title: "Blower fan", icon_scr: fan_svg, format: addUnit(" RPM") },
+    rear_fan: { title: "Rear fan", icon_scr: fan_svg, format: addUnit(" RPM") },
+    cover_state: { title: "Cover state", icon_scr: require("../../assets/cover_color.svg"), format: formatCover },
   };
 
 } else {
 
   title_icon = {
-    temp_nozzle: { title: "Nozzle Temperature", icon_scr: require("../../assets/status_nozzle.svg"), format: formatUnit("°C") },
-    temp_bed: { title: "Heatbed", icon_scr: require("../../assets/status_heatbed.svg"), format: formatUnit("°C") },
+    temp_nozzle: { title: "Nozzle Temperature", icon_scr: require("../../assets/status_nozzle.svg"), format: formatUnit(" °C") },
+    temp_bed: { title: "Heatbed", icon_scr: require("../../assets/status_heatbed.svg"), format: formatUnit(" °C") },
     printing_speed: { title: "Printing Speed", icon_scr: require("../../assets/status_prnspeed.svg"), format: formatUnit("%") },
     flow_factor: { title: "Printing Flow", icon_scr: require("../../assets/status_prnflow.svg"), format: numberFormat },
     pos_z_mm: { title: "Z-Height", icon_scr: require("../../assets/status_z_axis.svg"), format: formatUnit(" mm") },

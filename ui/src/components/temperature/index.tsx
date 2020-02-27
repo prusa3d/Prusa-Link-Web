@@ -15,8 +15,8 @@ interface P extends TempProps {
 
 export const Temperature: preact.FunctionalComponent<P> = withText({
     title: <Text id="temperature.title">temperatures</Text>,
-    label_x: <Text id="temperature.label_x">Time (s)</Text>,
-    label_y: <Text id="temperature.label_y">Temperature (°C)</Text>
+    label_x: <Text id="temperature.label_x">Time [s]</Text>,
+    label_y: <Text id="temperature.label_y">Temperature [°C]</Text>
 })(props => {
 
     let temperatures = props.temperatures;
