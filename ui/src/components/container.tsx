@@ -8,11 +8,10 @@ import { IntlProvider } from 'preact-i18n';
 
 import { update, printerState, initPrinterState } from "../components/telemetry";
 import { homeProps, Home } from "../routes/home";
-//import Project from "../routes/project";
+import Project from "../routes/project";
 import Header from "./header";
 import StatusLeftBoard from "./status-left";
 import Temperatures from "../routes/temperatures";
-import UnderConstruction from "./under-construction";
 
 interface S extends homeProps {
     currentUrl: string;
@@ -101,15 +100,11 @@ class Container extends Component<{ definition: any }, S> {
                                 <div class="column is-three-quarters-desktop is-full-mobile">
                                     <Router onChange={handleRoute}>
                                         <Home path="/" {...this.state} />
-                                        {
-                                            process.env.PRINTER != "Original Prusa Mini" &&
-                                            <UnderConstruction path="/projects/" />
-                                        }
-                                        {/* <Project
+                                        <Project
                                             path="/projects/"
                                             progress_bar={this.state.progress_bar}
                                             progress_status={this.state.progress_status}
-                                        />  */}
+                                        />
                                         <Temperatures path="/temperatures/" temperatures={this.state.temperatures} />
                                     </Router>
                                 </div>

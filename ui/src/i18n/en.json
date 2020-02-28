@@ -40,13 +40,24 @@
         "leyer-height": "leyer height",
         "back": "BACK",
         "start_print": "START PRINT",
-        "change-exposure": "change exposure times",
-        "refill-resin": "refill resin",
-        "cancel-print": "cancel print"
+        "change-exposure": "Change exposure times",
+        "exposure_time_ms": "exposure time",
+        "exposure_time_first_ms": "first layer",
+        "refill-resin": "Refill resin",
+        "cancel-print": "Cancel print",
+        "cancel-print-question": "Do you really want to cancel print?",
+        "please-refill": "Please fully refill resin tank."
     },
     "notification": {
         "welcome-part1": "Welcome to the web interface of your",
         "welcome-part2": "Please note that values are shown only when the printer is printing."
     },
-    "under-construction": "Under construction"
+    "under-construction": "Under construction",
+    "questions": {
+        "yes": "yes",
+        "no": "no",
+        "save-changes": "save changes",
+        "resin-fully-refilled": "resin fully refilled",
+        "cancel": "cancel"
+    }
 }

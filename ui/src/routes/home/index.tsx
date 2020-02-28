@@ -32,11 +32,14 @@ export const Home: preact.FunctionalComponent<homeProps> = props => {
           <StatusProgress {...props.progress_bar} />
           <br />
           <Upload url={null} path={null} />
-          <br />
-          <Temperature temperatures={props.temperatures} bigSize={false} />
         </div>
         <div class="column">
           <StatusBoardTable {...props.progress_status} />
+        </div>
+      </div>
+      <div class="columns is-multiline is-mobile">
+        <div class="column is-full">
+          <Temperature temperatures={props.temperatures} bigSize={false} />
         </div>
       </div>
     </Fragment>

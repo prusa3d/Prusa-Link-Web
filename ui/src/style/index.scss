@@ -29,4 +29,8 @@ $success: #f8651b;
 @import "../../../node_modules/bulma/sass/layout/section.sass";
 @import "../../../node_modules/bulma/sass/grid/_all.sass";
 
+.prusa-no-focus:focus {
+  outline: none;
+}
+
 //@import "../../node_modules/bulma/bulma.sass";

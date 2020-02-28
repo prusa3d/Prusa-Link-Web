@@ -10,21 +10,21 @@ import { Job, JobProps } from "../../components/job";
 
 
 class Project extends Component<JobProps, {}> {
+    render(props, { }) {
 
-    render() {
-        return (
-            <Fragment>
-                <Title id="project.title" default_text="Project files" />
-                {
-                    this.props.progress_bar.project_name == ""
-                        ? <TreeNode />
-                        : <Job {...this.props} />
-                }
-            </Fragment>
-        );
+        let view;
+        if (props.progress_bar.project_name == "") {
+            view = (
+                <Fragment>
+                    <Title id="project.title" default_text="Project files" />
+                    <TreeNode />
+                </Fragment>
+            );
+        } else {
+            view = (<Job {...this.props} />);
+        }
+        return (view);
     }
 }
-
-
 
 export default Project;

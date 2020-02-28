@@ -26,15 +26,21 @@ export class Job extends Component<JobProps, S> {
     this.setState({ show: nextShow });
   };
 
+  onBack = (e: Event) => {
+    e.preventDefault();
+    e.stopPropagation();
+    this.setState({ show: 0 }, () => { this.forceUpdate(); });
+  }
+
   render(props, { show }) {
     if (show == 1) {
-      return (<ExposureTimes />);
+      return (<ExposureTimes onBack={this.onBack} />);
     }
     else if (show == 2) {
-      return (<Refill />);
+      return (<Refill onBack={this.onBack} />);
     }
     else if (show == 3) {
-      return (<Cancel />);
+      return (<Cancel onBack={this.onBack} />);
     }
     else {
       return (<JobProgress {...props} onclick={this.onclick} />);
