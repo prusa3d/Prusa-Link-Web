@@ -1,49 +1,49 @@
 {
-    "status-left": {
-        "temp_cpu": "température CPU",
-        "temp_led": "UV led temperature",
-        "temp_amb": "température ambiante",
-        "uv_led_fan": "Ventilateur LED UV",
-        "blower_fan": "ventilateur de ventilateur",
-        "rear_fan": "ventilateur arrière",
-        "cover_state": "état de couverture",
-        "nozzle": "Température de la buse",
-        "heatbed": "Heatbed",
-        "speed": "Vitesse d'impression",
-        "flow": "Flux d'impression",
-        "height": "Hauteur Z",
-        "material": "Matériel",
-        "cover_state_false": "Fermé",
-        "cover_state_true": "Ouvert"
-    },
-    "home": {
-        "title": "Dashboard",
-        "subtitle": "état de l'imprimante"
-    },
-    "status-board": {
-        "remaining-time": "temps restant",
-        "estimated-end": "fin estimée",
-        "printing-time": "temps d'impression",
-        "layer": "couche",
-        "remaining-resin": "résine restante",
-        "consumed-resin": "résine consommée"
-    },
-    "temperature": {
-        "title": "températures",
-        "subtitle": "températures de l'imprimante",
-        "label_x": "Heure (s)",
-        "label_y": "Température (°C)"
-    },
-    "project": {
-        "title": "Projects",
-        "subtitle": "fichiers de projet",
-        "material": "Material",
-        "leyer-height": "leyer height",
-        "back": "BACK",
-        "start_print": "START PRINT",
-        "change-exposure": "change exposure times",
-        "refill-resin": "refill resin",
-        "cancel-print": "cancel print"
-    },
-    "under-construction": "Under construction"
+  "status-left": {
+    "temp_cpu": "température CPU",
+    "temp_led": "UV led temperature",
+    "temp_amb": "température ambiante",
+    "uv_led_fan": "Ventilateur LED UV",
+    "blower_fan": "ventilateur de ventilateur",
+    "rear_fan": "ventilateur arrière",
+    "cover_state": "état de couverture",
+    "nozzle": "Température de la buse",
+    "heatbed": "Heatbed",
+    "speed": "Vitesse d'impression",
+    "flow": "Flux d'impression",
+    "height": "Hauteur Z",
+    "material": "Matériel",
+    "cover_state_false": "Fermé",
+    "cover_state_true": "Ouvert"
+  },
+  "home": {
+    "title": "Dashboard",
+    "subtitle": "état de l'imprimante"
+  },
+  "status-board": {
+    "remaining-time": "temps restant",
+    "estimated-end": "fin estimée",
+    "printing-time": "temps d'impression",
+    "layer": "couche",
+    "remaining-resin": "résine restante",
+    "consumed-resin": "résine consommée"
+  },
+  "temperature": {
+    "title": "températures",
+    "subtitle": "températures de l'imprimante",
+    "label_x": "Heure (s)",
+    "label_y": "Température (°C)"
+  },
+  "project": {
+    "title": "Projects",
+    "subtitle": "fichiers de projet",
+    "material": "Material",
+    "leyer-height": "leyer height",
+    "back": "BACK",
+    "start_print": "START PRINT",
+    "change-exposure": "change exposure times",
+    "refill-resin": "refill resin",
+    "cancel-print": "cancel print"
+  },
+  "under-construction": "Under construction"
 }

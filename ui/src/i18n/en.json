@@ -1,63 +1,63 @@
 {
-    "status-left": {
-        "temp_cpu": "CPU temperature",
-        "temp_led": "UV led temperature",
-        "temp_amb": "Ambient temperature",
-        "uv_led_fan": "UV LED fan",
-        "blower_fan": "Blower fan",
-        "rear_fan": "Rear fan",
-        "cover_state": "Cover state",
-        "nozzle": "Nozzle Temperature",
-        "heatbed": "Heatbed",
-        "speed": "Printing Speed",
-        "flow": "Printing Flow",
-        "height": "Z-Height",
-        "material": "Material",
-        "cover_state_false": "Closed",
-        "cover_state_true": "Opened"
-    },
-    "home": {
-        "title": "Printer status:",
-        "status-idle": "Idle",
-        "status-priting": "Priting"
-    },
-    "status-board": {
-        "remaining-time": "Remaining time",
-        "estimated-end": "Rstimated end",
-        "printing-time": "Printing time",
-        "layer": "Layer",
-        "remaining-resin": "Remaining resin",
-        "consumed-resin": "Consumed resin"
-    },
-    "temperature": {
-        "title": "Printer temperatures",
-        "label_x": "Time [s]",
-        "label_y": "Temperature [°C]"
-    },
-    "project": {
-        "title": "Project files",
-        "material": "Material",
-        "leyer-height": "leyer height",
-        "back": "BACK",
-        "start_print": "START PRINT",
-        "change-exposure": "Change exposure times",
-        "exposure_time_ms": "exposure time",
-        "exposure_time_first_ms": "first layer",
-        "refill-resin": "Refill resin",
-        "cancel-print": "Cancel print",
-        "cancel-print-question": "Do you really want to cancel print?",
-        "please-refill": "Please fully refill resin tank."
-    },
-    "notification": {
-        "welcome-part1": "Welcome to the web interface of your",
-        "welcome-part2": "Please note that values are shown only when the printer is printing."
-    },
-    "under-construction": "Under construction",
-    "questions": {
-        "yes": "yes",
-        "no": "no",
-        "save-changes": "save changes",
-        "resin-fully-refilled": "resin fully refilled",
-        "cancel": "cancel"
-    }
+  "status-left": {
+    "temp_cpu": "CPU temperature",
+    "temp_led": "UV led temperature",
+    "temp_amb": "Ambient temperature",
+    "uv_led_fan": "UV LED fan",
+    "blower_fan": "Blower fan",
+    "rear_fan": "Rear fan",
+    "cover_state": "Cover state",
+    "nozzle": "Nozzle Temperature",
+    "heatbed": "Heatbed",
+    "speed": "Printing Speed",
+    "flow": "Printing Flow",
+    "height": "Z-Height",
+    "material": "Material",
+    "cover_state_false": "Closed",
+    "cover_state_true": "Opened"
+  },
+  "home": {
+    "title": "Printer status:",
+    "status-idle": "Idle",
+    "status-priting": "Priting"
+  },
+  "status-board": {
+    "remaining-time": "Remaining time",
+    "estimated-end": "Rstimated end",
+    "printing-time": "Printing time",
+    "layer": "Layer",
+    "remaining-resin": "Remaining resin",
+    "consumed-resin": "Consumed resin"
+  },
+  "temperature": {
+    "title": "Printer temperatures",
+    "label_x": "Time [s]",
+    "label_y": "Temperature [°C]"
+  },
+  "project": {
+    "title": "Project files",
+    "material": "Material",
+    "leyer-height": "leyer height",
+    "back": "BACK",
+    "start_print": "START PRINT",
+    "change-exposure": "Change exposure times",
+    "exposure_time_ms": "exposure time",
+    "exposure_time_first_ms": "first layer",
+    "refill-resin": "Refill resin",
+    "cancel-print": "Cancel print",
+    "cancel-print-question": "Do you really want to cancel print?",
+    "please-refill": "Please fully refill resin tank."
+  },
+  "notification": {
+    "welcome-part1": "Welcome to the web interface of your",
+    "welcome-part2": "Please note that values are shown only when the printer is printing."
+  },
+  "under-construction": "Under construction",
+  "questions": {
+    "yes": "yes",
+    "no": "no",
+    "save-changes": "save changes",
+    "resin-fully-refilled": "resin fully refilled",
+    "cancel": "cancel"
+  }
 }
