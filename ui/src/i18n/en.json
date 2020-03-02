@@ -27,7 +27,13 @@
     "printing-time": "Printing time",
     "layer": "Layer",
     "remaining-resin": "Remaining resin",
-    "consumed-resin": "Consumed resin"
+    "consumed-resin": "Consumed resin",
+    "pos_z_mm": "Z-Height",
+    "printing-speed": "Printing Speed",
+    "flow-factor": "Printing Flow",
+    "time-est": "Remaining time",
+    "print-dur": "Printing time",
+    "filament-status": "Filament sensor status"
   },
   "temperature": {
     "title": "Printer temperatures",
