@@ -38,7 +38,8 @@ const ProjectView: preact.FunctionalComponent<P> = props => {
       .then(res => res.blob())
       .then(blob => {
         ref.current.src = URL.createObjectURL(blob);
-      });
+      })
+      .catch(e => {});
   }, [props.preview_src]);
 
   const onStartPrint = (e: Event) => {

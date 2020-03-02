@@ -5,32 +5,30 @@
 import { h } from "preact";
 
 interface P {
-    progress: { [index: string]: { [property: string]: number } };
+  progress: { [index: string]: number };
 }
 
 const Dynamic: preact.FunctionalComponent<P> = ({ progress }) => {
+  let total = 0;
+  let n = Object.keys(progress).length;
+  for (let path in progress) {
+    total = total + progress[path];
+  }
 
-    let total = 0;
-    let loaded = 0;
-    for (let path in progress) {
-        total = total + progress[path].total;
-        loaded = loaded + progress[path].loaded;
-    }
-    let percentage = 0;
-    if (total > 0) {
-        percentage = (loaded / total) * 100;
-    }
-
-    return (
-        <div class={"columns is-multiline is-mobile prusa-border-dashed"} >
-            <div class="column is-full">
-                <progress class="progress is-success is-medium is-marginless" value={"" + percentage} max="100" />
-            </div>
-            <div class="column is-full has-text-centered subtitle is-size-3 is-size-6-desktop">
-                Uploading...
-            </div>
-        </div>
-    )
-}
+  return (
+    <div class={"columns is-multiline is-mobile prusa-border-dashed"}>
+      <div class="column is-full">
+        <progress
+          class="progress is-success is-medium is-marginless"
+          value={"" + (total / n) * 100}
+          max="100"
+        />
+      </div>
+      <div class="column is-full has-text-centered subtitle is-size-3 is-size-6-desktop">
+        Uploading...
+      </div>
+    </div>
+  );
+};
 
 export default Dynamic;
