@@ -252,7 +252,7 @@ paths:
       - in: path
         name: target
         required: true
-        description: The target location to which to upload the file (local, sdcard).
+        description: The target location to which to download the file (local, sdcard).
         schema:
           type: string
           default: local
@@ -285,6 +285,40 @@ paths:
           description: File not found.
         415:
           description: Unsupported Media Type.
+  /api/files/preview/{target}/{filename}:
+    parameters:
+      - in: path
+        name: target
+        required: true
+        description: The target project location.
+        schema:
+          type: string
+          default: local
+          enum:
+            - local
+            - sdcard
+      - in: path
+        name: filename
+        required: true
+        description: File name.
+        schema:
+          type: string
+    get:
+      summary: Download a preview image.
+      security:
+        - ApiKeyAuth: []
+      responses:
+        200:
+          description: OK
+          content:
+            application/octet-stream:
+              schema:
+                type: string
+                format: binary
+        403:
+          $ref: "#/components/responses/Unauthorized"
+        404:
+          description: File not found.
   /api/files:
     get:
       tags:
@@ -489,6 +523,79 @@ paths:
           description: If location is neither local nor sdcard or the requested file was not found
         409:
           description: If the file to be deleted is currently being printed
+  /api/telemetry:
+    get:
+      summary: Retrieve all printer telemetry.
+      security:
+        - ApiKeyAuth: []
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: "#/components/schemas/TelemetryMini"
+                  - $ref: "#/components/schemas/TelemetrySL1"
+        403:
+          $ref: "#/components/responses/Unauthorized"
+  /api/properties:
+    get:
+      summary: Retrieve a specific property information.
+      security:
+        - ApiKeyAuth: []
+      parameters:
+        - in: query
+          name: values
+          schema:
+            type: array
+            items:
+              type: string
+          required: true
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Properties"
+        403:
+          $ref: "#/components/responses/Unauthorized"
+        404:
+          description: Not Found
+    post:
+      summary: Set a property.
+      security:
+        - ApiKeyAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Properties"
+      responses:
+        200:
+          description: Ok.
+        403:
+          $ref: "#/components/responses/Unauthorized"
+        404:
+          description: Not Found.
+  /api/job/material:
+    get:
+      summary: Feed the SL1 resin.
+      security:
+        - ApiKeyAuth: []
+      parameters:
+        - in: query
+          name: value
+          schema:
+            enum: ["start", "continue", "back"]
+      responses:
+        200:
+          description: OK
+        403:
+          $ref: "#/components/responses/Unauthorized"
+        400:
+          $ref: "#/components/responses/BadRequest"
 components:
   schemas:
     OctoConnCurrent:
@@ -962,6 +1069,69 @@ components:
               properties:
                 resource:
                   type: string
+    Properties:
+      type: object
+      properties:
+        exposure_time_ms:
+          type: number
+        exposure_time_first_ms:
+          type: number
+    TelemetryMini:
+      type: object
+      properties:
+        temp_bed:
+          type: number
+        temp_nozzle:
+          type: number
+        material:
+          type: string
+        project_name:
+          type: string
+        progress:
+          type: number
+        pos_z_mm:
+          type: number
+        printing_speed:
+          type: number
+        flow_factor:
+          type: number
+        print_dur:
+          type: string
+        time_est:
+          type: string
+        filament_status:
+          type: string
+    TelemetrySL1:
+      type: object
+      properties:
+        blower_fan:
+          type: integer
+        cover_closed:
+          type: boolean
+        temp_amb:
+          type: number
+        temp_cpu:
+          type: number
+        temp_led:
+          type: number
+        uv_led_fan:
+          type: integer
+        rear_fan:
+          type: integer
+        current_layer:
+          type: integer
+        remaining_material:
+          type: number
+        consumed_material:
+          type: number
+        progress:
+          type: number
+        project_name:
+          type: string
+        time_elapsed:
+          type: number
+        remaining_time:
+          type: number
   securitySchemes:
     ApiKeyAuth:
       type: apiKey
