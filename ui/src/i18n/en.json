@@ -23,8 +23,8 @@
   },
   "status-board": {
     "remaining-time": "Remaining time",
-    "estimated-end": "Rstimated end",
-    "printing-time": "Printing time",
+    "estimated-end": "Estimated end",
+    "time_elapsed": "Printing time",
     "layer": "Layer",
     "remaining-resin": "Remaining resin",
     "consumed-resin": "Consumed resin",

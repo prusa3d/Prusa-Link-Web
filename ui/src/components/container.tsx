@@ -11,32 +11,23 @@ import {
   printerState,
   initPrinterState
 } from "../components/telemetry";
-import { homeProps, Home } from "../routes/home";
+import Home from "../routes/home";
 import Project from "../routes/project";
 import Header from "./header";
 import StatusLeftBoard from "./status-left";
 import Temperatures from "../routes/temperatures";
 
-interface S extends homeProps {
+interface S {
   currentUrl: string;
+  temperatures: Array<Array<number>>;
   printer_state: printerState;
+  state: string;
 }
 
 const initState = {
-  progress_status: {
-    remaining_time: 0,
-    printing_time: 0,
-    current_layer: 0,
-    total_layers: 0,
-    remaining_material: 0,
-    consumed_material: 0
-  },
-  progress_bar: {
-    progress: 0,
-    project_name: ""
-  },
   printer_state: initPrinterState,
-  temperatures: []
+  temperatures: [],
+  state: "IDLE"
 };
 
 class Container extends Component<{ definition: any }, S> {
@@ -58,11 +49,7 @@ class Container extends Component<{ definition: any }, S> {
 
       return {
         printer_state: { ...prevState.printer_state, ...data.printer_state },
-        progress_bar: { ...prevState.progress_bar, ...data.progress_bar },
-        progress_status: {
-          ...prevState.progress_status,
-          ...data.progress_status
-        },
+        state: data.state,
         temperatures: prevState.temperatures
           .slice(indexOlder)
           .concat(data.temperatures)
@@ -77,7 +64,7 @@ class Container extends Component<{ definition: any }, S> {
   componentDidMount() {
     this.timer = setInterval(
       update(this.updateData, this.clearData),
-      Number(process.env.UPDATE_TIMER)
+      Number(process.env.UPDATE_PRINTER)
     );
   }
 
@@ -92,7 +79,7 @@ class Container extends Component<{ definition: any }, S> {
         currentUrl: e.url
       }));
     };
-
+    const isPrinting = this.state.state[0] == "P";
     return (
       <IntlProvider definition={this.props.definition}>
         <section id="app" class="section">
@@ -109,12 +96,12 @@ class Container extends Component<{ definition: any }, S> {
                 </div>
                 <div class="column is-three-quarters-desktop is-full-mobile">
                   <Router onChange={handleRoute}>
-                    <Home path="/" {...this.state} />
-                    <Project
-                      path="/projects/"
-                      progress_bar={this.state.progress_bar}
-                      progress_status={this.state.progress_status}
+                    <Home
+                      path="/"
+                      temperatures={this.state.temperatures}
+                      isPrinting={isPrinting}
                     />
+                    <Project path="/projects/" isPrinting={isPrinting} />
                     <Temperatures
                       path="/temperatures/"
                       temperatures={this.state.temperatures}

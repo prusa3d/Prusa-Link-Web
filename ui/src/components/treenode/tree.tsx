@@ -211,7 +211,7 @@ class Tree extends Component<{}, S> {
 
   componentDidMount() {
     this.connect();
-    this.timer = setInterval(this.connect, Number(process.env.UPDATE_TIMER));
+    this.timer = setInterval(this.connect, Number(process.env.UPDATE_FILES));
   }
 
   componentWillUnmount() {

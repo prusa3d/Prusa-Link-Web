@@ -539,6 +539,22 @@ paths:
                   - $ref: "#/components/schemas/TelemetrySL1"
         403:
           $ref: "#/components/responses/Unauthorized"
+  /api/progress:
+    get:
+      summary: Retrieve all progress measure.
+      security:
+        - ApiKeyAuth: []
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: "#/components/schemas/ProgressMini"
+                  - $ref: "#/components/schemas/ProgressSL1"
+        403:
+          $ref: "#/components/responses/Unauthorized"
   /api/properties:
     get:
       summary: Retrieve a specific property information.
@@ -596,6 +612,23 @@ paths:
           $ref: "#/components/responses/Unauthorized"
         400:
           $ref: "#/components/responses/BadRequest"
+  /api/project-name:
+    get:
+      summary: Retrieve all progress measure.
+      security:
+        - ApiKeyAuth: []
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  project_name:
+                    type: string
+        403:
+          $ref: "#/components/responses/Unauthorized"
 components:
   schemas:
     OctoConnCurrent:
@@ -1085,22 +1118,6 @@ components:
           type: number
         material:
           type: string
-        project_name:
-          type: string
-        progress:
-          type: number
-        pos_z_mm:
-          type: number
-        printing_speed:
-          type: number
-        flow_factor:
-          type: number
-        print_dur:
-          type: string
-        time_est:
-          type: string
-        filament_status:
-          type: string
     TelemetrySL1:
       type: object
       properties:
@@ -1118,6 +1135,28 @@ components:
           type: integer
         rear_fan:
           type: integer
+    ProgressMini:
+      type: object
+      properties:
+        progress:
+          type: number
+        pos_z_mm:
+          type: number
+        printing_speed:
+          type: number
+        flow_factor:
+          type: number
+        print_dur:
+          type: string
+        time_est:
+          type: string
+        filament_status:
+          type: string
+    ProgressSL1:
+      type: object
+      properties:
+        total_layers:
+          type: integer
         current_layer:
           type: integer
         remaining_material:
@@ -1126,8 +1165,6 @@ components:
           type: number
         progress:
           type: number
-        project_name:
-          type: string
         time_elapsed:
           type: number
         remaining_time:

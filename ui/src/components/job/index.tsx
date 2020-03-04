@@ -2,22 +2,19 @@
 // Copyright (C) 2018-2019 Prusa Research s.r.o. - www.prusa3d.com
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-import { h, Component } from 'preact';
+import { h, Component } from "preact";
 import "./style.scss";
-import { JobProgress, ProgressProps } from './progress';
+import JobProgress from "./progress";
 import Cancel from "./cancel";
 import Refill from "./refill";
 import ExposureTimes from "./exposure-times";
 
-export interface JobProps extends ProgressProps {
-
-}
+interface P {}
 interface S {
   show: number;
 }
 
-export class Job extends Component<JobProps, S> {
-
+class Job extends Component<P, S> {
   state = { show: 0 };
 
   shouldComponentUpdate = () => this.state.show == 0;
@@ -29,22 +26,22 @@ export class Job extends Component<JobProps, S> {
   onBack = (e: Event) => {
     e.preventDefault();
     e.stopPropagation();
-    this.setState({ show: 0 }, () => { this.forceUpdate(); });
-  }
+    this.setState({ show: 0 }, () => {
+      this.forceUpdate();
+    });
+  };
 
-  render(props, { show }) {
+  render({}, { show }) {
     if (show == 1) {
-      return (<ExposureTimes onBack={this.onBack} />);
+      return <ExposureTimes onBack={this.onBack} />;
+    } else if (show == 2) {
+      return <Refill onBack={this.onBack} />;
+    } else if (show == 3) {
+      return <Cancel onBack={this.onBack} />;
+    } else {
+      return <JobProgress onclick={this.onclick} />;
     }
-    else if (show == 2) {
-      return (<Refill onBack={this.onBack} />);
-    }
-    else if (show == 3) {
-      return (<Cancel onBack={this.onBack} />);
-    }
-    else {
-      return (<JobProgress {...props} onclick={this.onclick} />);
-    }
-
   }
 }
+
+export default Job;
