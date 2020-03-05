@@ -87,10 +87,10 @@ class Upload extends Component<P, S> {
     request.open("POST", url);
     request.setRequestHeader("X-Api-Key", process.env.APIKEY);
 
-    request.onprogress = function(e: ProgressEvent) {
+    request.upload.onprogress = function(e: ProgressEvent) {
       that.setState(prev => {
         const progress = prev.progress;
-        progress[index] = e.total ? e.total / e.total : 0;
+        progress[index] = e.total ? e.loaded / e.total : 0;
         return { ...prev, progress: progress };
       });
     };

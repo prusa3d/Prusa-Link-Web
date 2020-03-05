@@ -38,9 +38,7 @@ const ProjectNode: preact.FunctionalComponent<P> = props => {
         ref.current.src = URL.createObjectURL(blob);
       })
       .catch(e => {
-        if (ref.current) {
-          ref.current.src = preview;
-        }
+        ref.current.src = preview;
       });
   }, [preview_src]);
 
