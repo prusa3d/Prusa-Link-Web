@@ -120,12 +120,12 @@ export const StatusBoardMini = ({
         <StatusBoardItem
           id="time-est"
           title="Remaining time"
-          value={available(print_dur)}
+          value={available(time_est)}
         />
         <StatusBoardItem
           id="print-dur"
           title="Printing time"
-          value={available(time_est)}
+          value={available(print_dur)}
         />
         <StatusBoardItem
           id="filament-status"
