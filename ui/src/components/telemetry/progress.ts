@@ -6,7 +6,7 @@ let progressStatus;
 if (process.env.PRINTER == "Original Prusa SL1") {
   progressStatus = [
     "remaining_time",
-    "time_elapsed_min",
+    "time_elapsed",
     "consumed_material",
     "remaining_material",
     "current_layer",

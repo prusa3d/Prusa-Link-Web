@@ -7,10 +7,6 @@ $orange: #f8651b;
 $green: lime;
 $line-size: 0.1rem;
 
-.prusa-menu {
-  border-bottom: $line-size solid $gray;
-}
-
 .prusa-menu-item {
   border-bottom: $line-size solid transparent;
   padding-bottom: 0px;
@@ -27,7 +23,8 @@ $line-size: 0.1rem;
 }
 
 .navbar-logo {
-  background: url(../../assets/prusa_connect_local_logo_black.svg) no-repeat center center;
+  background: url(../../assets/prusa_connect_local_logo_black.svg) no-repeat
+    center center;
   background-size: cover;
   width: 328px;
   height: auto;

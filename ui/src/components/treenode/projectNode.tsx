@@ -44,6 +44,8 @@ const ProjectNode: preact.FunctionalComponent<P> = props => {
           not_found.push(preview_src);
           ref.current.src = preview;
         });
+    } else {
+      ref.current.src = preview;
     }
   }, [preview_src]);
 

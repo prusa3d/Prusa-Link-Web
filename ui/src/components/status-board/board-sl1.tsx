@@ -9,7 +9,7 @@ import StatusBoardItem from "./board-item";
 
 interface P {
   readonly remaining_time: number;
-  readonly time_elapsed_min: number;
+  readonly time_elapsed: number;
   readonly current_layer: number;
   readonly total_layers: number;
   readonly remaining_material: number;
@@ -18,7 +18,7 @@ interface P {
 
 export const initState = {
   remaining_time: 0,
-  time_elapsed_min: 0,
+  time_elapsed: 0,
   current_layer: 0,
   total_layers: 0,
   remaining_material: 0,
@@ -30,7 +30,7 @@ export const StatusBoardSL1: preact.FunctionalComponent<P> = withText({
 })(
   ({
     remaining_time,
-    time_elapsed_min,
+    time_elapsed,
     current_layer,
     total_layers,
     remaining_material,
@@ -53,7 +53,7 @@ export const StatusBoardSL1: preact.FunctionalComponent<P> = withText({
           <StatusBoardItem
             id="printing-time"
             title="Printing time"
-            value={formatTime(time_elapsed_min, less_time, "NA")}
+            value={formatTime(time_elapsed, less_time, "NA")}
           />
         </div>
         <div class="columns">

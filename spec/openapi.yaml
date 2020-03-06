@@ -1165,7 +1165,7 @@ components:
           type: number
         progress:
           type: number
-        time_elapsed_min:
+        time_elapsed:
           type: number
         remaining_time:
           type: number

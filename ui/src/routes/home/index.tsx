@@ -39,7 +39,7 @@ const Home: preact.FunctionalComponent<homeProps> = ({
       <div class="columns is-multiline">
         <StatusBoard printer_state={printer_state} />
         <div class="column is-full-touch is-half-desktop">
-          <Upload url={null} path={null} />
+          <Upload />
         </div>
       </div>
       <div class="columns is-multiline is-mobile">

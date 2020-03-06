@@ -30,7 +30,7 @@ const JobProgress: preact.FunctionalComponent<P> = props => {
           <div class="columns is-centered">
             <div class="column prusa-flex-no-grow">
               <button
-                class="button has-background-grey prusa-job-button title is-size-3 is-size-5-desktop"
+                class="button has-background-grey prusa-job-button title is-size-3 is-size-6-desktop"
                 onClick={e => onclick(e, 1)}
               >
                 <img
@@ -44,7 +44,7 @@ const JobProgress: preact.FunctionalComponent<P> = props => {
             </div>
             <div class="column prusa-flex-no-grow">
               <button
-                class="button has-background-grey prusa-job-button title is-size-3 is-size-5-desktop"
+                class="button has-background-grey prusa-job-button title is-size-3 is-size-6-desktop"
                 onClick={e => onclick(e, 2)}
               >
                 <img
@@ -56,7 +56,7 @@ const JobProgress: preact.FunctionalComponent<P> = props => {
             </div>
             <div class="column prusa-flex-no-grow">
               <button
-                class="button has-background-success prusa-job-button title is-size-3 is-size-5-desktop"
+                class="button has-background-success prusa-job-button title is-size-3 is-size-6-desktop"
                 onClick={e => onclick(e, 3)}
               >
                 <img

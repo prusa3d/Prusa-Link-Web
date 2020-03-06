@@ -72,12 +72,12 @@ const ProjectView: preact.FunctionalComponent<P> = props => {
       <div>
         <button
           onClick={e => onBack(e)}
-          class="button is-success is-size-5 is-size-6-desktop"
+          class="button is-success is-size-3 is-size-6-desktop"
         >
           <Text id="project.back">BACK</Text>
         </button>
         <button
-          class="button project-button is-pulled-right is-size-5 is-size-6-desktop"
+          class="button project-button is-pulled-right is-size-3 is-size-6-desktop"
           onClick={e => onStartPrint(e)}
         >
           <Text id="project.start_print">START PRINT</Text>

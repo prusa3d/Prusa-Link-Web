@@ -9,8 +9,9 @@ import Static from "./static";
 import Dynamic from "./dynamic";
 
 interface P {
-  url: string;
-  path: string;
+  url?: string;
+  path?: string;
+  update?: () => void;
 }
 
 interface S {
@@ -74,7 +75,7 @@ class Upload extends Component<P, S> {
   };
 
   uploadFile = (file: File) => {
-    let { url, path } = this.props;
+    let { url, path, update } = this.props;
     url = url ? url : "/api/files/local";
     path = path ? path : "";
     const index = url + path + file.name;
@@ -117,6 +118,9 @@ class Upload extends Component<P, S> {
         }
         return { ...prev };
       });
+      if (update) {
+        update();
+      }
     };
 
     request.send(formData);

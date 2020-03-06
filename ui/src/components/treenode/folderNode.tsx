@@ -5,29 +5,26 @@
 import { h } from "preact";
 
 interface Props {
-    display: string;
-    onSelectFolder(): void;
+  display: string;
+  onSelectFolder(): void;
 }
 
 const FolderNode: preact.FunctionalComponent<Props> = props => {
-
-    return (
-        <div class="column is-full tree-node-item" onClick={() => props.onSelectFolder()}>
-            <div class="media">
-                <figure class="media-left image is-48x48 project-icon-desktop">
-                    <img src={require("../../assets/projects_small.svg")} />
-                </figure>
-                <div class="media-content">
-                    <p class="title is-size-3 is-size-5-desktop">
-                        {props.display}
-                    </p>
-                </div>
-            </div>
+  return (
+    <div
+      class="column is-full tree-node-item"
+      onClick={() => props.onSelectFolder()}
+    >
+      <div class="media">
+        <figure class="media-left image is-48x48 project-icon-desktop">
+          <img src={require("../../assets/projects_small.svg")} />
+        </figure>
+        <div class="media-content">
+          <p class="title is-size-3 is-size-6-desktop">{props.display}</p>
         </div>
-    );
-}
-
+      </div>
+    </div>
+  );
+};
 
 export default FolderNode;
-
-
