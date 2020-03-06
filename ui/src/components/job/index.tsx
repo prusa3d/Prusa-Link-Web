@@ -8,8 +8,12 @@ import JobProgress from "./progress";
 import Cancel from "./cancel";
 import Refill from "./refill";
 import ExposureTimes from "./exposure-times";
+import { PrinterState } from "../telemetry";
 
-interface P {}
+interface P {
+  printer_state: PrinterState;
+}
+
 interface S {
   show: number;
 }
@@ -31,15 +35,17 @@ class Job extends Component<P, S> {
     });
   };
 
-  render({}, { show }) {
+  render({ printer_state }, { show }) {
     if (show == 1) {
       return <ExposureTimes onBack={this.onBack} />;
     } else if (show == 2) {
-      return <Refill onBack={this.onBack} />;
+      return <Refill printer_state={printer_state} onBack={this.onBack} />;
     } else if (show == 3) {
-      return <Cancel onBack={this.onBack} />;
+      return <Cancel printer_state={printer_state} onBack={this.onBack} />;
     } else {
-      return <JobProgress onclick={this.onclick} />;
+      return (
+        <JobProgress printer_state={printer_state} onclick={this.onclick} />
+      );
     }
   }
 }

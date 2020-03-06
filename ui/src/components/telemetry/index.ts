@@ -1,8 +1,9 @@
 // This file is part of Prusa-Connect-Web
 // Copyright (C) 2018-2019 Prusa Research s.r.o. - www.prusa3d.com
 // SPDX-License-Identifier: GPL-3.0-or-later
+import { STATE_IDLE } from "../utils/states";
 
-export interface printerState {
+export interface PrinterStatus {
   temp_cpu?: number;
   temp_led?: number;
   temp_amb?: number;
@@ -15,9 +16,14 @@ export interface printerState {
   material?: string;
 }
 
+export interface PrinterState {
+  state: number;
+  substate?: number;
+}
+
 let printStatus: string[];
 let printTemperatures: string[];
-let printerState: printerState;
+let printerState: PrinterStatus;
 
 if (process.env.PRINTER == "Original Prusa SL1") {
   printStatus = ["uv_led_fan", "blower_fan", "rear_fan"];
@@ -60,8 +66,8 @@ export function update(updateData, clearData) {
       })
       .then(response => response.json())
       .then(data => {
-        let printerState = {};
-        let state: string;
+        let printerStatus = {};
+        let printer_state;
         let newTemps = [];
         let value = null;
 
@@ -69,9 +75,9 @@ export function update(updateData, clearData) {
         for (let item of printStatus) {
           value = data[item];
           if (value) {
-            printerState[item] = value;
+            printerStatus[item] = value;
           } else {
-            printerState[item] = 0;
+            printerStatus[item] = 0;
           }
         }
 
@@ -80,30 +86,30 @@ export function update(updateData, clearData) {
         for (let item of printTemperatures) {
           value = data[item];
           if (value) {
-            printerState[item] = value;
+            printerStatus[item] = value;
             newTemps.push(value);
           } else {
-            printerState[item] = 0;
+            printerStatus[item] = 0;
             newTemps.push(value);
           }
         }
 
         value = data["cover_closed"];
         if (typeof value == "boolean") {
-          printerState["cover_state"] = value;
+          printerStatus["cover_state"] = value;
         }
         value = data["material"];
         if (typeof value == "string") {
-          printerState["material"] = value;
+          printerStatus["material"] = value;
         }
 
         value = data["state"];
-        state = value ? value : "IDLE";
+        printer_state = value ? value : { state: STATE_IDLE };
 
-        if (Object.keys(printerState).length > 0) {
+        if (Object.keys(printerStatus).length > 0) {
           updateData({
-            printer_state: printerState,
-            state: state,
+            printer_status: printerStatus,
+            printer_state: printer_state,
             temperatures: [newTemps]
           });
         }

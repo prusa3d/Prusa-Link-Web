@@ -5,10 +5,12 @@
 import { h, Component } from "preact";
 import { Router, RouterOnChangeArgs } from "preact-router";
 import { IntlProvider } from "preact-i18n";
+import { STATE_IDLE } from "./utils/states";
 
 import {
   update,
-  printerState,
+  PrinterStatus,
+  PrinterState,
   initPrinterState
 } from "../components/telemetry";
 import Home from "../routes/home";
@@ -20,14 +22,14 @@ import Temperatures from "../routes/temperatures";
 interface S {
   currentUrl: string;
   temperatures: Array<Array<number>>;
-  printer_state: printerState;
-  state: string;
+  printer_status: PrinterStatus;
+  printer_state: PrinterState;
 }
 
 const initState = {
-  printer_state: initPrinterState,
+  printer_status: initPrinterState,
   temperatures: [],
-  state: "IDLE"
+  printer_state: { state: STATE_IDLE }
 };
 
 class Container extends Component<{ definition: any }, S> {
@@ -48,8 +50,8 @@ class Container extends Component<{ definition: any }, S> {
       }
 
       return {
-        printer_state: { ...prevState.printer_state, ...data.printer_state },
-        state: data.state,
+        printer_status: { ...prevState.printer_status, ...data.printer_status },
+        printer_state: data.printer_state,
         temperatures: prevState.temperatures
           .slice(indexOlder)
           .concat(data.temperatures)
@@ -79,7 +81,6 @@ class Container extends Component<{ definition: any }, S> {
         currentUrl: e.url
       }));
     };
-    const isPrinting = this.state.state[0] == "P";
     return (
       <IntlProvider definition={this.props.definition}>
         <section id="app" class="section">
@@ -92,16 +93,19 @@ class Container extends Component<{ definition: any }, S> {
             <div class="column is-three-quarters-desktop is-full-mobile">
               <div class="columns is-centered is-desktop">
                 <div class="column is-full-mobile">
-                  <StatusLeftBoard printer_state={this.state.printer_state} />
+                  <StatusLeftBoard printer_status={this.state.printer_status} />
                 </div>
                 <div class="column is-three-quarters-desktop is-full-mobile">
                   <Router onChange={handleRoute}>
                     <Home
                       path="/"
                       temperatures={this.state.temperatures}
-                      isPrinting={isPrinting}
+                      printer_state={this.state.printer_state}
                     />
-                    <Project path="/projects/" isPrinting={isPrinting} />
+                    <Project
+                      path="/projects/"
+                      printer_state={this.state.printer_state}
+                    />
                     <Temperatures
                       path="/temperatures/"
                       temperatures={this.state.temperatures}

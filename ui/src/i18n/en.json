@@ -33,7 +33,8 @@
     "flow-factor": "Printing Flow",
     "time-est": "Remaining time",
     "print-dur": "Printing time",
-    "filament-status": "Filament sensor status"
+    "filament-status": "Filament sensor status",
+    "less-than-minute": "Less than a minute"
   },
   "temperature": {
     "title": "Printer temperatures",
@@ -65,5 +66,9 @@
     "save-changes": "save changes",
     "resin-fully-refilled": "resin fully refilled",
     "cancel": "cancel"
+  },
+  "upload": {
+    "uploading": "Uploading...",
+    "message": "Choose a *.sl1 or drop it here."
   }
 }

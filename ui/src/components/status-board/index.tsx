@@ -1,6 +1,8 @@
 import { h, Component, Fragment } from "preact";
 import StatusProgress from "./progress";
 import { update, updateProjectName } from "../telemetry/progress";
+import { isPrinting } from "../utils/states";
+import { PrinterState } from "../telemetry";
 
 let StatusBoardTable;
 let initState;
@@ -14,7 +16,7 @@ if (process.env.PRINTER == "Original Prusa SL1") {
 
 interface P {
   isJob?: boolean;
-  isPrinting: boolean;
+  printer_state: PrinterState;
 }
 
 interface S {
@@ -28,16 +30,17 @@ class StatusBoard extends Component<P, S> {
   wasPrinting: boolean = false;
   state = defaultState;
 
-  shouldComponentUpdate = ({ isPrinting }, nextState) => {
-    if (this.wasPrinting == isPrinting) {
-      if (isPrinting) {
+  shouldComponentUpdate = ({ printer_state }, nextState) => {
+    const is_printing = isPrinting(printer_state);
+    if (this.wasPrinting == is_printing) {
+      if (is_printing) {
         return true;
       } else {
         return false;
       }
     } else {
-      this.wasPrinting = isPrinting;
-      if (isPrinting) {
+      this.wasPrinting = is_printing;
+      if (is_printing) {
         updateProjectName(this.updateData);
         update(this.updateData, this.clearData)();
         if (!this.timer) {
@@ -58,7 +61,7 @@ class StatusBoard extends Component<P, S> {
   };
 
   componentDidMount = () => {
-    if (this.props.isPrinting) {
+    if (isPrinting(this.props.printer_state)) {
       updateProjectName(this.updateData);
       update(this.updateData, this.clearData)();
       this.timer = setInterval(
@@ -83,8 +86,8 @@ class StatusBoard extends Component<P, S> {
     this.setState(prev => ({ ...defaultState }));
   };
 
-  render({ isJob, isPrinting }, { project_name, progress, ...others }) {
-    const class_name = isJob
+  render(props, { project_name, progress, ...others }) {
+    const class_name = props.isJob
       ? "column is-full"
       : "column is-full-touch is-half-desktop";
     return (

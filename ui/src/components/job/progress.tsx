@@ -6,8 +6,11 @@ import { h, Fragment } from "preact";
 import { Text } from "preact-i18n";
 import Title from "../title";
 import StatusBoard from "../../components/status-board";
+import { PrinterState } from "../telemetry";
+import { isPrinting } from "../utils/states";
 
 interface P {
+  printer_state: PrinterState;
   onclick(nextShow: number): void;
 }
 
@@ -22,7 +25,7 @@ const JobProgress: preact.FunctionalComponent<P> = props => {
     <Fragment>
       <Title id="project.title" default_text="Project files" />
       <div class="columns is-multiline is-mobile">
-        <StatusBoard isPrinting isJob />
+        <StatusBoard printer_state={props.printer_state} isJob />
         <div class="column is-full prusa-job-buttons-tab">
           <div class="columns is-centered">
             <div class="column prusa-flex-no-grow">

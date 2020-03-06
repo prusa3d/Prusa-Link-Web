@@ -9,19 +9,21 @@ import Welcome from "../../components/notification/welcome";
 import StatusBoard from "../../components/status-board";
 import { TempProps, Temperature } from "../../components/temperature";
 import Upload from "../../components/upload";
+import { isPrinting } from "../../components/utils/states";
+import { PrinterState } from "../../components/telemetry";
 
 interface homeProps extends TempProps {
-  isPrinting: boolean;
+  printer_state: PrinterState;
 }
 
 const Home: preact.FunctionalComponent<homeProps> = ({
-  isPrinting,
+  printer_state,
   temperatures
 }) => {
   return (
     <Fragment>
       <Title id="home.title" default_text="Printer status:">
-        {isPrinting ? (
+        {isPrinting(printer_state) ? (
           <span class="title is-size-3 is-size-4-desktop prusa-text-orange">
             {" "}
             <Text id="home.status-priting">Priting</Text>
@@ -35,7 +37,7 @@ const Home: preact.FunctionalComponent<homeProps> = ({
       </Title>
       <Welcome />
       <div class="columns is-multiline">
-        <StatusBoard isPrinting={isPrinting} />
+        <StatusBoard printer_state={printer_state} />
         <div class="column is-full-touch is-half-desktop">
           <Upload url={null} path={null} />
         </div>

@@ -3,14 +3,15 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import { h } from "preact";
+import { PrinterState } from "../../components/telemetry";
 interface P {
-  isPrinting: boolean;
+  printer_state: PrinterState;
 }
 
-const Project: preact.FunctionalComponent<P> = ({ isPrinting }) => {
+const Project: preact.FunctionalComponent<P> = ({ printer_state }) => {
   if (process.env.PRINTER != "Original Prusa Mini") {
     const View = require("./project").default;
-    return <View isPrinting={isPrinting} />;
+    return <View printer_state={printer_state} />;
   } else {
     return <div />;
   }

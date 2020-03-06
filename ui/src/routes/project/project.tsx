@@ -6,23 +6,25 @@ import { h, Fragment, Component } from "preact";
 import Title from "../../components/title";
 import TreeNode from "../../components/treenode";
 import Job from "../../components/job";
+import { isPrinting } from "../../components/utils/states";
+import { PrinterState } from "../../components/telemetry";
 
 interface P {
-  isPrinting: boolean;
+  printer_state: PrinterState;
 }
 
 class Project extends Component<P, {}> {
-  render({ isPrinting }, {}) {
+  render({ printer_state }, {}) {
     let view;
-    if (!isPrinting) {
+    if (isPrinting(printer_state)) {
+      view = <Job printer_state={printer_state} />;
+    } else {
       view = (
         <Fragment>
           <Title id="project.title" default_text="Project files" />
           <TreeNode />
         </Fragment>
       );
-    } else {
-      view = <Job />;
     }
     return view;
   }

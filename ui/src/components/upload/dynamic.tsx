@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import { h } from "preact";
+import { Text } from "preact-i18n";
 
 interface P {
   progress: { [index: string]: number };
@@ -25,7 +26,7 @@ const Dynamic: preact.FunctionalComponent<P> = ({ progress }) => {
         />
       </div>
       <div class="column is-full has-text-centered subtitle is-size-3 is-size-6-desktop">
-        Uploading...
+        <Text id="upload.uploading">Uploading...</Text>
       </div>
     </div>
   );

@@ -4,7 +4,7 @@
 
 import { h, Fragment } from "preact";
 import StatusBoardItem from "./board-item";
-import { available } from "../utils/index";
+import { available } from "../utils/format";
 
 interface P {
   readonly pos_z_mm: number;
@@ -55,12 +55,12 @@ export const StatusBoardMini: preact.FunctionalComponent<P> = ({
         <StatusBoardItem
           id="time-est"
           title="Remaining time"
-          value={available(print_dur)}
+          value={available(time_est)}
         />
         <StatusBoardItem
           id="print-dur"
           title="Printing time"
-          value={available(time_est)}
+          value={available(print_dur)}
         />
         <StatusBoardItem
           id="filament-status"

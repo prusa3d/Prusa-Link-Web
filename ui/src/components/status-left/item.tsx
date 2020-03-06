@@ -4,7 +4,7 @@
 
 import { h } from "preact";
 import { Text } from "preact-i18n";
-import { numberFormat } from "../utils/index";
+import { numberFormat } from "../utils/format";
 
 function formatUnit(unit: string) {
   return function newFormat(value: number) {
