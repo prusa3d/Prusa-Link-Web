@@ -25,7 +25,7 @@ const Static: preact.FunctionalComponent<P> = ({ active, onclickFile }) => {
           src={icon_download}
         />
       </div>
-      <div class="column is-full has-text-centered subtitle is-size-3 is-size-6-desktop">
+      <div class="column is-full has-text-centered prusa-default-text">
         <Text id="upload.message">Choose a *.sl1 or drop it here.</Text>
       </div>
     </div>

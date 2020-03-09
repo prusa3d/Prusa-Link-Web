@@ -60,7 +60,7 @@ const ProjectView: preact.FunctionalComponent<P> = props => {
 
   return (
     <div>
-      <p class="title is-size-2 is-size-3-desktop">{display}</p>
+      <p class="title is-size-3 is-size-6-desktop">{display}</p>
       <div class="columns">
         <div class="column is-two-fifths">
           <img ref={ref} src={preview} />

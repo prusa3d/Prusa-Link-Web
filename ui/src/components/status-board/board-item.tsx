@@ -14,10 +14,10 @@ const StatusBoardItem: preact.FunctionalComponent<P> = ({
 }) => {
   return (
     <div class="column is-one-third">
-      <p class="subtitle is-size-3 is-size-6-desktop has-text-grey">
+      <p class="prusa-default-text-grey">
         <Text id={`status-board.${id}`}>{title}</Text>
       </p>
-      <p class="title is-size-3 is-size-6-desktop has-text-white">{value}</p>
+      <p class="prusa-default-text">{value}</p>
     </div>
   );
 };

@@ -63,12 +63,13 @@ class Refill extends Component<P, {}> {
   };
 
   render() {
+    const is_disabled = !isPrintingFeedMe(this.props.printer_state);
     return (
       <Fragment>
         <Title id="project.refill-resin" default_text="Refill resin" />
         <div class="columns is-multiline is-mobile is-centered is-vcentered">
           <div class="column is-full">
-            <p class="title is-size-5 is-size-6-desktop">
+            <p class="prusa-default-text">
               <Text id="project.please-refill">
                 Please fully refill resin tank.
               </Text>
@@ -84,18 +85,18 @@ class Refill extends Component<P, {}> {
               </div>
             </div>
           </div>
-          {isPrintingFeedMe(this.props.printer_state) && (
-            <div class="column is-full">
-              <YesNoView
-                no_id="no"
-                no_text="no"
-                onNO={this.onBack}
-                yes_id="resin-fully-refilled"
-                yes_text="resin fully refilled"
-                onYES={this.onYES}
-              />
-            </div>
-          )}
+          <div class="column is-full">
+            <YesNoView
+              no_id="no"
+              no_text="no"
+              onNO={this.onBack}
+              yes_id="resin-fully-refilled"
+              yes_text="resin fully refilled"
+              onYES={this.onYES}
+              yes_disabled={is_disabled}
+              no_disabled={is_disabled}
+            />
+          </div>
         </div>
       </Fragment>
     );

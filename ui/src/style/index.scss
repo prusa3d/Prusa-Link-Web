@@ -29,8 +29,109 @@ $success: #f8651b;
 @import "../../../node_modules/bulma/sass/layout/section.sass";
 @import "../../../node_modules/bulma/sass/grid/_all.sass";
 
+$prusa-buttom-bg-color: hsl(130, 85%, 39%);
+$prusa-buttom-bg-hover-color: hsl(130, 38%, 46%);
+$prusa-buttom-bg-color-cancel: #f8651b;
+$prusa-buttom-bg-hover-color-cancel: #fb7431;
+$prusa-buttom-bg-color-grey: hsl(0, 0%, 48%);
+$prusa-buttom-bg-hover-color-grey: #8e8a8a;
+$prusa-buttom-margin-left: 12px;
+
 .prusa-no-focus:focus {
   outline: none;
+}
+
+.prusa-is-flex-end {
+  display: -webkit-box !important;
+  display: flex !important;
+  justify-content: flex-end;
+}
+
+.prusa-button-confirm {
+  margin-left: $prusa-buttom-margin-left;
+  border-color: transparent;
+  color: $text;
+  background-color: $prusa-buttom-bg-color;
+  &:hover {
+    cursor: pointer;
+    border-color: transparent;
+    color: $text;
+    background-color: $prusa-buttom-bg-hover-color;
+  }
+
+  &:disabled {
+    background-color: $prusa-buttom-bg-hover-color;
+    cursor: default;
+    pointer-events: none;
+    border-color: #dbdbdb;
+    box-shadow: none;
+    opacity: 0.5;
+  }
+}
+
+.prusa-button-cancel {
+  margin-left: $prusa-buttom-margin-left;
+  border-color: transparent;
+  color: $text;
+  background-color: $prusa-buttom-bg-color-cancel;
+  &:hover {
+    cursor: pointer;
+    border-color: transparent;
+    color: $text;
+    background-color: $prusa-buttom-bg-hover-color-cancel;
+  }
+
+  &:disabled {
+    background-color: $prusa-buttom-bg-hover-color-cancel;
+    cursor: default;
+    pointer-events: none;
+    border-color: #dbdbdb;
+    box-shadow: none;
+    opacity: 0.5;
+  }
+}
+
+.prusa-button-grey {
+  margin-left: $prusa-buttom-margin-left;
+  border-color: transparent;
+  color: $text;
+  background-color: $prusa-buttom-bg-color-grey;
+
+  &:hover {
+    cursor: pointer;
+    border-color: transparent;
+    color: $text;
+    background-color: $prusa-buttom-bg-hover-color-grey;
+  }
+
+  &:disabled {
+    background-color: $prusa-buttom-bg-hover-color-grey;
+    cursor: default;
+    pointer-events: none;
+    border-color: #dbdbdb;
+    box-shadow: none;
+    opacity: 0.5;
+  }
+}
+
+.prusa-default-text {
+  font-size: 2.15rem;
+  color: #fff;
+}
+
+.prusa-default-text-grey {
+  font-size: 2.15rem;
+  color: #7a7a7a;
+}
+
+@media (min-width: 1024px) {
+  .prusa-default-text {
+    font-size: 1.15rem;
+  }
+
+  .prusa-default-text-grey {
+    font-size: 1.15rem;
+  }
 }
 
 //@import "../../node_modules/bulma/bulma.sass";

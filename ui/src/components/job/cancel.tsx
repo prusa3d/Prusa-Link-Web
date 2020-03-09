@@ -40,24 +40,24 @@ const Cancel: preact.FunctionalComponent<P> = ({ printer_state, onBack }) => {
       <Title id="project.cancel-print" default_text="Cancel Print" />
       <div class="columns is-multiline is-mobile is-centered is-vcentered">
         <div class="column is-full">
-          <p class="title is-size-5 is-size-6-desktop has-text-centered prusa-job-question">
+          <p class="prusa-default-text has-text-centered prusa-job-question">
             <Text id="project.cancel-print-question">
               Do you really want to cancel print?
             </Text>
           </p>
         </div>
-        {canCancelPrinting(printer_state) && (
-          <div class="column is-full">
-            <YesNoView
-              no_id="no"
-              no_text="no"
-              onNO={onBack}
-              yes_id="yes"
-              yes_text="yes"
-              onYES={onYes}
-            />
-          </div>
-        )}
+        <div class="column is-full">
+          <YesNoView
+            no_id="no"
+            no_text="no"
+            onNO={onBack}
+            yes_id="yes"
+            yes_text="yes"
+            onYES={onYes}
+            yes_disabled={!canCancelPrinting(printer_state)}
+            no_disabled={false}
+          />
+        </div>
       </div>
     </Fragment>
   );

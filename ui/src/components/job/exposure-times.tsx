@@ -69,7 +69,7 @@ const SetValueView: preact.FunctionalComponent<ValuesProps> = props => {
   return (
     <div class="columns prusa-no-focus" tabIndex={0} onKeyDown={onkeyPress}>
       <div class="column is-half">
-        <p class="title is-size-5 is-size-6-desktop">
+        <p class="prusa-default-text">
           <Text id={`project.${title_id}`}>{title_default}</Text>
         </p>
       </div>
@@ -176,6 +176,8 @@ class ExposureTimes extends Component<P, S> {
               yes_id="save-changes"
               yes_text="save changes"
               onYES={this.onSave}
+              yes_disabled={false}
+              no_disabled={false}
             />
           </div>
         </div>

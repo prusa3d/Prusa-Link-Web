@@ -111,10 +111,10 @@ const StatusLeftItem: preact.FunctionalComponent<S> = props => {
         <div class="media">
           <img class="media-left image is-24x24" src={icon_scr} />
           <div class="media-content is-clipped">
-            <p class="subtitle is-size-3 is-size-6-desktop has-text-grey">
+            <p class="prusa-default-text-grey">
               <Text id={`status-left.${props.type}`}>{title}</Text>
             </p>
-            <p class="title is-size-3 is-size-6-desktop has-text-white">
+            <p class="prusa-default-text">
               {format ? format(props.value) : props.value}
             </p>
           </div>

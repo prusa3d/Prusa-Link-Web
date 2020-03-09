@@ -9,6 +9,7 @@ import Cancel from "./cancel";
 import Refill from "./refill";
 import ExposureTimes from "./exposure-times";
 import { PrinterState } from "../telemetry";
+import { isPrintingFeedMe } from "../utils/states";
 
 interface P {
   printer_state: PrinterState;
@@ -21,7 +22,12 @@ interface S {
 class Job extends Component<P, S> {
   state = { show: 0 };
 
-  shouldComponentUpdate = () => this.state.show == 0;
+  substate = 0;
+  shouldComponentUpdate = ({ printer_state }, nextState) => {
+    const change_substate = printer_state.substate != this.substate;
+    this.substate = printer_state.substate;
+    return this.state.show == 0 || change_substate;
+  };
 
   onclick = (nextShow: number) => {
     this.setState({ show: nextShow });
@@ -36,16 +42,20 @@ class Job extends Component<P, S> {
   };
 
   render({ printer_state }, { show }) {
-    if (show == 1) {
-      return <ExposureTimes onBack={this.onBack} />;
-    } else if (show == 2) {
+    if (isPrintingFeedMe(printer_state)) {
       return <Refill printer_state={printer_state} onBack={this.onBack} />;
-    } else if (show == 3) {
-      return <Cancel printer_state={printer_state} onBack={this.onBack} />;
-    } else {
-      return (
-        <JobProgress printer_state={printer_state} onclick={this.onclick} />
-      );
+    }
+    switch (show) {
+      case 1:
+        return <ExposureTimes onBack={this.onBack} />;
+      case 2:
+        return <Refill printer_state={printer_state} onBack={this.onBack} />;
+      case 3:
+        return <Cancel printer_state={printer_state} onBack={this.onBack} />;
+      default:
+        return (
+          <JobProgress printer_state={printer_state} onclick={this.onclick} />
+        );
     }
   }
 }
