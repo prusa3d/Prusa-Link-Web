@@ -13,8 +13,8 @@
     "flow": "Printing Flow",
     "height": "Z-Height",
     "material": "Material",
-    "cover_state_false": "Closed",
-    "cover_state_true": "Opened"
+    "cover_state_true": "Closed",
+    "cover_state_false": "Opened"
   },
   "home": {
     "title": "Printer status:",
@@ -44,16 +44,20 @@
   "project": {
     "title": "Project files",
     "material": "Material",
-    "leyer-height": "leyer height",
-    "back": "BACK",
-    "start_print": "START PRINT",
+    "leyer-height": "Leyer height",
+    "back": "Back",
+    "start_print": "Start Print",
     "change-exposure": "Change exposure times",
-    "exposure_time_ms": "exposure time",
-    "exposure_time_first_ms": "first layer",
+    "exposure_time_ms": "Exposure time",
+    "Exposure-times": "Exposure times",
+    "exposure_time_first_ms": "First layer",
     "refill-resin": "Refill resin",
     "cancel-print": "Cancel print",
     "cancel-print-question": "Do you really want to cancel print?",
-    "please-refill": "Please fully refill resin tank."
+    "please-refill": "Please fully refill resin tank.",
+    "print-time-estimate": "Print time estimate",
+    "last-modified": "Last modified",
+    "please-fill-resin": "Please fill the resin tank and close the cover."
   },
   "notification": {
     "welcome-part1": "Welcome to the web interface of your",
@@ -61,11 +65,11 @@
   },
   "under-construction": "Under construction",
   "questions": {
-    "yes": "yes",
-    "no": "no",
-    "save-changes": "save changes",
-    "resin-fully-refilled": "resin fully refilled",
-    "cancel": "cancel"
+    "yes": "Yes",
+    "no": "No",
+    "save-changes": "Save changes",
+    "resin-fully-refilled": "Resin fully refilled",
+    "cancel": "Cancel"
   },
   "upload": {
     "uploading": "Uploading...",

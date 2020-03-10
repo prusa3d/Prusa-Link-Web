@@ -88,10 +88,10 @@ class Refill extends Component<P, {}> {
           <div class="column is-full">
             <YesNoView
               no_id="no"
-              no_text="no"
+              no_text="No"
               onNO={this.onBack}
               yes_id="resin-fully-refilled"
-              yes_text="resin fully refilled"
+              yes_text="Resin fully refilled"
               onYES={this.onYES}
               yes_disabled={is_disabled}
               no_disabled={is_disabled}

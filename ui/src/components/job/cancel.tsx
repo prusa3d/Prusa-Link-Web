@@ -49,10 +49,10 @@ const Cancel: preact.FunctionalComponent<P> = ({ printer_state, onBack }) => {
         <div class="column is-full">
           <YesNoView
             no_id="no"
-            no_text="no"
+            no_text="No"
             onNO={onBack}
             yes_id="yes"
-            yes_text="yes"
+            yes_text="Yes"
             onYES={onYes}
             yes_disabled={!canCancelPrinting(printer_state)}
             no_disabled={false}

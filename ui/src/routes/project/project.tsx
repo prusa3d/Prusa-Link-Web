@@ -8,8 +8,7 @@ import TreeNode from "../../components/treenode";
 import Job from "../../components/job";
 import { isPrinting, isPrintingConfirm } from "../../components/utils/states";
 import { PrinterState } from "../../components/telemetry";
-import ConfirmPrint from "./confirm";
-import "./style.scss";
+import ConfirmPrint from "../../components/confirm";
 
 interface P {
   printer_state: PrinterState;

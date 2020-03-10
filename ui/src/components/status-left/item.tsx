@@ -25,7 +25,7 @@ if (process.env.PRINTER == "Original Prusa SL1") {
   const formatCover = (value: string) => {
     return (
       <Text id={`status-left.cover_state_${value}`}>
-        {value ? "Opened" : "Closed"}
+        {value ? "Closed" : "Opened"}
       </Text>
     );
   };

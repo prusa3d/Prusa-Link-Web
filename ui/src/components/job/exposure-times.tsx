@@ -171,10 +171,10 @@ class ExposureTimes extends Component<P, S> {
           <div class="column is-full">
             <YesNoView
               no_id="cancel"
-              no_text="cancel"
+              no_text="Cancel"
               onNO={onBack}
               yes_id="save-changes"
-              yes_text="save changes"
+              yes_text="Save changes"
               onYES={this.onSave}
               yes_disabled={false}
               no_disabled={false}

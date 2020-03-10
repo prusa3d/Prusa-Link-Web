@@ -35,7 +35,7 @@ if (process.env.PRINTER == "Original Prusa SL1") {
     uv_led_fan: 0,
     blower_fan: 0,
     rear_fan: 0,
-    cover_state: false
+    cover_state: true
   };
 } else {
   printStatus = ["material"];
@@ -93,14 +93,10 @@ export function update(updateData, clearData) {
             newTemps.push(value);
           }
         }
-
-        value = data["cover_closed"];
-        if (typeof value == "boolean") {
-          printerStatus["cover_state"] = value;
-        }
-        value = data["material"];
-        if (typeof value == "string") {
-          printerStatus["material"] = value;
+        if (process.env.PRINTER == "Original Prusa SL1") {
+          printerStatus["cover_state"] = data["cover_closed"] ? true : false;
+        } else {
+          printerStatus["material"] = data["material"];
         }
 
         value = data["state"];
