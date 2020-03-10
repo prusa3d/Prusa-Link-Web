@@ -14,32 +14,40 @@ interface P extends FileProperties {
   url: string;
   display: string;
   preview_src: string;
+  not_found: string[];
 }
 
 const ProjectView: preact.FunctionalComponent<P> = props => {
-  const { display, onBack, url, preview_src, ...properties } = props;
+  const { display, onBack, url, not_found, preview_src, ...properties } = props;
   const ref = createRef();
 
   useEffect(() => {
-    const options = {
-      headers: {
-        "X-Api-Key": process.env.APIKEY,
-        "Content-Type": "image/png"
-      }
-    };
-
-    fetch(preview_src, options)
-      .then(function(response) {
-        if (!response.ok) {
-          throw Error(response.statusText);
+    if (not_found.indexOf(preview_src) < 0) {
+      const options = {
+        headers: {
+          "X-Api-Key": process.env.APIKEY,
+          "Content-Type": "image/png"
         }
-        return response;
-      })
-      .then(res => res.blob())
-      .then(blob => {
-        ref.current.src = URL.createObjectURL(blob);
-      })
-      .catch(e => {});
+      };
+
+      fetch(preview_src, options)
+        .then(function(response) {
+          if (!response.ok) {
+            throw Error(response.statusText);
+          }
+          return response;
+        })
+        .then(res => res.blob())
+        .then(blob => {
+          ref.current.src = URL.createObjectURL(blob);
+        })
+        .catch(e => {
+          not_found.push(preview_src);
+          ref.current.src = preview;
+        });
+    } else {
+      ref.current.src = preview;
+    }
   }, [props.preview_src]);
 
   const onStartPrint = (e: Event) => {

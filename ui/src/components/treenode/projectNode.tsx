@@ -12,12 +12,17 @@ interface P extends FileProperties {
   display: string;
   onSelectFile(): void;
   preview_src: string;
+  not_found: string[];
 }
 
-const not_found = [];
-
 const ProjectNode: preact.FunctionalComponent<P> = props => {
-  const { display, onSelectFile, preview_src, ...properties } = props;
+  const {
+    display,
+    onSelectFile,
+    preview_src,
+    not_found,
+    ...properties
+  } = props;
   const ref = createRef();
 
   useEffect(() => {
