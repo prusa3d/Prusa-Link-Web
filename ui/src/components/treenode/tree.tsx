@@ -51,9 +51,10 @@ let state = {
   eTag: null
 };
 
+const not_found_images = [];
+
 class Tree extends Component<{}, S> {
   timer: any;
-  not_found_images = [];
   constructor() {
     super();
     this.state = state;
@@ -277,7 +278,7 @@ class Tree extends Component<{}, S> {
               {...(node as nodeFile)}
               onSelectFile={() => this.onSelectFile(node.path)}
               preview_src={this.createPreview(node.path)}
-              not_found={this.not_found_images}
+              not_found={not_found_images}
             />
           );
         }
@@ -303,7 +304,7 @@ class Tree extends Component<{}, S> {
               {...current_view}
               url={this.createLink((current_view as nodeFile).path)}
               preview_src={this.createPreview((current_view as nodeFile).path)}
-              not_found={this.not_found_images}
+              not_found={not_found_images}
             />
           )
         ) : null}
