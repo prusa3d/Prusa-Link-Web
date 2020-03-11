@@ -43,10 +43,14 @@ const ProjectView: preact.FunctionalComponent<P> = props => {
         })
         .catch(e => {
           not_found.push(preview_src);
-          ref.current.src = preview;
+          if (ref.current) {
+            ref.current.src = preview;
+          }
         });
     } else {
-      ref.current.src = preview;
+      if (ref.current) {
+        ref.current.src = preview;
+      }
     }
   }, [props.preview_src]);
 
