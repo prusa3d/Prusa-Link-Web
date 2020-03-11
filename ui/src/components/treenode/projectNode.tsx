@@ -2,8 +2,8 @@
 // Copyright (C) 2018-2019 Prusa Research s.r.o. - www.prusa3d.com
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-import { h, createRef } from "preact";
-import { useEffect } from "preact/hooks";
+import { h } from "preact";
+import { useRef, useEffect } from "preact/hooks";
 
 import { ProjectProperties, FileProperties } from "./projectProperties";
 import preview from "../../assets/thumbnail.png";
@@ -23,7 +23,7 @@ const ProjectNode: preact.FunctionalComponent<P> = props => {
     not_found,
     ...properties
   } = props;
-  const ref = createRef();
+  const ref = useRef(null);
 
   useEffect(() => {
     if (not_found.indexOf(preview_src) < 0) {

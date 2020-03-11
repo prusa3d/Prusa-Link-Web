@@ -2,8 +2,8 @@
 // Copyright (C) 2018-2019 Prusa Research s.r.o. - www.prusa3d.com
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-import { h, createRef } from "preact";
-import { useEffect } from "preact/hooks";
+import { h } from "preact";
+import { useRef, useEffect } from "preact/hooks";
 import { Text } from "preact-i18n";
 
 import { ProjectProperties, FileProperties } from "./projectProperties";
@@ -19,7 +19,7 @@ interface P extends FileProperties {
 
 const ProjectView: preact.FunctionalComponent<P> = props => {
   const { display, onBack, url, not_found, preview_src, ...properties } = props;
-  const ref = createRef();
+  const ref = useRef(null);
 
   useEffect(() => {
     if (not_found.indexOf(preview_src) < 0) {
