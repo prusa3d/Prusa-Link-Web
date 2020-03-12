@@ -38,7 +38,7 @@ export function formatEstimatedTime(value: number) {
     if (days == 1) {
       plus_days = "Tomorrow ";
     } else if (days > 1) {
-      plus_days = `${days} d `;
+      plus_days = `${days} D+ `;
     }
     return (
       plus_days +
