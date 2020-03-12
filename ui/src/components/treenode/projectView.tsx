@@ -39,7 +39,9 @@ const ProjectView: preact.FunctionalComponent<P> = props => {
         })
         .then(res => res.blob())
         .then(blob => {
-          ref.current.src = URL.createObjectURL(blob);
+          if (ref.current) {
+            ref.current.src = URL.createObjectURL(blob);
+          }
         })
         .catch(e => {
           not_found.push(preview_src);

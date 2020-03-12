@@ -134,4 +134,9 @@ $prusa-buttom-margin-left: 12px;
   }
 }
 
+.prusa-break-word {
+  -ms-word-break: break-all;
+  word-break: break-all;
+}
+
 //@import "../../node_modules/bulma/bulma.sass";

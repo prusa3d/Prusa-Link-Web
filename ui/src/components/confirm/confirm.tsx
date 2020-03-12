@@ -121,7 +121,7 @@ class Confirm extends Component<P, S> {
             </p>
           </div>
           <div class="column is-full">
-            <p class="title is-size-3 is-size-4-desktop">
+            <p class="title is-size-3 is-size-4-desktop prusa-break-word">
               {states.project_name && states.project_name}
             </p>
           </div>

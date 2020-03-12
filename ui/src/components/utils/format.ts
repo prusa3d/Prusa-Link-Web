@@ -1,6 +1,11 @@
 export function numberFormat(value: number) {
   if (value > 0) {
-    return value.toFixed(2);
+    let precision = value.toString().indexOf(".") + 1;
+    if (value.toString().length - precision > 3) {
+      return Number.parseFloat(value.toPrecision(precision));
+    } else {
+      return value;
+    }
   } else {
     return 0;
   }

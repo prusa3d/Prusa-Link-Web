@@ -12,7 +12,7 @@ interface P {
 const StatusProgress: preact.FunctionalComponent<P> = props => {
   return (
     <Fragment>
-      <p class="title is-size-2 is-size-5-desktop is-marginless">
+      <p class="title is-size-2 is-size-5-desktop is-marginless prusa-break-word">
         {props.project_name}
       </p>
       <progress
