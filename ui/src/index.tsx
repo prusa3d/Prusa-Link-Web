@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import { h, render } from "preact";
+import "./i18n";
 import "./style/index.scss";
 import App from "./components/app";
 

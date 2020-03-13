@@ -10,6 +10,8 @@ const PurgecssPlugin = require("purgecss-webpack-plugin");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const ForkTsCheckerWebpackPlugin = require("fork-ts-checker-webpack-plugin");
 const TerserPlugin = require("terser-webpack-plugin");
+const { CleanWebpackPlugin } = require("clean-webpack-plugin");
+const CopyPlugin = require("copy-webpack-plugin");
 
 const printers = {
   sl1: "Original Prusa SL1",
@@ -127,6 +129,7 @@ module.exports = (env, args) => {
       }
     },
     plugins: [
+      new CleanWebpackPlugin(),
       new webpack.DefinePlugin({
         "process.env.APIKEY": JSON.stringify(apiKey),
         "process.env.PRINTER": JSON.stringify(printer),
@@ -147,7 +150,8 @@ module.exports = (env, args) => {
       }),
       new PurgecssPlugin({
         paths: glob.sync(`${PATHS.src}/**/*`, { nodir: true })
-      })
+      }),
+      new CopyPlugin([{ from: "./ui/src/locales", to: "./locales" }])
     ],
     optimization: {
       minimize: true,

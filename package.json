@@ -7,11 +7,11 @@
     "api:start": "swagger-repo serve",
     "api:build": "swagger-repo build -o docs",
     "api:test": "swagger-repo validate",
-    "ui:build": "npm run ui:clean && npx webpack --config ./webpack.config.js --mode production --env.apiKey=developer --env.printer=sl1 --progress",
-    "ui:dev": "npm run ui:clean && npx webpack --config ./webpack.config.js --mode development",
-    "ui:start": "npx webpack-dev-server --config ./webpack.config.js --env.prod=1 --mode development",
-    "ui:start-mini": "npx webpack-dev-server --config ./webpack.config.js --env.prod=1 --mode development --env.printer=mini",
-    "ui:clean": "rimraf ./dist"
+    "ui:build": "webpack --config ./webpack.config.js --mode production --env.apiKey=developer --env.printer=sl1 --progress",
+    "ui:dev": "webpack --config ./webpack.config.js --mode development",
+    "ui:start": "webpack-dev-server --config ./webpack.config.js --env.prod=1 --mode development",
+    "ui:start-mini": "webpack-dev-server --config ./webpack.config.js --env.prod=1 --mode development --env.printer=mini",
+    "ui:translations": "i18next -c ./i18next-parser.config.js"
   },
   "repository": {
     "type": "git",
@@ -24,8 +24,11 @@
   },
   "homepage": "https://github.com/prusa3d/Prusa-Connect-Local#readme",
   "devDependencies": {
+    "@types/react": "^16.9.23",
     "autoprefixer": "^9.7.3",
     "bulma": "^0.8.0",
+    "clean-webpack-plugin": "^3.0.0",
+    "copy-webpack-plugin": "^5.1.1",
     "css-loader": "^3.4.2",
     "cssnano": "^4.1.10",
     "file-loader": "^5.0.2",
@@ -34,6 +37,7 @@
     "html-webpack-plugin": "^3.2.0",
     "http-proxy-middleware": "^0.20.0",
     "husky": "^4.2.3",
+    "i18next-parser": "^1.0.2",
     "mini-css-extract-plugin": "^0.9.0",
     "postcss-loader": "^3.0.0",
     "postcss-preset-env": "^6.7.0",
@@ -44,7 +48,6 @@
     "prettier": "1.19.1",
     "pretty-quick": "^2.0.1",
     "purgecss-webpack-plugin": "^1.6.0",
-    "rimraf": "^3.0.0",
     "sass": "^1.24.2",
     "sass-loader": "^8.0.1",
     "svg-url-loader": "^3.0.3",
@@ -57,8 +60,12 @@
     "webpack-dev-server": "^3.10.2"
   },
   "dependencies": {
+    "i18next": "^19.3.2",
+    "i18next-browser-languagedetector": "^4.0.2",
+    "i18next-xhr-backend": "^3.2.2",
     "preact": "^10.2.1",
-    "preact-i18n": "^2.0.0-preactx.2"
+    "preact-i18n": "^2.0.0-preactx.2",
+    "react-i18next": "^11.3.3"
   },
   "husky": {
     "hooks": {
