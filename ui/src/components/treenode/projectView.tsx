@@ -1,10 +1,10 @@
-// This file is part of Prusa-Connect-Web
+// This file is part of Prusa-Connect-Local
 // Copyright (C) 2018-2019 Prusa Research s.r.o. - www.prusa3d.com
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import { h } from "preact";
 import { useRef, useEffect } from "preact/hooks";
-import { Text } from "preact-i18n";
+import { useTranslation } from "react-i18next";
 
 import { ProjectProperties, FileProperties } from "./projectProperties";
 import preview from "../../assets/thumbnail.png";
@@ -72,32 +72,35 @@ const ProjectView: preact.FunctionalComponent<P> = props => {
     });
   };
 
+  const { t, i18n, ready } = useTranslation(null, { useSuspense: false });
   return (
-    <div>
-      <p class="title is-size-3 is-size-6-desktop">{display}</p>
-      <div class="columns">
-        <div class="column is-two-fifths">
-          <img ref={ref} src={preview} />
-        </div>
-        <div class="column">
-          <ProjectProperties isVertical={true} {...properties} />
-        </div>
-      </div>
+    ready && (
       <div>
-        <button
-          onClick={e => onBack(e)}
-          class="button is-success is-size-3 is-size-6-desktop"
-        >
-          <Text id="project.back">Back</Text>
-        </button>
-        <button
-          class="button project-button is-pulled-right is-size-3 is-size-6-desktop"
-          onClick={e => onStartPrint(e)}
-        >
-          <Text id="project.start_print">Start Print</Text>
-        </button>
+        <p class="title is-size-3 is-size-6-desktop">{display}</p>
+        <div class="columns">
+          <div class="column is-two-fifths">
+            <img ref={ref} src={preview} />
+          </div>
+          <div class="column">
+            <ProjectProperties isVertical={true} {...properties} />
+          </div>
+        </div>
+        <div>
+          <button
+            onClick={e => onBack(e)}
+            class="button is-success is-size-3 is-size-6-desktop"
+          >
+            {t("btn.back")}
+          </button>
+          <button
+            class="button project-button is-pulled-right is-size-3 is-size-6-desktop"
+            onClick={e => onStartPrint(e)}
+          >
+            {t("btn.start-pt")}
+          </button>
+        </div>
       </div>
-    </div>
+    )
   );
 };
 

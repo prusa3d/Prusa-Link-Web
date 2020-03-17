@@ -1,9 +1,9 @@
-// This file is part of Prusa-Connect-Web
+// This file is part of Prusa-Connect-Local
 // Copyright (C) 2018-2019 Prusa Research s.r.o. - www.prusa3d.com
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import { h, Component, Fragment } from "preact";
-import { Text } from "preact-i18n";
+import { Translation } from "react-i18next";
 import Title from "../title";
 import YesNoView from "./yes-no";
 import ExampleImage1 from "../../assets/refill.jpg";
@@ -65,40 +65,41 @@ class Refill extends Component<P, {}> {
   render() {
     const is_disabled = !isPrintingFeedMe(this.props.printer_state);
     return (
-      <Fragment>
-        <Title id="project.refill-resin" default_text="Refill resin" />
-        <div class="columns is-multiline is-mobile is-centered is-vcentered">
-          <div class="column is-full">
-            <p class="prusa-default-text">
-              <Text id="project.please-refill">
-                Please fully refill resin tank.
-              </Text>
-            </p>
-          </div>
-          <div class="column is-full">
-            <div class="columns">
-              <div class="column">
-                <img src={ExampleImage1} />
+      // @ts-ignore
+      <Translation useSuspense={false}>
+        {(t, { i18n }, ready) =>
+          ready && (
+            <Fragment>
+              <Title title={t("refill.title")} />
+              <div class="columns is-multiline is-mobile is-centered is-vcentered">
+                <div class="column is-full">
+                  <p class="prusa-default-text">{t("msg.sla-fly-fill")}</p>
+                </div>
+                <div class="column is-full">
+                  <div class="columns">
+                    <div class="column">
+                      <img src={ExampleImage1} />
+                    </div>
+                    <div class="column">
+                      <img src={ExampleImage2} />
+                    </div>
+                  </div>
+                </div>
+                <div class="column is-full">
+                  <YesNoView
+                    no_text={t("btn.no")}
+                    onNO={this.onBack}
+                    yes_text={t("btn.sla-refilled")}
+                    onYES={this.onYES}
+                    yes_disabled={is_disabled}
+                    no_disabled={is_disabled}
+                  />
+                </div>
               </div>
-              <div class="column">
-                <img src={ExampleImage2} />
-              </div>
-            </div>
-          </div>
-          <div class="column is-full">
-            <YesNoView
-              no_id="no"
-              no_text="No"
-              onNO={this.onBack}
-              yes_id="resin-fully-refilled"
-              yes_text="Resin fully refilled"
-              onYES={this.onYES}
-              yes_disabled={is_disabled}
-              no_disabled={is_disabled}
-            />
-          </div>
-        </div>
-      </Fragment>
+            </Fragment>
+          )
+        }
+      </Translation>
     );
   }
 }

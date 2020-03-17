@@ -1,20 +1,22 @@
-// This file is part of Prusa-Connect-Web
+// This file is part of Prusa-Connect-Local
 // Copyright (C) 2018-2019 Prusa Research s.r.o. - www.prusa3d.com
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import { h } from "preact";
-import StatusLeftItem from "./item";
 import { PrinterStatus } from "../telemetry";
 
 interface P {
   printer_status: PrinterStatus;
 }
 
-const StatusLeftBoard: preact.FunctionalComponent<P> = ({ printer_status }) => {
-  const listItems = Object.keys(printer_status).map(propType => (
-    <StatusLeftItem type={propType} value={printer_status[propType]} />
-  ));
-  return <div class="columns is-multiline is-mobile">{listItems}</div>;
+const StatusLeftBoard: preact.FunctionalComponent<P> = props => {
+  if (process.env.PRINTER == "Original Prusa SL1") {
+    const StatusLeftBoard = require("./status-sla").default;
+    return <StatusLeftBoard {...props} />;
+  } else {
+    const StatusLeftBoard = require("./status-mini").default;
+    return <StatusLeftBoard {...props} />;
+  }
 };
 
 export default StatusLeftBoard;

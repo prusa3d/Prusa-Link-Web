@@ -1,9 +1,9 @@
-// This file is part of Prusa-Connect-Web
+// This file is part of Prusa-Connect-Local
 // Copyright (C) 2018-2019 Prusa Research s.r.o. - www.prusa3d.com
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import { h, Component, Fragment } from "preact";
-import { Text } from "preact-i18n";
+import { Translation } from "react-i18next";
 import Title from "../title";
 import YesNoView from "./yes-no";
 
@@ -17,8 +17,8 @@ interface S {
 }
 
 interface ValuesProps {
-  title_id: string;
-  title_default: string;
+  id: string;
+  title: string;
   value: number;
   onChange(id: string, value: number): void;
   pvalue: number;
@@ -30,15 +30,15 @@ const range = {
 };
 
 const SetValueView: preact.FunctionalComponent<ValuesProps> = props => {
-  const { title_id, title_default, value, onChange, pvalue } = props;
-  const [min, max] = range[title_id];
+  const { id, title, value, onChange, pvalue } = props;
+  const [min, max] = range[id];
 
   const onIncrease = (e: MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
     let newValue = value + pvalue;
     if (min <= newValue && newValue <= max) {
-      onChange(title_id, newValue);
+      onChange(id, newValue);
     }
   };
 
@@ -47,7 +47,7 @@ const SetValueView: preact.FunctionalComponent<ValuesProps> = props => {
     e.stopPropagation();
     let newValue = value - pvalue;
     if (min <= newValue && newValue <= max) {
-      onChange(title_id, newValue);
+      onChange(id, newValue);
     }
   };
 
@@ -62,16 +62,14 @@ const SetValueView: preact.FunctionalComponent<ValuesProps> = props => {
     }
 
     if (min <= newValue && newValue <= max) {
-      onChange(title_id, newValue);
+      onChange(id, newValue);
     }
   };
 
   return (
     <div class="columns prusa-no-focus" tabIndex={0} onKeyDown={onkeyPress}>
       <div class="column is-half">
-        <p class="prusa-default-text">
-          <Text id={`project.${title_id}`}>{title_default}</Text>
-        </p>
+        <p class="prusa-default-text">{title}</p>
       </div>
       <div class="column">
         <img
@@ -146,42 +144,44 @@ class ExposureTimes extends Component<P, S> {
 
   render({ onBack }, { exposure_time_ms, exposure_time_first_ms }) {
     return (
-      <Fragment>
-        <Title
-          id="project.change-exposure"
-          default_text="Change exposure times"
-        />
-        <div class="columns is-multiline is-mobile is-centered is-vcentered">
-          <div class="column is-half prusa-job-question">
-            <SetValueView
-              title_id="exposure_time_ms"
-              title_default="exposure time"
-              value={exposure_time_ms}
-              onChange={this.onChange}
-              pvalue={0.5}
-            />
-            <SetValueView
-              title_id="exposure_time_first_ms"
-              title_default="first layer"
-              value={exposure_time_first_ms}
-              onChange={this.onChange}
-              pvalue={1}
-            />
-          </div>
-          <div class="column is-full">
-            <YesNoView
-              no_id="cancel"
-              no_text="Cancel"
-              onNO={onBack}
-              yes_id="save-changes"
-              yes_text="Save changes"
-              onYES={this.onSave}
-              yes_disabled={false}
-              no_disabled={false}
-            />
-          </div>
-        </div>
-      </Fragment>
+      // @ts-ignore
+      <Translation useSuspense={false}>
+        {(t, { i18n }, ready) =>
+          ready && (
+            <Fragment>
+              <Title title={t("exp-times.title")} />
+              <div class="columns is-multiline is-mobile is-centered is-vcentered">
+                <div class="column is-half prusa-job-question">
+                  <SetValueView
+                    id="exposure_time_ms"
+                    title={t("prop.exp-time")}
+                    value={exposure_time_ms}
+                    onChange={this.onChange}
+                    pvalue={0.5}
+                  />
+                  <SetValueView
+                    id="exposure_time_first_ms"
+                    title={t("prop.layer-1st")}
+                    value={exposure_time_first_ms}
+                    onChange={this.onChange}
+                    pvalue={1}
+                  />
+                </div>
+                <div class="column is-full">
+                  <YesNoView
+                    no_text={t("btn.cancel")}
+                    onNO={onBack}
+                    yes_text={t("btn.save-chgs")}
+                    onYES={this.onSave}
+                    yes_disabled={false}
+                    no_disabled={false}
+                  />
+                </div>
+              </div>
+            </Fragment>
+          )
+        }
+      </Translation>
     );
   }
 }

@@ -1,9 +1,9 @@
-// This file is part of Prusa-Connect-Web
+// This file is part of Prusa-Connect-Local
 // Copyright (C) 2018-2019 Prusa Research s.r.o. - www.prusa3d.com
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import { h } from "preact";
-import { Text } from "preact-i18n";
+import { useTranslation } from "react-i18next";
 
 interface P {
   progress: { [index: string]: number };
@@ -16,6 +16,7 @@ const Dynamic: preact.FunctionalComponent<P> = ({ progress }) => {
     total = total + progress[path];
   }
 
+  const { t, i18n, ready } = useTranslation(null, { useSuspense: false });
   return (
     <div class={"columns is-multiline is-mobile prusa-border-dashed"}>
       <div class="column is-full">
@@ -26,7 +27,7 @@ const Dynamic: preact.FunctionalComponent<P> = ({ progress }) => {
         />
       </div>
       <div class="column is-full has-text-centered subtitle is-size-3 is-size-6-desktop">
-        <Text id="upload.uploading">Uploading...</Text>
+        {t("upld.loading")}
       </div>
     </div>
   );

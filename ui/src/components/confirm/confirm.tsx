@@ -1,9 +1,9 @@
-// This file is part of Prusa-Connect-Web
+// This file is part of Prusa-Connect-Local
 // Copyright (C) 2018-2019 Prusa Research s.r.o. - www.prusa3d.com
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import { h, Component, Fragment } from "preact";
-import { Text } from "preact-i18n";
+import { Translation } from "react-i18next";
 import { PrinterState } from "../telemetry";
 import Title from "../title";
 import { formatTime } from "../utils/format";
@@ -110,108 +110,107 @@ class Confirm extends Component<P, S> {
 
   render(props, states) {
     return (
-      <Fragment>
-        <Title id="project.title" default_text="Project files" />
-        <div class="columns is-multiline is-mobile is-centered is-vcentered">
-          <div class="column is-full">
-            <p class="prusa-default-text has-text-centered prusa-confirm-question">
-              <Text id="project.please-fill-resin">
-                Please fill the resin tank and close the cover.
-              </Text>
-            </p>
-          </div>
-          <div class="column is-full">
-            <p class="title is-size-3 is-size-4-desktop prusa-break-word">
-              {states.project_name && states.project_name}
-            </p>
-          </div>
-          <div class="column is-full">
-            <div class="columns">
-              <div class="column">
-                <p class="prusa-default-text-grey">
-                  <Text id={"status-board.layer"}>Layers</Text>
-                </p>
-                <p class="prusa-default-text">
-                  {states.total_layers && states.total_layers}
-                </p>
+      // @ts-ignore
+      <Translation useSuspense={false}>
+        {(t, { i18n }, ready) =>
+          ready && (
+            <Fragment>
+              <Title title={t("proj.title")} />
+              <div class="columns is-multiline is-mobile is-centered is-vcentered">
+                <div class="column is-full">
+                  <p class="prusa-default-text has-text-centered prusa-confirm-question">
+                    {t("msg.sla-fill")}
+                  </p>
+                </div>
+                <div class="column is-full">
+                  <p class="title is-size-3 is-size-4-desktop prusa-break-word">
+                    {states.project_name && states.project_name}
+                  </p>
+                </div>
+                <div class="column is-full">
+                  <div class="columns">
+                    <div class="column">
+                      <p class="prusa-default-text-grey">{t("prop.layers")}</p>
+                      <p class="prusa-default-text">
+                        {states.total_layers && states.total_layers}
+                      </p>
+                    </div>
+                    <div class="column">
+                      <p class="prusa-default-text-grey">
+                        {t("prop.layer-ht")}
+                      </p>
+                      <p class="prusa-default-text">
+                        {states.layer_height_mm && states.layer_height_mm}
+                      </p>
+                    </div>
+                  </div>
+                  <div class="columns">
+                    <div class="column">
+                      <p class="prusa-default-text-grey">
+                        {t("prop.exp-times")}
+                      </p>
+                      <p class="prusa-default-text">
+                        {states.exposure_times && states.exposure_times}
+                      </p>
+                    </div>
+                    <div class="column">
+                      <p class="prusa-default-text-grey">
+                        {t("prop.time-est")}
+                      </p>
+                      <p class="prusa-default-text">
+                        {states.remaining_time && states.remaining_time}
+                      </p>
+                    </div>
+                  </div>
+                  <div class="columns">
+                    <div class="column">
+                      <p class="prusa-default-text-grey">
+                        {t("prop.last-mod")}
+                      </p>
+                      <p class="prusa-default-text">
+                        {states.last_modified && states.last_modified}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <div class="column is-full">
+                  <div class="prusa-is-flex-end">
+                    <button
+                      class="button prusa-button-confirm prusa-default-text"
+                      onClick={e => this.onConfirm(e)}
+                      disabled={states.disabled}
+                    >
+                      {t("btn.start-pt")}
+                    </button>
+                    <button
+                      class="button prusa-button-grey prusa-default-text"
+                      onClick={e => this.onChangeExposure(e)}
+                      disabled={states.disabled}
+                    >
+                      <img
+                        class="media-left image is-24x24"
+                        src={require("../../assets/exposure_times_color.svg")}
+                      />
+                      {t("btn.chg-exp")}
+                    </button>
+                    <button
+                      class="button prusa-button-cancel prusa-default-text"
+                      onClick={e => this.onCancel(e)}
+                      disabled={states.disabled}
+                    >
+                      <img
+                        class="media-left image is-24x24"
+                        src={require("../../assets/cancel.svg")}
+                      />
+                      {t("btn.cancel")}
+                    </button>
+                  </div>
+                </div>
               </div>
-              <div class="column">
-                <p class="prusa-default-text-grey">
-                  <Text id={"project.leyer-height"}>Layers height</Text>
-                </p>
-                <p class="prusa-default-text">
-                  {states.layer_height_mm && states.layer_height_mm}
-                </p>
-              </div>
-            </div>
-            <div class="columns">
-              <div class="column">
-                <p class="prusa-default-text-grey">
-                  <Text id={"project.Exposure-times"}>Exposure times</Text>
-                </p>
-                <p class="prusa-default-text">
-                  {states.exposure_times && states.exposure_times}
-                </p>
-              </div>
-              <div class="column">
-                <p class="prusa-default-text-grey">
-                  <Text id={"project.print-time-estimate"}>
-                    Print time estimate
-                  </Text>
-                </p>
-                <p class="prusa-default-text">
-                  {states.remaining_time && states.remaining_time}
-                </p>
-              </div>
-            </div>
-            <div class="columns">
-              <div class="column">
-                <p class="prusa-default-text-grey">
-                  <Text id={"project.last-modified"}>Last modified</Text>
-                </p>
-                <p class="prusa-default-text">
-                  {states.last_modified && states.last_modified}
-                </p>
-              </div>
-            </div>
-          </div>
-          <div class="column is-full">
-            <div class="prusa-is-flex-end">
-              <button
-                class="button prusa-button-confirm prusa-default-text"
-                onClick={e => this.onConfirm(e)}
-                disabled={states.disabled}
-              >
-                <Text id="project.start_print">Start print</Text>
-              </button>
-              <button
-                class="button prusa-button-grey prusa-default-text"
-                onClick={e => this.onChangeExposure(e)}
-                disabled={states.disabled}
-              >
-                <img
-                  class="media-left image is-24x24"
-                  src={require("../../assets/exposure_times_color.svg")}
-                />
-                <Text id={"project.change-exposure"}>
-                  Change exposure times
-                </Text>
-              </button>
-              <button
-                class="button prusa-button-cancel prusa-default-text"
-                onClick={e => this.onCancel(e)}
-                disabled={states.disabled}
-              >
-                <img
-                  class="media-left image is-24x24"
-                  src={require("../../assets/cancel.svg")}
-                />
-                <Text id="questions.cancel">Cancel</Text>
-              </button>
-            </div>
-          </div>
-        </div>
-      </Fragment>
+            </Fragment>
+          )
+        }
+      </Translation>
     );
   }
 }

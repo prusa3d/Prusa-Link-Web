@@ -1,8 +1,9 @@
-// This file is part of Prusa-Connect-Web
+// This file is part of Prusa-Connect-Local
 // Copyright (C) 2018-2019 Prusa Research s.r.o. - www.prusa3d.com
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import { h, Fragment } from "preact";
+import { useTranslation } from "react-i18next";
 import StatusBoardItem from "./board-item";
 import { available } from "../utils/format";
 
@@ -32,42 +33,39 @@ export const StatusBoardMini: preact.FunctionalComponent<P> = ({
   time_est,
   filament_status
 }) => {
-  return (
+  const { t, i18n, ready } = useTranslation(null, { useSuspense: false });
+  return ready ? (
     <Fragment>
       <div class="columns">
         <StatusBoardItem
-          id="pos_z_mm"
-          title="Z-Height"
+          title={t("prop.z-height")}
           value={available(pos_z_mm, "mm")}
         />
         <StatusBoardItem
-          id="printing-speed"
-          title="Printing Speed"
+          title={t("prop.speed")}
           value={available(printing_speed, "%")}
         />
         <StatusBoardItem
-          id="flow-factor"
-          title="Printing Flow"
+          title={t("prop.flow")}
           value={available(flow_factor)}
         />
       </div>
       <div class="columns">
         <StatusBoardItem
-          id="time-est"
-          title="Remaining time"
+          title={t("prop.rem-time")}
           value={available(time_est)}
         />
         <StatusBoardItem
-          id="print-dur"
-          title="Printing time"
+          title={t("prop.pnt-time")}
           value={available(print_dur)}
         />
         <StatusBoardItem
-          id="filament-status"
-          title="Filament sensor"
+          title={t("prop.fdm-sensor")}
           value={available(filament_status)}
         />
       </div>
     </Fragment>
+  ) : (
+    <Fragment />
   );
 };

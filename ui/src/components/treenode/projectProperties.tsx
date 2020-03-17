@@ -1,9 +1,9 @@
-// This file is part of Prusa-Connect-Web
+// This file is part of Prusa-Connect-Local
 // Copyright (C) 2018-2019 Prusa Research s.r.o. - www.prusa3d.com
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import { h } from "preact";
-import { Text } from "preact-i18n";
+import { useTranslation } from "react-i18next";
 
 export interface FileProperties {
   printing_time: string;
@@ -21,14 +21,14 @@ export const ProjectProperties: preact.FunctionalComponent<Props> = props => {
     ? "column is-full has-text-grey"
     : "column has-text-grey";
 
-  return (
+  const { t, i18n, ready } = useTranslation(null, { useSuspense: false });
+  return ready ? (
     <div class={isVertical ? "columns is-multiline is-mobile" : "columns"}>
       {printing_time && (
         <div class={properties_class}>
           <img src={require("../../assets/time_color.svg")} width="15" />
           <span class="is-size-3 is-size-6-desktop">
-            {" "}
-            <Text id="status-left.printing-time">printing time</Text>{" "}
+            {" " + t("prop.pnt-time")}
           </span>
           <span class="has-text-white has-text-weight-bold is-size-3 is-size-6-desktop">
             {" "}
@@ -40,8 +40,7 @@ export const ProjectProperties: preact.FunctionalComponent<Props> = props => {
         <div class={properties_class}>
           <img src={require("../../assets/status_filament.svg")} width="15" />
           <span class="is-size-3 is-size-6-desktop">
-            {" "}
-            <Text id="project.material">material</Text>{" "}
+            {" " + t("prop.material")}
           </span>
           <span class="has-text-white has-text-weight-bold is-size-3 is-size-6-desktop">
             {" "}
@@ -53,8 +52,7 @@ export const ProjectProperties: preact.FunctionalComponent<Props> = props => {
         <div class={properties_class}>
           <img src={require("../../assets/quality_medium.svg")} width="15" />
           <span class="is-size-3 is-size-6-desktop">
-            {" "}
-            <Text id="project.leyer-height">leyer height</Text>{" "}
+            {" " + t("prop.layer-ht")}
           </span>
           <span class="has-text-white has-text-weight-bold is-size-3 is-size-6-desktop">
             {" "}
@@ -63,5 +61,7 @@ export const ProjectProperties: preact.FunctionalComponent<Props> = props => {
         </div>
       )}
     </div>
+  ) : (
+    <div />
   );
 };

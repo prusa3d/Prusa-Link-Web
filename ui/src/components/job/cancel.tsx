@@ -1,9 +1,9 @@
-// This file is part of Prusa-Connect-Web
+// This file is part of Prusa-Connect-Local
 // Copyright (C) 2018-2019 Prusa Research s.r.o. - www.prusa3d.com
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import { h, Fragment } from "preact";
-import { Text } from "preact-i18n";
+import { useTranslation } from "react-i18next";
 import { PrinterState } from "../telemetry";
 import Title from "../title";
 import YesNoView from "./yes-no";
@@ -35,31 +35,31 @@ const Cancel: preact.FunctionalComponent<P> = ({ printer_state, onBack }) => {
     });
   };
 
+  const { t, i18n, ready } = useTranslation(null, { useSuspense: false });
+  const cancel_label = t("btn.cancel");
   return (
-    <Fragment>
-      <Title id="project.cancel-print" default_text="Cancel Print" />
-      <div class="columns is-multiline is-mobile is-centered is-vcentered">
-        <div class="column is-full">
-          <p class="prusa-default-text has-text-centered prusa-job-question">
-            <Text id="project.cancel-print-question">
-              Do you really want to cancel print?
-            </Text>
-          </p>
+    ready && (
+      <Fragment>
+        <Title title={cancel_label} />
+        <div class="columns is-multiline is-mobile is-centered is-vcentered">
+          <div class="column is-full">
+            <p class="prusa-default-text has-text-centered prusa-job-question">
+              {t("msg.cancel")}
+            </p>
+          </div>
+          <div class="column is-full">
+            <YesNoView
+              no_text={t("btn.no")}
+              onNO={onBack}
+              yes_text={t("btn.yes")}
+              onYES={onYes}
+              yes_disabled={!canCancelPrinting(printer_state)}
+              no_disabled={false}
+            />
+          </div>
         </div>
-        <div class="column is-full">
-          <YesNoView
-            no_id="no"
-            no_text="No"
-            onNO={onBack}
-            yes_id="yes"
-            yes_text="Yes"
-            onYES={onYes}
-            yes_disabled={!canCancelPrinting(printer_state)}
-            no_disabled={false}
-          />
-        </div>
-      </div>
-    </Fragment>
+      </Fragment>
+    )
   );
 };
 
