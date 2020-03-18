@@ -102,7 +102,7 @@ export function update(updateData, clearData) {
         value = data["state"];
         printer_state = value ? value : { state: STATE_IDLE };
 
-        if (Object.keys(printerStatus).length > 0) {
+        if (newTemps[1]) {
           updateData({
             printer_status: printerStatus,
             printer_state: printer_state,
