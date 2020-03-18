@@ -1,4 +1,4 @@
-// This file is part of Prusa-Connect-Web
+// This file is part of Prusa-Connect-Local
 // Copyright (C) 2018-2019 Prusa Research s.r.o. - www.prusa3d.com
 // SPDX-License-Identifier: GPL-3.0-or-later
 
@@ -6,10 +6,6 @@ $gray: gray;
 $orange: #f8651b;
 $green: lime;
 $line-size: 0.1rem;
-
-.prusa-menu {
-  border-bottom: $line-size solid $gray;
-}
 
 .prusa-menu-item {
   border-bottom: $line-size solid transparent;
@@ -27,7 +23,8 @@ $line-size: 0.1rem;
 }
 
 .navbar-logo {
-  background: url(../../assets/prusa_connect_local_logo_black.svg) no-repeat center center;
+  background: url(../../assets/prusa_connect_local_logo_black.svg) no-repeat
+    center center;
   background-size: cover;
   width: 328px;
   height: auto;

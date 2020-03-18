@@ -1,64 +1,107 @@
-// This file is part of Prusa-Connect-Web
+// This file is part of Prusa-Connect-Local
 // Copyright (C) 2018-2019 Prusa Research s.r.o. - www.prusa3d.com
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import { h } from "preact";
-import { Text } from 'preact-i18n';
-import { ProjectProperties, FileProperties } from "./projectProperties";
+import { useRef, useEffect } from "preact/hooks";
+import { useTranslation } from "react-i18next";
 
-import preview from "../../thumbnail800x480.png";
+import { ProjectProperties, FileProperties } from "./projectProperties";
+import preview from "../../assets/thumbnail.png";
 
 interface P extends FileProperties {
-    onBack(): void;
-    url: string;
-    display: string;
+  onBack(e: Event): void;
+  url: string;
+  display: string;
+  preview_src: string;
+  not_found: string[];
 }
 
 const ProjectView: preact.FunctionalComponent<P> = props => {
+  const { display, onBack, url, not_found, preview_src, ...properties } = props;
+  const ref = useRef(null);
 
-    const { display, onBack, url, ...properties } = props;
+  useEffect(() => {
+    if (not_found.indexOf(preview_src) < 0) {
+      const options = {
+        headers: {
+          "X-Api-Key": process.env.APIKEY,
+          "Content-Type": "image/png"
+        }
+      };
 
-    const onStartPrint = () => {
-
-        fetch(url, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                "X-Api-Key": process.env.APIKEY,
-            },
-            body: JSON.stringify({
-                "command": "select",
-                "print": true
-            })
+      fetch(preview_src, options)
+        .then(function(response) {
+          if (!response.ok) {
+            throw Error(response.statusText);
+          }
+          return response;
+        })
+        .then(res => res.blob())
+        .then(blob => {
+          if (ref.current) {
+            ref.current.src = URL.createObjectURL(blob);
+          }
+        })
+        .catch(e => {
+          not_found.push(preview_src);
+          if (ref.current) {
+            ref.current.src = preview;
+          }
         });
+    } else {
+      if (ref.current) {
+        ref.current.src = preview;
+      }
     }
+  }, [props.preview_src]);
 
-    return (
-        <div>
-            <p class="title is-size-2 is-size-3-desktop">
-                {display}
-            </p>
-            <div class="columns">
-                <div class="column is-two-fifths">
-                    <img src={preview} />
-                </div>
-                <div class="column">
-                    <ProjectProperties isVertical={true} {...properties} />
-                </div>
-            </div>
-            <div>
-                <button onClick={e => onBack()} class="button is-success is-size-5 is-size-6-desktop">
-                    <Text id="project.back">BACK</Text>
-                </button>
-                <button class="button project-button is-pulled-right is-size-5 is-size-6-desktop" onClick={e => onStartPrint()}>
-                    <Text id="project.start_print">START PRINT</Text>
-                </button>
-            </div>
+  const onStartPrint = (e: Event) => {
+    e.preventDefault();
+
+    fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-Api-Key": process.env.APIKEY
+      },
+      body: JSON.stringify({
+        command: "select",
+        print: true
+      })
+    });
+  };
+
+  const { t, i18n, ready } = useTranslation(null, { useSuspense: false });
+  return (
+    ready && (
+      <div>
+        <p class="title is-size-3 is-size-6-desktop">{display}</p>
+        <div class="columns">
+          <div class="column is-two-fifths">
+            <img ref={ref} src={preview} />
+          </div>
+          <div class="column">
+            <ProjectProperties isVertical={true} {...properties} />
+          </div>
         </div>
-    );
-}
+        <div>
+          <button
+            onClick={e => onBack(e)}
+            class="button is-success is-size-3 is-size-6-desktop"
+          >
+            {t("btn.back")}
+          </button>
+          <button
+            class="button project-button is-pulled-right is-size-3 is-size-6-desktop"
+            onClick={e => onStartPrint(e)}
+          >
+            {t("btn.start-pt")}
+          </button>
+        </div>
+      </div>
+    )
+  );
+};
 
 export default ProjectView;
-
-
-

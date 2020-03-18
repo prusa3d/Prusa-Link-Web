@@ -1,34 +1,63 @@
-// This file is part of Prusa-Connect-Web
+// This file is part of Prusa-Connect-Local
 // Copyright (C) 2018-2019 Prusa Research s.r.o. - www.prusa3d.com
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-import { h, Component } from 'preact';
-import { StatusBoardTable, StatusBoardTableProps } from '../status-board/board';
-import { StatusProgress, StatusProgressProps } from "../status-board/progress";
+import { h, Component } from "preact";
+import "./style.scss";
+import JobProgress from "./progress";
+import Cancel from "./cancel";
+import Refill from "./refill";
+import ExposureTimes from "./exposure-times";
+import { PrinterState } from "../telemetry";
+import { isPrintingFeedMe } from "../utils/states";
+
+interface P {
+  printer_state: PrinterState;
+}
 
 interface S {
+  show: number;
 }
 
-export interface JobProps {
-  progress_bar: StatusProgressProps;
-  progress_status: StatusBoardTableProps;
-}
+class Job extends Component<P, S> {
+  state = { show: 0 };
 
-export class Job extends Component<JobProps, S> {
+  substate = 0;
+  shouldComponentUpdate = ({ printer_state }, nextState) => {
+    const change_substate = printer_state.substate != this.substate;
+    this.substate = printer_state.substate;
+    return this.state.show == 0 || change_substate;
+  };
 
-  render() {
+  onclick = (nextShow: number) => {
+    this.setState({ show: nextShow });
+  };
 
-    return (
-      <div class="columns is-multiline is-mobile">
-        <div class="column is-full">
-          <StatusProgress {...this.props.progress_bar} />
-        </div>
-        <div class="column is-full">
-          <StatusBoardTable {...this.props.progress_status} />
-        </div>
-      </div>
-    );
+  onBack = (e: Event) => {
+    e.preventDefault();
+    e.stopPropagation();
+    this.setState({ show: 0 }, () => {
+      this.forceUpdate();
+    });
+  };
 
+  render({ printer_state }, { show }) {
+    if (isPrintingFeedMe(printer_state)) {
+      return <Refill printer_state={printer_state} onBack={this.onBack} />;
+    }
+    switch (show) {
+      case 1:
+        return <ExposureTimes onBack={this.onBack} />;
+      case 2:
+        return <Refill printer_state={printer_state} onBack={this.onBack} />;
+      case 3:
+        return <Cancel printer_state={printer_state} onBack={this.onBack} />;
+      default:
+        return (
+          <JobProgress printer_state={printer_state} onclick={this.onclick} />
+        );
+    }
   }
-
 }
+
+export default Job;

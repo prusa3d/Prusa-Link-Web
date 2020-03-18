@@ -1,4 +1,4 @@
-// This file is part of Prusa-Connect-Web
+// This file is part of Prusa-Connect-Local
 // Copyright (C) 2018-2019 Prusa Research s.r.o. - www.prusa3d.com
 // SPDX-License-Identifier: GPL-3.0-or-later
 
@@ -21,17 +21,16 @@ $horizontal-color: gray;
   user-select: none;
 }
 
-.temp-legend-led{
+.temp-legend-led {
   fill: $stroke-led;
 }
-.temp-legend-amb{
+.temp-legend-amb {
   fill: $stroke-amb;
 }
 
-.temp-legend-cpu{
+.temp-legend-cpu {
   fill: $stroke-cpu;
 }
-
 
 %temp-line {
   fill: transparent;
@@ -63,57 +62,56 @@ $horizontal-color: gray;
   stroke-width: 0px;
 }
 
-.temp-label-line{
-  stroke: $fill-color; 
-  fill: transparent; 
-  stroke-width: 2px; 
-  stroke-linecap: round; 
+.temp-label-line {
+  stroke: $fill-color;
+  fill: transparent;
+  stroke-width: 2px;
+  stroke-linecap: round;
   stroke-linejoin: round;
 }
 
 %temp-label-text {
-  font-size: 15px; 
-  fill: $fill-color; 
-  text-anchor: middle; 
-  letter-spacing: normal; 
-  stroke: transparent; 
+  font-size: 15px;
+  fill: $fill-color;
+  text-anchor: middle;
+  letter-spacing: normal;
+  stroke: transparent;
   stroke-width: 0px;
 }
 
 .temp-label-x {
   @extend %temp-label-text;
-  padding: 30px; 
+  padding: 30px;
 }
 
 .temp-label-y {
   @extend %temp-label-text;
-  padding: 35px; 
+  padding: 35px;
 }
 
 .temp-h-line {
-  stroke: $horizontal-color; 
-  stroke-dasharray: none; 
-  fill: none; 
-  stroke-linecap: round; 
-  stroke-linejoin: round; 
+  stroke: $horizontal-color;
+  stroke-dasharray: none;
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
   pointer-events: painted;
 }
 
 .temp-connect-text {
-  stroke: $fill-color; 
-  size: 5px; 
-  fill: transparent; 
-  stroke-width: 1px; 
-  stroke-linecap: round; 
+  stroke: $fill-color;
+  size: 5px;
+  fill: transparent;
+  stroke-width: 1px;
+  stroke-linecap: round;
   stroke-linejoin: round;
 }
 
 .temp-line-text {
-  font-size: 15px; 
-  padding: 5px; 
-  fill: $fill-color; 
-  letter-spacing: normal; 
-  stroke: transparent; 
+  font-size: 15px;
+  padding: 5px;
+  fill: $fill-color;
+  letter-spacing: normal;
+  stroke: transparent;
   stroke-width: 0px;
 }
-
