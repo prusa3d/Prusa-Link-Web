@@ -23,7 +23,7 @@ export const Home: preact.FunctionalComponent<homeProps> = props => {
         {
           props.progress_bar.project_name == ""
             ? <span class="title is-size-3 is-size-4-desktop has-text-white"> <Text id="home.status-idle">Idle</Text></span>
-            : <span class="title is-size-3 is-size-4-desktop prusa-text-orange"> <Text id="home.status-priting">Priting</Text></span>
+            : <span class="title is-size-3 is-size-4-desktop prusa-text-orange"> <Text id="home.status-priting">Printing</Text></span>
         }
       </Title>
       <Welcome />
