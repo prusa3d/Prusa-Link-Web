@@ -127,11 +127,6 @@ export const StatusBoardMini = ({
           title="Printing time"
           value={available(print_dur)}
         />
-        <StatusBoardItem
-          id="filament-status"
-          title="Filament sensor"
-          value={available(filament_status)}
-        />
       </div>
     </Fragment>
   );
