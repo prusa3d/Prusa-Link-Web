@@ -145,13 +145,15 @@ module.exports = (env, args) => {
       }),
       new HtmlWebpackPlugin({
         title: `${printer} - Prusa Connect`,
-        favicon: "./ui/src/assets/favicon.ico",
         template: "./ui/src/index.html"
       }),
       new PurgecssPlugin({
         paths: glob.sync(`${PATHS.src}/**/*`, { nodir: true })
       }),
-      new CopyPlugin([{ from: "./ui/src/locales", to: "./locales" }])
+      new CopyPlugin([
+        { from: "./ui/src/locales", to: "./locales" },
+        { from: "./ui/src/assets/icons", to: "./assets" }
+      ])
     ],
     optimization: {
       minimize: true,
