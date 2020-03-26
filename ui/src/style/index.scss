@@ -4,7 +4,8 @@
 
 @charset "utf-8";
 $body-background-color: hsl(0, 0%, 4%);
-$text: hsl(0, 0%, 96%);
+$text: #ffffff;
+$text-grey: #707070;
 $text-light: hsl(0, 0%, 71%);
 $text-strong: hsl(0, 0%, 100%);
 $progress-bar-background-color: hsl(0, 0%, 48%);
@@ -29,13 +30,45 @@ $success: #f8651b;
 @import "../../../node_modules/bulma/sass/layout/section.sass";
 @import "../../../node_modules/bulma/sass/grid/_all.sass";
 
+@font-face {
+  font-family: "Atlas Grotesk Regular Web";
+  src: url("../assets/fonts/AtlasGrotesk-Regular-Web.eot");
+  src: url("../assets/fonts/AtlasGrotesk-Regular-Web.eot?#iefix")
+      format("embedded-opentype"),
+    url("../assets/fonts/AtlasGrotesk-Regular-Web.woff2") format("woff2"),
+    url("../assets/fonts/AtlasGrotesk-Regular-Web.woff") format("woff");
+  font-weight: 400;
+  font-style: normal;
+  font-stretch: normal;
+}
+
+@font-face {
+  font-family: "Atlas Grotesk Bold Web";
+  src: url("../assets/fonts/AtlasGrotesk-Bold-Web.eot");
+  src: url("../assets/fonts/AtlasGrotesk-Bold-Web.eot?#iefix")
+      format("embedded-opentype"),
+    url("../assets/fonts/AtlasGrotesk-Bold-Web.woff2") format("woff2"),
+    url("../assets/fonts/AtlasGrotesk-Bold-Web.woff") format("woff");
+  font-weight: 700;
+  font-style: normal;
+  font-stretch: normal;
+}
+
 $prusa-buttom-bg-color: hsl(130, 85%, 39%);
 $prusa-buttom-bg-hover-color: hsl(130, 38%, 46%);
-$prusa-buttom-bg-color-cancel: #f8651b;
+$prusa-buttom-bg-color-cancel: $success;
 $prusa-buttom-bg-hover-color-cancel: #fb7431;
 $prusa-buttom-bg-color-grey: hsl(0, 0%, 48%);
 $prusa-buttom-bg-hover-color-grey: #8e8a8a;
 $prusa-buttom-margin-left: 12px;
+
+.prusa-text-orange {
+  color: $success;
+}
+
+.prusa-text-grey {
+  color: #707070;
+}
 
 .prusa-no-focus:focus {
   outline: none;
@@ -52,10 +85,12 @@ $prusa-buttom-margin-left: 12px;
   border-color: transparent;
   color: $text;
   background-color: $prusa-buttom-bg-color;
+  font-family: "Atlas Grotesk Bold Web";
   &:hover {
     cursor: pointer;
     border-color: transparent;
     color: $text;
+    font-family: "Atlas Grotesk Bold Web";
     background-color: $prusa-buttom-bg-hover-color;
   }
 
@@ -66,6 +101,7 @@ $prusa-buttom-margin-left: 12px;
     border-color: #dbdbdb;
     box-shadow: none;
     opacity: 0.5;
+    font-family: "Atlas Grotesk Bold Web";
   }
 }
 
@@ -73,6 +109,7 @@ $prusa-buttom-margin-left: 12px;
   margin-left: $prusa-buttom-margin-left;
   border-color: transparent;
   color: $text;
+  font-family: "Atlas Grotesk Bold Web";
   background-color: $prusa-buttom-bg-color-cancel;
   &:hover {
     cursor: pointer;
@@ -95,6 +132,7 @@ $prusa-buttom-margin-left: 12px;
   margin-left: $prusa-buttom-margin-left;
   border-color: transparent;
   color: $text;
+  font-family: "Atlas Grotesk Bold Web";
   background-color: $prusa-buttom-bg-color-grey;
 
   &:hover {
@@ -114,29 +152,83 @@ $prusa-buttom-margin-left: 12px;
   }
 }
 
+$line-size: 1px;
+$font-size-item-title-mobile: 2.5rem;
+$font-size-item-title-desktop: 1.35rem;
+$font-size-title-mobile: 2.8rem;
+$font-size-title-desktop: 1.5rem;
+$font-size-mobile: 2.15rem;
+$font-size-desktop: 1.15rem;
+
+.prusa-title {
+  font-size: $font-size-title-mobile;
+  font-family: "Atlas Grotesk Regular Web";
+}
+
+.prusa-item-title {
+  font-size: $font-size-item-title-mobile;
+  font-family: "Atlas Grotesk Bold Web";
+}
+
 .prusa-default-text {
-  font-size: 2.15rem;
-  color: #fff;
+  font-size: $font-size-mobile;
+  color: $text;
+  font-family: "Atlas Grotesk Regular Web";
 }
 
 .prusa-default-text-grey {
-  font-size: 2.15rem;
-  color: #7a7a7a;
+  font-size: $font-size-mobile;
+  color: $text-grey;
+  font-family: "Atlas Grotesk Regular Web";
+}
+
+.prusa-default-bold-text {
+  font-size: $font-size-mobile;
+  color: $text;
+  font-family: "Atlas Grotesk Bold Web";
+}
+
+.prusa-default-bold-text-grey {
+  font-size: $font-size-mobile;
+  color: $text-grey;
+  font-family: "Atlas Grotesk Bold Web";
 }
 
 @media (min-width: 1024px) {
   .prusa-default-text {
-    font-size: 1.15rem;
+    font-size: $font-size-desktop;
   }
 
   .prusa-default-text-grey {
-    font-size: 1.15rem;
+    font-size: $font-size-desktop;
+  }
+
+  .prusa-default-bold-text {
+    font-size: $font-size-desktop;
+  }
+
+  .prusa-default-bold-text-grey {
+    font-size: $font-size-desktop;
+  }
+
+  .prusa-title {
+    font-size: $font-size-title-desktop;
+  }
+
+  .prusa-item-title {
+    font-size: $font-size-item-title-desktop;
   }
 }
 
 .prusa-break-word {
   -ms-word-break: break-all;
   word-break: break-all;
+}
+
+.prusa-line {
+  border-bottom: $line-size solid #707070;
+  border-radius: 0px;
+  padding-bottom: 0px;
 }
 
 //@import "../../node_modules/bulma/bulma.sass";

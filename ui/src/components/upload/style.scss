@@ -3,7 +3,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 $orange: #f8651b;
-$line-size: 0.1rem;
 $background-color-active: #313131;
 
 .prusa-border-dashed {
@@ -17,13 +16,6 @@ $background-color-active: #313131;
 
 .prusa-title-upload {
   padding-top: 0px;
-}
-
-.prusa-line-upload {
-  border-bottom: $line-size solid gray;
-  border-radius: 0px;
-  padding-bottom: 0px;
-  margin-bottom: 1rem;
 }
 
 .prusa-img-upload {

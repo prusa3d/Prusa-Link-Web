@@ -75,7 +75,9 @@ const ProjectNode: preact.FunctionalComponent<P> = props => {
         <div class="media-content">
           <div class="columns is-multiline is-mobile is-gapless">
             <div class="column is-full">
-              <p class="title is-size-3 is-size-4-desktop">{display}</p>
+              <p class="title is-size-3 is-size-4-desktop prusa-break-word">
+                {display}
+              </p>
             </div>
             <div class="column is-full">
               <ProjectProperties isVertical={false} {...properties} />

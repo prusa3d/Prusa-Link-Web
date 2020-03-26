@@ -136,7 +136,7 @@ class Upload extends Component<P, S> {
         onDragLeave={e => this.handleDragLeave(e)}
       >
         <div class="column is-full prusa-title-upload">
-          <p class="subtitle is-size-2 is-size-4-desktop has-text-grey is-marginless prusa-line-upload">
+          <p class="prusa-item-title prusa-text-grey is-marginless prusa-line">
             upload project
           </p>
         </div>

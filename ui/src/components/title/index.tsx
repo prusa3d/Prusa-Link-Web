@@ -3,7 +3,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import { h } from "preact";
-import "./style.scss";
 
 interface P {
   title: string;
@@ -14,11 +13,11 @@ const Title: preact.FunctionalComponent<P> = ({ title, children }) => {
   return (
     <div class="box has-background-black is-paddingless prusa-line">
       <div class="columns is-centered">
-        <div class="column title is-size-3 is-size-4-desktop has-text-grey botton-paddingless">
+        <div class="column prusa-title prusa-text-grey">
           {title}
           {children && children}
         </div>
-        <div class="column has-text-right title is-size-2 is-size-4-desktop prusa-text-orange botton-paddingless">
+        <div class="column has-text-right prusa-title prusa-text-orange">
           {process.env.PRINTER}
         </div>
       </div>
