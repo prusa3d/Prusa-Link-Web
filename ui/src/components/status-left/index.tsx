@@ -10,7 +10,7 @@ interface P {
 }
 
 const StatusLeftBoard: preact.FunctionalComponent<P> = props => {
-  if (process.env.PRINTER == "Original Prusa SL1") {
+  if (process.env.IS_SL1) {
     const StatusLeftBoard = require("./status-sla").default;
     return <StatusLeftBoard {...props} />;
   } else {

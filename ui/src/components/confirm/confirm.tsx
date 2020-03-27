@@ -131,7 +131,7 @@ class Confirm extends Component<P, S> {
                   <div class="columns">
                     <div class="column">
                       <p class="prusa-default-text-grey">{t("prop.layers")}</p>
-                      <p class="prusa-default-text">
+                      <p class="prusa-default-bold-text">
                         {states.total_layers && states.total_layers}
                       </p>
                     </div>
@@ -139,7 +139,7 @@ class Confirm extends Component<P, S> {
                       <p class="prusa-default-text-grey">
                         {t("prop.layer-ht")}
                       </p>
-                      <p class="prusa-default-text">
+                      <p class="prusa-default-bold-text">
                         {states.layer_height_mm && states.layer_height_mm}
                       </p>
                     </div>
@@ -149,7 +149,7 @@ class Confirm extends Component<P, S> {
                       <p class="prusa-default-text-grey">
                         {t("prop.exp-times")}
                       </p>
-                      <p class="prusa-default-text">
+                      <p class="prusa-default-bold-text">
                         {states.exposure_times && states.exposure_times}
                       </p>
                     </div>
@@ -157,7 +157,7 @@ class Confirm extends Component<P, S> {
                       <p class="prusa-default-text-grey">
                         {t("prop.time-est")}
                       </p>
-                      <p class="prusa-default-text">
+                      <p class="prusa-default-bold-text">
                         {states.remaining_time && states.remaining_time}
                       </p>
                     </div>
@@ -167,7 +167,7 @@ class Confirm extends Component<P, S> {
                       <p class="prusa-default-text-grey">
                         {t("prop.last-mod")}
                       </p>
-                      <p class="prusa-default-text">
+                      <p class="prusa-default-bold-text">
                         {states.last_modified && states.last_modified}
                       </p>
                     </div>

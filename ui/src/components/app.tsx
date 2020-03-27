@@ -82,12 +82,12 @@ class App extends Component<{}, S> {
     };
     return (
       <section id="app" class="section">
-        <div class="columns is-vcentered is-centered is-desktop">
-          <div class="column is-three-quarters-desktop is-full-mobile">
+        <div class="columns is-vcentered is-centered is-desktop prusa-line">
+          <div class="column is-three-quarters-desktop is-full-mobile is-paddingless">
             <Header />
           </div>
         </div>
-        <div class="columns is-centered is-desktop">
+        <div class="columns is-centered is-desktop prusa-after-nav">
           <div class="column is-three-quarters-desktop is-full-mobile">
             <div class="columns is-centered is-desktop">
               <div class="column is-full-mobile">

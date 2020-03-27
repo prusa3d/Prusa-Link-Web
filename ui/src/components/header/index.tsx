@@ -39,10 +39,7 @@ class Header extends Component<{}, S> {
               aria-label="main navigation"
             >
               <div class="navbar-brand">
-                <a
-                  class="navbar-item navbar-logo"
-                  href="https://www.prusa3d.com/"
-                ></a>
+                <a class="navbar-item navbar-logo" href="/"></a>
                 <a
                   role="button"
                   class={"navbar-burger burger " + extra_burger_class}
@@ -62,16 +59,16 @@ class Header extends Component<{}, S> {
               >
                 <div class="navbar-end">
                   <Link
-                    class="navbar-item prusa-menu-item is-size-2 is-size-6-desktop"
+                    class="navbar-item prusa-link-title"
                     activeClassName="active"
                     href="/"
                     onClick={this.onClickBurger}
                   >
                     {t("home.link")}
                   </Link>
-                  {process.env.PRINTER != "Original Prusa Mini" && (
+                  {process.env.IS_SL1 && (
                     <Link
-                      class="navbar-item prusa-menu-item is-size-2 is-size-6-desktop"
+                      class="navbar-item prusa-link-title"
                       activeClassName="active"
                       href="/projects"
                       onClick={this.onClickBurger}
@@ -80,7 +77,7 @@ class Header extends Component<{}, S> {
                     </Link>
                   )}
                   <Link
-                    class="navbar-item prusa-menu-item is-size-2 is-size-6-desktop"
+                    class="navbar-item prusa-link-title"
                     activeClassName="active"
                     href="/temperatures"
                     onClick={this.onClickBurger}

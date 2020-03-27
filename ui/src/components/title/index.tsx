@@ -13,7 +13,7 @@ const Title: preact.FunctionalComponent<P> = ({ title, children }) => {
   return (
     <div class="box has-background-black is-paddingless prusa-line">
       <div class="columns is-centered">
-        <div class="column prusa-title prusa-text-grey">
+        <div class="column prusa-title">
           {title}
           {children && children}
         </div>

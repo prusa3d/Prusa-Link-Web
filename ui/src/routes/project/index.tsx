@@ -9,7 +9,7 @@ interface P {
 }
 
 const Project: preact.FunctionalComponent<P> = ({ printer_state }) => {
-  if (process.env.PRINTER != "Original Prusa Mini") {
+  if (process.env.IS_SL1) {
     const View = require("./project").default;
     return <View printer_state={printer_state} />;
   } else {

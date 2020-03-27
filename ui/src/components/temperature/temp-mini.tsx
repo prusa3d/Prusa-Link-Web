@@ -38,7 +38,7 @@ const Temperature: preact.FunctionalComponent<P> = props => {
     <div class="box has-background-black is-paddingless">
       {!props.bigSize && (
         <p
-          class="prusa-line subtitle is-size-2 is-size-4-desktop has-text-grey is-marginless"
+          class="prusa-line prusa-item-title is-marginless"
           style={{ padding: 0 }}
         >
           {t("temps.title")}

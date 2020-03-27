@@ -135,8 +135,8 @@ class Upload extends Component<P, S> {
         onDragEnter={e => this.handleDragEnter(e)}
         onDragLeave={e => this.handleDragLeave(e)}
       >
-        <div class="column is-full prusa-title-upload">
-          <p class="prusa-item-title prusa-text-grey is-marginless prusa-line">
+        <div class="column is-full">
+          <p class="prusa-item-title is-marginless prusa-line">
             upload project
           </p>
         </div>
@@ -153,6 +153,7 @@ class Upload extends Component<P, S> {
           type="file"
           multiple
           onInput={e => this.handleInput(e)}
+          accept=".sl1"
         />
       </div>
     );

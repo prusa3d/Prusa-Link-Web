@@ -45,9 +45,7 @@ const Home: preact.FunctionalComponent<homeProps> = ({
         <div class="column is-full-touch is-half-desktop">
           <Upload />
         </div>
-      </div>
-      <div class="columns is-multiline is-mobile">
-        <div class="column is-full">
+        <div class="column is-full-touch is-half-desktop">
           <Temperature temperatures={temperatures} bigSize={false} />
         </div>
       </div>

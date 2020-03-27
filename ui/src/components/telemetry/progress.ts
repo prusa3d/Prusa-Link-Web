@@ -3,7 +3,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 let progressStatus;
-if (process.env.PRINTER == "Original Prusa SL1") {
+if (process.env.IS_SL1) {
   progressStatus = [
     "remaining_time",
     "time_elapsed",

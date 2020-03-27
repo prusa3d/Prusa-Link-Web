@@ -136,7 +136,8 @@ module.exports = (env, args) => {
         "process.env.UPDATE_PRINTER": JSON.stringify(update_printer),
         "process.env.UPDATE_PROGRESS": JSON.stringify(update_progress),
         "process.env.UPDATE_FILES": JSON.stringify(update_files),
-        "process.env.DEVELOPMENT": JSON.stringify(devMode)
+        "process.env.DEVELOPMENT": JSON.stringify(devMode),
+        "process.env.IS_SL1": JSON.stringify(printer === printers["sl1"])
       }),
       new ForkTsCheckerWebpackPlugin(),
       new MiniCssExtractPlugin({

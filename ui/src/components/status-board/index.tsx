@@ -6,7 +6,7 @@ import { PrinterState } from "../telemetry";
 
 let StatusBoardTable;
 let initState;
-if (process.env.PRINTER == "Original Prusa SL1") {
+if (process.env.IS_SL1) {
   initState = require("./board-sla").initState;
   StatusBoardTable = require("./board-sla").StatusBoardSL1;
 } else {

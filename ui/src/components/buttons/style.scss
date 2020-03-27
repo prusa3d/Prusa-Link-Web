@@ -1,0 +1,88 @@
+// This file is part of Prusa-Connect-Local
+// Copyright (C) 2018-2019 Prusa Research s.r.o. - www.prusa3d.com
+// SPDX-License-Identifier: GPL-3.0-or-later
+
+$prusa-buttom-bg-color: hsl(130, 85%, 39%);
+$prusa-buttom-bg-hover-color: hsl(130, 38%, 46%);
+$prusa-buttom-bg-color-cancel: $success;
+$prusa-buttom-bg-hover-color-cancel: #fb7431;
+$prusa-buttom-bg-color-grey: hsl(0, 0%, 48%);
+$prusa-buttom-bg-hover-color-grey: #8e8a8a;
+$prusa-buttom-margin-left: 12px;
+
+.prusa-button-wrapper {
+  display: -webkit-box !important;
+  display: flex !important;
+  justify-content: flex-end;
+}
+
+.prusa-button-margin {
+  margin-left: $prusa-buttom-margin-left;
+}
+
+.prusa-button-confirm {
+  border-color: transparent;
+  color: $text;
+  background-color: $prusa-buttom-bg-color;
+  font-family: "Atlas Grotesk Bold Web";
+  &:hover {
+    cursor: pointer;
+    border-color: transparent;
+    color: $text;
+    background-color: $prusa-buttom-bg-hover-color;
+  }
+
+  &:disabled {
+    background-color: $prusa-buttom-bg-hover-color;
+    cursor: default;
+    pointer-events: none;
+    border-color: #dbdbdb;
+    box-shadow: none;
+    opacity: 0.5;
+  }
+}
+
+.prusa-button-cancel {
+  border-color: transparent;
+  color: $text;
+  font-family: "Atlas Grotesk Bold Web";
+  background-color: $prusa-buttom-bg-color-cancel;
+  &:hover {
+    cursor: pointer;
+    border-color: transparent;
+    color: $text;
+    background-color: $prusa-buttom-bg-hover-color-cancel;
+  }
+
+  &:disabled {
+    background-color: $prusa-buttom-bg-hover-color-cancel;
+    cursor: default;
+    pointer-events: none;
+    border-color: #dbdbdb;
+    box-shadow: none;
+    opacity: 0.5;
+  }
+}
+
+.prusa-button-grey {
+  border-color: transparent;
+  color: $text;
+  font-family: "Atlas Grotesk Bold Web";
+  background-color: $prusa-buttom-bg-color-grey;
+
+  &:hover {
+    cursor: pointer;
+    border-color: transparent;
+    color: $text;
+    background-color: $prusa-buttom-bg-hover-color-grey;
+  }
+
+  &:disabled {
+    background-color: $prusa-buttom-bg-hover-color-grey;
+    cursor: default;
+    pointer-events: none;
+    border-color: #dbdbdb;
+    box-shadow: none;
+    opacity: 0.5;
+  }
+}

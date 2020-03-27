@@ -25,7 +25,7 @@ let printStatus: string[];
 let printTemperatures: string[];
 let printerState: PrinterStatus;
 
-if (process.env.PRINTER == "Original Prusa SL1") {
+if (process.env.IS_SL1) {
   printStatus = ["uv_led_fan", "blower_fan", "rear_fan"];
   printTemperatures = ["temp_cpu", "temp_led", "temp_amb"];
   printerState = {
@@ -93,7 +93,7 @@ export function update(updateData, clearData) {
             newTemps.push(value);
           }
         }
-        if (process.env.PRINTER == "Original Prusa SL1") {
+        if (process.env.IS_SL1) {
           printerStatus["cover_state"] = data["cover_closed"] ? true : false;
         } else {
           printerStatus["material"] = data["material"];

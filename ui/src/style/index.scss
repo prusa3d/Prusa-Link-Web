@@ -54,105 +54,21 @@ $success: #f8651b;
   font-stretch: normal;
 }
 
-$prusa-buttom-bg-color: hsl(130, 85%, 39%);
-$prusa-buttom-bg-hover-color: hsl(130, 38%, 46%);
-$prusa-buttom-bg-color-cancel: $success;
-$prusa-buttom-bg-hover-color-cancel: #fb7431;
-$prusa-buttom-bg-color-grey: hsl(0, 0%, 48%);
-$prusa-buttom-bg-hover-color-grey: #8e8a8a;
-$prusa-buttom-margin-left: 12px;
-
 .prusa-text-orange {
-  color: $success;
+  color: $success !important;
 }
 
 .prusa-text-grey {
-  color: #707070;
+  color: #707070 !important;
 }
 
 .prusa-no-focus:focus {
   outline: none;
 }
 
-.prusa-is-flex-end {
-  display: -webkit-box !important;
-  display: flex !important;
-  justify-content: flex-end;
-}
-
-.prusa-button-confirm {
-  margin-left: $prusa-buttom-margin-left;
-  border-color: transparent;
-  color: $text;
-  background-color: $prusa-buttom-bg-color;
-  font-family: "Atlas Grotesk Bold Web";
-  &:hover {
-    cursor: pointer;
-    border-color: transparent;
-    color: $text;
-    font-family: "Atlas Grotesk Bold Web";
-    background-color: $prusa-buttom-bg-hover-color;
-  }
-
-  &:disabled {
-    background-color: $prusa-buttom-bg-hover-color;
-    cursor: default;
-    pointer-events: none;
-    border-color: #dbdbdb;
-    box-shadow: none;
-    opacity: 0.5;
-    font-family: "Atlas Grotesk Bold Web";
-  }
-}
-
-.prusa-button-cancel {
-  margin-left: $prusa-buttom-margin-left;
-  border-color: transparent;
-  color: $text;
-  font-family: "Atlas Grotesk Bold Web";
-  background-color: $prusa-buttom-bg-color-cancel;
-  &:hover {
-    cursor: pointer;
-    border-color: transparent;
-    color: $text;
-    background-color: $prusa-buttom-bg-hover-color-cancel;
-  }
-
-  &:disabled {
-    background-color: $prusa-buttom-bg-hover-color-cancel;
-    cursor: default;
-    pointer-events: none;
-    border-color: #dbdbdb;
-    box-shadow: none;
-    opacity: 0.5;
-  }
-}
-
-.prusa-button-grey {
-  margin-left: $prusa-buttom-margin-left;
-  border-color: transparent;
-  color: $text;
-  font-family: "Atlas Grotesk Bold Web";
-  background-color: $prusa-buttom-bg-color-grey;
-
-  &:hover {
-    cursor: pointer;
-    border-color: transparent;
-    color: $text;
-    background-color: $prusa-buttom-bg-hover-color-grey;
-  }
-
-  &:disabled {
-    background-color: $prusa-buttom-bg-hover-color-grey;
-    cursor: default;
-    pointer-events: none;
-    border-color: #dbdbdb;
-    box-shadow: none;
-    opacity: 0.5;
-  }
-}
-
 $line-size: 1px;
+$font-size-link-title-mobile: 2.4rem;
+$font-size-link-title-desktop: 1rem;
 $font-size-item-title-mobile: 2.5rem;
 $font-size-item-title-desktop: 1.35rem;
 $font-size-title-mobile: 2.8rem;
@@ -162,12 +78,29 @@ $font-size-desktop: 1.15rem;
 
 .prusa-title {
   font-size: $font-size-title-mobile;
+  color: $text-grey;
   font-family: "Atlas Grotesk Regular Web";
 }
 
 .prusa-item-title {
   font-size: $font-size-item-title-mobile;
+  color: $text-grey;
   font-family: "Atlas Grotesk Bold Web";
+}
+
+.prusa-link-title {
+  font-size: $font-size-link-title-mobile;
+  color: $text;
+  font-family: "Atlas Grotesk Bold Web";
+  &:hover {
+    border-bottom: $line-size solid $text;
+  }
+  &.active {
+    border-bottom: $line-size solid $success;
+    &:hover {
+      border-bottom: $line-size solid $text;
+    }
+  }
 }
 
 .prusa-default-text {
@@ -218,6 +151,10 @@ $font-size-desktop: 1.15rem;
   .prusa-item-title {
     font-size: $font-size-item-title-desktop;
   }
+
+  .prusa-link-title {
+    font-size: $font-size-link-title-desktop;
+  }
 }
 
 .prusa-break-word {
@@ -229,6 +166,10 @@ $font-size-desktop: 1.15rem;
   border-bottom: $line-size solid #707070;
   border-radius: 0px;
   padding-bottom: 0px;
+}
+
+.prusa-after-nav {
+  margin-top: 0.8rem;
 }
 
 //@import "../../node_modules/bulma/bulma.sass";

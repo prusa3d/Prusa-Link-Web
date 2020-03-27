@@ -17,7 +17,7 @@ interface Props {
 const FolderUp: preact.FunctionalComponent<Props> = props => {
   return (
     <Fragment>
-      <div class="column is-full-touch is-half-desktop">
+      <div class="column is-full">
         <Upload {...props.upload_info} />
       </div>
       <div

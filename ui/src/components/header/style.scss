@@ -2,27 +2,6 @@
 // Copyright (C) 2018-2019 Prusa Research s.r.o. - www.prusa3d.com
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-$gray: gray;
-$orange: #f8651b;
-$green: lime;
-$line-size: 0.1rem;
-
-.prusa-menu-item {
-  border-bottom: $line-size solid transparent;
-  padding-bottom: 0px;
-  padding-top: 0px;
-  font-family: "Atlas Grotesk Bold Web";
-}
-
-.prusa-menu-item:hover,
-.prusa-menu-item.active:hover {
-  border-bottom: $line-size solid $green;
-}
-
-.prusa-menu-item.active {
-  border-bottom: $line-size solid $orange;
-}
-
 .navbar-logo {
   background: url(../../assets/prusa_connect_local_logo_black.svg) no-repeat
     center center;
