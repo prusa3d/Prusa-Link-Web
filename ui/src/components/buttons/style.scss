@@ -2,6 +2,8 @@
 // Copyright (C) 2018-2019 Prusa Research s.r.o. - www.prusa3d.com
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+$success: #f8651b;
+$text: #ffffff;
 $prusa-buttom-bg-color: hsl(130, 85%, 39%);
 $prusa-buttom-bg-hover-color: hsl(130, 38%, 46%);
 $prusa-buttom-bg-color-cancel: $success;
@@ -9,6 +11,8 @@ $prusa-buttom-bg-hover-color-cancel: #fb7431;
 $prusa-buttom-bg-color-grey: hsl(0, 0%, 48%);
 $prusa-buttom-bg-hover-color-grey: #8e8a8a;
 $prusa-buttom-margin-left: 12px;
+$font-size-mobile: 1.7rem;
+$font-size-desktop: 1rem;
 
 .prusa-button-wrapper {
   display: -webkit-box !important;
@@ -20,15 +24,21 @@ $prusa-buttom-margin-left: 12px;
   margin-left: $prusa-buttom-margin-left;
 }
 
-.prusa-button-confirm {
-  border-color: transparent;
+%button-comum {
   color: $text;
-  background-color: $prusa-buttom-bg-color;
+  border-radius: 8px;
+  border-color: transparent;
+  font-size: $font-size-mobile;
   font-family: "Atlas Grotesk Bold Web";
+}
+
+.prusa-button-confirm {
+  @extend %button-comum;
+  background-color: $prusa-buttom-bg-color;
+
   &:hover {
     cursor: pointer;
     border-color: transparent;
-    color: $text;
     background-color: $prusa-buttom-bg-hover-color;
   }
 
@@ -43,14 +53,12 @@ $prusa-buttom-margin-left: 12px;
 }
 
 .prusa-button-cancel {
-  border-color: transparent;
-  color: $text;
-  font-family: "Atlas Grotesk Bold Web";
+  @extend %button-comum;
   background-color: $prusa-buttom-bg-color-cancel;
+
   &:hover {
     cursor: pointer;
     border-color: transparent;
-    color: $text;
     background-color: $prusa-buttom-bg-hover-color-cancel;
   }
 
@@ -65,15 +73,12 @@ $prusa-buttom-margin-left: 12px;
 }
 
 .prusa-button-grey {
-  border-color: transparent;
-  color: $text;
-  font-family: "Atlas Grotesk Bold Web";
+  @extend %button-comum;
   background-color: $prusa-buttom-bg-color-grey;
 
   &:hover {
     cursor: pointer;
     border-color: transparent;
-    color: $text;
     background-color: $prusa-buttom-bg-hover-color-grey;
   }
 
@@ -84,5 +89,25 @@ $prusa-buttom-margin-left: 12px;
     border-color: #dbdbdb;
     box-shadow: none;
     opacity: 0.5;
+  }
+}
+
+.prusa-button-icon {
+  width: 48px;
+  height: 100%;
+}
+
+@media (min-width: 1024px) {
+  .prusa-button-confirm,
+  .prusa-button-cancel,
+  .prusa-button-grey {
+    font-size: $font-size-desktop;
+    border-radius: 4px;
+  }
+  .prusa-button-icon {
+    height: 24px;
+    width: 24px;
+    display: block;
+    position: relative;
   }
 }

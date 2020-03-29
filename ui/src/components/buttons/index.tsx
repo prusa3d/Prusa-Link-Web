@@ -23,9 +23,9 @@ if (process.env.IS_SL1) {
 
 interface P {
   text: string;
-  disabled: boolean;
+  disabled?: boolean;
   onClick(e: MouseEvent): void;
-  wrap: boolean;
+  wrap?: boolean;
 }
 
 interface PAction extends P {
@@ -41,14 +41,13 @@ export const YesButton: preact.FunctionalComponent<P> = ({
   return (
     <button
       class={
-        "button prusa-button-confirm title is-size-3 is-size-6-desktop" +
-        (wrap ? "prusa-button-margin" : "")
+        "button prusa-button-confirm" + (wrap ? " prusa-button-margin" : "")
       }
       onClick={e => onClick(e)}
-      disabled={disabled}
+      disabled={disabled ? disabled : false}
     >
       <img
-        class="media-left image is-24x24"
+        class="media-left prusa-button-icon"
         src={require("../../assets/yes_color.svg")}
       />
       {text}
@@ -65,14 +64,13 @@ export const NoButton: preact.FunctionalComponent<P> = ({
   return (
     <button
       class={
-        "button prusa-button-cancel title is-size-3 is-size-6-desktop" +
-        (wrap ? "prusa-button-margin" : "")
+        "button prusa-button-cancel" + (wrap ? " prusa-button-margin" : "")
       }
       onClick={e => onClick(e)}
-      disabled={disabled}
+      disabled={disabled ? disabled : false}
     >
       <img
-        class="media-left image is-24x24"
+        class="media-left prusa-button-icon"
         src={require("../../assets/cancel.svg")}
       />
       {text}
@@ -89,14 +87,11 @@ export const ActionButton: preact.FunctionalComponent<PAction> = ({
 }) => {
   return (
     <button
-      class={
-        "button prusa-button-grey title is-size-3 is-size-6-desktop" +
-        (wrap ? "prusa-button-margin" : "")
-      }
+      class={"button prusa-button-grey" + (wrap ? " prusa-button-margin" : "")}
       onClick={e => onClick(e)}
-      disabled={disabled}
+      disabled={disabled ? disabled : false}
     >
-      <img class="media-left image is-24x24" src={icons(icon)} />
+      <img class="media-left prusa-button-icon" src={icons(icon)} />
       {text}
     </button>
   );

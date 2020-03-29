@@ -4,12 +4,12 @@
 
 import { h, Component, Fragment } from "preact";
 import { Translation } from "react-i18next";
-import Title from "../title";
-import YesNoView from "./yes-no";
-import ExampleImage1 from "../../assets/refill.jpg";
-import ExampleImage2 from "../../assets/tank.jpg";
-import { PrinterState } from "../telemetry";
-import { isPrintingFeedMe } from "../utils/states";
+import Title from "../../title";
+import { YesButton, NoButton } from "../../buttons";
+import ExampleImage1 from "../../../assets/refill.jpg";
+import ExampleImage2 from "../../../assets/tank.jpg";
+import { PrinterState } from "../../telemetry";
+import { isPrintingFeedMe } from "../../utils/states";
 
 interface S {
   show: number;
@@ -86,14 +86,20 @@ class Refill extends Component<P, {}> {
                   </div>
                 </div>
                 <div class="column is-full">
-                  <YesNoView
-                    no_text={t("btn.no")}
-                    onNO={this.onBack}
-                    yes_text={t("btn.sla-refilled")}
-                    onYES={this.onYES}
-                    yes_disabled={is_disabled}
-                    no_disabled={is_disabled}
-                  />
+                  <div class="prusa-button-wrapper">
+                    <YesButton
+                      text={t("btn.sla-refilled")}
+                      onClick={this.onYES}
+                      wrap
+                      disabled={is_disabled}
+                    />
+                    <NoButton
+                      text={t("btn.no")}
+                      onClick={this.onBack}
+                      wrap
+                      disabled={is_disabled}
+                    />
+                  </div>
                 </div>
               </div>
             </Fragment>

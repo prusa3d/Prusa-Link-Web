@@ -4,8 +4,8 @@
 
 import { h, Component, Fragment } from "preact";
 import { Translation } from "react-i18next";
-import Title from "../title";
-import YesNoView from "./yes-no";
+import Title from "../../title";
+import { YesButton, NoButton } from "../../buttons";
 
 interface P {
   onBack(e: MouseEvent): void;
@@ -74,7 +74,7 @@ const SetValueView: preact.FunctionalComponent<ValuesProps> = props => {
       <div class="column">
         <img
           class="media-left image is-24x24 prusa-job-set-value"
-          src={require("../../assets/minus_color.svg")}
+          src={require("../../../assets/minus_color.svg")}
           onClick={e => onDecrease(e)}
         />
       </div>
@@ -82,7 +82,7 @@ const SetValueView: preact.FunctionalComponent<ValuesProps> = props => {
       <div class="column">
         <img
           class="media-left image is-24x24 prusa-job-set-value"
-          src={require("../../assets/plus_color.svg")}
+          src={require("../../../assets/plus_color.svg")}
           onClick={e => onIncrease(e)}
         />
       </div>
@@ -168,14 +168,14 @@ class ExposureTimes extends Component<P, S> {
                   />
                 </div>
                 <div class="column is-full">
-                  <YesNoView
-                    no_text={t("btn.cancel")}
-                    onNO={onBack}
-                    yes_text={t("btn.save-chgs")}
-                    onYES={this.onSave}
-                    yes_disabled={false}
-                    no_disabled={false}
-                  />
+                  <div class="prusa-button-wrapper">
+                    <YesButton
+                      text={t("btn.save-chgs")}
+                      onClick={this.onSave}
+                      wrap
+                    />
+                    <NoButton text={t("btn.cancel")} onClick={onBack} wrap />
+                  </div>
                 </div>
               </div>
             </Fragment>

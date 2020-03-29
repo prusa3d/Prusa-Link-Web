@@ -15,7 +15,7 @@ if (process.env.IS_SL1) {
 }
 
 interface P {
-  isJob?: boolean;
+  isHalf?: boolean;
   printer_state: PrinterState;
 }
 
@@ -87,9 +87,9 @@ class StatusBoard extends Component<P, S> {
   };
 
   render(props, { project_name, progress, ...others }) {
-    const class_name = props.isJob
-      ? "column is-full"
-      : "column is-full-touch is-half-desktop";
+    const class_name = props.isHalf
+      ? "column is-full-touch is-half-desktop"
+      : "column is-full";
     return (
       <Fragment>
         <div class={class_name}>

@@ -3,16 +3,17 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import { h, Component } from "preact";
-import "./style.scss";
 import JobProgress from "./progress";
-import Cancel from "./cancel";
+import Cancel from "../cancel";
 import Refill from "./refill";
 import ExposureTimes from "./exposure-times";
-import { PrinterState } from "../telemetry";
-import { isPrintingFeedMe } from "../utils/states";
+import { PrinterState } from "../../telemetry";
+import { isPrintingFeedMe } from "../../utils/states";
 
 interface P {
   printer_state: PrinterState;
+  isHalf: boolean;
+  children?: any;
 }
 
 interface S {
@@ -41,7 +42,7 @@ class Job extends Component<P, S> {
     });
   };
 
-  render({ printer_state }, { show }) {
+  render({ printer_state, isHalf, children }, { show }) {
     if (isPrintingFeedMe(printer_state)) {
       return <Refill printer_state={printer_state} onBack={this.onBack} />;
     }
@@ -54,7 +55,12 @@ class Job extends Component<P, S> {
         return <Cancel printer_state={printer_state} onBack={this.onBack} />;
       default:
         return (
-          <JobProgress printer_state={printer_state} onclick={this.onclick} />
+          <JobProgress
+            printer_state={printer_state}
+            onclick={this.onclick}
+            isHalf={isHalf}
+            children={children}
+          />
         );
     }
   }

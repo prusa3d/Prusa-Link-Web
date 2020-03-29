@@ -6,7 +6,7 @@ import { h, Fragment } from "preact";
 import { useTranslation } from "react-i18next";
 import { PrinterState } from "../telemetry";
 import Title from "../title";
-import YesNoView from "./yes-no";
+import { YesButton, NoButton } from "../buttons";
 import { canCancelPrinting } from "../utils/states";
 
 interface P {
@@ -48,14 +48,15 @@ const Cancel: preact.FunctionalComponent<P> = ({ printer_state, onBack }) => {
             </p>
           </div>
           <div class="column is-full">
-            <YesNoView
-              no_text={t("btn.no")}
-              onNO={onBack}
-              yes_text={t("btn.yes")}
-              onYES={onYes}
-              yes_disabled={!canCancelPrinting(printer_state)}
-              no_disabled={false}
-            />
+            <div class="prusa-button-wrapper">
+              <YesButton
+                text={t("btn.yes")}
+                onClick={onYes}
+                wrap
+                disabled={!canCancelPrinting(printer_state)}
+              />
+              <NoButton text={t("btn.no")} onClick={onBack} wrap />
+            </div>
           </div>
         </div>
       </Fragment>

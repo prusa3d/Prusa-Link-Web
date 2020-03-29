@@ -9,7 +9,7 @@ export interface TempProps {
 }
 
 interface P extends TempProps {
-  bigSize: boolean;
+  bigSize?: boolean;
 }
 
 export const Temperature: preact.FunctionalComponent<P> = props => {
