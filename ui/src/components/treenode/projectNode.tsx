@@ -5,14 +5,17 @@
 import { h } from "preact";
 import { useRef, useEffect } from "preact/hooks";
 
-import { ProjectProperties, FileProperties } from "./projectProperties";
+import { useTranslation } from "react-i18next";
 import preview from "../../assets/thumbnail.png";
 
-interface P extends FileProperties {
+interface P {
   display: string;
   onSelectFile(): void;
   preview_src: string;
   not_found: string[];
+  printing_time: string;
+  material: string;
+  layer_height: number;
 }
 
 const ProjectNode: preact.FunctionalComponent<P> = props => {
@@ -21,7 +24,9 @@ const ProjectNode: preact.FunctionalComponent<P> = props => {
     onSelectFile,
     preview_src,
     not_found,
-    ...properties
+    printing_time,
+    material,
+    layer_height
   } = props;
   const ref = useRef(null);
 
@@ -60,6 +65,7 @@ const ProjectNode: preact.FunctionalComponent<P> = props => {
     }
   }, [preview_src]);
 
+  const { t, i18n, ready } = useTranslation(null, { useSuspense: false });
   return (
     <div
       class="column is-full tree-node-item"
@@ -68,19 +74,61 @@ const ProjectNode: preact.FunctionalComponent<P> = props => {
         onSelectFile();
       }}
     >
-      <div class="media">
+      <div class="prusa-media">
         <div class="media-left project-preview">
           <img ref={ref} src={preview} />
         </div>
         <div class="media-content">
-          <div class="columns is-multiline is-mobile is-gapless">
-            <div class="column is-full">
-              <p class="title is-size-3 is-size-4-desktop prusa-break-word">
-                {display}
-              </p>
+          <div class="columns is-multiline is-mobile">
+            <div class="column is-full prusa-properties-title">
+              <p class="prusa-break-word">{display}</p>
             </div>
             <div class="column is-full">
-              <ProjectProperties isVertical={false} {...properties} />
+              {ready && (
+                <div class="prusa-container">
+                  {printing_time && (
+                    <div class="prusa-properties">
+                      <div class="icon">
+                        <img src={require("../../assets/time_color.svg")} />
+                      </div>
+                      <div class="text">
+                        <p>
+                          {t("prop.pnt-time") + " "}
+                          <span>{printing_time}</span>
+                        </p>
+                      </div>
+                    </div>
+                  )}
+                  {material && (
+                    <div class="prusa-properties">
+                      <div class="icon">
+                        <img
+                          src={require("../../assets/status_filament.svg")}
+                        />{" "}
+                      </div>
+                      <div class="text">
+                        <p>
+                          {t("prop.material") + " "}
+                          <span>{material}</span>
+                        </p>
+                      </div>
+                    </div>
+                  )}
+                  {layer_height && (
+                    <div class="prusa-properties">
+                      <div class="icon">
+                        <img src={require("../../assets/quality_medium.svg")} />{" "}
+                      </div>
+                      <div class="text">
+                        <p>
+                          {t("prop.layer-ht") + " "}
+                          <span>{layer_height} mm</span>
+                        </p>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
           </div>
         </div>

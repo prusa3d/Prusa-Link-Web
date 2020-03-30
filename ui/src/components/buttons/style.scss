@@ -4,15 +4,16 @@
 
 $success: #f8651b;
 $text: #ffffff;
-$prusa-buttom-bg-color: hsl(130, 85%, 39%);
-$prusa-buttom-bg-hover-color: hsl(130, 38%, 46%);
-$prusa-buttom-bg-color-cancel: $success;
-$prusa-buttom-bg-hover-color-cancel: #fb7431;
+$prusa-buttom-bg-color: #35a913;
+$prusa-buttom-bg-hover-color: #6ba959;
+$prusa-buttom-bg-color-cancel: #be0000;
+$prusa-buttom-bg-hover-color-cancel: #b34a4a;
 $prusa-buttom-bg-color-grey: hsl(0, 0%, 48%);
 $prusa-buttom-bg-hover-color-grey: #8e8a8a;
 $prusa-buttom-margin-left: 12px;
 $font-size-mobile: 1.7rem;
 $font-size-desktop: 1rem;
+$prusa-buttom-border-color: #dbdbdb;
 
 .prusa-button-wrapper {
   display: -webkit-box !important;
@@ -39,6 +40,7 @@ $font-size-desktop: 1rem;
   &:hover {
     cursor: pointer;
     border-color: transparent;
+    color: $text;
     background-color: $prusa-buttom-bg-hover-color;
   }
 
@@ -46,7 +48,7 @@ $font-size-desktop: 1rem;
     background-color: $prusa-buttom-bg-hover-color;
     cursor: default;
     pointer-events: none;
-    border-color: #dbdbdb;
+    border-color: $prusa-buttom-border-color;
     box-shadow: none;
     opacity: 0.5;
   }
@@ -58,6 +60,7 @@ $font-size-desktop: 1rem;
 
   &:hover {
     cursor: pointer;
+    color: $text;
     border-color: transparent;
     background-color: $prusa-buttom-bg-hover-color-cancel;
   }
@@ -66,7 +69,7 @@ $font-size-desktop: 1rem;
     background-color: $prusa-buttom-bg-hover-color-cancel;
     cursor: default;
     pointer-events: none;
-    border-color: #dbdbdb;
+    border-color: $prusa-buttom-border-color;
     box-shadow: none;
     opacity: 0.5;
   }
@@ -78,6 +81,7 @@ $font-size-desktop: 1rem;
 
   &:hover {
     cursor: pointer;
+    color: $text;
     border-color: transparent;
     background-color: $prusa-buttom-bg-hover-color-grey;
   }
@@ -86,7 +90,7 @@ $font-size-desktop: 1rem;
     background-color: $prusa-buttom-bg-hover-color-grey;
     cursor: default;
     pointer-events: none;
-    border-color: #dbdbdb;
+    border-color: $prusa-buttom-border-color;
     box-shadow: none;
     opacity: 0.5;
   }

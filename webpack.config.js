@@ -60,7 +60,8 @@ module.exports = (env, args) => {
     entry: "./ui/src/index.tsx",
     output: {
       path: __dirname + "/dist/",
-      filename: "main.[hash].js"
+      filename: "main.[hash].js",
+      publicPath: "/"
     },
     target: "web",
     devtool: devMode ? "source-map" : false,
@@ -126,7 +127,8 @@ module.exports = (env, args) => {
       port: 1234,
       proxy: {
         "/api": "http://localhost:8080"
-      }
+      },
+      historyApiFallback: true
     },
     plugins: [
       new CleanWebpackPlugin(),

@@ -4,7 +4,6 @@
 
 import { h, Component, Fragment } from "preact";
 import "./style.scss";
-import { FileProperties } from "./projectProperties";
 import FolderUp from "./folderUp";
 import ProjectNode from "./projectNode";
 import FolderNode from "./folderNode";
@@ -18,6 +17,12 @@ interface nodeInfo {
 
 interface nodeFolder extends nodeInfo {
   children: nodeTree;
+}
+
+interface FileProperties {
+  printing_time: string;
+  material: string;
+  layer_height: number;
 }
 
 interface nodeFile extends nodeInfo, FileProperties {}
@@ -163,7 +168,7 @@ class Tree extends Component<{}, S> {
           obj["material"] = material
             .substring(0, material.indexOf("@") || material.length)
             .trim();
-          obj["leyer_height"] = gcodeAnalysis["dimensions"]["height"];
+          obj["layer_height"] = gcodeAnalysis["dimensions"]["height"];
         }
       }
       if (parent) {
@@ -191,7 +196,8 @@ class Tree extends Component<{}, S> {
       method: "GET",
       headers: {
         "X-Api-Key": process.env.APIKEY,
-        "If-None-Match": this.state.eTag
+        "If-None-Match": this.state.eTag,
+        Accept: "application/json"
       }
     });
 

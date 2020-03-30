@@ -121,26 +121,10 @@ $font-size-desktop: 1.15rem;
   font-family: "Atlas Grotesk Bold Web";
 }
 
-.prusa-default-bold-text-grey {
-  font-size: $font-size-mobile;
-  color: $text-grey;
-  font-family: "Atlas Grotesk Bold Web";
-}
-
 @media (min-width: 1024px) {
-  .prusa-default-text {
-    font-size: $font-size-desktop;
-  }
-
-  .prusa-default-text-grey {
-    font-size: $font-size-desktop;
-  }
-
+  .prusa-default-text,
+  .prusa-default-text-grey,
   .prusa-default-bold-text {
-    font-size: $font-size-desktop;
-  }
-
-  .prusa-default-bold-text-grey {
     font-size: $font-size-desktop;
   }
 
