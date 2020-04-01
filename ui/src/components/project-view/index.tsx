@@ -6,6 +6,7 @@ import { h, Component } from "preact";
 import View from "./projectView";
 import { ProjectProps } from "./projectView";
 import ExposureTimes from "../progress/sla/exposure-times";
+import "./style.scss";
 
 interface P extends ProjectProps {}
 

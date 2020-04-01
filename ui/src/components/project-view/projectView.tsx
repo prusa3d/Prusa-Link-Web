@@ -8,6 +8,7 @@ import { useTranslation } from "react-i18next";
 import preview from "../../assets/thumbnail.png";
 import Title from "../../components/title";
 import { ActionButton, NoButton, YesButton } from "../buttons";
+import Properties from "./properties";
 
 export interface ProjectProps {
   onclick(e: Event, nextShow: number): void;
@@ -16,7 +17,6 @@ export interface ProjectProps {
   preview_src: string;
   not_found: string[];
   printing_time: string;
-  material: string;
   layer_height: number;
 }
 
@@ -102,12 +102,14 @@ class View extends Component<ProjectProps, S> {
                 {this.props.display}
               </p>
             </div>
-            <div class="column is-full">
-              <div class="columns">
-                <div class="column is-two-fifths">
-                  <img ref={this.ref} src={preview} />
-                </div>
-              </div>
+            <div class="column is-two-fifths-widescreen is-full-desktop">
+              <img class="proje-preview" ref={this.ref} src={preview} />
+            </div>
+            <div class="column">
+              <Properties
+                printing_time={this.props.printing_time}
+                layer_height={this.props.layer_height}
+              />
             </div>
             <div class="column is-full">
               <div class="prusa-button-wrapper">
