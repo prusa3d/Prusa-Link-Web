@@ -40,9 +40,7 @@ export const YesButton: preact.FunctionalComponent<P> = ({
 }) => {
   return (
     <button
-      class={
-        "button prusa-button-confirm" + (wrap ? " prusa-button-margin" : "")
-      }
+      class={"button prusa-button-yes" + (wrap ? " prusa-button-margin" : "")}
       onClick={e => onClick(e)}
       disabled={disabled ? disabled : false}
     >
@@ -63,9 +61,7 @@ export const NoButton: preact.FunctionalComponent<P> = ({
 }) => {
   return (
     <button
-      class={
-        "button prusa-button-cancel" + (wrap ? " prusa-button-margin" : "")
-      }
+      class={"button prusa-button-no" + (wrap ? " prusa-button-margin" : "")}
       onClick={e => onClick(e)}
       disabled={disabled ? disabled : false}
     >
@@ -87,7 +83,9 @@ export const ActionButton: preact.FunctionalComponent<PAction> = ({
 }) => {
   return (
     <button
-      class={"button prusa-button-grey" + (wrap ? " prusa-button-margin" : "")}
+      class={
+        "button prusa-button-action" + (wrap ? " prusa-button-margin" : "")
+      }
       onClick={e => onClick(e)}
       disabled={disabled ? disabled : false}
     >

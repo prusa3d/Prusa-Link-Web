@@ -2,18 +2,7 @@
 // Copyright (C) 2018-2019 Prusa Research s.r.o. - www.prusa3d.com
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-$success: #f8651b;
-$text: #ffffff;
-$prusa-buttom-bg-color: #35a913;
-$prusa-buttom-bg-hover-color: #6ba959;
-$prusa-buttom-bg-color-cancel: #be0000;
-$prusa-buttom-bg-hover-color-cancel: #b34a4a;
-$prusa-buttom-bg-color-grey: hsl(0, 0%, 48%);
-$prusa-buttom-bg-hover-color-grey: #8e8a8a;
-$prusa-buttom-margin-left: 12px;
-$font-size-mobile: 1.7rem;
-$font-size-desktop: 1rem;
-$prusa-buttom-border-color: #dbdbdb;
+@use '../../style/defines.scss';
 
 .prusa-button-wrapper {
   display: -webkit-box !important;
@@ -22,75 +11,75 @@ $prusa-buttom-border-color: #dbdbdb;
 }
 
 .prusa-button-margin {
-  margin-left: $prusa-buttom-margin-left;
+  margin-left: defines.$buttom-margin-left;
 }
 
 %button-comum {
-  color: $text;
+  color: defines.$text-white;
   border-radius: 8px;
   border-color: transparent;
-  font-size: $font-size-mobile;
+  font-size: defines.$font-size-buttom-mobile;
   font-family: "Atlas Grotesk Bold Web";
 }
 
-.prusa-button-confirm {
+.prusa-button-yes {
   @extend %button-comum;
-  background-color: $prusa-buttom-bg-color;
+  background-color: defines.$buttom-bg-color-yes;
 
   &:hover {
     cursor: pointer;
     border-color: transparent;
-    color: $text;
-    background-color: $prusa-buttom-bg-hover-color;
+    color: defines.$text-white;
+    background-color: defines.$buttom-bg-color-yes-hover;
   }
 
   &:disabled {
-    background-color: $prusa-buttom-bg-hover-color;
+    background-color: defines.$buttom-bg-color-yes-hover;
     cursor: default;
     pointer-events: none;
-    border-color: $prusa-buttom-border-color;
+    border-color: defines.$buttom-border-color-disabled;
     box-shadow: none;
     opacity: 0.5;
   }
 }
 
-.prusa-button-cancel {
+.prusa-button-no {
   @extend %button-comum;
-  background-color: $prusa-buttom-bg-color-cancel;
+  background-color: defines.$buttom-bg-color-no;
 
   &:hover {
     cursor: pointer;
-    color: $text;
+    color: defines.$text-white;
     border-color: transparent;
-    background-color: $prusa-buttom-bg-hover-color-cancel;
+    background-color: defines.$buttom-bg-color-no-hover;
   }
 
   &:disabled {
-    background-color: $prusa-buttom-bg-hover-color-cancel;
+    background-color: defines.$buttom-bg-color-no-hover;
     cursor: default;
     pointer-events: none;
-    border-color: $prusa-buttom-border-color;
+    border-color: defines.$buttom-border-color-disabled;
     box-shadow: none;
     opacity: 0.5;
   }
 }
 
-.prusa-button-grey {
+.prusa-button-action {
   @extend %button-comum;
-  background-color: $prusa-buttom-bg-color-grey;
+  background-color: defines.$buttom-bg-color-action;
 
   &:hover {
     cursor: pointer;
-    color: $text;
+    color: defines.$text-white;
     border-color: transparent;
-    background-color: $prusa-buttom-bg-hover-color-grey;
+    background-color: defines.$buttom-bg-color-action-hover;
   }
 
   &:disabled {
-    background-color: $prusa-buttom-bg-hover-color-grey;
+    background-color: defines.$buttom-bg-color-action-hover;
     cursor: default;
     pointer-events: none;
-    border-color: $prusa-buttom-border-color;
+    border-color: defines.$buttom-border-color-disabled;
     box-shadow: none;
     opacity: 0.5;
   }
@@ -102,10 +91,10 @@ $prusa-buttom-border-color: #dbdbdb;
 }
 
 @media (min-width: 1024px) {
-  .prusa-button-confirm,
-  .prusa-button-cancel,
-  .prusa-button-grey {
-    font-size: $font-size-desktop;
+  .prusa-button-yes,
+  .prusa-button-no,
+  .prusa-button-action {
+    font-size: defines.$font-size-buttom-desktop;
     border-radius: 4px;
   }
   .prusa-button-icon {

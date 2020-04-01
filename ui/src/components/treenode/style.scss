@@ -2,29 +2,17 @@
 // Copyright (C) 2018-2019 Prusa Research s.r.o. - www.prusa3d.com
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-$line-color: #707070;
-$line-size: 0.08rem;
-$text: #ffffff;
-$text-grey: #707070;
-$background-color-selection: #313131;
-
-// $font-size-folder-mobile: 2vw;
-// $font-size-folder-desktop: 1vw;
-
-$font-size-prop-mobile: 2vw;
-$font-size-prop-desktop: 1vw;
-$font-size-prop-title-mobile: 2vw;
-$font-size-prop-title-desktop: 1vw;
+@use '../../style/defines.scss';
 
 %selection {
-  background-color: $background-color-selection;
+  background-color: defines.$body-background-color-hover;
   cursor: pointer;
 }
 
 .tree-node-item {
   padding-bottom: 0.5rem;
   padding-top: 0.5rem;
-  border-bottom: $line-size solid $line-color;
+  border-bottom: defines.$line-size solid defines.$color-grey;
 }
 
 .tree-node-item:hover {
@@ -54,9 +42,9 @@ $font-size-prop-title-desktop: 1vw;
 }
 
 .prusa-properties-title {
-  color: $text;
+  color: defines.$text-white;
   font-family: "Atlas Grotesk Regular Web";
-  font-size: $font-size-prop-title-mobile;
+  font-size: defines.$font-size-proj-node-title-mobile;
 }
 
 .prusa-properties {
@@ -75,12 +63,12 @@ $font-size-prop-title-desktop: 1vw;
     text-align: center;
     -webkit-box-flex: 0;
     flex: 0 1 auto;
-    font-size: $font-size-prop-mobile;
+    font-size: defines.$font-size-proj-node-mobile;
     font-family: "Atlas Grotesk Regular Web";
-    color: $text-grey;
+    color: defines.$text-grey;
 
     & > p > span {
-      color: $text;
+      color: defines.$text-white;
       font-family: "Atlas Grotesk Bold Web";
     }
   }
@@ -93,12 +81,12 @@ $font-size-prop-title-desktop: 1vw;
   }
 
   .prusa-properties-title {
-    font-size: $font-size-prop-title-desktop;
+    font-size: defines.$font-size-proj-node-title-desktop;
   }
 
   .prusa-properties {
     & > .text {
-      font-size: $font-size-prop-desktop;
+      font-size: defines.$font-size-proj-node-desktop;
     }
   }
 }

@@ -42,7 +42,7 @@ const ViewDefault = props => {
       <div class="column is-full">
         {ready && (
           <Title title={t("home.title") + ": "}>
-            <span class="prusa-title prusa-text-orange">
+            <span class="prusa-title prusa-text-white">
               {t("prop.st-idle")}
             </span>
           </Title>

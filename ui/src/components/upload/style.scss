@@ -2,14 +2,13 @@
 // Copyright (C) 2018-2019 Prusa Research s.r.o. - www.prusa3d.com
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-$orange: #f8651b;
-$background-color-active: #313131;
+@use '../../style/defines.scss';
 
 .prusa-border-dashed {
   border-style: dashed;
-  border-color: $orange;
+  border-color: defines.$color-orange;
   &:hover {
-    background-color: $background-color-active;
+    background-color: defines.$body-background-color-hover;
     cursor: pointer;
   }
 }
@@ -23,5 +22,5 @@ $background-color-active: #313131;
 }
 
 .prusa-active-upload {
-  background-color: $background-color-active;
+  background-color: defines.$body-background-color-hover;
 }

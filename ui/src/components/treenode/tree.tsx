@@ -3,11 +3,14 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import { h, Component, Fragment } from "preact";
+import { useTranslation } from "react-i18next";
+
 import "./style.scss";
+import Title from "../../components/title";
 import FolderUp from "./folderUp";
 import ProjectNode from "./projectNode";
 import FolderNode from "./folderNode";
-import ProjectView from "./projectView";
+import ProjectView from "../project-view";
 
 interface nodeInfo {
   path: string;
@@ -95,12 +98,55 @@ class Tree extends Component<{}, S> {
     const file: nodeFile = (this.state.current_view as Array<
       nodeFolder | nodeFile
     >).find(e => e.path === path) as nodeFile;
-    this.setState((prevState, props) => ({
-      ...prevState,
-      current_view: file,
-      parent_path: this.state.current_path,
-      current_path: path
-    }));
+
+    const url = this.createLink(path);
+    fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-Api-Key": process.env.APIKEY
+      },
+      body: JSON.stringify({
+        command: "select"
+      })
+    })
+      .then(response => {
+        if (!response.ok) {
+          throw Error(response.statusText);
+        }
+        return response;
+      })
+      .catch(e => {
+        fetch("/api/job", {
+          method: "POST",
+          headers: {
+            "X-Api-Key": process.env.APIKEY,
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            command: "cancel"
+          })
+        }).then(() => {
+          fetch(url, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "X-Api-Key": process.env.APIKEY
+            },
+            body: JSON.stringify({
+              command: "select"
+            })
+          });
+        });
+      })
+      .finally(() => {
+        this.setState((prevState, props) => ({
+          ...prevState,
+          current_view: file,
+          parent_path: this.state.current_path,
+          current_path: path
+        }));
+      });
   };
 
   createView = (path: string, container: nodeTree) => {
@@ -110,17 +156,19 @@ class Tree extends Component<{}, S> {
     if (path) {
       const path_steps = path.split("/");
       parent_path = path.substring(0, path.lastIndexOf("/"));
-      for (let step of path_steps) {
-        let view = current_view[step] as nodeInfo;
-        if (view.isFolder) {
-          current_view = (view as nodeFolder).children;
-        } else {
-          return {
-            parent_path: parent_path,
-            current_view: view as nodeFile
-          };
+      try {
+        for (let step of path_steps) {
+          let view = current_view[step] as nodeInfo;
+          if (view.isFolder) {
+            current_view = (view as nodeFolder).children;
+          } else {
+            return {
+              parent_path: parent_path,
+              current_view: view as nodeFile
+            };
+          }
         }
-      }
+      } catch (error) {}
     }
     for (let path_key in current_view) {
       views.push(current_view[path_key]);
@@ -291,24 +339,27 @@ class Tree extends Component<{}, S> {
       });
     }
 
+    const { t, i18n, ready } = useTranslation(null, { useSuspense: false });
     return (
       <Fragment>
         {current_view ? (
           showTree ? (
-            <div class="columns is-multiline is-mobile">
-              {current_path && (
-                <FolderUp
-                  upload_info={this.createUploadLink(current_path)}
-                  onUpFolder={this.onUpFolder}
-                />
-              )}
-              {listNodes}
-            </div>
+            <Fragment>
+              {ready && <Title title={t("proj.title")} />}
+              <div class="columns is-multiline is-mobile">
+                {current_path && (
+                  <FolderUp
+                    upload_info={this.createUploadLink(current_path)}
+                    onUpFolder={this.onUpFolder}
+                  />
+                )}
+                {listNodes}
+              </div>
+            </Fragment>
           ) : (
             <ProjectView
               onBack={this.onUpFolder}
               {...current_view}
-              url={this.createLink((current_view as nodeFile).path)}
               preview_src={this.createPreview((current_view as nodeFile).path)}
               not_found={not_found_images}
             />

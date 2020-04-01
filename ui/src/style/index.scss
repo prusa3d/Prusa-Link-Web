@@ -3,17 +3,18 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 @charset "utf-8";
-$body-background-color: hsl(0, 0%, 4%);
-$text: #ffffff;
-$text-grey: #707070;
+@use './defines.scss';
+$body-background-color: defines.$body-background-color;
+$text: defines.$text-white;
+$text-grey: defines.$text-grey;
 $text-light: hsl(0, 0%, 71%);
-$text-strong: hsl(0, 0%, 100%);
+$text-strong: defines.$text-white;
 $progress-bar-background-color: hsl(0, 0%, 48%);
 $progress-border-radius: 0px;
 $navbar-item-hover-background-color: $body-background-color;
 $navbar-background-color: $body-background-color;
 $navbar-item-hover-color: $text-strong;
-$success: #f8651b;
+$success: defines.$text-orange;
 
 @import "../../../node_modules/bulma/sass/utilities/_all.sass";
 @import "../../../node_modules/bulma/sass/base/_all.sass";
@@ -55,69 +56,63 @@ $success: #f8651b;
 }
 
 .prusa-text-orange {
-  color: $success !important;
+  color: defines.$text-orange !important;
 }
 
 .prusa-text-grey {
-  color: #707070 !important;
+  color: defines.$text-grey !important;
+}
+
+.prusa-text-white {
+  color: defines.$text-white !important;
 }
 
 .prusa-no-focus:focus {
   outline: none;
 }
 
-$line-size: 1px;
-$font-size-link-title-mobile: 2.4rem;
-$font-size-link-title-desktop: 1rem;
-$font-size-item-title-mobile: 2.5rem;
-$font-size-item-title-desktop: 1.35rem;
-$font-size-title-mobile: 2.8rem;
-$font-size-title-desktop: 1.5rem;
-$font-size-mobile: 2.15rem;
-$font-size-desktop: 1.15rem;
-
 .prusa-title {
-  font-size: $font-size-title-mobile;
-  color: $text-grey;
+  font-size: defines.$font-size-title-mobile;
+  color: defines.$text-grey;
   font-family: "Atlas Grotesk Regular Web";
 }
 
 .prusa-item-title {
-  font-size: $font-size-item-title-mobile;
-  color: $text-grey;
+  font-size: defines.$font-size-item-title-mobile;
+  color: defines.$text-grey;
   font-family: "Atlas Grotesk Bold Web";
 }
 
 .prusa-link-title {
-  font-size: $font-size-link-title-mobile;
-  color: $text;
+  font-size: defines.$font-size-link-title-mobile;
+  color: defines.$text-white;
   font-family: "Atlas Grotesk Bold Web";
   &:hover {
-    border-bottom: $line-size solid $text;
+    border-bottom: defines.$line-size solid defines.$color-white;
   }
   &.active {
-    border-bottom: $line-size solid $success;
+    border-bottom: defines.$line-size solid defines.$color-orange;
     &:hover {
-      border-bottom: $line-size solid $text;
+      border-bottom: defines.$line-size solid defines.$color-white;
     }
   }
 }
 
 .prusa-default-text {
-  font-size: $font-size-mobile;
-  color: $text;
+  font-size: defines.$font-size-mobile;
+  color: defines.$text-white;
   font-family: "Atlas Grotesk Regular Web";
 }
 
 .prusa-default-text-grey {
-  font-size: $font-size-mobile;
-  color: $text-grey;
+  font-size: defines.$font-size-mobile;
+  color: defines.$text-grey;
   font-family: "Atlas Grotesk Regular Web";
 }
 
 .prusa-default-bold-text {
-  font-size: $font-size-mobile;
-  color: $text;
+  font-size: defines.$font-size-mobile;
+  color: defines.$text-white;
   font-family: "Atlas Grotesk Bold Web";
 }
 
@@ -125,19 +120,19 @@ $font-size-desktop: 1.15rem;
   .prusa-default-text,
   .prusa-default-text-grey,
   .prusa-default-bold-text {
-    font-size: $font-size-desktop;
+    font-size: defines.$font-size-desktop;
   }
 
   .prusa-title {
-    font-size: $font-size-title-desktop;
+    font-size: defines.$font-size-title-desktop;
   }
 
   .prusa-item-title {
-    font-size: $font-size-item-title-desktop;
+    font-size: defines.$font-size-item-title-desktop;
   }
 
   .prusa-link-title {
-    font-size: $font-size-link-title-desktop;
+    font-size: defines.$font-size-link-title-desktop;
   }
 }
 
@@ -147,7 +142,7 @@ $font-size-desktop: 1.15rem;
 }
 
 .prusa-line {
-  border-bottom: $line-size solid #707070;
+  border-bottom: defines.$line-size solid defines.$color-grey;
   border-radius: 0px;
   padding-bottom: 0px;
 }
