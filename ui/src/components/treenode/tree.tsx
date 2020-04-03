@@ -6,6 +6,7 @@ import { h, Component, Fragment } from "preact";
 import { useTranslation } from "react-i18next";
 
 import "./style.scss";
+import { formatTime } from "../utils/format";
 import Title from "../../components/title";
 import FolderUp from "./folderUp";
 import ProjectNode from "./projectNode";
@@ -206,11 +207,9 @@ class Tree extends Component<{}, S> {
         let gcodeAnalysis = file_or_folder["gcodeAnalysis"];
         if (gcodeAnalysis) {
           if (gcodeAnalysis["estimatedPrintTime"]) {
-            let hours = gcodeAnalysis["estimatedPrintTime"] / 3600;
-            let h = Math.trunc(hours);
-            let m = Math.round((hours - h) * 60);
-            obj["printing_time"] =
-              (h > 0 ? `${h}h ` : "") + `${("0" + m).substr(-2)}m`;
+            obj["printing_time"] = formatTime(
+              gcodeAnalysis["estimatedPrintTime"]
+            );
           }
           let material = gcodeAnalysis["material"];
           obj["material"] = material
@@ -317,7 +316,14 @@ class Tree extends Component<{}, S> {
   render({}, { current_view, current_path, ...others }) {
     const showTree = Array.isArray(current_view);
     let listNodes = [];
+    let title;
+    const { t, i18n, ready } = useTranslation(null, { useSuspense: false });
     if (showTree) {
+      title = current_path
+        ? current_path.split("/").join(" > ")
+        : ready
+        ? t("proj.title")
+        : "";
       listNodes = current_view.map((node: nodeInfo) => {
         if (node.isFolder) {
           return (
@@ -337,15 +343,21 @@ class Tree extends Component<{}, S> {
           );
         }
       });
+    } else {
+      title = current_path
+        ? current_path
+            .split("/")
+            .slice(0, -1)
+            .join(" > ")
+        : "";
     }
 
-    const { t, i18n, ready } = useTranslation(null, { useSuspense: false });
     return (
       <Fragment>
         {current_view ? (
           showTree ? (
             <Fragment>
-              {ready && <Title title={t("proj.title")} />}
+              {ready && <Title title={title} />}
               <div class="columns is-multiline is-mobile">
                 {current_path && (
                   <FolderUp
@@ -362,6 +374,7 @@ class Tree extends Component<{}, S> {
               {...current_view}
               preview_src={this.createPreview((current_view as nodeFile).path)}
               not_found={not_found_images}
+              title={title}
             />
           )
         ) : null}

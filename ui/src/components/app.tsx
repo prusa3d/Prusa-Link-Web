@@ -80,6 +80,8 @@ class App extends Component<{}, S> {
         currentUrl: e.url
       }));
     };
+
+    const is_mobile = window.innerWidth < 1024;
     return (
       <section id="app" class="section">
         <div class="columns is-vcentered is-centered is-desktop prusa-line">
@@ -90,9 +92,11 @@ class App extends Component<{}, S> {
         <div class="columns is-centered is-desktop prusa-after-nav">
           <div class="column is-three-quarters-desktop is-full-mobile">
             <div class="columns is-centered is-desktop">
-              <div class="column is-full-mobile">
-                <StatusLeftBoard printer_status={this.state.printer_status} />
-              </div>
+              {!is_mobile && (
+                <div class="column is-full-mobile">
+                  <StatusLeftBoard printer_status={this.state.printer_status} />
+                </div>
+              )}
               <div class="column is-three-quarters-desktop is-full-mobile">
                 <Router onChange={handleRoute}>
                   <Home
@@ -110,6 +114,11 @@ class App extends Component<{}, S> {
                   />
                 </Router>
               </div>
+              {is_mobile && (
+                <div class="column is-full-mobile">
+                  <StatusLeftBoard printer_status={this.state.printer_status} />
+                </div>
+              )}
             </div>
           </div>
         </div>

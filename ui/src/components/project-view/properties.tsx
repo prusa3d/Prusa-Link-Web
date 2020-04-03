@@ -15,22 +15,16 @@ interface P {
 interface S {
   exposure_times: string;
   last_modified: string;
-  remaining_time: string;
   total_layers: number | string;
   estimated_end: string;
-  consumed_resin: string;
-  remaining_resin: string;
 }
 
 class Properties extends Component<P, S> {
   state = {
     exposure_times: "NA",
     last_modified: "NA",
-    remaining_time: "NA",
     total_layers: "NA",
-    estimated_end: "NA",
-    consumed_resin: "NA",
-    remaining_resin: "NA"
+    estimated_end: "NA"
   };
 
   componentDidMount = () => {
@@ -44,33 +38,24 @@ class Properties extends Component<P, S> {
     })
       .then(response => response.json())
       .then(data => {
-        const dt = new Date(data.last_modified);
-        const last_modified = dt.toDateString() + " " + dt.toTimeString();
-        const result = {
-          exposure_times: data.exposure_times,
-          last_modified: last_modified.substring(0, 25),
-          remaining_time: formatTime(data.remaining_time, "NA", "NA"),
-          estimated_end: formatEstimatedTime(data.remaining_time),
-          total_layers: data.total_layers,
-          consumed_resin: data.consumed_resin,
-          remaining_resin: data.remaining_resin
-        };
-
-        this.setState(prevState => ({ ...prevState, ...result }));
+        if (data.total_layers) {
+          const dt = new Date(data.last_modified);
+          const last_modified = dt.toDateString() + " " + dt.toTimeString();
+          const result = {
+            exposure_times: data.exposure_times,
+            last_modified: last_modified.substring(0, 25),
+            remaining_time: formatTime(data.remaining_time, "NA", "NA"),
+            estimated_end: formatEstimatedTime(data.remaining_time),
+            total_layers: data.total_layers
+          };
+          this.setState(prevState => ({ ...prevState, ...result }));
+        }
       });
   };
 
   render(
     { printing_time, layer_height },
-    {
-      exposure_times,
-      last_modified,
-      remaining_time,
-      total_layers,
-      estimated_end,
-      consumed_resin,
-      remaining_resin
-    }
+    { exposure_times, last_modified, total_layers, estimated_end }
   ) {
     const { t, i18n, ready } = useTranslation(null, { useSuspense: false });
     return (
@@ -80,10 +65,6 @@ class Properties extends Component<P, S> {
             <div class="columns">
               <div class="column is-1 proj-icon">
                 <img src={require("../../assets/time_color.svg")} />
-              </div>
-              <div class="column is-4">
-                <p class="proj-text"> {t("prop.rem-time").toLowerCase()}</p>
-                <p class="proj-text-value">{remaining_time}</p>
               </div>
               <div class="column is-4">
                 <p class="proj-text">{t("prop.est-end").toLowerCase()}</p>
@@ -112,22 +93,6 @@ class Properties extends Component<P, S> {
                 <p class="proj-text-value">
                   {layer_height ? `${layer_height} mm` : "NA"}
                 </p>
-              </div>
-            </div>
-          </div>
-
-          <div class="column is-full">
-            <div class="columns">
-              <div class="column is-1 proj-icon">
-                <img src={require("../../assets/refill_color.svg")} />
-              </div>
-              <div class="column is-4">
-                <p class="proj-text">{t("prop.sla-rmn-mt").toLowerCase()}</p>
-                <p class="proj-text-value">{remaining_resin}</p>
-              </div>
-              <div class="column is-4">
-                <p class="proj-text">{t("prop.sla-csm-mt").toLowerCase()}</p>
-                <p class="proj-text-value">{consumed_resin}</p>
               </div>
             </div>
           </div>

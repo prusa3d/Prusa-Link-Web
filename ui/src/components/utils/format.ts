@@ -11,7 +11,11 @@ export function numberFormat(value: number) {
   }
 }
 
-export function formatTime(value: number, less_than: string, na: string) {
+export function formatTime(
+  value: number,
+  less_than: string = null,
+  na: string = null
+) {
   if (value) {
     if (value < 60000) {
       return less_than;

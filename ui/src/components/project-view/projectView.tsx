@@ -18,6 +18,7 @@ export interface ProjectProps {
   not_found: string[];
   printing_time: string;
   layer_height: number;
+  title: string;
 }
 
 interface S {}
@@ -95,7 +96,7 @@ class View extends Component<ProjectProps, S> {
     return (
       ready && (
         <Fragment>
-          <Title title={t("proj.title")} />
+          <Title title={this.props.title} />
           <div class="columns is-multiline is-mobile">
             <div class="column is-full">
               <p class="prusa-default-bold-text prusa-break-word">
