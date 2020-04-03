@@ -112,6 +112,10 @@ class App extends Component<{}, S> {
                     path="/temperatures/"
                     temperatures={this.state.temperatures}
                   />
+                  <div class="prusa-default-text" default>
+                    <p>UH, OH.</p>
+                    <p>404</p>
+                  </div>
                 </Router>
               </div>
               {is_mobile && (
