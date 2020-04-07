@@ -112,7 +112,10 @@ module.exports = (env, args) => {
           test: /\.(png|jpe?g|gif|ico|eot|woff2?)$/i,
           use: [
             {
-              loader: "file-loader"
+              loader: "file-loader",
+              options: {
+                outputPath: "assets"
+              }
             }
           ]
         }
