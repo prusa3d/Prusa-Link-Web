@@ -5,10 +5,11 @@
 import { h } from "preact";
 import { useRef, useEffect } from "preact/hooks";
 
+import { network } from "../utils/network";
 import { useTranslation } from "react-i18next";
 import preview from "../../assets/thumbnail.png";
 
-interface P {
+interface P extends network {
   display: string;
   onSelectFile(): void;
   preview_src: string;
@@ -26,38 +27,33 @@ const ProjectNode: preact.FunctionalComponent<P> = props => {
     not_found,
     printing_time,
     material,
-    layer_height
+    layer_height,
+    onFetch
   } = props;
   const ref = useRef(null);
 
   useEffect(() => {
     if (not_found.indexOf(preview_src) < 0) {
-      const options = {
-        headers: {
-          "X-Api-Key": process.env.APIKEY,
-          "Content-Type": "image/png"
-        }
-      };
-
-      fetch(preview_src, options)
-        .then(function(response) {
-          if (!response.ok) {
-            throw Error(response.statusText);
+      onFetch({
+        url: preview_src,
+        then: response =>
+          response.blob().then(blob => {
+            if (ref.current) {
+              ref.current.src = URL.createObjectURL(blob);
+            }
+          }),
+        options: {
+          headers: {
+            "Content-Type": "image/png"
           }
-          return response;
-        })
-        .then(res => res.blob())
-        .then(blob => {
-          if (ref.current) {
-            ref.current.src = URL.createObjectURL(blob);
-          }
-        })
-        .catch(e => {
+        },
+        except: e => {
           not_found.push(preview_src);
           if (ref.current) {
             ref.current.src = preview;
           }
-        });
+        }
+      });
     } else {
       if (ref.current) {
         ref.current.src = preview;

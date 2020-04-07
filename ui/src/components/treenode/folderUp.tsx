@@ -3,9 +3,11 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import { h, Fragment } from "preact";
+
+import { apiKey } from "../utils/network";
 import Upload from "../upload";
 
-interface upload_info {
+interface upload_info extends apiKey {
   url: string;
   path: string;
 }

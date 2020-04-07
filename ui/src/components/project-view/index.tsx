@@ -3,12 +3,14 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import { h, Component } from "preact";
+
+import { network } from "../utils/network";
 import View from "./projectView";
 import { ProjectProps } from "./projectView";
 import ExposureTimes from "../progress/sla/exposure-times";
 import "./style.scss";
 
-interface P extends ProjectProps {}
+interface P extends ProjectProps, network {}
 
 interface S {
   show: number;
@@ -34,7 +36,7 @@ class ProjectView extends Component<P, S> {
   render(props, { show }) {
     switch (show) {
       case 1:
-        return <ExposureTimes onBack={this.onBack} />;
+        return <ExposureTimes onBack={this.onBack} onFetch={props.onFetch} />;
       default:
         return <View {...props} onclick={this.onclick} />;
     }

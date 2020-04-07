@@ -4,7 +4,9 @@
 
 import { h, Component } from "preact";
 
-interface P {
+import { network } from "../utils/network";
+
+interface P extends network {
   title: string;
   children?: any;
 }
@@ -17,20 +19,16 @@ class Title extends Component<P, S> {
   state = { hostname: null };
 
   componentDidMount = () => {
-    fetch("/api/properties?values=hostname", {
-      method: "GET",
-      headers: {
-        "X-Api-Key": process.env.APIKEY,
-        Accept: "application/json"
-      }
-    })
-      .then(response => response.json())
-      .then(data => {
-        this.setState({ hostname: data.hostname });
-      });
+    this.props.onFetch({
+      url: "/api/properties?values=hostname",
+      then: response =>
+        response.json().then(data => {
+          this.setState({ hostname: data.hostname });
+        })
+    });
   };
 
-  render({ title, children }, { hostname }) {
+  render({ title, children, onFetch }, { hostname }) {
     return (
       <div class="box has-background-black is-paddingless prusa-line">
         <div class="columns is-centered">
@@ -39,9 +37,11 @@ class Title extends Component<P, S> {
             {children && children}
           </div>
           <div class="column has-text-right prusa-title">
-            <p>
-              hostname: <span class="prusa-text-orange">{hostname}</span>
-            </p>
+            {hostname && (
+              <p>
+                hostname: <span class="prusa-text-orange">{hostname}</span>
+              </p>
+            )}
           </div>
         </div>
       </div>

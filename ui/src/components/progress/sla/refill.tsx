@@ -4,6 +4,8 @@
 
 import { h, Component, Fragment } from "preact";
 import { Translation } from "react-i18next";
+
+import { network } from "../../utils/network";
 import Title from "../../title";
 import { YesButton, NoButton } from "../../buttons";
 import ExampleImage1 from "../../../assets/refill.jpg";
@@ -15,51 +17,32 @@ interface S {
   show: number;
 }
 
-interface P {
+interface P extends network {
   printer_state: PrinterState;
   onBack(e: Event): void;
 }
 
 class Refill extends Component<P, {}> {
   componentDidMount = () => {
-    fetch("/api/job/material?value=start", {
-      method: "GET",
-      headers: {
-        "X-Api-Key": process.env.APIKEY
-      }
-    })
-      .then(function(response) {
-        if (!response.ok) {
-          throw Error(response.statusText);
-        }
-        return response;
-      })
-      .catch(e => {
-        this.props.onBack(new Event("back"));
-      });
+    this.props.onFetch({
+      url: "/api/job/material?value=start",
+      then: response => {},
+      except: e => this.props.onBack(new Event("back"))
+    });
   };
 
   onBack = (e: MouseEvent) => {
-    fetch("/api/job/material?value=back", {
-      method: "GET",
-      headers: {
-        "X-Api-Key": process.env.APIKEY
-      }
+    this.props.onFetch({
+      url: "/api/job/material?value=back",
+      then: response => this.props.onBack(e)
     });
-    this.props.onBack(e);
   };
 
   onYES = (e: MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-
-    fetch("/api/job/material?value=continue", {
-      method: "GET",
-      headers: {
-        "X-Api-Key": process.env.APIKEY
-      }
+    this.props.onFetch({
+      url: "/api/job/material?value=continue",
+      then: response => this.props.onBack(e)
     });
-    this.props.onBack(e);
   };
 
   render() {
@@ -70,7 +53,7 @@ class Refill extends Component<P, {}> {
         {(t, { i18n }, ready) =>
           ready && (
             <Fragment>
-              <Title title={t("refill.title")} />
+              <Title title={t("refill.title")} onFetch={this.props.onFetch} />
               <div class="columns is-multiline is-mobile is-centered is-vcentered">
                 <div class="column is-full">
                   <p class="prusa-default-text">{t("msg.sla-fly-fill")}</p>

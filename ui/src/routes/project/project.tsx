@@ -3,21 +3,27 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import { h } from "preact";
+
+import { network, apiKey } from "../../components/utils/network";
 import TreeNode from "../../components/treenode";
 import Progress from "../../components/progress";
 import { isPrinting } from "../../components/utils/states";
 import { PrinterState } from "../../components/telemetry";
 
-interface P {
+interface P extends network, apiKey {
   printer_state: PrinterState;
 }
 
-const Project: preact.FunctionalComponent<P> = ({ printer_state }) => {
+const Project: preact.FunctionalComponent<P> = ({
+  printer_state,
+  onFetch,
+  getApikey
+}) => {
   let view;
   if (isPrinting(printer_state)) {
-    view = <Progress printer_state={printer_state} />;
+    view = <Progress printer_state={printer_state} onFetch={onFetch} />;
   } else {
-    view = <TreeNode />;
+    view = <TreeNode onFetch={onFetch} getApikey={getApikey} />;
   }
   return view;
 };

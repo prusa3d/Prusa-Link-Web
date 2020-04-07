@@ -5,9 +5,10 @@
 import { h, Component } from "preact";
 import { useTranslation } from "react-i18next";
 
+import { network } from "../utils/network";
 import { formatTime, formatEstimatedTime } from "../utils/format";
 
-interface P {
+interface P extends network {
   printing_time: string;
   layer_height: number;
 }
@@ -28,29 +29,24 @@ class Properties extends Component<P, S> {
   };
 
   componentDidMount = () => {
-    fetch("/api/before-confirm", {
-      method: "GET",
-      headers: {
-        "X-Api-Key": process.env.APIKEY,
-        "Content-Type": "application/json",
-        Accept: "application/json"
-      }
-    })
-      .then(response => response.json())
-      .then(data => {
-        if (data.total_layers) {
-          const dt = new Date(data.last_modified);
-          const last_modified = dt.toDateString() + " " + dt.toTimeString();
-          const result = {
-            exposure_times: data.exposure_times,
-            last_modified: last_modified.substring(0, 25),
-            remaining_time: formatTime(data.remaining_time, "NA", "NA"),
-            estimated_end: formatEstimatedTime(data.remaining_time),
-            total_layers: data.total_layers
-          };
-          this.setState(prevState => ({ ...prevState, ...result }));
-        }
-      });
+    this.props.onFetch({
+      url: "/api/before-confirm",
+      then: response =>
+        response.json().then(data => {
+          if (data.total_layers) {
+            const dt = new Date(data.last_modified);
+            const last_modified = dt.toDateString() + " " + dt.toTimeString();
+            const result = {
+              exposure_times: data.exposure_times,
+              last_modified: last_modified.substring(0, 25),
+              remaining_time: formatTime(data.remaining_time, "NA", "NA"),
+              estimated_end: formatEstimatedTime(data.remaining_time),
+              total_layers: data.total_layers
+            };
+            this.setState(prevState => ({ ...prevState, ...result }));
+          }
+        })
+    });
   };
 
   render(

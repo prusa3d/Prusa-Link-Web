@@ -4,7 +4,9 @@
 
 import { h } from "preact";
 
-const Upload = props => {
+import { P } from "./component";
+
+const Upload: preact.FunctionalComponent<P> = props => {
   if (process.env.IS_SL1) {
     const Uploaded = require("./component").default;
     return <Uploaded {...props} />;

@@ -3,6 +3,8 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import { h, Component } from "preact";
+
+import { network } from "../../utils/network";
 import JobProgress from "./progress";
 import Cancel from "../cancel";
 import Refill from "./refill";
@@ -10,7 +12,7 @@ import ExposureTimes from "./exposure-times";
 import { PrinterState } from "../../telemetry";
 import { isPrintingFeedMe } from "../../utils/states";
 
-interface P {
+interface P extends network {
   printer_state: PrinterState;
   isHalf: boolean;
   children?: any;
@@ -42,17 +44,35 @@ class Job extends Component<P, S> {
     });
   };
 
-  render({ printer_state, isHalf, children }, { show }) {
+  render({ printer_state, isHalf, children, onFetch }, { show }) {
     if (isPrintingFeedMe(printer_state)) {
-      return <Refill printer_state={printer_state} onBack={this.onBack} />;
+      return (
+        <Refill
+          printer_state={printer_state}
+          onBack={this.onBack}
+          onFetch={onFetch}
+        />
+      );
     }
     switch (show) {
       case 1:
-        return <ExposureTimes onBack={this.onBack} />;
+        return <ExposureTimes onBack={this.onBack} onFetch={onFetch} />;
       case 2:
-        return <Refill printer_state={printer_state} onBack={this.onBack} />;
+        return (
+          <Refill
+            printer_state={printer_state}
+            onBack={this.onBack}
+            onFetch={onFetch}
+          />
+        );
       case 3:
-        return <Cancel printer_state={printer_state} onBack={this.onBack} />;
+        return (
+          <Cancel
+            printer_state={printer_state}
+            onBack={this.onBack}
+            onFetch={onFetch}
+          />
+        );
       default:
         return (
           <JobProgress
@@ -60,6 +80,7 @@ class Job extends Component<P, S> {
             onclick={this.onclick}
             isHalf={isHalf}
             children={children}
+            onFetch={onFetch}
           />
         );
     }

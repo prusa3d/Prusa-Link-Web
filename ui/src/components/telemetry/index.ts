@@ -48,68 +48,51 @@ if (process.env.IS_SL1) {
 }
 
 export const initPrinterState = printerState;
-export function update(updateData, clearData) {
-  return () => {
-    fetch("/api/telemetry", {
-      method: "GET",
-      headers: {
-        "X-Api-Key": process.env.APIKEY,
-        "Content-Type": "application/json",
-        Accept: "application/json"
-      }
-    })
-      .then(function(response) {
-        if (!response.ok) {
-          throw Error(response.statusText);
-        }
-        return response;
-      })
-      .then(response => response.json())
-      .then(data => {
-        let printerStatus = {};
-        let printer_state;
-        let newTemps = [];
-        let value = null;
+export function update(updateData: (data) => void) {
+  return (response: Response) =>
+    response.json().then(data => {
+      let printerStatus = {};
+      let printer_state;
+      let newTemps = [];
+      let value = null;
 
-        // printer status
-        for (let item of printStatus) {
-          value = data[item];
-          if (value) {
-            printerStatus[item] = value;
-          } else {
-            printerStatus[item] = 0;
-          }
-        }
-
-        // printer temperatures
-        newTemps.push(new Date().getTime());
-        for (let item of printTemperatures) {
-          value = data[item];
-          if (value) {
-            printerStatus[item] = value;
-            newTemps.push(value);
-          } else {
-            printerStatus[item] = 0;
-            newTemps.push(value);
-          }
-        }
-        if (process.env.IS_SL1) {
-          printerStatus["cover_state"] = data["cover_closed"] ? true : false;
+      // printer status
+      for (let item of printStatus) {
+        value = data[item];
+        if (value) {
+          printerStatus[item] = value;
         } else {
-          printerStatus["material"] = data["material"];
+          printerStatus[item] = 0;
         }
+      }
 
-        value = data["state"];
-        printer_state = value ? value : { state: STATE_IDLE };
-
-        if (newTemps[1]) {
-          updateData({
-            printer_status: printerStatus,
-            printer_state: printer_state,
-            temperatures: [newTemps]
-          });
+      // printer temperatures
+      newTemps.push(new Date().getTime());
+      for (let item of printTemperatures) {
+        value = data[item];
+        if (value) {
+          printerStatus[item] = value;
+          newTemps.push(value);
+        } else {
+          printerStatus[item] = 0;
+          newTemps.push(value);
         }
-      })
-      .catch(e => clearData());
-  };
+      }
+      if (process.env.IS_SL1) {
+        printerStatus["cover_state"] = data["cover_closed"] ? true : false;
+      } else {
+        printerStatus["material"] = data["material"];
+      }
+
+      value = data["state"];
+      printer_state = value ? value : { state: STATE_IDLE };
+
+      if (newTemps[1]) {
+        updateData({
+          printer_status: printerStatus,
+          printer_state: printer_state,
+          temperatures: [newTemps]
+        });
+      }
+    });
 }

@@ -4,34 +4,38 @@
 
 import { h, Fragment } from "preact";
 import { useTranslation } from "react-i18next";
+
+import { network } from "../utils/network";
 import { PrinterState } from "../telemetry";
 import Title from "../title";
 import { YesButton, NoButton } from "../buttons";
 import { canCancelPrinting } from "../utils/states";
 
-interface P {
+interface P extends network {
   printer_state: PrinterState;
   onBack(e: MouseEvent): void;
 }
 
-const Cancel: preact.FunctionalComponent<P> = ({ printer_state, onBack }) => {
+const Cancel: preact.FunctionalComponent<P> = ({
+  printer_state,
+  onBack,
+  onFetch
+}) => {
   const onYes = (e: MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    fetch("/api/job", {
-      method: "POST",
-      headers: {
-        "X-Api-Key": process.env.APIKEY,
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        command: "cancel"
-      })
-    }).then(function(response) {
-      if (response.ok) {
-        onBack(e);
+    onFetch({
+      url: "/api/job",
+      then: response => onBack(e),
+      options: {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          command: "cancel"
+        })
       }
-      return response;
     });
   };
 
@@ -40,7 +44,7 @@ const Cancel: preact.FunctionalComponent<P> = ({ printer_state, onBack }) => {
   return (
     ready && (
       <Fragment>
-        <Title title={cancel_label} />
+        <Title title={cancel_label} onFetch={onFetch} />
         <div class="columns is-multiline is-mobile is-centered is-vcentered">
           <div class="column is-full">
             <p class="prusa-default-text has-text-centered prusa-job-question">

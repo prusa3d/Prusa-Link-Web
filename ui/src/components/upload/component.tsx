@@ -5,10 +5,11 @@
 import { h, Component, createRef } from "preact";
 import "./style.scss";
 
+import { apiKey } from "../utils/network";
 import Static from "./static";
 import Dynamic from "./dynamic";
 
-interface P {
+export interface P extends apiKey {
   url?: string;
   path?: string;
   update?: () => void;
@@ -86,7 +87,7 @@ class Upload extends Component<P, S> {
 
     const request = new XMLHttpRequest();
     request.open("POST", url);
-    request.setRequestHeader("X-Api-Key", process.env.APIKEY);
+    request.setRequestHeader("X-Api-Key", this.props.getApikey());
 
     request.upload.onprogress = function(e: ProgressEvent) {
       that.setState(prev => {

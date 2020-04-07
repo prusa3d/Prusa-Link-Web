@@ -4,12 +4,14 @@
 
 import { h, Fragment } from "preact";
 import { useTranslation } from "react-i18next";
+
+import { network } from "../../utils/network";
 import Title from "../../title";
 import StatusBoard from "../../../components/status-board";
 import { PrinterState } from "../../telemetry";
 import { NoButton, ActionButton } from "../../buttons";
 
-interface P {
+interface P extends network {
   printer_state: PrinterState;
   onclick(nextShow: number): void;
   isHalf: boolean;
@@ -29,14 +31,14 @@ const JobProgress: preact.FunctionalComponent<P> = props => {
   if (ready) {
     if (props.isHalf) {
       title = (
-        <Title title={t("home.title") + ": "}>
+        <Title title={t("home.title") + ": "} onFetch={props.onFetch}>
           <span class="prusa-title prusa-text-orange">
             {t("prop.st-priting")}
           </span>
         </Title>
       );
     } else {
-      title = <Title title={t("proj.title")} />;
+      title = <Title title={t("proj.title")} onFetch={props.onFetch} />;
     }
   }
 
@@ -48,6 +50,7 @@ const JobProgress: preact.FunctionalComponent<P> = props => {
           <StatusBoard
             printer_state={props.printer_state}
             isHalf={props.isHalf}
+            onFetch={props.onFetch}
           />
           <div class="column is-full">
             <div class="prusa-button-wrapper">

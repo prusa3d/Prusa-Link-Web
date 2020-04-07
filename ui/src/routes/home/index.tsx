@@ -3,6 +3,8 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import { h, Fragment } from "preact";
+
+import { network, apiKey } from "../../components/utils/network";
 import { useTranslation } from "react-i18next";
 import Title from "../../components/title";
 import Welcome from "../../components/notification/welcome";
@@ -12,14 +14,14 @@ import Upload from "../../components/upload";
 import { isPrinting } from "../../components/utils/states";
 import { PrinterState } from "../../components/telemetry";
 
-interface homeProps extends TempProps {
+interface homeProps extends TempProps, network, apiKey {
   printer_state: PrinterState;
 }
 
 const Contents = props => (
   <Fragment>
     <div class="column is-full-touch is-half-desktop">
-      <Upload />
+      <Upload getApikey={props.getApikey} />
     </div>
     <div class="column is-full-touch is-half-desktop">
       <Temperature temperatures={props.temperatures} />
@@ -29,8 +31,12 @@ const Contents = props => (
 
 const ViewProgress = props => (
   <div class="column is-full">
-    <Progress printer_state={props.printer_state} isHalf>
-      <Contents temperatures={props.temperatures} />
+    <Progress
+      printer_state={props.printer_state}
+      onFetch={props.onFetch}
+      isHalf
+    >
+      <Contents temperatures={props.temperatures} getApikey={props.getApikey} />
     </Progress>
   </div>
 );
@@ -41,14 +47,14 @@ const ViewDefault = props => {
     <Fragment>
       <div class="column is-full">
         {ready && (
-          <Title title={t("home.title") + ": "}>
+          <Title title={t("home.title") + ": "} onFetch={props.onFetch}>
             <span class="prusa-title prusa-text-white">
               {t("prop.st-idle")}
             </span>
           </Title>
         )}
       </div>
-      <Contents temperatures={props.temperatures} />
+      <Contents temperatures={props.temperatures} getApikey={props.getApikey} />
     </Fragment>
   );
 };

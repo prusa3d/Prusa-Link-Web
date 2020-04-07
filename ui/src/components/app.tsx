@@ -12,6 +12,7 @@ import {
   PrinterState,
   initPrinterState
 } from "./telemetry";
+import { networkProps, network, apiKey } from "./utils/network";
 import Home from "../routes/home";
 import Project from "../routes/project";
 import Header from "./header";
@@ -23,6 +24,7 @@ interface S {
   temperatures: Array<Array<number>>;
   printer_status: PrinterStatus;
   printer_state: PrinterState;
+  apikey: string;
 }
 
 const initState = {
@@ -31,12 +33,40 @@ const initState = {
   printer_state: { state: STATE_IDLE }
 };
 
-class App extends Component<{}, S> {
+class App extends Component<{}, S> implements network, apiKey {
   timer = null;
   state = {
     ...initState,
-    currentUrl: "/"
+    currentUrl: "/",
+    apikey: process.env.APIKEY
   };
+
+  onFetch = ({
+    url,
+    then,
+    options = { method: "GET", headers: {} },
+    except = e => {}
+  }: networkProps) => {
+    options.headers["X-Api-Key"] = this.state.apikey;
+    fetch(url, options)
+      .then(function(response) {
+        if (!response.ok) {
+          throw Error(response.statusText);
+        }
+        return response;
+      })
+      .then(function(response) {
+        then(response);
+      })
+      .catch(e => {
+        if (e.message === "FORBIDDEN") {
+          this.setState({ apikey: null });
+        }
+        except(e);
+      });
+  };
+
+  getApikey = (): string => this.state.apikey;
 
   updateData = data => {
     this.setState((prevState, props) => {
@@ -64,7 +94,18 @@ class App extends Component<{}, S> {
 
   componentDidMount() {
     this.timer = setInterval(
-      update(this.updateData, this.clearData),
+      () =>
+        this.onFetch({
+          url: "/api/telemetry",
+          then: update(this.updateData),
+          except: e => this.clearData(),
+          options: {
+            headers: {
+              "Content-Type": "application/json",
+              Accept: "application/json"
+            }
+          }
+        }),
       Number(process.env.UPDATE_PRINTER)
     );
   }
@@ -103,14 +144,19 @@ class App extends Component<{}, S> {
                     path="/"
                     temperatures={this.state.temperatures}
                     printer_state={this.state.printer_state}
+                    onFetch={this.onFetch}
+                    getApikey={this.getApikey}
                   />
                   <Project
                     path="/projects/"
                     printer_state={this.state.printer_state}
+                    onFetch={this.onFetch}
+                    getApikey={this.getApikey}
                   />
                   <Temperatures
                     path="/temperatures/"
                     temperatures={this.state.temperatures}
+                    onFetch={this.onFetch}
                   />
                   <div class="prusa-default-text" default>
                     <p>UH, OH.</p>

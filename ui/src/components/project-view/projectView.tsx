@@ -5,12 +5,13 @@
 import { h, Component, createRef, Fragment } from "preact";
 import { useTranslation } from "react-i18next";
 
+import { network } from "../utils/network";
 import preview from "../../assets/thumbnail.png";
 import Title from "../../components/title";
 import { ActionButton, NoButton, YesButton } from "../buttons";
 import Properties from "./properties";
 
-export interface ProjectProps {
+export interface ProjectProps extends network {
   onclick(e: Event, nextShow: number): void;
   onBack(e: Event): void;
   display: string;
@@ -27,28 +28,34 @@ class View extends Component<ProjectProps, S> {
   ref = createRef();
 
   onStartPrint = (e: Event) => {
-    e.preventDefault();
-    console.log("start print");
+    this.props.onFetch({
+      url: "/api/job",
+      then: response => this.props.onBack(e),
+      options: {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          command: "start"
+        })
+      }
+    });
   };
 
   onCancel = (e: Event) => {
-    e.preventDefault();
-
-    const onBack = this.props.onBack;
-    fetch("/api/job", {
-      method: "POST",
-      headers: {
-        "X-Api-Key": process.env.APIKEY,
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        command: "cancel"
-      })
-    }).then(function(response) {
-      if (response.ok) {
-        onBack(e);
+    this.props.onFetch({
+      url: "/api/job",
+      then: response => this.props.onBack(e),
+      options: {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          command: "cancel"
+        })
       }
-      return response;
     });
   };
 
@@ -58,32 +65,26 @@ class View extends Component<ProjectProps, S> {
     const preview_src = this.props.preview_src;
 
     if (not_found.indexOf(preview_src) < 0) {
-      const options = {
-        headers: {
-          "X-Api-Key": process.env.APIKEY,
-          "Content-Type": "image/png"
-        }
-      };
-
-      fetch(preview_src, options)
-        .then(function(response) {
-          if (!response.ok) {
-            throw Error(response.statusText);
+      this.props.onFetch({
+        url: preview_src,
+        then: response =>
+          response.blob().then(blob => {
+            if (ref.current) {
+              ref.current.src = URL.createObjectURL(blob);
+            }
+          }),
+        options: {
+          headers: {
+            "Content-Type": "image/png"
           }
-          return response;
-        })
-        .then(res => res.blob())
-        .then(blob => {
-          if (ref.current) {
-            ref.current.src = URL.createObjectURL(blob);
-          }
-        })
-        .catch(e => {
+        },
+        except: e => {
           not_found.push(preview_src);
           if (ref.current) {
             ref.current.src = preview;
           }
-        });
+        }
+      });
     } else {
       if (ref.current) {
         ref.current.src = preview;
@@ -96,7 +97,7 @@ class View extends Component<ProjectProps, S> {
     return (
       ready && (
         <Fragment>
-          <Title title={this.props.title} />
+          <Title title={this.props.title} onFetch={this.props.onFetch} />
           <div class="columns is-multiline is-mobile">
             <div class="column is-full">
               <p class="prusa-default-bold-text prusa-break-word">
@@ -110,6 +111,7 @@ class View extends Component<ProjectProps, S> {
               <Properties
                 printing_time={this.props.printing_time}
                 layer_height={this.props.layer_height}
+                onFetch={this.props.onFetch}
               />
             </div>
             <div class="column is-full">

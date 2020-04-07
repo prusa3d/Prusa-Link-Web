@@ -2,10 +2,11 @@
 // Copyright (C) 2018-2019 Prusa Research s.r.o. - www.prusa3d.com
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-import { h, Component, Fragment } from "preact";
+import { h, Component, Fragment, options } from "preact";
 import { useTranslation } from "react-i18next";
 
 import "./style.scss";
+import { network, apiKey } from "../utils/network";
 import { formatTime } from "../utils/format";
 import Title from "../../components/title";
 import FolderUp from "./folderUp";
@@ -35,6 +36,8 @@ interface nodeTree {
   [path: string]: nodeFolder | nodeFile;
 }
 
+interface P extends network, apiKey {}
+
 interface S {
   parent_path: string;
   current_path: string;
@@ -62,7 +65,7 @@ let state = {
 
 const not_found_images = [];
 
-class Tree extends Component<{}, S> {
+class Tree extends Component<P, S> {
   timer: any;
   constructor() {
     super();
@@ -101,53 +104,45 @@ class Tree extends Component<{}, S> {
     >).find(e => e.path === path) as nodeFile;
 
     const url = this.createLink(path);
-    fetch(url, {
+    const onFetch = this.props.onFetch;
+    const final = () => {
+      this.setState((prevState, props) => ({
+        ...prevState,
+        current_view: file,
+        parent_path: this.state.current_path,
+        current_path: path
+      }));
+    };
+    const options = {
       method: "POST",
       headers: {
-        "Content-Type": "application/json",
-        "X-Api-Key": process.env.APIKEY
+        "Content-Type": "application/json"
       },
-      body: JSON.stringify({
-        command: "select"
-      })
-    })
-      .then(response => {
-        if (!response.ok) {
-          throw Error(response.statusText);
-        }
-        return response;
-      })
-      .catch(e => {
-        fetch("/api/job", {
-          method: "POST",
-          headers: {
-            "X-Api-Key": process.env.APIKEY,
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify({
-            command: "cancel"
-          })
-        }).then(() => {
-          fetch(url, {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              "X-Api-Key": process.env.APIKEY
-            },
-            body: JSON.stringify({
-              command: "select"
-            })
+      body: '{"command":"select"}'
+    };
+
+    onFetch({
+      url,
+      then: e => final(),
+      options,
+      except: e => {
+        if (e.message == "CONFLICT") {
+          onFetch({
+            url: "/api/job",
+            then: e =>
+              onFetch({
+                url,
+                then: e => final(),
+                options
+              }),
+            options: {
+              ...options,
+              body: '{"command":"cancel"}'
+            }
           });
-        });
-      })
-      .finally(() => {
-        this.setState((prevState, props) => ({
-          ...prevState,
-          current_view: file,
-          parent_path: this.state.current_path,
-          current_path: path
-        }));
-      });
+        }
+      }
+    });
   };
 
   createView = (path: string, container: nodeTree) => {
@@ -239,29 +234,32 @@ class Tree extends Component<{}, S> {
   };
 
   connect = async () => {
-    let response = await fetch("/api/files?recursive=true", {
-      method: "GET",
-      headers: {
-        "X-Api-Key": process.env.APIKEY,
-        "If-None-Match": this.state.eTag,
-        Accept: "application/json"
+    this.props.onFetch({
+      url: "/api/files?recursive=true",
+      then: response => {
+        const eTag = response.headers.get("etag");
+        response.json().then(data => {
+          if (data && "files" in data) {
+            const newContainer = this.createContainer(data["files"]);
+            const newView = this.createView(
+              this.state.current_path,
+              newContainer
+            );
+            this.setState((prevState, props) => ({
+              ...prevState,
+              eTag: eTag,
+              container: newContainer,
+              ...newView
+            }));
+          }
+        });
+      },
+      options: {
+        headers: {
+          "If-None-Match": this.state.eTag
+        }
       }
     });
-
-    if (response.ok) {
-      const eTag = response.headers.get("etag");
-      const data = await response.json();
-      if (data && "files" in data) {
-        const newContainer = this.createContainer(data["files"]);
-        const newView = this.createView(this.state.current_path, newContainer);
-        this.setState((prevState, props) => ({
-          ...prevState,
-          eTag: eTag,
-          container: newContainer,
-          ...newView
-        }));
-      }
-    }
   };
 
   componentDidMount() {
@@ -303,17 +301,19 @@ class Tree extends Component<{}, S> {
       return {
         url: "/api/files/sdcard",
         path: path.substring(3),
-        update: this.connect
+        update: this.connect,
+        getApikey: this.props.getApikey
       };
     }
     return {
       url: "/api/files/local",
       path: path.substring(5),
-      update: this.connect
+      update: this.connect,
+      getApikey: this.props.getApikey
     };
   };
 
-  render({}, { current_view, current_path, ...others }) {
+  render({ onFetch }, { current_view, current_path, ...others }) {
     const showTree = Array.isArray(current_view);
     let listNodes = [];
     let title;
@@ -339,6 +339,7 @@ class Tree extends Component<{}, S> {
               onSelectFile={() => this.onSelectFile(node.path)}
               preview_src={this.createPreview(node.path)}
               not_found={not_found_images}
+              onFetch={onFetch}
             />
           );
         }
@@ -357,7 +358,7 @@ class Tree extends Component<{}, S> {
         {current_view ? (
           showTree ? (
             <Fragment>
-              {ready && <Title title={title} />}
+              {ready && <Title title={title} onFetch={onFetch} />}
               <div class="columns is-multiline is-mobile">
                 {current_path && (
                   <FolderUp
@@ -375,6 +376,7 @@ class Tree extends Component<{}, S> {
               preview_src={this.createPreview((current_view as nodeFile).path)}
               not_found={not_found_images}
               title={title}
+              onFetch={onFetch}
             />
           )
         ) : null}

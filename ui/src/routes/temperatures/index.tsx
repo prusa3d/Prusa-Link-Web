@@ -3,16 +3,20 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import { h, Fragment } from "preact";
+
+import { network } from "../../components/utils/network";
 import Title from "../../components/title";
 import { TempProps, Temperature } from "../../components/temperature";
 import { useTranslation } from "react-i18next";
 
-const Temperatures: preact.FunctionalComponent<TempProps> = props => {
+interface P extends network, TempProps {}
+
+const Temperatures: preact.FunctionalComponent<P> = props => {
   const { t, i18n, ready } = useTranslation(null, { useSuspense: false });
   return (
     ready && (
       <Fragment>
-        <Title title={t("temps.title")} />
+        <Title title={t("temps.title")} onFetch={props.onFetch} />
         <div class="columns is-centered">
           <div class="column is-full">
             <Temperature temperatures={props.temperatures} bigSize={true} />

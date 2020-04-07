@@ -4,10 +4,12 @@
 
 import { h, Component, Fragment } from "preact";
 import { Translation } from "react-i18next";
+
+import { network } from "../../utils/network";
 import Title from "../../title";
 import { YesButton, NoButton } from "../../buttons";
 
-interface P {
+interface P extends network {
   onBack(e: MouseEvent): void;
 }
 
@@ -101,55 +103,47 @@ class ExposureTimes extends Component<P, S> {
   };
 
   onSave = (e: MouseEvent) => {
-    const onBack = this.props.onBack;
-    fetch("/api/properties", {
-      method: "POST",
-      headers: {
-        "X-Api-Key": process.env.APIKEY,
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        exposure_time_ms: this.state.exposure_time_ms * 1000,
-        exposure_time_first_ms: this.state.exposure_time_first_ms * 1000
-      })
-    }).then(function(response) {
-      if (response.ok) {
-        onBack(e);
+    this.props.onFetch({
+      url: "/api/properties",
+      then: response => this.props.onBack(e),
+      options: {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          exposure_time_ms: this.state.exposure_time_ms * 1000,
+          exposure_time_first_ms: this.state.exposure_time_first_ms * 1000
+        })
       }
-      return response;
     });
   };
 
   componentDidMount = () => {
-    fetch("/api/properties?values=exposure_time_ms,exposure_time_first_ms", {
-      method: "GET",
-      headers: {
-        "X-Api-Key": process.env.APIKEY,
-        Accept: "application/json"
-      }
-    })
-      .then(response => response.json())
-      .then(data => {
-        this.setState({ ...data });
-        this.setState(prev => ({
-          exposure_time_ms: data.exposure_time_ms
-            ? data.exposure_time_ms / 1000
-            : prev.exposure_time_ms,
-          exposure_time_first_ms: data.exposure_time_first_ms
-            ? data.exposure_time_first_ms / 1000
-            : prev.exposure_time_first_ms
-        }));
-      });
+    this.props.onFetch({
+      url: "/api/properties?values=exposure_time_ms,exposure_time_first_ms",
+      then: response =>
+        response.json().then(data => {
+          this.setState(prev => ({
+            exposure_time_ms: data.exposure_time_ms
+              ? data.exposure_time_ms / 1000
+              : prev.exposure_time_ms,
+            exposure_time_first_ms: data.exposure_time_first_ms
+              ? data.exposure_time_first_ms / 1000
+              : prev.exposure_time_first_ms
+          }));
+        })
+    });
   };
 
-  render({ onBack }, { exposure_time_ms, exposure_time_first_ms }) {
+  render({ onBack, onFetch }, { exposure_time_ms, exposure_time_first_ms }) {
     return (
       // @ts-ignore
       <Translation useSuspense={false}>
         {(t, { i18n }, ready) =>
           ready && (
             <Fragment>
-              <Title title={t("exp-times.title")} />
+              <Title title={t("exp-times.title")} onFetch={onFetch} />
               <div class="columns is-multiline is-mobile is-centered is-vcentered">
                 <div class="column is-half prusa-job-question">
                   <SetValueView

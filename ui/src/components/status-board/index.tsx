@@ -1,6 +1,7 @@
 import { h, Component, Fragment } from "preact";
+
+import { network } from "../utils/network";
 import StatusProgress from "./progress";
-import { update, updateProjectName } from "../telemetry/progress";
 import { isPrinting } from "../utils/states";
 import { PrinterState } from "../telemetry";
 
@@ -14,7 +15,7 @@ if (process.env.IS_SL1) {
   StatusBoardTable = require("./board-mini").StatusBoardMini;
 }
 
-interface P {
+interface P extends network {
   isHalf?: boolean;
   printer_state: PrinterState;
 }
@@ -41,13 +42,13 @@ class StatusBoard extends Component<P, S> {
     } else {
       this.wasPrinting = is_printing;
       if (is_printing) {
-        updateProjectName(this.updateData);
-        update(this.updateData, this.clearData)();
+        this.updateProjectName();
+        this.updateData();
+        const update = this.updateData;
         if (!this.timer) {
-          this.timer = setInterval(
-            update(this.updateData, this.clearData),
-            Number(process.env.UPDATE_PROGRESS)
-          );
+          this.timer = setInterval(function() {
+            update();
+          }, Number(process.env.UPDATE_PROGRESS));
         }
         return true;
       } else {
@@ -62,12 +63,12 @@ class StatusBoard extends Component<P, S> {
 
   componentDidMount = () => {
     if (isPrinting(this.props.printer_state)) {
-      updateProjectName(this.updateData);
-      update(this.updateData, this.clearData)();
-      this.timer = setInterval(
-        update(this.updateData, this.clearData),
-        Number(process.env.UPDATE_PROGRESS)
-      );
+      this.updateProjectName();
+      this.updateData();
+      const update = this.updateData;
+      this.timer = setInterval(function() {
+        update();
+      }, Number(process.env.UPDATE_PROGRESS));
     }
   };
 
@@ -77,8 +78,32 @@ class StatusBoard extends Component<P, S> {
     }
   };
 
-  updateData = data => {
-    this.setState((prevState, props) => ({ ...prevState, ...data }));
+  updateProjectName = () => {
+    this.props.onFetch({
+      url: "/api/project-name",
+      then: response =>
+        response
+          .json()
+          .then(data =>
+            this.setState((prevState, props) => ({ ...prevState, ...data }))
+          ),
+      except: e =>
+        this.setState((prevState, props) => ({
+          ...prevState,
+          project_name: ""
+        }))
+    });
+  };
+
+  updateData = () => {
+    this.props.onFetch({
+      url: "/api/progress",
+      then: response =>
+        response.json().then(data => {
+          this.setState((prevState, props) => ({ ...prevState, ...data }));
+        }),
+      except: e => this.clearData()
+    });
   };
 
   clearData = () => {
