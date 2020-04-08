@@ -4,7 +4,6 @@
 
 import { h, Component } from "preact";
 import { Router, RouterOnChangeArgs } from "preact-router";
-import { STATE_IDLE } from "./utils/states";
 
 import {
   update,
@@ -12,12 +11,14 @@ import {
   PrinterState,
   initPrinterState
 } from "./telemetry";
+import { STATE_IDLE } from "./utils/states";
 import { networkProps, network, apiKey } from "./utils/network";
 import Home from "../routes/home";
 import Project from "../routes/project";
 import Header from "./header";
 import StatusLeftBoard from "./status-left";
 import Temperatures from "../routes/temperatures";
+import Loging from "../components/apikey";
 
 interface S {
   currentUrl: string;
@@ -125,6 +126,16 @@ class App extends Component<{}, S> implements network, apiKey {
     const is_mobile = window.innerWidth < 1024;
     return (
       <section id="app" class="section">
+        {this.state.apikey == null && (
+          <Loging
+            setApikey={value =>
+              this.setState((prevState, props) => ({
+                ...prevState,
+                apikey: value
+              }))
+            }
+          />
+        )}
         <div class="columns is-vcentered is-centered is-desktop prusa-line">
           <div class="column is-three-quarters-desktop is-full-mobile is-paddingless">
             <Header />
