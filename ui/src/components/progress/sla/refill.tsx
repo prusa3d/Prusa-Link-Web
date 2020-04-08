@@ -71,13 +71,13 @@ class Refill extends Component<P, {}> {
                 <div class="column is-full">
                   <div class="prusa-button-wrapper">
                     <YesButton
-                      text={t("btn.sla-refilled")}
+                      text={t("btn.sla-refilled").toLowerCase()}
                       onClick={this.onYES}
                       wrap
                       disabled={is_disabled}
                     />
                     <NoButton
-                      text={t("btn.no")}
+                      text={t("btn.no").toLowerCase()}
                       onClick={this.onBack}
                       wrap
                       disabled={is_disabled}

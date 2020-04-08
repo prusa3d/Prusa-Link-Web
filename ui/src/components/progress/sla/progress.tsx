@@ -56,18 +56,18 @@ const JobProgress: preact.FunctionalComponent<P> = props => {
             <div class="prusa-button-wrapper">
               <ActionButton
                 icon="exp-times"
-                text={t("btn.chg-exp")}
+                text={t("btn.chg-exp").toLowerCase()}
                 onClick={e => onclick(e, 1)}
                 wrap
               />
               <ActionButton
                 icon="refill"
-                text={t("btn.sla-refill")}
+                text={t("btn.sla-refill").toLowerCase()}
                 onClick={e => onclick(e, 2)}
                 wrap
               />
               <NoButton
-                text={t("btn.cancel-pt")}
+                text={t("btn.cancel-pt").toLowerCase()}
                 onClick={e => onclick(e, 3)}
                 wrap
               />

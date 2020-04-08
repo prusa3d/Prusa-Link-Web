@@ -4,12 +4,7 @@
 
 export function numberFormat(value: number) {
   if (value > 0) {
-    let precision = value.toString().indexOf(".") + 1;
-    if (value.toString().length - precision > 3) {
-      return Number.parseFloat(value.toPrecision(precision));
-    } else {
-      return value;
-    }
+    return value.toFixed(1);
   } else {
     return 0;
   }
@@ -27,10 +22,10 @@ export function formatTime(
     const minutes = Math.floor((value / 60000) % 60);
     const hours = Math.floor((value / 3600000) % 24);
     if (hours > 0) {
-      return hours + " h " + ("0" + minutes).substr(-2) + " min";
+      return hours + " h " + minutes + " min";
     }
     if (minutes > 0) {
-      return minutes + " min";
+      return minutes + " minutes";
     }
   } else {
     return na;

@@ -54,12 +54,16 @@ const Cancel: preact.FunctionalComponent<P> = ({
           <div class="column is-full">
             <div class="prusa-button-wrapper">
               <YesButton
-                text={t("btn.yes")}
+                text={t("btn.yes").toLowerCase()}
                 onClick={onYes}
                 wrap
                 disabled={!canCancelPrinting(printer_state)}
               />
-              <NoButton text={t("btn.no")} onClick={onBack} wrap />
+              <NoButton
+                text={t("btn.no").toLowerCase()}
+                onClick={onBack}
+                wrap
+              />
             </div>
           </div>
         </div>

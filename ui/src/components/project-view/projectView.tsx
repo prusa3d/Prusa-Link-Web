@@ -118,17 +118,17 @@ class View extends Component<ProjectProps, S> {
               <div class="prusa-button-wrapper">
                 <ActionButton
                   icon="exp-times"
-                  text={t("btn.chg-exp")}
+                  text={t("btn.chg-exp").toLowerCase()}
                   onClick={e => this.props.onclick(e, 1)}
                   wrap
                 />
                 <YesButton
-                  text={t("btn.start-pt")}
+                  text={t("btn.start-pt").toLowerCase()}
                   onClick={e => this.onStartPrint(e)}
                   wrap
                 />
                 <NoButton
-                  text={t("btn.cancel-pt")}
+                  text={t("btn.cancel-pt").toLowerCase()}
                   onClick={e => this.onCancel(e)}
                   wrap
                 />

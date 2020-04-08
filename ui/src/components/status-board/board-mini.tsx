@@ -38,29 +38,29 @@ export const StatusBoardMini: preact.FunctionalComponent<P> = ({
     <Fragment>
       <div class="columns">
         <StatusBoardItem
-          title={t("prop.z-height")}
+          title={t("prop.z-height").toLowerCase()}
           value={available(pos_z_mm, "mm")}
         />
         <StatusBoardItem
-          title={t("prop.speed")}
+          title={t("prop.speed").toLowerCase()}
           value={available(printing_speed, "%")}
         />
         <StatusBoardItem
-          title={t("prop.flow")}
+          title={t("prop.flow").toLowerCase()}
           value={available(flow_factor)}
         />
       </div>
       <div class="columns">
         <StatusBoardItem
-          title={t("prop.rem-time")}
+          title={t("prop.rem-time").toLowerCase()}
           value={available(time_est)}
         />
         <StatusBoardItem
-          title={t("prop.pnt-time")}
+          title={t("prop.pnt-time").toLowerCase()}
           value={available(print_dur)}
         />
         <StatusBoardItem
-          title={t("prop.fdm-sensor")}
+          title={t("prop.fdm-sensor").toLowerCase()}
           value={available(filament_status)}
         />
       </div>

@@ -164,11 +164,15 @@ class ExposureTimes extends Component<P, S> {
                 <div class="column is-full">
                   <div class="prusa-button-wrapper">
                     <YesButton
-                      text={t("btn.save-chgs")}
+                      text={t("btn.save-chgs").toLowerCase()}
                       onClick={this.onSave}
                       wrap
                     />
-                    <NoButton text={t("btn.cancel")} onClick={onBack} wrap />
+                    <NoButton
+                      text={t("btn.cancel").toLowerCase()}
+                      onClick={onBack}
+                      wrap
+                    />
                   </div>
                 </div>
               </div>

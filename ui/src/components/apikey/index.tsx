@@ -38,7 +38,10 @@ const Loging: preact.FunctionalComponent<P> = ({ setApikey }) => {
             </div>
             <div class="field is-grouped is-grouped-right">
               <div class="control">
-                <YesButton text={t("btn.save-chgs")} onClick={onClick} />
+                <YesButton
+                  text={t("btn.save-chgs").toLowerCase()}
+                  onClick={onClick}
+                />
               </div>
             </div>
           </div>
