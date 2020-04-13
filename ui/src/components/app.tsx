@@ -50,9 +50,11 @@ class App extends Component<{}, S> implements network, apiKey {
   }: networkProps) => {
     options.headers["X-Api-Key"] = this.state.apikey;
     fetch(url, options)
-      .then(function(response) {
+      .then(async function(response) {
         if (!response.ok) {
-          throw Error(response.statusText);
+          const error = Error(await response.text());
+          error.name = "" + response.status;
+          throw error;
         }
         return response;
       })
@@ -60,7 +62,7 @@ class App extends Component<{}, S> implements network, apiKey {
         then(response);
       })
       .catch(e => {
-        if (e.message === "FORBIDDEN") {
+        if (e.name === "403") {
           this.setState({ apikey: null });
         }
         except(e);

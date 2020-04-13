@@ -3,11 +3,13 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import { h, Component, createRef } from "preact";
+import { useTranslation } from "react-i18next";
 import "./style.scss";
 
 import { apiKey } from "../utils/network";
 import Static from "./static";
 import Dynamic from "./dynamic";
+import Toast from "../toast";
 
 export interface P extends apiKey {
   url?: string;
@@ -75,6 +77,28 @@ class Upload extends Component<P, S> {
     [...files].forEach(this.uploadFile);
   };
 
+  notify = (status, file_name) => {
+    const { t, i18n, ready } = useTranslation(null, { useSuspense: false });
+    return new Promise<string>(function(resolve, reject) {
+      if (ready) {
+        switch (status) {
+          case 201:
+            resolve(`File ${file_name} upload successfully.`);
+            break;
+          case 409:
+            resolve(`File ${file_name} already exists.`);
+            break;
+          case 415:
+            resolve(`File ${file_name} not supported.`);
+            break;
+          default:
+            resolve(`File ${file_name} upload was unsuccessful.`);
+            break;
+        }
+      }
+    }).then(message => Toast.notify(t("upld.title"), message));
+  };
+
   uploadFile = (file: File) => {
     let { url, path, update } = this.props;
     url = url ? url : "/api/files/local";
@@ -106,7 +130,8 @@ class Upload extends Component<P, S> {
       });
     };
 
-    request.onloadend = function(e: ProgressEvent) {
+    request.onloadend = (e: ProgressEvent) => {
+      this.notify((e.target as XMLHttpRequest).status, file.name);
       that.setState(prev => {
         const progress = prev.progress;
         let n = Object.keys(progress).length;
@@ -128,6 +153,7 @@ class Upload extends Component<P, S> {
   };
 
   render({}, { active, progress }) {
+    const { t, i18n, ready } = useTranslation(null, { useSuspense: false });
     return (
       <div
         class="columns is-multiline is-mobile"
@@ -138,7 +164,7 @@ class Upload extends Component<P, S> {
       >
         <div class="column is-full">
           <p class="prusa-item-title is-marginless prusa-line">
-            upload project
+            {ready ? t("upld.title") : ""}
           </p>
         </div>
         <div class="column is-10 is-offset-1">

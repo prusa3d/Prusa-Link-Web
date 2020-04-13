@@ -55,5 +55,6 @@
   "temps.x": "Time [s]",
   "temps.y": "Temperature [°C]",
   "upld.loading": "Uploading...",
-  "upld.open": "Choose a {{file}} or drop it here."
+  "upld.open": "Choose a {{file}} or drop it here.",
+  "upld.title": "upload project"
 }

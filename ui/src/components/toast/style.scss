@@ -1,0 +1,96 @@
+// This file is part of Prusa-Connect-Local
+// Copyright (C) 2018-2019 Prusa Research s.r.o. - www.prusa3d.com
+// SPDX-License-Identifier: GPL-3.0-or-later
+
+@use '../../style/defines.scss';
+
+#prusa-toast {
+  display: flex;
+  flex-direction: column;
+  z-index: 1;
+  position: absolute;
+  right: 0;
+  bottom: 0;
+
+  & > article {
+    text-align: center;
+    margin: 7px;
+    background-color: defines.$color-grey;
+    border-radius: 10px;
+    -webkit-animation: slideInUp 0.5s, zoomOut 0.5s 3s;
+    animation: slideInUp 0.5s, zoomOut 0.5s 3s;
+  }
+}
+
+@-webkit-keyframes zoomOut {
+  from {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0;
+    -webkit-transform: scale3d(0.3, 0.3, 0.3);
+    transform: scale3d(0.3, 0.3, 0.3);
+  }
+
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes zoomOut {
+  from {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0;
+    -webkit-transform: scale3d(0.3, 0.3, 0.3);
+    transform: scale3d(0.3, 0.3, 0.3);
+  }
+
+  to {
+    opacity: 0;
+  }
+}
+
+@-webkit-keyframes slideInUp {
+  from {
+    -webkit-transform: translate3d(0, 100%, 0);
+    transform: translate3d(0, 100%, 0);
+    visibility: visible;
+  }
+
+  to {
+    -webkit-transform: translate3d(0, 0, 0);
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes slideInUp {
+  from {
+    -webkit-transform: translate3d(0, 100%, 0);
+    transform: translate3d(0, 100%, 0);
+    visibility: visible;
+  }
+
+  to {
+    -webkit-transform: translate3d(0, 0, 0);
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+.toast-header {
+  align-items: center;
+  background-color: #4a4a4a;
+  border-radius: 10px 10px 0 0;
+  display: flex;
+  justify-content: space-between;
+  line-height: 1.25;
+  padding: 0.75em 1em;
+  position: relative;
+}
+
+.toast-body {
+  padding: 1.25em 1.5em;
+}

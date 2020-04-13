@@ -9,4 +9,4 @@ import App from "./components/app";
 
 export default App;
 
-render(<App />, document.body);
+render(<App />, document.getElementById("root"));

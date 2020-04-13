@@ -13,6 +13,7 @@ import FolderUp from "./folderUp";
 import ProjectNode from "./projectNode";
 import FolderNode from "./folderNode";
 import ProjectView from "../project-view";
+import Toast from "../toast";
 
 interface nodeInfo {
   path: string;
@@ -103,16 +104,6 @@ class Tree extends Component<P, S> {
       nodeFolder | nodeFile
     >).find(e => e.path === path) as nodeFile;
 
-    const url = this.createLink(path);
-    const onFetch = this.props.onFetch;
-    const final = () => {
-      this.setState((prevState, props) => ({
-        ...prevState,
-        current_view: file,
-        parent_path: this.state.current_path,
-        current_path: path
-      }));
-    };
     const options = {
       method: "POST",
       headers: {
@@ -121,25 +112,20 @@ class Tree extends Component<P, S> {
       body: '{"command":"select"}'
     };
 
-    onFetch({
-      url,
-      then: e => final(),
+    this.props.onFetch({
+      url: this.createLink(path),
+      then: e => {
+        this.setState((prevState, props) => ({
+          ...prevState,
+          current_view: file,
+          parent_path: this.state.current_path,
+          current_path: path
+        }));
+      },
       options,
       except: e => {
-        if (e.message == "CONFLICT") {
-          onFetch({
-            url: "/api/job",
-            then: e =>
-              onFetch({
-                url,
-                then: e => final(),
-                options
-              }),
-            options: {
-              ...options,
-              body: '{"command":"cancel"}'
-            }
-          });
+        if (e.message == "Not Calibrated") {
+          Toast.notify("Printer Error", "Printer is not calibrated!");
         }
       }
     });
