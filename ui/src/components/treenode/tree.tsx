@@ -2,7 +2,7 @@
 // Copyright (C) 2018-2019 Prusa Research s.r.o. - www.prusa3d.com
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-import { h, Component, Fragment, options } from "preact";
+import { h, Component, Fragment } from "preact";
 import { useTranslation } from "react-i18next";
 
 import "./style.scss";
@@ -14,6 +14,7 @@ import ProjectNode from "./projectNode";
 import FolderNode from "./folderNode";
 import ProjectView from "../project-view";
 import Toast from "../toast";
+import Loading from "../loading";
 
 interface nodeInfo {
   path: string;
@@ -65,6 +66,7 @@ let state = {
 };
 
 const not_found_images = [];
+let first_time = true;
 
 class Tree extends Component<P, S> {
   timer: any;
@@ -126,6 +128,8 @@ class Tree extends Component<P, S> {
       except: e => {
         if (e.message == "Not Calibrated") {
           Toast.notify("Printer Error", "Printer is not calibrated!");
+        } else if (e.message == "Conflict") {
+          Toast.notify("Printer Error", "Printer is not idle!");
         }
       }
     });
@@ -220,7 +224,7 @@ class Tree extends Component<P, S> {
   };
 
   connect = async () => {
-    this.props.onFetch({
+    return this.props.onFetch({
       url: "/api/files?recursive=true",
       then: response => {
         const eTag = response.headers.get("etag");
@@ -249,7 +253,9 @@ class Tree extends Component<P, S> {
   };
 
   componentDidMount() {
-    this.connect();
+    this.connect().finally(() => {
+      first_time = false;
+    });
     this.timer = setInterval(this.connect, Number(process.env.UPDATE_FILES));
   }
 
@@ -365,6 +371,8 @@ class Tree extends Component<P, S> {
               onFetch={onFetch}
             />
           )
+        ) : first_time ? (
+          <Loading />
         ) : null}
       </Fragment>
     );

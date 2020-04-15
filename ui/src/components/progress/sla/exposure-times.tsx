@@ -8,6 +8,7 @@ import { Translation } from "react-i18next";
 import { network } from "../../utils/network";
 import Title from "../../title";
 import { YesButton, NoButton } from "../../buttons";
+import Loading from "../../loading";
 
 interface P extends network {
   onBack(e: MouseEvent): void;
@@ -28,7 +29,8 @@ interface ValuesProps {
 
 const range = {
   exposure_time_ms: [1, 60],
-  exposure_time_first_ms: [10, 120]
+  exposure_time_first_ms: [10, 120],
+  exposure_time_calibrate_ms: [0.5, 5]
 };
 
 const SetValueView: preact.FunctionalComponent<ValuesProps> = props => {
@@ -94,8 +96,9 @@ const SetValueView: preact.FunctionalComponent<ValuesProps> = props => {
 
 class ExposureTimes extends Component<P, S> {
   state = {
-    exposure_time_ms: range.exposure_time_ms[0],
-    exposure_time_first_ms: range.exposure_time_first_ms[0]
+    exposure_time_ms: -1,
+    exposure_time_first_ms: -1,
+    exposure_time_calibrate_ms: -1
   };
 
   onChange = (id: string, value: number) => {
@@ -103,6 +106,8 @@ class ExposureTimes extends Component<P, S> {
   };
 
   onSave = (e: MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
     this.props.onFetch({
       url: "/api/properties",
       then: response => this.props.onBack(e),
@@ -113,7 +118,9 @@ class ExposureTimes extends Component<P, S> {
         },
         body: JSON.stringify({
           exposure_time_ms: this.state.exposure_time_ms * 1000,
-          exposure_time_first_ms: this.state.exposure_time_first_ms * 1000
+          exposure_time_first_ms: this.state.exposure_time_first_ms * 1000,
+          exposure_time_calibrate_ms:
+            this.state.exposure_time_calibrate_ms * 1000
         })
       }
     });
@@ -121,22 +128,28 @@ class ExposureTimes extends Component<P, S> {
 
   componentDidMount = () => {
     this.props.onFetch({
-      url: "/api/properties?values=exposure_time_ms,exposure_time_first_ms",
+      url: "/api/properties?values=exposure_times",
       then: response =>
         response.json().then(data => {
-          this.setState(prev => ({
-            exposure_time_ms: data.exposure_time_ms
-              ? data.exposure_time_ms / 1000
-              : prev.exposure_time_ms,
-            exposure_time_first_ms: data.exposure_time_first_ms
-              ? data.exposure_time_first_ms / 1000
-              : prev.exposure_time_first_ms
-          }));
+          if (data) {
+            this.setState(prev => ({
+              ...prev,
+              exposure_time_ms: data.exposure_time_ms / 1000,
+              exposure_time_first_ms: data.exposure_time_first_ms / 1000,
+              exposure_time_calibrate_ms:
+                data.calibration_regions > 0
+                  ? data.exposure_time_calibrate_ms / 1000
+                  : -1
+            }));
+          }
         })
     });
   };
 
-  render({ onBack, onFetch }, { exposure_time_ms, exposure_time_first_ms }) {
+  render(
+    { onBack, onFetch },
+    { exposure_time_ms, exposure_time_first_ms, exposure_time_calibrate_ms }
+  ) {
     return (
       // @ts-ignore
       <Translation useSuspense={false}>
@@ -145,22 +158,35 @@ class ExposureTimes extends Component<P, S> {
             <Fragment>
               <Title title={t("exp-times.title")} onFetch={onFetch} />
               <div class="columns is-multiline is-mobile is-centered is-vcentered">
-                <div class="column is-half prusa-job-question">
-                  <SetValueView
-                    id="exposure_time_ms"
-                    title={t("prop.exp-time")}
-                    value={exposure_time_ms}
-                    onChange={this.onChange}
-                    pvalue={0.5}
-                  />
-                  <SetValueView
-                    id="exposure_time_first_ms"
-                    title={t("prop.layer-1st")}
-                    value={exposure_time_first_ms}
-                    onChange={this.onChange}
-                    pvalue={1}
-                  />
-                </div>
+                {exposure_time_ms > 0 ? (
+                  <div class="column is-half prusa-job-question">
+                    <SetValueView
+                      id="exposure_time_ms"
+                      title={t("prop.exp-time")}
+                      value={exposure_time_ms}
+                      onChange={this.onChange}
+                      pvalue={0.5}
+                    />
+                    <SetValueView
+                      id="exposure_time_first_ms"
+                      title={t("prop.layer-1st")}
+                      value={exposure_time_first_ms}
+                      onChange={this.onChange}
+                      pvalue={1}
+                    />
+                    {exposure_time_calibrate_ms > 0 && (
+                      <SetValueView
+                        id="exposure_time_calibrate_ms"
+                        title={t("prop.layer-1st")}
+                        value={exposure_time_calibrate_ms}
+                        onChange={this.onChange}
+                        pvalue={0.5}
+                      />
+                    )}
+                  </div>
+                ) : (
+                  <Loading />
+                )}
                 <div class="column is-full">
                   <div class="prusa-button-wrapper">
                     <YesButton

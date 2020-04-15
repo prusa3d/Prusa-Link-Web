@@ -20,7 +20,7 @@ class Title extends Component<P, S> {
 
   componentDidMount = () => {
     this.props.onFetch({
-      url: "/api/properties?values=hostname",
+      url: "/api/hostname",
       then: response =>
         response.json().then(data => {
           this.setState({ hostname: data.hostname });

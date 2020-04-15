@@ -38,9 +38,7 @@ module.exports = (env, args) => {
     console.log("== Development mode");
   }
   const update_printer =
-    typeof env.update_printer !== "undefined"
-      ? env.update_printer
-      : update_timer;
+    typeof env.update_printer !== "undefined" ? env.update_printer : 1000;
   const update_progress =
     typeof env.update_progress !== "undefined"
       ? env.update_progress
