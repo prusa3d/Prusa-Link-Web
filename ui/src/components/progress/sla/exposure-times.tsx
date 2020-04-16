@@ -72,7 +72,7 @@ const SetValueView: preact.FunctionalComponent<ValuesProps> = props => {
 
   return (
     <div class="columns prusa-no-focus" tabIndex={0} onKeyDown={onkeyPress}>
-      <div class="column is-half">
+      <div class="column is-three-fifths">
         <p class="prusa-default-text">{title}</p>
       </div>
       <div class="column">
@@ -82,7 +82,7 @@ const SetValueView: preact.FunctionalComponent<ValuesProps> = props => {
           onClick={e => onDecrease(e)}
         />
       </div>
-      <div class="column">{value}</div>
+      <div class="column prusa-default-text">{value}</div>
       <div class="column">
         <img
           class="media-left image is-24x24 prusa-job-set-value"
@@ -159,30 +159,30 @@ class ExposureTimes extends Component<P, S> {
               <Title title={t("exp-times.title")} onFetch={onFetch} />
               <div class="columns is-multiline is-mobile is-centered is-vcentered">
                 {exposure_time_ms > 0 ? (
-                  <div class="column is-half prusa-job-question">
+                  <div class="column is-half-desktop prusa-job-question">
                     <SetValueView
                       id="exposure_time_ms"
-                      title={t("prop.exp-time")}
+                      title={t("exp-times.exp-time")}
                       value={exposure_time_ms}
                       onChange={this.onChange}
                       pvalue={0.5}
                     />
-                    <SetValueView
-                      id="exposure_time_first_ms"
-                      title={t("prop.layer-1st")}
-                      value={exposure_time_first_ms}
-                      onChange={this.onChange}
-                      pvalue={1}
-                    />
                     {exposure_time_calibrate_ms > 0 && (
                       <SetValueView
                         id="exposure_time_calibrate_ms"
-                        title={t("prop.layer-1st")}
+                        title={t("exp-times.inc")}
                         value={exposure_time_calibrate_ms}
                         onChange={this.onChange}
                         pvalue={0.5}
                       />
                     )}
+                    <SetValueView
+                      id="exposure_time_first_ms"
+                      title={t("exp-times.layer-1st")}
+                      value={exposure_time_first_ms}
+                      onChange={this.onChange}
+                      pvalue={1}
+                    />
                   </div>
                 ) : (
                   <Loading />

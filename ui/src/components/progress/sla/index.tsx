@@ -10,7 +10,8 @@ import Cancel from "../cancel";
 import Refill from "./refill";
 import ExposureTimes from "./exposure-times";
 import { PrinterState } from "../../telemetry";
-import { isPrintingFeedMe } from "../../utils/states";
+import { isPrintingFeedMe, isPrintingPending } from "../../utils/states";
+import Loading from "../../loading";
 
 interface P extends network {
   printer_state: PrinterState;
@@ -45,7 +46,14 @@ class Job extends Component<P, S> {
   };
 
   render({ printer_state, isHalf, children, onFetch }, { show }) {
-    if (isPrintingFeedMe(printer_state)) {
+    if (isPrintingPending(printer_state)) {
+      return (
+        <div class="columns is-multiline is-mobile">
+          <Loading />
+          {children && children}
+        </div>
+      );
+    } else if (isPrintingFeedMe(printer_state) || show == 2) {
       return (
         <Refill
           printer_state={printer_state}
@@ -53,36 +61,26 @@ class Job extends Component<P, S> {
           onFetch={onFetch}
         />
       );
-    }
-    switch (show) {
-      case 1:
-        return <ExposureTimes onBack={this.onBack} onFetch={onFetch} />;
-      case 2:
-        return (
-          <Refill
-            printer_state={printer_state}
-            onBack={this.onBack}
-            onFetch={onFetch}
-          />
-        );
-      case 3:
-        return (
-          <Cancel
-            printer_state={printer_state}
-            onBack={this.onBack}
-            onFetch={onFetch}
-          />
-        );
-      default:
-        return (
-          <JobProgress
-            printer_state={printer_state}
-            onclick={this.onclick}
-            isHalf={isHalf}
-            children={children}
-            onFetch={onFetch}
-          />
-        );
+    } else if (show == 1) {
+      return <ExposureTimes onBack={this.onBack} onFetch={onFetch} />;
+    } else if (show == 3) {
+      return (
+        <Cancel
+          printer_state={printer_state}
+          onBack={this.onBack}
+          onFetch={onFetch}
+        />
+      );
+    } else {
+      return (
+        <JobProgress
+          printer_state={printer_state}
+          onclick={this.onclick}
+          isHalf={isHalf}
+          children={children}
+          onFetch={onFetch}
+        />
+      );
     }
   }
 }
