@@ -108,6 +108,17 @@ class ExposureTimes extends Component<P, S> {
   onSave = (e: MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
+
+    const properties = {
+      exposure_time_ms: this.state.exposure_time_ms * 1000,
+      exposure_time_first_ms: this.state.exposure_time_first_ms * 1000
+    };
+
+    if (this.state.exposure_time_calibrate_ms > 0) {
+      properties["exposure_time_calibrate_ms"] =
+        this.state.exposure_time_calibrate_ms * 1000;
+    }
+
     this.props.onFetch({
       url: "/api/properties",
       then: response => this.props.onBack(e),
@@ -116,12 +127,7 @@ class ExposureTimes extends Component<P, S> {
         headers: {
           "Content-Type": "application/json"
         },
-        body: JSON.stringify({
-          exposure_time_ms: this.state.exposure_time_ms * 1000,
-          exposure_time_first_ms: this.state.exposure_time_first_ms * 1000,
-          exposure_time_calibrate_ms:
-            this.state.exposure_time_calibrate_ms * 1000
-        })
+        body: JSON.stringify(properties)
       }
     });
   };

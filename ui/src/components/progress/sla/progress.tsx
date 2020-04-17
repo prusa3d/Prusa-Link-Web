@@ -33,7 +33,7 @@ const JobProgress: preact.FunctionalComponent<P> = props => {
       title = (
         <Title title={t("home.title") + ": "} onFetch={props.onFetch}>
           <span class="prusa-title prusa-text-orange">
-            {t("prop.st-priting")}
+            {t("prop.st-printing")}
           </span>
         </Title>
       );
