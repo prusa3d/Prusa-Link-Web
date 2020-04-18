@@ -36,7 +36,7 @@ class Title extends Component<P, S> {
             {title}
             {children && children}
           </div>
-          <div class="column has-text-right prusa-title">
+          <div class="column has-text-right prusa-title prusa-preserve">
             {hostname && (
               <p>
                 hostname: <span class="prusa-text-orange">{hostname}</span>

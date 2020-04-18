@@ -37,7 +37,7 @@ class Toast {
     this.container.appendChild(notification);
     setTimeout(() => {
       this.container.removeChild(notification);
-    }, 3500);
+    }, 10500);
   }
 }
 

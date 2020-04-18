@@ -12,15 +12,11 @@ interface S {
 }
 
 class Header extends Component<{}, S> {
-  constructor() {
-    super();
-    this.state = { is_burger_active: false };
-    this.onClickBurger = this.onClickBurger.bind(this);
-  }
+  state = { is_burger_active: false };
 
-  onClickBurger() {
+  onClickBurger = () => {
     this.setState({ is_burger_active: !this.state.is_burger_active });
-  }
+  };
 
   render(props, state) {
     let extra_burger_class = "";

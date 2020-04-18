@@ -90,6 +90,7 @@ $success: defines.$text-orange;
   font-size: defines.$font-size-link-title-mobile;
   color: defines.$text-white;
   font-family: "Atlas Grotesk Bold Web";
+  border-bottom: defines.$line-size solid defines.$body-background-color;
   &:hover {
     border-bottom: defines.$line-size solid defines.$color-white;
   }
@@ -142,6 +143,10 @@ $success: defines.$text-orange;
 .prusa-break-word {
   -ms-word-break: break-all;
   word-break: break-all;
+}
+
+.prusa-preserve {
+  white-space: pre;
 }
 
 .prusa-line {
