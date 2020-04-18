@@ -4,7 +4,6 @@
 
 const fs = require("fs");
 const https = require("https");
-const glob = require("glob-all");
 
 function extractKeys() {
   const data = JSON.parse(

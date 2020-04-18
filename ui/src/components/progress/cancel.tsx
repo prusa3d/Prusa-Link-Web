@@ -9,7 +9,7 @@ import { network } from "../utils/network";
 import { PrinterState } from "../telemetry";
 import Title from "../title";
 import { YesButton, NoButton } from "../buttons";
-import { canCancelPrinting } from "../utils/states";
+import { canAct } from "../utils/states";
 
 interface P extends network {
   printer_state: PrinterState;
@@ -57,7 +57,7 @@ const Cancel: preact.FunctionalComponent<P> = ({
                 text={t("btn.yes").toLowerCase()}
                 onClick={onYes}
                 wrap
-                disabled={!canCancelPrinting(printer_state)}
+                disabled={!canAct(printer_state)}
               />
               <NoButton
                 text={t("btn.no").toLowerCase()}

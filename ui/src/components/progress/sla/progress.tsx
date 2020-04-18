@@ -6,6 +6,7 @@ import { h, Fragment } from "preact";
 import { useTranslation } from "react-i18next";
 
 import { network } from "../../utils/network";
+import { canAct } from "../../utils/states";
 import Title from "../../title";
 import StatusBoard from "../../../components/status-board";
 import { PrinterState } from "../../telemetry";
@@ -23,6 +24,18 @@ const JobProgress: preact.FunctionalComponent<P> = props => {
     e.preventDefault();
     e.stopPropagation();
     props.onclick(nextShow);
+  };
+
+  const onFeed = e => {
+    props.onFetch({
+      url: "/api/job/material?value=start",
+      then: _ => {
+        onclick(e, 2);
+      },
+      except: _ => {
+        onclick(e, 0);
+      }
+    });
   };
 
   const { t, i18n, ready } = useTranslation(null, { useSuspense: false });
@@ -63,12 +76,14 @@ const JobProgress: preact.FunctionalComponent<P> = props => {
               <ActionButton
                 icon="refill"
                 text={t("btn.sla-refill").toLowerCase()}
-                onClick={e => onclick(e, 2)}
+                onClick={e => onFeed(e)}
+                disabled={!canAct(props.printer_state)}
                 wrap
               />
               <NoButton
                 text={t("btn.cancel-pt").toLowerCase()}
                 onClick={e => onclick(e, 3)}
+                disabled={!canAct(props.printer_state)}
                 wrap
               />
             </div>

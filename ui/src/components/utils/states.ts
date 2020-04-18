@@ -37,7 +37,7 @@ export function isPrintingFeedMe(printer_state: PrinterState): boolean {
   }
 }
 
-export function canCancelPrinting(printer_state: PrinterState): boolean {
+export function canAct(printer_state: PrinterState): boolean {
   const { state, substate } = printer_state;
   if (substate) {
     return state == STATE_PRINTING && substate == SUB_STATE_PRINTING;

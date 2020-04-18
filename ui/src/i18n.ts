@@ -12,7 +12,7 @@ i18n
   .init({
     fallbackLng: "en",
     nsSeparator: false,
-    keySeparator: false,
+    keySeparator: ".",
     debug: Boolean(process.env.DEVELOPMENT),
     interpolation: {
       escapeValue: false

@@ -23,14 +23,6 @@ interface P extends network {
 }
 
 class Refill extends Component<P, {}> {
-  componentDidMount = () => {
-    this.props.onFetch({
-      url: "/api/job/material?value=start",
-      then: response => {},
-      except: e => this.props.onBack(new Event("back"))
-    });
-  };
-
   onBack = (e: MouseEvent) => {
     this.props.onFetch({
       url: "/api/job/material?value=back",
