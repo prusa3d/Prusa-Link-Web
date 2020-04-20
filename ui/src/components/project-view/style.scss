@@ -24,9 +24,11 @@
 .proj-icon {
   display: flex;
   align-items: center;
-
+  min-width: 24px;
+  max-width: 48px;
   & > img {
-    width: 50%;
+    width: 48px;
+    height: auto;
   }
 }
 
@@ -38,7 +40,8 @@
 
   .proj-icon {
     & > img {
-      width: 100%;
+      width: 24px;
+      height: auto;
     }
   }
 }

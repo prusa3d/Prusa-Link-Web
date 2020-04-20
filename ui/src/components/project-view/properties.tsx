@@ -59,7 +59,7 @@ class Properties extends Component<P, S> {
         <div class="columns is-multiline is-mobile">
           <div class="column is-full">
             <div class="columns">
-              <div class="column is-1 proj-icon">
+              <div class="column proj-icon">
                 <img src={require("../../assets/time_color.svg")} />
               </div>
               <div class="column">
@@ -77,7 +77,7 @@ class Properties extends Component<P, S> {
 
           <div class="column is-full">
             <div class="columns">
-              <div class="column is-1 proj-icon">
+              <div class="column proj-icon">
                 <img src={require("../../assets/quality_medium.svg")} />
               </div>
               <div class="column">
@@ -95,7 +95,7 @@ class Properties extends Component<P, S> {
 
           <div class="column is-full">
             <div class="columns">
-              <div class="column is-1 proj-icon">
+              <div class="column proj-icon">
                 <img src={require("../../assets/exposure_times_color.svg")} />
               </div>
               <div class="column">
@@ -107,7 +107,7 @@ class Properties extends Component<P, S> {
 
           <div class="column is-full">
             <div class="columns">
-              <div class="column is-1 proj-icon">
+              <div class="column proj-icon">
                 <img src={require("../../assets/calendar.svg")} />
               </div>
               <div class="column">
