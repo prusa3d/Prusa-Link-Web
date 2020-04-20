@@ -2,6 +2,10 @@
 // Copyright (C) 2018-2019 Prusa Research s.r.o. - www.prusa3d.com
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+// usage:
+// node ./scripts/extractLang.js [key1] [key2] ...
+// ex:  node ./scripts/extractLang.js exp-times.exp-time exp-times.inc
+
 const fs = require("fs");
 const https = require("https");
 
@@ -11,8 +15,9 @@ function extractKeys() {
   );
   const english_key = {};
   const args = process.argv.slice(2);
-  args.forEach(element => {
-    english_key[data[element]] = element;
+  args.forEach(key => {
+    const keys = key.split(".");
+    english_key[data[keys[0]][keys[1]]] = keys;
   });
   return english_key;
 }
@@ -48,10 +53,8 @@ function createRegex(english_key) {
             const translations = JSON.parse(fs.readFileSync(url_out, "utf8"));
             const matches = data.matchAll(regex);
             for (const match of matches) {
-              translations[english_key[match[1]]] = match[2].replace(
-                "&apos;",
-                "'"
-              );
+              const keys = english_key[match[1]];
+              translations[keys[0]][keys[1]] = match[2].replace("&apos;", "'");
             }
             const contents = JSON.stringify(translations, null, 2) + "\n";
             fs.writeFile(url_out, contents, "utf8", err => {

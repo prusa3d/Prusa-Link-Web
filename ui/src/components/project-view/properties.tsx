@@ -62,15 +62,15 @@ class Properties extends Component<P, S> {
               <div class="column is-1 proj-icon">
                 <img src={require("../../assets/time_color.svg")} />
               </div>
-              <div class="column is-4">
-                <p class="proj-text">{t("prop.est-end")}</p>
-                <p class="proj-text-value">{estimated_end}</p>
-              </div>
               <div class="column">
                 <p class="proj-text">{t("prop.time-est")}</p>
                 <p class="proj-text-value">
                   {printing_time ? printing_time : "NA"}
                 </p>
+              </div>
+              <div class="column">
+                <p class="proj-text">{t("prop.est-end")}</p>
+                <p class="proj-text-value">{estimated_end}</p>
               </div>
             </div>
           </div>
@@ -80,11 +80,11 @@ class Properties extends Component<P, S> {
               <div class="column is-1 proj-icon">
                 <img src={require("../../assets/quality_medium.svg")} />
               </div>
-              <div class="column is-4">
+              <div class="column">
                 <p class="proj-text">{t("prop.layers")}</p>
                 <p class="proj-text-value">{total_layers}</p>
               </div>
-              <div class="column is-4">
+              <div class="column">
                 <p class="proj-text">{t("prop.layer-ht")}</p>
                 <p class="proj-text-value">
                   {layer_height ? `${layer_height} mm` : "NA"}
