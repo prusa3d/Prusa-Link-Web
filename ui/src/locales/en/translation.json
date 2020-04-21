@@ -34,6 +34,8 @@
   },
   "ntf": {
     "actn-pending": "Action will be executed after layer finish",
+    "e-307": "Resin measuring failed!",
+    "error": "Error",
     "start-print": "The printer is getting ready",
     "upld-exists": "The project {{file_name}} already exists",
     "upld-not-sup": "The project {{file_name}} is not supported",

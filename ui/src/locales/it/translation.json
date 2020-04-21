@@ -34,6 +34,8 @@
   },
   "ntf": {
     "actn-pending": "",
+    "e-307": "Misurazione resina non riuscita!",
+    "error": "Errore",
     "start-print": "",
     "upld-exists": "",
     "upld-not-sup": "",

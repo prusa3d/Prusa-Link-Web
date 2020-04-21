@@ -4,6 +4,7 @@
 
 import { h, Component } from "preact";
 import { Router, RouterOnChangeArgs } from "preact-router";
+import { useTranslation } from "react-i18next";
 
 import {
   update,
@@ -18,7 +19,8 @@ import Project from "../routes/project";
 import Header from "./header";
 import StatusLeftBoard from "./status-left";
 import Temperatures from "../routes/temperatures";
-import Loging from "../components/apikey";
+import Loging from "./apikey";
+import Toast from "./toast";
 
 interface S {
   currentUrl: string;
@@ -26,12 +28,14 @@ interface S {
   printer_status: PrinterStatus;
   printer_state: PrinterState;
   apikey: string;
+  last_error: number;
 }
 
 const initState = {
   printer_status: initPrinterState,
   temperatures: [],
-  printer_state: { state: STATE_IDLE }
+  printer_state: { state: STATE_IDLE },
+  last_error: 500
 };
 
 class App extends Component<{}, S> implements network, apiKey {
@@ -71,6 +75,17 @@ class App extends Component<{}, S> implements network, apiKey {
 
   getApikey = (): string => this.state.apikey;
 
+  notify = (error_code: number) => {
+    const { t, i18n, ready } = useTranslation(null, { useSuspense: false });
+    return new Promise<string>(function(resolve, reject) {
+      if (ready) {
+        if (error_code == 307) {
+          resolve(t("ntf.e-307"));
+        }
+      }
+    }).then(message => Toast.notify(t("ntf.error"), message));
+  };
+
   updateData = data => {
     this.setState((prevState, props) => {
       const now = new Date().getTime();
@@ -81,12 +96,18 @@ class App extends Component<{}, S> implements network, apiKey {
         indexOlder = prevState.temperatures.findIndex(e => !isOlder(e));
       }
 
+      const error_code = data.printer_state.error_code;
+      if (error_code != prevState.last_error) {
+        this.notify(error_code);
+      }
+
       return {
         printer_status: { ...prevState.printer_status, ...data.printer_status },
         printer_state: data.printer_state,
         temperatures: prevState.temperatures
           .slice(indexOlder)
-          .concat(data.temperatures)
+          .concat(data.temperatures),
+        last_error: error_code
       };
     });
   };

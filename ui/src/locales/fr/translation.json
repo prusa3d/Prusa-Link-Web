@@ -34,6 +34,8 @@
   },
   "ntf": {
     "actn-pending": "",
+    "e-307": "La mesure de la résine a échoué",
+    "error": "Erreur",
     "start-print": "",
     "upld-exists": "",
     "upld-not-sup": "",

@@ -19,6 +19,7 @@ export interface PrinterStatus {
 export interface PrinterState {
   state: number;
   substate?: number;
+  error_code?: number;
 }
 
 let printStatus: string[];
