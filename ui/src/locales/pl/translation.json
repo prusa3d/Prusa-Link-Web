@@ -17,19 +17,32 @@
     "layer-1st": "Naśw. 1. warstwy [s]",
     "title": "Zmień czasy naświetlania"
   },
+  "glob": {
+    "hostname": "Nazwa Hosta"
+  },
   "home": {
     "link": "Panel kontrolny",
     "title": "Stan drukarki"
   },
   "msg": {
+    "api-key": "Klucz API",
     "cancel": "Czy na pewno chcesz anulować wydruk?",
     "modal-p1": "Witaj w interfejsie Twojej",
     "modal-p2": "Wartości będą wyświetlane tylko podczas drukowania.",
     "sla-fly-fill": "Uzupełnij żywicę do znacznika 100%.",
     "sla-fill": "Uzupełnij żywicę i zamknij pokrywę."
   },
+  "ntf": {
+    "actn-pending": "",
+    "start-print": "",
+    "upld-exists": "",
+    "upld-not-sup": "",
+    "upld-suc": "",
+    "upld-unsuc": ""
+  },
   "proj": {
     "link": "Projekty",
+    "main": "",
     "title": "Pliki projektu"
   },
   "prop": {
@@ -72,6 +85,10 @@
     "title": "Temperatury",
     "x": "Czas [s]",
     "y": "Temperatura [°C]"
+  },
+  "unit": {
+    "ml": "ml",
+    "rpm": "Obroty"
   },
   "upld": {
     "loading": "Przesyłanie...",

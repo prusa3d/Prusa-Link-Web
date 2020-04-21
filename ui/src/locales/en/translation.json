@@ -17,19 +17,32 @@
     "layer-1st": "First Layer Expo. [s]",
     "title": "Change exposure times"
   },
+  "glob": {
+    "hostname": "Hostname"
+  },
   "home": {
     "link": "Dashboard",
     "title": "Printer status"
   },
   "msg": {
+    "api-key": "API key",
     "cancel": "Do you really want to cancel print?",
     "modal-p1": "Welcome to the web interface of your",
     "modal-p2": "Please note that values are shown only when the printer is printing.",
     "sla-fly-fill": "Please fully refill resin tank.",
     "sla-fill": "Please fill the resin tank and close the cover."
   },
+  "ntf": {
+    "actn-pending": "Action will be executed after layer finish",
+    "start-print": "The printer is getting ready",
+    "upld-exists": "The project {{file_name}} already exists",
+    "upld-not-sup": "The project {{file_name}} is not supported",
+    "upld-suc": "The project {{file_name}} uploaded successfully",
+    "upld-unsuc": "The project {{file_name}} upload was unsuccessful"
+  },
   "proj": {
     "link": "Projects",
+    "main": "",
     "title": "Project files"
   },
   "prop": {
@@ -72,6 +85,10 @@
     "title": "Temperatures",
     "x": "Time [s]",
     "y": "Temperature [°C]"
+  },
+  "unit": {
+    "ml": "ml",
+    "rpm": "RPM"
   },
   "upld": {
     "loading": "Uploading...",

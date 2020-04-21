@@ -43,21 +43,27 @@ const StatusLeftBoard: preact.FunctionalComponent<P> = ({ printer_status }) => {
         icon_id="fan"
         name={t("prop.fan-led")}
         value={
-          printer_status.uv_led_fan ? printer_status.uv_led_fan + " RPM" : "NA"
+          printer_status.uv_led_fan
+            ? printer_status.uv_led_fan + " " + t("unit.rpm")
+            : "NA"
         }
       />
       <StatusLeftItem
         icon_id="fan"
         name={t("prop.fan-blower").toLowerCase()}
         value={
-          printer_status.blower_fan ? printer_status.blower_fan + " RPM" : "NA"
+          printer_status.blower_fan
+            ? printer_status.blower_fan + " " + t("unit.rpm")
+            : "NA"
         }
       />
       <StatusLeftItem
         icon_id="fan"
         name={t("prop.fan-rear").toLowerCase()}
         value={
-          printer_status.rear_fan ? printer_status.rear_fan + " RPM" : "NA"
+          printer_status.rear_fan
+            ? printer_status.rear_fan + " " + t("unit.rpm")
+            : "NA"
         }
       />
       <StatusLeftItem

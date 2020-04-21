@@ -17,19 +17,32 @@
     "layer-1st": "Erste Schicht Bel. [s]",
     "title": "Belichtungszeiten ändern"
   },
+  "glob": {
+    "hostname": "Hostname"
+  },
   "home": {
     "link": "Dashboard",
     "title": "Druckerstatus"
   },
   "msg": {
+    "api-key": "API Key",
     "cancel": "Wollen Sie den Druck wirklich abbrechen?",
     "modal-p1": "Willkommen zur Weboberfläche Ihres",
     "modal-p2": "Bitte beachten Sie, dass die Werte nur angezeigt werden, wenn der Drucker gerade druckt.",
     "sla-fly-fill": "Bitte füllen Sie den Harztank vollständig auf.",
     "sla-fill": "Bitte füllen Sie den Harzbehälter und schließen Sie den Deckel."
   },
+  "ntf": {
+    "actn-pending": "",
+    "start-print": "",
+    "upld-exists": "",
+    "upld-not-sup": "",
+    "upld-suc": "",
+    "upld-unsuc": ""
+  },
   "proj": {
     "link": "Projekte",
+    "main": "",
     "title": "Projektdateien"
   },
   "prop": {
@@ -72,6 +85,10 @@
     "title": "Temperaturen",
     "x": "Zeit [s]",
     "y": "Temperatur [°C]"
+  },
+  "unit": {
+    "ml": "ml",
+    "rpm": "UPM"
   },
   "upld": {
     "loading": "Lade hoch...",

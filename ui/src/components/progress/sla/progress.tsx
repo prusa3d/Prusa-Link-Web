@@ -11,6 +11,7 @@ import Title from "../../title";
 import StatusBoard from "../../../components/status-board";
 import { PrinterState } from "../../telemetry";
 import { NoButton, ActionButton } from "../../buttons";
+import Toast from "../../toast";
 
 interface P extends network {
   printer_state: PrinterState;
@@ -26,11 +27,21 @@ const JobProgress: preact.FunctionalComponent<P> = props => {
     props.onclick(nextShow);
   };
 
+  const notify = () => {
+    const { t, i18n, ready } = useTranslation(null, { useSuspense: false });
+    return new Promise<string>(function(resolve, reject) {
+      if (ready) {
+        resolve(t("ntf.actn-pending"));
+      }
+    }).then(message => Toast.notify(t("refill.title"), message));
+  };
+
   const onFeed = e => {
     props.onFetch({
       url: "/api/job/material?value=start",
       then: _ => {
         onclick(e, 2);
+        notify();
       },
       except: _ => {
         onclick(e, 0);

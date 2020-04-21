@@ -59,7 +59,7 @@ export const StatusBoardSL1: preact.FunctionalComponent<P> = ({
           title={t("prop.sla-rmn-mt").toLowerCase()}
           value={
             remaining_material > 0
-              ? `${numberFormat(remaining_material)} ml`
+              ? numberFormat(remaining_material) + " " + t("unit.ml")
               : "NA"
           }
         />
@@ -67,7 +67,7 @@ export const StatusBoardSL1: preact.FunctionalComponent<P> = ({
           title={t("prop.sla-csm-mt").toLowerCase()}
           value={
             consumed_material > 0
-              ? `${numberFormat(consumed_material)} ml`
+              ? numberFormat(consumed_material) + " " + t("unit.ml")
               : "NA"
           }
         />

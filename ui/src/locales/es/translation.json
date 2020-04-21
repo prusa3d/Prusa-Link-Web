@@ -17,19 +17,32 @@
     "layer-1st": "Primera Capa Expo. [s]",
     "title": "Cambiar tiempos de exposición"
   },
+  "glob": {
+    "hostname": "Nombre del Host"
+  },
   "home": {
     "link": "Panel principal",
     "title": "Estado de la impresora"
   },
   "msg": {
+    "api-key": "Clave API",
     "cancel": "¿Realmente quieres cancelar la impresión?",
     "modal-p1": "Bienvenido a la interfaz web de tu",
     "modal-p2": "Tenga en cuenta que los valores se muestran solo cuando la impresora está imprimiendo.",
     "sla-fly-fill": "Rellena completamente el tanque de resina.",
     "sla-fill": "Llena el tanque de resina y cierra la tapa."
   },
+  "ntf": {
+    "actn-pending": "",
+    "start-print": "",
+    "upld-exists": "",
+    "upld-not-sup": "",
+    "upld-suc": "",
+    "upld-unsuc": ""
+  },
   "proj": {
     "link": "Projectos",
+    "main": "",
     "title": "Archivos de proyecto"
   },
   "prop": {
@@ -72,6 +85,10 @@
     "title": "Temperaturas",
     "x": "Tiempo [s]",
     "y": "Temperatura [°C]"
+  },
+  "unit": {
+    "ml": "ml",
+    "rpm": "RPM"
   },
   "upld": {
     "loading": "Subiendo...",

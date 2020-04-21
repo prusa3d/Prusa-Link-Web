@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import { h, Component } from "preact";
+import { useTranslation } from "react-i18next";
 
 import { network } from "../utils/network";
 
@@ -29,6 +30,7 @@ class Title extends Component<P, S> {
   };
 
   render({ title, children, onFetch }, { hostname }) {
+    const { t, i18n, ready } = useTranslation(null, { useSuspense: false });
     return (
       <div class="box has-background-black is-paddingless prusa-line">
         <div class="columns is-centered">
@@ -37,9 +39,10 @@ class Title extends Component<P, S> {
             {children && children}
           </div>
           <div class="column has-text-right prusa-title prusa-preserve">
-            {hostname && (
+            {hostname && ready && (
               <p>
-                hostname: <span class="prusa-text-orange">{hostname}</span>
+                {t("glob.hostname")}:{" "}
+                <span class="prusa-text-orange">{hostname}</span>
               </p>
             )}
           </div>

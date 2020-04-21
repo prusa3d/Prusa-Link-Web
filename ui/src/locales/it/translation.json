@@ -17,19 +17,32 @@
     "layer-1st": "Esposizione Primo layer [s]",
     "title": "Cambia i tempi di esposizione"
   },
+  "glob": {
+    "hostname": "Nome host"
+  },
   "home": {
     "link": "Dashboard",
     "title": "Stato della stampante"
   },
   "msg": {
+    "api-key": "Chiave API",
     "cancel": "Vuoi davvero annullare la stampa?",
     "modal-p1": "Benvenuto nell'interfaccia web del tuo",
     "modal-p2": "Si noti che i valori vengono visualizzati solo durante la stampa.",
     "sla-fly-fill": "Si prega di riempire completamente il serbatoio della resina.",
     "sla-fill": "Si prega di riempire il serbatoio della resina e chiudere il coperchio."
   },
+  "ntf": {
+    "actn-pending": "",
+    "start-print": "",
+    "upld-exists": "",
+    "upld-not-sup": "",
+    "upld-suc": "",
+    "upld-unsuc": ""
+  },
   "proj": {
     "link": "Progetti",
+    "main": "",
     "title": "File di progetto"
   },
   "prop": {
@@ -72,6 +85,10 @@
     "title": "Temperature",
     "x": "Tempo [s]",
     "y": "Temperatura [°C]"
+  },
+  "unit": {
+    "ml": "ml",
+    "rpm": "RPM"
   },
   "upld": {
     "loading": "Caricamento...",

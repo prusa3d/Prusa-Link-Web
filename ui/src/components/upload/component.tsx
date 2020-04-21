@@ -83,16 +83,16 @@ class Upload extends Component<P, S> {
       if (ready) {
         switch (status) {
           case 201:
-            resolve(`File ${file_name} upload successfully.`);
+            resolve(t("ntf.upld-suc", { file_name }));
             break;
           case 409:
-            resolve(`File ${file_name} already exists.`);
+            resolve(t("ntf.upld-exists", { file_name }));
             break;
           case 415:
-            resolve(`File ${file_name} not supported.`);
+            resolve(t("ntf.upld-not-sup", { file_name }));
             break;
           default:
-            resolve(`File ${file_name} upload was unsuccessful.`);
+            resolve(t("ntf.upld-unsuc", { file_name }));
             break;
         }
       }

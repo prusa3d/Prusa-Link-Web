@@ -17,19 +17,32 @@
     "layer-1st": "Première couche Expo. [s]",
     "title": "Modifier les temps d'exposition"
   },
+  "glob": {
+    "hostname": "Nom d'hôte"
+  },
   "home": {
     "link": "Tableau de bord",
     "title": "État de l'imprimante"
   },
   "msg": {
+    "api-key": "Clé d'API",
     "cancel": "Voulez-vous vraiment annuler l'impression ?",
     "modal-p1": "Bienvenue dans l'interface web de votre",
     "modal-p2": "Veuillez noter que les valeurs sont affichées uniquement lorsque l'imprimante imprime.",
     "sla-fly-fill": "Veuillez remplir complètement le réservoir de résine.",
     "sla-fill": "Veuillez remplir le réservoir de résine et fermer le couvercle."
   },
+  "ntf": {
+    "actn-pending": "",
+    "start-print": "",
+    "upld-exists": "",
+    "upld-not-sup": "",
+    "upld-suc": "",
+    "upld-unsuc": ""
+  },
   "proj": {
     "link": "Projets",
+    "main": "",
     "title": "Fichiers de projet"
   },
   "prop": {
@@ -72,6 +85,10 @@
     "title": "Températures",
     "x": "Temps [s]",
     "y": "Température [°C]"
+  },
+  "unit": {
+    "ml": "ml",
+    "rpm": "TPM"
   },
   "upld": {
     "loading": "Téléchargement...",

@@ -10,6 +10,7 @@ import preview from "../../assets/thumbnail.png";
 import Title from "../../components/title";
 import { ActionButton, NoButton, YesButton } from "../buttons";
 import Properties from "./properties";
+import Toast from "../toast";
 
 export interface ProjectProps extends network {
   onclick(e: Event, nextShow: number): void;
@@ -27,10 +28,22 @@ interface S {}
 class View extends Component<ProjectProps, S> {
   ref = createRef();
 
+  notify = () => {
+    const { t, i18n, ready } = useTranslation(null, { useSuspense: false });
+    return new Promise<string>(function(resolve, reject) {
+      if (ready) {
+        resolve(t("ntf.start-print"));
+      }
+    }).then(message => Toast.notify(t("btn.start-pt"), message));
+  };
+
   onStartPrint = (e: Event) => {
     this.props.onFetch({
       url: "/api/job",
-      then: response => this.props.onBack(e),
+      then: response => {
+        this.props.onBack(e);
+        this.notify();
+      },
       options: {
         method: "POST",
         headers: {

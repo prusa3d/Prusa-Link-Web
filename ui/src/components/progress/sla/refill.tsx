@@ -3,7 +3,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import { h, Component, Fragment } from "preact";
-import { Translation } from "react-i18next";
+import { Translation, useTranslation } from "react-i18next";
 
 import { network } from "../../utils/network";
 import Title from "../../title";
@@ -12,7 +12,7 @@ import ExampleImage1 from "../../../assets/refill.jpg";
 import ExampleImage2 from "../../../assets/tank.jpg";
 import { PrinterState } from "../../telemetry";
 import { isPrintingFeedMe } from "../../utils/states";
-
+import Toast from "../../toast";
 interface S {
   show: number;
 }
@@ -23,17 +23,32 @@ interface P extends network {
 }
 
 class Refill extends Component<P, {}> {
+  notify = () => {
+    const { t, i18n, ready } = useTranslation(null, { useSuspense: false });
+    return new Promise<string>(function(resolve, reject) {
+      if (ready) {
+        resolve(t("ntf.actn-pending"));
+      }
+    }).then(message => Toast.notify(t("refill.title"), message));
+  };
+
   onBack = (e: MouseEvent) => {
     this.props.onFetch({
       url: "/api/job/material?value=back",
-      then: response => this.props.onBack(e)
+      then: response => {
+        this.props.onBack(e);
+        this.notify();
+      }
     });
   };
 
   onYES = (e: MouseEvent) => {
     this.props.onFetch({
       url: "/api/job/material?value=continue",
-      then: response => this.props.onBack(e)
+      then: response => {
+        this.props.onBack(e);
+        this.notify();
+      }
     });
   };
 

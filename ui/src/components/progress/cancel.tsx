@@ -10,11 +10,21 @@ import { PrinterState } from "../telemetry";
 import Title from "../title";
 import { YesButton, NoButton } from "../buttons";
 import { canAct } from "../utils/states";
+import Toast from "../toast";
 
 interface P extends network {
   printer_state: PrinterState;
   onBack(e: MouseEvent): void;
 }
+
+const notify = () => {
+  const { t, i18n, ready } = useTranslation(null, { useSuspense: false });
+  return new Promise<string>(function(resolve, reject) {
+    if (ready) {
+      resolve(t("ntf.actn-pending"));
+    }
+  }).then(message => Toast.notify(t("btn.cancel-pt"), message));
+};
 
 const Cancel: preact.FunctionalComponent<P> = ({
   printer_state,
@@ -26,7 +36,10 @@ const Cancel: preact.FunctionalComponent<P> = ({
     e.stopPropagation();
     onFetch({
       url: "/api/job",
-      then: response => onBack(e),
+      then: response => {
+        onBack(e);
+        notify();
+      },
       options: {
         method: "POST",
         headers: {
