@@ -12,9 +12,10 @@ class Toast {
     const notification = document.createElement("article");
 
     const header = document.createElement("div");
-    header.className = "toast-header prusa-default-bold-text";
+    header.className = "toast-header";
 
     const header_title = document.createElement("p");
+    header_title.className = "txt-bold txt-size-2";
     header_title.appendChild(document.createTextNode(title));
     header.appendChild(header_title);
 
@@ -28,7 +29,7 @@ class Toast {
     header.appendChild(button);
 
     const body = document.createElement("div");
-    body.className = "toast-body prusa-default-text prusa-break-word";
+    body.className = "toast-body txt-normal txt-size-2 prusa-break-word";
     body.appendChild(document.createTextNode(message));
 
     notification.appendChild(header);

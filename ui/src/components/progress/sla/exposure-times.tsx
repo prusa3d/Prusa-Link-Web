@@ -73,7 +73,7 @@ const SetValueView: preact.FunctionalComponent<ValuesProps> = props => {
   return (
     <div class="columns prusa-no-focus" tabIndex={0} onKeyDown={onkeyPress}>
       <div class="column is-three-fifths">
-        <p class="prusa-default-text">{title}</p>
+        <p class="txt-normal txt-size-2">{title}</p>
       </div>
       <div class="column">
         <img
@@ -82,7 +82,7 @@ const SetValueView: preact.FunctionalComponent<ValuesProps> = props => {
           onClick={e => onDecrease(e)}
         />
       </div>
-      <div class="column prusa-default-text">{value}</div>
+      <div class="column txt-normal txt-size-2">{value}</div>
       <div class="column">
         <img
           class="media-left image is-24x24 prusa-job-set-value"

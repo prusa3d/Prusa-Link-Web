@@ -57,8 +57,8 @@ const StatusLeftItem: preact.FunctionalComponent<S> = ({
       <div class="media">
         <img class="media-left image is-24x24" src={icons(icon_id)} />
         <div class="media-content is-clipped">
-          <p class="prusa-default-text-grey">{name}</p>
-          <p class="prusa-default-bold-text">{value}</p>
+          <p class="txt-normal txt-size-2 txt-grey">{name}</p>
+          <p class="txt-bold txt-size-2">{value}</p>
         </div>
       </div>
     </div>

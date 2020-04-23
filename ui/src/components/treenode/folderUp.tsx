@@ -36,7 +36,7 @@ const FolderUp: preact.FunctionalComponent<Props> = props => {
             <img src={require("../../assets/up_folder.svg")} />
           </figure>
           <div class="media-content">
-            <p class="prusa-default-text">{t("proj.main")}</p>
+            <p class="txt-normal txt-size-2">{t("proj.main")}</p>
           </div>
         </div>
       </div>

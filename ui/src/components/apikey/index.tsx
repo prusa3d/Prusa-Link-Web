@@ -27,13 +27,13 @@ const Loging: preact.FunctionalComponent<P> = ({ setApikey }) => {
         <div class="modal-content">
           <div class="box has-background-grey-dark">
             <div class="field">
-              <label class="label prusa-default-bold-text">
+              <label class="label txt-bold txt-size-2">
                 {t("msg.api-key")}
               </label>
               <div class="control">
                 <input
                   ref={ref}
-                  class="input prusa-default-text-grey"
+                  class="input txt-normal txt-size-2 txt-grey"
                   type="text"
                 />
               </div>

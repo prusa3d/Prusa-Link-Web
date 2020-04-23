@@ -60,7 +60,7 @@ const Cancel: preact.FunctionalComponent<P> = ({
         <Title title={cancel_label} onFetch={onFetch} />
         <div class="columns is-multiline is-mobile is-centered is-vcentered">
           <div class="column is-full">
-            <p class="prusa-default-text has-text-centered prusa-job-question">
+            <p class="txt-normal txt-size-2 has-text-centered prusa-job-question">
               {t("msg.cancel")}
             </p>
           </div>

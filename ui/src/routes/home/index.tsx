@@ -48,9 +48,7 @@ const ViewDefault = props => {
       <div class="column is-full">
         {ready && (
           <Title title={t("home.title") + ": "} onFetch={props.onFetch}>
-            <span class="prusa-title prusa-text-white">
-              {t("prop.st-idle")}
-            </span>
+            <span class="txt-white ">{t("prop.st-idle")}</span>
           </Title>
         )}
       </div>

@@ -48,17 +48,18 @@ class Welcome extends Component<{}, S> {
                       <img src={Logo} style="width: 250px;" />
                     </div>
                     <div class="column is-full has-text-centered">
-                      <p class="prusa-default-text" style="padding-top: 20px;">
+                      <p
+                        class="txt-normal txt-size-2"
+                        style="padding-top: 20px;"
+                      >
                         {" "}
                         {t("msg.modal-p1")}
                       </p>
-                      <p class="prusa-default-bold-text">
-                        {process.env.PRINTER}
-                      </p>
+                      <p class="txt-bold txt-size-2">{process.env.PRINTER}</p>
                     </div>
                     <div class="column is-three-fifths is-offset-one-fifth has-text-centered">
                       <p
-                        class="prusa-default-text"
+                        class="txt-normal txt-size-2"
                         style="padding-top: 20px; padding-bottom: 20px;"
                       >
                         {t("msg.modal-p2")}

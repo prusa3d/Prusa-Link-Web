@@ -63,14 +63,18 @@ class Properties extends Component<P, S> {
                 <img src={require("../../assets/time_color.svg")} />
               </div>
               <div class="column">
-                <p class="proj-text">{t("prop.time-est")}</p>
-                <p class="proj-text-value">
+                <p class="txt-normal txt-size-2 txt-grey">
+                  {t("prop.time-est")}
+                </p>
+                <p class="txt-bold txt-size-2">
                   {printing_time ? printing_time : "NA"}
                 </p>
               </div>
               <div class="column">
-                <p class="proj-text">{t("prop.est-end")}</p>
-                <p class="proj-text-value">{estimated_end}</p>
+                <p class="txt-normal txt-size-2 txt-grey">
+                  {t("prop.est-end")}
+                </p>
+                <p class="txt-bold txt-size-2">{estimated_end}</p>
               </div>
             </div>
           </div>
@@ -81,12 +85,14 @@ class Properties extends Component<P, S> {
                 <img src={require("../../assets/quality_medium.svg")} />
               </div>
               <div class="column">
-                <p class="proj-text">{t("prop.layers")}</p>
-                <p class="proj-text-value">{total_layers}</p>
+                <p class="txt-normal txt-size-2 txt-grey">{t("prop.layers")}</p>
+                <p class="txt-bold txt-size-2">{total_layers}</p>
               </div>
               <div class="column">
-                <p class="proj-text">{t("prop.layer-ht")}</p>
-                <p class="proj-text-value">
+                <p class="txt-normal txt-size-2 txt-grey">
+                  {t("prop.layer-ht")}
+                </p>
+                <p class="txt-bold txt-size-2">
                   {layer_height ? `${layer_height} mm` : "NA"}
                 </p>
               </div>
@@ -99,8 +105,10 @@ class Properties extends Component<P, S> {
                 <img src={require("../../assets/exposure_times_color.svg")} />
               </div>
               <div class="column">
-                <p class="proj-text">{t("prop.exp-times")}</p>
-                <p class="proj-text-value">{exposure_times}</p>
+                <p class="txt-normal txt-size-2 txt-grey">
+                  {t("prop.exp-times")}
+                </p>
+                <p class="txt-bold txt-size-2">{exposure_times}</p>
               </div>
             </div>
           </div>
@@ -111,8 +119,10 @@ class Properties extends Component<P, S> {
                 <img src={require("../../assets/calendar.svg")} />
               </div>
               <div class="column">
-                <p class="proj-text">{t("prop.last-mod")}</p>
-                <p class="proj-text-value">{last_modified}</p>
+                <p class="txt-normal txt-size-2 txt-grey">
+                  {t("prop.last-mod")}
+                </p>
+                <p class="txt-bold txt-size-2">{last_modified}</p>
               </div>
             </div>
           </div>

@@ -55,7 +55,7 @@ class Header extends Component<{}, S> {
               >
                 <div class="navbar-end">
                   <Link
-                    class="navbar-item prusa-link-title"
+                    class="navbar-item prusa-link txt-bold txt-size-2"
                     activeClassName="active"
                     href="/"
                     onClick={this.onClickBurger}
@@ -64,7 +64,7 @@ class Header extends Component<{}, S> {
                   </Link>
                   {process.env.IS_SL1 && (
                     <Link
-                      class="navbar-item prusa-link-title"
+                      class="navbar-item prusa-link txt-bold txt-size-2"
                       activeClassName="active"
                       href="/projects"
                       onClick={this.onClickBurger}
@@ -73,7 +73,7 @@ class Header extends Component<{}, S> {
                     </Link>
                   )}
                   <Link
-                    class="navbar-item prusa-link-title"
+                    class="navbar-item prusa-link txt-bold txt-size-2"
                     activeClassName="active"
                     href="/temperatures"
                     onClick={this.onClickBurger}

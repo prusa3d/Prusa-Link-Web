@@ -54,8 +54,9 @@ $horizontal-color: gray;
 }
 
 .temp-text {
+  font-family: "Atlas Grotesk Regular Web";
   fill: $fill-color;
-  font-size: 15px;
+  font-size: 11px;
   letter-spacing: normal;
   padding: 8px;
   stroke: transparent;
@@ -71,7 +72,8 @@ $horizontal-color: gray;
 }
 
 %temp-label-text {
-  font-size: 15px;
+  font-family: "Atlas Grotesk Regular Web";
+  font-size: 11px;
   fill: $fill-color;
   text-anchor: middle;
   letter-spacing: normal;

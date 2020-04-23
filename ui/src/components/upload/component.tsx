@@ -163,7 +163,7 @@ class Upload extends Component<P, S> {
         onDragLeave={e => this.handleDragLeave(e)}
       >
         <div class="column is-full">
-          <p class="prusa-item-title is-marginless prusa-line">
+          <p class="txt-bold txt-grey txt-size-2 is-marginless prusa-line">
             {ready ? t("upld.title") : ""}
           </p>
         </div>

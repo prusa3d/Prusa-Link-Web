@@ -113,7 +113,7 @@ class View extends Component<ProjectProps, S> {
           <Title title={this.props.title} onFetch={this.props.onFetch} />
           <div class="columns is-multiline is-mobile">
             <div class="column is-full">
-              <p class="prusa-default-bold-text prusa-break-word">
+              <p class="txt-bold txt-size-2 prusa-break-word">
                 {this.props.display}
               </p>
             </div>

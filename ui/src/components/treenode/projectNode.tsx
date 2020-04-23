@@ -76,7 +76,7 @@ const ProjectNode: preact.FunctionalComponent<P> = props => {
         </div>
         <div class="media-content">
           <div class="columns is-multiline is-mobile">
-            <div class="column is-full prusa-properties-title">
+            <div class="column is-full txt-normal txt-size-2">
               <p class="prusa-break-word">{display}</p>
             </div>
             <div class="column is-full">
@@ -87,10 +87,12 @@ const ProjectNode: preact.FunctionalComponent<P> = props => {
                       <div class="icon">
                         <img src={require("../../assets/time_color.svg")} />
                       </div>
-                      <div class="text">
-                        <p>
+                      <div class="text txt-size-2">
+                        <p class="txt-normal txt-grey">
                           {t("prop.pnt-time") + " "}
-                          <span>{printing_time}</span>
+                          <span class="txt-bold txt-white">
+                            {printing_time}
+                          </span>
                         </p>
                       </div>
                     </div>
@@ -102,10 +104,10 @@ const ProjectNode: preact.FunctionalComponent<P> = props => {
                           src={require("../../assets/status_filament.svg")}
                         />{" "}
                       </div>
-                      <div class="text">
-                        <p>
+                      <div class="text txt-size-2">
+                        <p class="txt-normal txt-grey">
                           {t("prop.material") + " "}
-                          <span>{material}</span>
+                          <span class="txt-bold txt-white">{material}</span>
                         </p>
                       </div>
                     </div>
@@ -115,10 +117,12 @@ const ProjectNode: preact.FunctionalComponent<P> = props => {
                       <div class="icon">
                         <img src={require("../../assets/quality_medium.svg")} />{" "}
                       </div>
-                      <div class="text">
-                        <p>
+                      <div class="text txt-size-2">
+                        <p class="txt-normal txt-grey">
                           {t("prop.layer-ht") + " "}
-                          <span>{layer_height} mm</span>
+                          <span class="txt-bold txt-white">
+                            {layer_height} mm
+                          </span>
                         </p>
                       </div>
                     </div>

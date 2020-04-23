@@ -8,8 +8,8 @@ interface P {
 const StatusBoardItem: preact.FunctionalComponent<P> = ({ title, value }) => {
   return (
     <div class="column is-one-third">
-      <p class="prusa-default-text-grey">{title}</p>
-      <p class="prusa-default-bold-text">{value}</p>
+      <p class="txt-normal txt-size-2 txt-grey">{title}</p>
+      <p class="txt-bold txt-size-2">{value}</p>
     </div>
   );
 };

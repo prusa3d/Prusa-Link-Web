@@ -56,9 +56,7 @@ const JobProgress: preact.FunctionalComponent<P> = props => {
     if (props.isHalf) {
       title = (
         <Title title={t("home.title") + ": "} onFetch={props.onFetch}>
-          <span class="prusa-title prusa-text-orange">
-            {t("prop.st-printing")}
-          </span>
+          <span class="txt-orange">{t("prop.st-printing")}</span>
         </Title>
       );
     } else {

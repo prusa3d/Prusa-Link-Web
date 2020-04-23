@@ -20,7 +20,7 @@ const FolderNode: preact.FunctionalComponent<Props> = props => {
           <img src={require("../../assets/projects_small.svg")} />
         </figure>
         <div class="media-content">
-          <p class="prusa-default-text">{props.display}</p>
+          <p class="txt-normal txt-size-2">{props.display}</p>
         </div>
       </div>
     </div>

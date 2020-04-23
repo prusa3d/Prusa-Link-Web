@@ -2,23 +2,11 @@
 // Copyright (C) 2018-2019 Prusa Research s.r.o. - www.prusa3d.com
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-@use '../../style/defines.scss';
+@use '../../style/_defines.scss' as defines;
 
 .proje-preview {
   width: 100%;
   height: auto;
-}
-
-.proj-text {
-  color: defines.$text-grey;
-  font-family: "Atlas Grotesk Regular Web";
-  font-size: defines.$font-size-proj-view-mobile;
-}
-
-.proj-text-value {
-  color: defines.$text-white;
-  font-family: "Atlas Grotesk Bold Web";
-  font-size: defines.$font-size-proj-view-mobile;
 }
 
 .proj-icon {
@@ -33,11 +21,6 @@
 }
 
 @media screen and (min-width: 1024px) {
-  .proj-text,
-  .proj-text-value {
-    font-size: defines.$font-size-proj-view-desktop;
-  }
-
   .proj-icon {
     & > img {
       width: 24px;

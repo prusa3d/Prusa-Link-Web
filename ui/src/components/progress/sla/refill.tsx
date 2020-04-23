@@ -63,7 +63,7 @@ class Refill extends Component<P, {}> {
               <Title title={t("refill.title")} onFetch={this.props.onFetch} />
               <div class="columns is-multiline is-mobile is-centered is-vcentered">
                 <div class="column is-full">
-                  <p class="prusa-default-text">{t("msg.sla-fly-fill")}</p>
+                  <p class="txt-normal txt-size-2">{t("msg.sla-fly-fill")}</p>
                 </div>
                 <div class="column is-full">
                   <div class="columns">

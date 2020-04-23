@@ -2,7 +2,7 @@
 // Copyright (C) 2018-2019 Prusa Research s.r.o. - www.prusa3d.com
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-@use '../../style/defines.scss';
+@use '../../style/_defines.scss' as defines;
 
 .prusa-button-wrapper {
   display: -webkit-box !important;
@@ -19,7 +19,7 @@
   color: defines.$text-white;
   border-radius: 8px;
   border-color: transparent;
-  font-size: defines.$font-size-buttom-mobile;
+  font-size: defines.$font-size-2-mobile;
   font-family: "Atlas Grotesk Bold Web";
 }
 
@@ -95,7 +95,7 @@
   .prusa-button-yes,
   .prusa-button-no,
   .prusa-button-action {
-    font-size: defines.$font-size-buttom-desktop;
+    font-size: defines.$font-size-2-desktop;
     border-radius: 4px;
   }
   .prusa-button-icon {

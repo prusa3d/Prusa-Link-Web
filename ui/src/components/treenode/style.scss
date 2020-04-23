@@ -2,7 +2,7 @@
 // Copyright (C) 2018-2019 Prusa Research s.r.o. - www.prusa3d.com
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-@use '../../style/defines.scss';
+@use '../../style/_defines.scss' as defines;
 
 %selection {
   background-color: defines.$body-background-color-hover;
@@ -41,12 +41,6 @@
   display: flex;
 }
 
-.prusa-properties-title {
-  color: defines.$text-white;
-  font-family: "Atlas Grotesk Regular Web";
-  font-size: defines.$font-size-proj-node-title-mobile;
-}
-
 .prusa-properties {
   display: flex;
   flex: 1 0 auto;
@@ -63,14 +57,6 @@
     text-align: center;
     -webkit-box-flex: 0;
     flex: 0 1 auto;
-    font-size: defines.$font-size-proj-node-mobile;
-    font-family: "Atlas Grotesk Regular Web";
-    color: defines.$text-grey;
-
-    & > p > span {
-      color: defines.$text-white;
-      font-family: "Atlas Grotesk Bold Web";
-    }
   }
 }
 
@@ -78,15 +64,5 @@
   .project-icon-desktop {
     height: 28px !important;
     width: 28px !important;
-  }
-
-  .prusa-properties-title {
-    font-size: defines.$font-size-proj-node-title-desktop;
-  }
-
-  .prusa-properties {
-    & > .text {
-      font-size: defines.$font-size-proj-node-desktop;
-    }
   }
 }

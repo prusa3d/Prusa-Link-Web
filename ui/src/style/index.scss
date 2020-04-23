@@ -3,7 +3,8 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 @charset "utf-8";
-@use './defines.scss';
+@use './_defines.scss' as defines;
+@use './prusa-fonts.scss';
 $body-background-color: defines.$body-background-color;
 $text: defines.$text-white;
 $text-grey: defines.$text-grey;
@@ -34,110 +35,8 @@ $success: defines.$text-orange;
 @import "../../../node_modules/bulma/sass/layout/section.sass";
 @import "../../../node_modules/bulma/sass/grid/_all.sass";
 
-@font-face {
-  font-family: "Atlas Grotesk Regular Web";
-  src: url("../assets/fonts/AtlasGrotesk-Regular-Web.eot");
-  src: url("../assets/fonts/AtlasGrotesk-Regular-Web.eot?#iefix")
-      format("embedded-opentype"),
-    url("../assets/fonts/AtlasGrotesk-Regular-Web.woff2") format("woff2"),
-    url("../assets/fonts/AtlasGrotesk-Regular-Web.woff") format("woff");
-  font-weight: 400;
-  font-style: normal;
-  font-stretch: normal;
-}
-
-@font-face {
-  font-family: "Atlas Grotesk Bold Web";
-  src: url("../assets/fonts/AtlasGrotesk-Bold-Web.eot");
-  src: url("../assets/fonts/AtlasGrotesk-Bold-Web.eot?#iefix")
-      format("embedded-opentype"),
-    url("../assets/fonts/AtlasGrotesk-Bold-Web.woff2") format("woff2"),
-    url("../assets/fonts/AtlasGrotesk-Bold-Web.woff") format("woff");
-  font-weight: 700;
-  font-style: normal;
-  font-stretch: normal;
-}
-
-.prusa-text-orange {
-  color: defines.$text-orange !important;
-}
-
-.prusa-text-grey {
-  color: defines.$text-grey !important;
-}
-
-.prusa-text-white {
-  color: defines.$text-white !important;
-}
-
 .prusa-no-focus:focus {
   outline: none;
-}
-
-.prusa-title {
-  font-size: defines.$font-size-title-mobile;
-  color: defines.$text-grey;
-  font-family: "Atlas Grotesk Regular Web";
-}
-
-.prusa-item-title {
-  font-size: defines.$font-size-item-title-mobile;
-  color: defines.$text-grey;
-  font-family: "Atlas Grotesk Bold Web";
-}
-
-.prusa-link-title {
-  font-size: defines.$font-size-link-title-mobile;
-  color: defines.$text-white;
-  font-family: "Atlas Grotesk Bold Web";
-  margin-bottom: -1px;
-  &:hover {
-    border-bottom: defines.$line-size solid defines.$color-white;
-  }
-  &.active {
-    border-bottom: defines.$line-size solid defines.$color-orange;
-    &:hover {
-      border-bottom: defines.$line-size solid defines.$color-white;
-    }
-  }
-}
-
-.prusa-default-text {
-  font-size: defines.$font-size-mobile;
-  color: defines.$text-white;
-  font-family: "Atlas Grotesk Regular Web";
-}
-
-.prusa-default-text-grey {
-  font-size: defines.$font-size-mobile;
-  color: defines.$text-grey;
-  font-family: "Atlas Grotesk Regular Web";
-}
-
-.prusa-default-bold-text {
-  font-size: defines.$font-size-mobile;
-  color: defines.$text-white;
-  font-family: "Atlas Grotesk Bold Web";
-}
-
-@media (min-width: 1024px) {
-  .prusa-default-text,
-  .prusa-default-text-grey,
-  .prusa-default-bold-text {
-    font-size: defines.$font-size-desktop;
-  }
-
-  .prusa-title {
-    font-size: defines.$font-size-title-desktop;
-  }
-
-  .prusa-item-title {
-    font-size: defines.$font-size-item-title-desktop;
-  }
-
-  .prusa-link-title {
-    font-size: defines.$font-size-link-title-desktop;
-  }
 }
 
 .prusa-break-word {

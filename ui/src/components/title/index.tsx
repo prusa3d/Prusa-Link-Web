@@ -34,15 +34,14 @@ class Title extends Component<P, S> {
     return (
       <div class="box has-background-black is-paddingless prusa-line">
         <div class="columns is-centered">
-          <div class="column prusa-title prusa-break-word">
+          <div class="column txt-normal txt-size-1 txt-grey prusa-break-word">
             {title}
             {children && children}
           </div>
-          <div class="column has-text-right prusa-title prusa-preserve">
+          <div class="column has-text-right txt-normal txt-size-1 prusa-preserve">
             {hostname && ready && (
-              <p>
-                {t("glob.hostname")}:{" "}
-                <span class="prusa-text-orange">{hostname}</span>
+              <p class="txt-grey">
+                {t("glob.hostname")}: <span class="txt-orange">{hostname}</span>
               </p>
             )}
           </div>
