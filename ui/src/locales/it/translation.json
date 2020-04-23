@@ -18,6 +18,7 @@
     "title": "Cambia i tempi di esposizione"
   },
   "glob": {
+    "hd-st": "stato hardware",
     "hostname": "Nome host"
   },
   "home": {

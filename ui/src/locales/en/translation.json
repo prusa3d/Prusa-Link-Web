@@ -18,6 +18,7 @@
     "title": "Change exposure times"
   },
   "glob": {
+    "hd-st": "hardware state",
     "hostname": "Hostname"
   },
   "home": {

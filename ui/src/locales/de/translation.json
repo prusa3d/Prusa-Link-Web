@@ -18,6 +18,7 @@
     "title": "Belichtungszeiten ändern"
   },
   "glob": {
+    "hd-st": "hardwarestatus",
     "hostname": "Hostname"
   },
   "home": {

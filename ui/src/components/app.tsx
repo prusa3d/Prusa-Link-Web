@@ -147,6 +147,7 @@ class App extends Component<{}, S> implements network, apiKey {
     };
 
     const is_mobile = window.innerWidth < 1024;
+    const { t, i18n, ready } = useTranslation(null, { useSuspense: false });
     return (
       <section id="app" class="section">
         {this.state.apikey == null && (
@@ -192,7 +193,7 @@ class App extends Component<{}, S> implements network, apiKey {
                     temperatures={this.state.temperatures}
                     onFetch={this.onFetch}
                   />
-                  <div class="prusa-default-text" default>
+                  <div class="txt-normal txt-size-2" default>
                     <p>UH, OH.</p>
                     <p>404</p>
                   </div>
@@ -200,6 +201,11 @@ class App extends Component<{}, S> implements network, apiKey {
               </div>
               {is_mobile && (
                 <div class="column is-full-mobile">
+                  <div class="column is-full">
+                    <p class="txt-bold txt-grey txt-size-2 is-marginless prusa-line">
+                      {ready ? t("glob.hd-st") : ""}
+                    </p>
+                  </div>
                   <StatusLeftBoard printer_status={this.state.printer_status} />
                 </div>
               )}

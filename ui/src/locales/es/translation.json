@@ -18,6 +18,7 @@
     "title": "Cambiar tiempos de exposición"
   },
   "glob": {
+    "hd-st": "estado de hardware",
     "hostname": "Nombre del Host"
   },
   "home": {

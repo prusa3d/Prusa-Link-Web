@@ -18,6 +18,7 @@
     "title": "Změnit časy expozice"
   },
   "glob": {
+    "hd-st": "stav zařízení",
     "hostname": "Hostname"
   },
   "home": {

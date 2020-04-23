@@ -18,6 +18,7 @@
     "title": "Zmień czasy naświetlania"
   },
   "glob": {
+    "hd-st": "stan sprzętu",
     "hostname": "Nazwa Hosta"
   },
   "home": {
