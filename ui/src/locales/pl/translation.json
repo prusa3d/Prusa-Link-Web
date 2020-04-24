@@ -34,18 +34,18 @@
     "sla-fill": "Uzupełnij żywicę i zamknij pokrywę."
   },
   "ntf": {
-    "actn-pending": "",
+    "actn-pending": "Akcja zostanie wykonana po zakończeniu warstwy",
     "e-307": "Niepowodzenie pomiaru poziomu żywicy!",
     "error": "Błąd",
-    "start-print": "",
-    "upld-exists": "",
-    "upld-not-sup": "",
-    "upld-suc": "",
-    "upld-unsuc": ""
+    "start-print": "Drukarka jest przygotowywana",
+    "upld-exists": "Istnieje już projekt o nazwie {{file_name}}",
+    "upld-not-sup": "Typ pliku {{file_name}} jest nieobsługiwany",
+    "upld-suc": "Przesyłanie projektu {{file_name}} powiodło się",
+    "upld-unsuc": "Przesyłanie projektu {{file_name}} nie powiodło się"
   },
   "proj": {
     "link": "Projekty",
-    "main": "",
+    "main": "Główne",
     "title": "Pliki projektu"
   },
   "prop": {
@@ -103,6 +103,6 @@
   "upld": {
     "loading": "Przesyłanie...",
     "open": "Wybierz {{file}} lub przeciągnij go tutaj",
-    "title": ""
+    "title": "prześlij projekt"
   }
 }

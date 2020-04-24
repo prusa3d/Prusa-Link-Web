@@ -34,18 +34,18 @@
     "sla-fill": "Si prega di riempire il serbatoio della resina e chiudere il coperchio."
   },
   "ntf": {
-    "actn-pending": "",
+    "actn-pending": "L'azione verrà eseguita dopo il completamento del layer",
     "e-307": "Misurazione resina non riuscita!",
     "error": "Errore",
-    "start-print": "",
-    "upld-exists": "",
-    "upld-not-sup": "",
-    "upld-suc": "",
-    "upld-unsuc": ""
+    "start-print": "Preparazione della stampante",
+    "upld-exists": "Progetto {{file_name}} già esistente",
+    "upld-not-sup": "Progetto {{file_name}} non supportato",
+    "upld-suc": "Caricamento del progetto {{file_name}} riuscito",
+    "upld-unsuc": "Caricamento del progetto {{file_name}} non riuscito"
   },
   "proj": {
     "link": "Progetti",
-    "main": "",
+    "main": "Principale",
     "title": "File di progetto"
   },
   "prop": {
@@ -103,6 +103,6 @@
   "upld": {
     "loading": "Caricamento...",
     "open": "Scegli un {{file}} o trascinalo qui.",
-    "title": ""
+    "title": "carica progetto"
   }
 }

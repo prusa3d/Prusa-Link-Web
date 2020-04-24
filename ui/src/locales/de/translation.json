@@ -34,18 +34,18 @@
     "sla-fill": "Bitte füllen Sie den Harzbehälter und schließen Sie den Deckel."
   },
   "ntf": {
-    "actn-pending": "",
+    "actn-pending": "Aktion wird nach Beendigung der Schicht ausgeführt",
     "e-307": "Harzmessung fehlgeschlagen!",
     "error": "Fehler",
-    "start-print": "",
-    "upld-exists": "",
-    "upld-not-sup": "",
-    "upld-suc": "",
-    "upld-unsuc": ""
+    "start-print": "Der Drucker bereitet sich vor",
+    "upld-exists": "Das Projekt {{file_name}} existiert bereits",
+    "upld-not-sup": "Das Projekt {{file_name}} wird nicht unterstützt",
+    "upld-suc": "Das Hochladen des Projekts {{file_name}} war erfolgreich",
+    "upld-unsuc": "Das Hochladen des Projekts {{file_name}} war nicht erfolgreich"
   },
   "proj": {
     "link": "Projekte",
-    "main": "",
+    "main": "Startseite",
     "title": "Projektdateien"
   },
   "prop": {
@@ -103,6 +103,6 @@
   "upld": {
     "loading": "Lade hoch...",
     "open": "{{file}} wählen oder hier fallenlassen.",
-    "title": ""
+    "title": "Projekt hochladen"
   }
 }
