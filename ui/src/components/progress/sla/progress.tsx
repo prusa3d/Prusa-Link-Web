@@ -64,6 +64,7 @@ const JobProgress: preact.FunctionalComponent<P> = props => {
     }
   }
 
+  const isdisabled = !canAct(props.printer_state);
   return (
     ready && (
       <Fragment>
@@ -80,19 +81,20 @@ const JobProgress: preact.FunctionalComponent<P> = props => {
                 icon="exp-times"
                 text={t("btn.chg-exp").toLowerCase()}
                 onClick={e => onclick(e, 1)}
+                disabled={isdisabled}
                 wrap
               />
               <ActionButton
                 icon="refill"
                 text={t("btn.sla-refill").toLowerCase()}
                 onClick={e => onFeed(e)}
-                disabled={!canAct(props.printer_state)}
+                disabled={isdisabled}
                 wrap
               />
               <NoButton
                 text={t("btn.cancel-pt").toLowerCase()}
                 onClick={e => onclick(e, 3)}
-                disabled={!canAct(props.printer_state)}
+                disabled={isdisabled}
                 wrap
               />
             </div>

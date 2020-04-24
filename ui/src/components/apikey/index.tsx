@@ -19,6 +19,12 @@ const Loging: preact.FunctionalComponent<P> = ({ setApikey }) => {
     }
   };
 
+  const onKeyDown = (e: KeyboardEvent) => {
+    if (e.key == "Enter" && ref.current) {
+      setApikey(ref.current.value);
+    }
+  };
+
   const { t, i18n, ready } = useTranslation(null, { useSuspense: false });
   return (
     ready && (
@@ -35,6 +41,7 @@ const Loging: preact.FunctionalComponent<P> = ({ setApikey }) => {
                   ref={ref}
                   class="input txt-normal txt-size-2 txt-grey"
                   type="text"
+                  onKeyDown={onKeyDown}
                 />
               </div>
             </div>
