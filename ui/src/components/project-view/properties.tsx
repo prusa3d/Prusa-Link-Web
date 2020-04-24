@@ -6,10 +6,10 @@ import { h, Component } from "preact";
 import { useTranslation } from "react-i18next";
 
 import { network } from "../utils/network";
-import { formatTime, formatEstimatedTime } from "../utils/format";
+import { formatEstimatedTime, formatTime } from "../utils/format";
 
 interface P extends network {
-  printing_time: string;
+  printing_time: number;
   layer_height: number;
 }
 
@@ -17,7 +17,7 @@ interface S {
   exposure_times: string;
   last_modified: string;
   total_layers: number | string;
-  estimated_end: string;
+  remaining_time: string;
 }
 
 class Properties extends Component<P, S> {
@@ -25,7 +25,7 @@ class Properties extends Component<P, S> {
     exposure_times: "NA",
     last_modified: "NA",
     total_layers: "NA",
-    estimated_end: "NA"
+    remaining_time: null
   };
 
   componentDidMount = () => {
@@ -39,8 +39,7 @@ class Properties extends Component<P, S> {
             const result = {
               exposure_times: data.exposure_times,
               last_modified: last_modified.substring(0, 25),
-              remaining_time: formatTime(data.remaining_time, "NA", "NA"),
-              estimated_end: formatEstimatedTime(data.remaining_time),
+              remaining_time: data.remaining_time,
               total_layers: data.total_layers
             };
             this.setState(prevState => ({ ...prevState, ...result }));
@@ -51,7 +50,7 @@ class Properties extends Component<P, S> {
 
   render(
     { printing_time, layer_height },
-    { exposure_times, last_modified, total_layers, estimated_end }
+    { exposure_times, last_modified, total_layers, remaining_time }
   ) {
     const { t, i18n, ready } = useTranslation(null, { useSuspense: false });
     return (
@@ -67,14 +66,16 @@ class Properties extends Component<P, S> {
                   {t("prop.time-est")}
                 </p>
                 <p class="txt-bold txt-size-2">
-                  {printing_time ? printing_time : "NA"}
+                  {formatTime(printing_time, t)}
                 </p>
               </div>
               <div class="column">
                 <p class="txt-normal txt-size-2 txt-grey">
                   {t("prop.est-end")}
                 </p>
-                <p class="txt-bold txt-size-2">{estimated_end}</p>
+                <p class="txt-bold txt-size-2">
+                  {formatEstimatedTime(remaining_time, t)}
+                </p>
               </div>
             </div>
           </div>

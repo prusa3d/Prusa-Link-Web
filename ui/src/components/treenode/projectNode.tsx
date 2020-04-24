@@ -8,13 +8,14 @@ import { useRef, useEffect } from "preact/hooks";
 import { network } from "../utils/network";
 import { useTranslation } from "react-i18next";
 import preview from "../../assets/thumbnail.png";
+import { formatTime } from "../utils/format";
 
 interface P extends network {
   display: string;
   onSelectFile(): void;
   preview_src: string;
   not_found: string[];
-  printing_time: string;
+  printing_time: number;
   material: string;
   layer_height: number;
 }
@@ -91,7 +92,7 @@ const ProjectNode: preact.FunctionalComponent<P> = props => {
                         <p class="txt-normal txt-grey">
                           {t("prop.pnt-time") + " "}
                           <span class="txt-bold txt-white">
-                            {printing_time}
+                            {formatTime(printing_time, t)}
                           </span>
                         </p>
                       </div>

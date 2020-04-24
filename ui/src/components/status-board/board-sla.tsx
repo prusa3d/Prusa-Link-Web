@@ -39,15 +39,15 @@ export const StatusBoardSL1: preact.FunctionalComponent<P> = ({
       <div class="columns">
         <StatusBoardItem
           title={t("prop.rem-time").toLowerCase()}
-          value={formatTime(remaining_time, t("prop.less-than"), "NA")}
+          value={formatTime(remaining_time, t)}
         />
         <StatusBoardItem
           title={t("prop.est-end").toLowerCase()}
-          value={formatEstimatedTime(remaining_time)}
+          value={formatEstimatedTime(remaining_time, t)}
         />
         <StatusBoardItem
           title={t("prop.pnt-time").toLowerCase()}
-          value={formatTime(time_elapsed, t("prop.less-than"), "NA")}
+          value={formatTime(time_elapsed, t)}
         />
       </div>
       <div class="columns">

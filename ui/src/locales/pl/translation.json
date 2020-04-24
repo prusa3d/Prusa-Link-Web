@@ -52,6 +52,7 @@
     "cover": "Stan pokrywy",
     "cover-closed": "Zamknięta",
     "cover-opened": "Otwarta",
+    "d+": "D+",
     "est-end": "Szacowane zakończenie",
     "exp-times": "Czasy naświetlania",
     "fan-blower": "Wentylator boczny",
@@ -64,6 +65,7 @@
     "layers": "Warstwy",
     "less-than": "Mniej niż minuta",
     "material": "Materiał",
+    "na": "",
     "pnt-time": "Czas druku",
     "rem-time": "Pozostały czas",
     "sla-csm-mt": "Zużyta żywica",
@@ -77,6 +79,7 @@
     "temp-led": "Temperatura UV LED",
     "temp-nozzle": "Temperatura dyszy",
     "time-est": "Szacowany Czas Druku",
+    "tmw": "Jutro",
     "z-height": "Wysokość Z",
     "exp-time": "czas naświetlania",
     "layer-1st": "pierwsza warstwa"
@@ -90,6 +93,10 @@
     "y": "Temperatura [°C]"
   },
   "unit": {
+    "h": "g",
+    "min": "min",
+    "minute": "minuta",
+    "minute_plural": "minuty",
     "ml": "ml",
     "rpm": "Obroty"
   },

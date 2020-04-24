@@ -12,36 +12,43 @@ export function numberFormat(value: number) {
 
 export function formatTime(
   value: number,
-  less_than: string = null,
-  na: string = null
-) {
+  t: (text: string, other?: any) => string
+): string {
   if (value) {
     if (value < 60000) {
-      return less_than;
+      return t("prop.less-than");
     }
     const minutes = Math.floor((value / 60000) % 60);
     const hours = Math.floor((value / 3600000) % 24);
     if (hours > 0) {
-      return hours + " h " + minutes + " min";
+      return (
+        hours +
+        " " +
+        t("unit.h") +
+        (minutes > 0 ? ` ${minutes} ${t("unit.min")}` : "")
+      );
     }
     if (minutes > 0) {
-      return minutes + " minutes";
+      return minutes + " " + t("unit.minute", { count: minutes });
     }
   } else {
-    return na;
+    return t("prop.na");
   }
 }
 
-export function formatEstimatedTime(value: number) {
+export function formatEstimatedTime(
+  value: number,
+  t: (text: string) => string
+): string {
   if (value) {
     let now = new Date();
     let end = new Date(now.getTime() + value);
     const days = Math.abs(end.getDate() - now.getDate());
     let plus_days = "";
     if (days == 1) {
-      plus_days = "Tomorrow ";
+      plus_days = +t("prop.tmw") + " ";
     } else if (days > 1) {
-      plus_days = `${days} D+ `;
+      plus_days = days + " " + t("prop.d+");
     }
     return (
       plus_days +

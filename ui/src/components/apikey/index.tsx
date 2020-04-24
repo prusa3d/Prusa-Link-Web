@@ -42,6 +42,7 @@ const Loging: preact.FunctionalComponent<P> = ({ setApikey }) => {
                   class="input txt-normal txt-size-2 txt-grey"
                   type="text"
                   onKeyDown={onKeyDown}
+                  autoFocus
                 />
               </div>
             </div>

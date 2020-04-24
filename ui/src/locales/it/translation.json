@@ -52,6 +52,7 @@
     "cover": "Stato coperchio",
     "cover-closed": "Chiuso",
     "cover-opened": "Aperto",
+    "d+": "D+",
     "est-end": "Fine prevista",
     "exp-times": "Tempi di esposizione",
     "fan-blower": "Ventola",
@@ -64,6 +65,7 @@
     "layers": "Layer",
     "less-than": "Meno di un minuto",
     "material": "Materiale",
+    "na": "",
     "pnt-time": "Tempo di stampa",
     "rem-time": "Tempo residuo",
     "sla-csm-mt": "Resina consumata",
@@ -77,6 +79,7 @@
     "temp-led": "Temperatura LED UV",
     "temp-nozzle": "Temperatura ugello",
     "time-est": "Stima del Tempo di Stampa",
+    "tmw": "Domani",
     "z-height": "Altezza-Z",
     "exp-time": "tempo di esposizione",
     "layer-1st": "primo layer"
@@ -90,6 +93,10 @@
     "y": "Temperatura [°C]"
   },
   "unit": {
+    "h": "h",
+    "min": "min",
+    "minute": "minuto",
+    "minute_plural": "minuti",
     "ml": "ml",
     "rpm": "RPM"
   },

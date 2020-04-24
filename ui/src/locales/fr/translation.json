@@ -52,6 +52,7 @@
     "cover": "État du capot",
     "cover-closed": "Fermé",
     "cover-opened": "Ouvert",
+    "d+": "D+",
     "est-end": "Fin estimée",
     "exp-times": "Temps d'exposition",
     "fan-blower": "Ventilateur radial",
@@ -64,6 +65,7 @@
     "layers": "Couches",
     "less-than": "Moins d'une minute",
     "material": "Matériau",
+    "na": "",
     "pnt-time": "Temps d'impression",
     "rem-time": "Temps restant",
     "sla-csm-mt": "Résine consommée",
@@ -77,6 +79,7 @@
     "temp-led": "Température des LED UV",
     "temp-nozzle": "Température de la buse",
     "time-est": "Estimation du Temps D'impression",
+    "tmw": "Demain",
     "z-height": "Hauteur en Z",
     "exp-time": "temps d'exposition",
     "layer-1st": "première couche"
@@ -90,6 +93,10 @@
     "y": "Température [°C]"
   },
   "unit": {
+    "h": "h",
+    "min": "min",
+    "minute": "minute",
+    "minute_plural": "minutes",
     "ml": "ml",
     "rpm": "TPM"
   },

@@ -52,6 +52,7 @@
     "cover": "Stav víka",
     "cover-closed": "Uzavřený",
     "cover-opened": "Otevřený",
+    "d+": "D+",
     "est-end": "Odhadovaný konec",
     "exp-times": "Doba expozice",
     "fan-blower": "Ventilátor",
@@ -64,6 +65,7 @@
     "layers": "Vrstvy",
     "less-than": "Méně než minuta",
     "material": "Materiál",
+    "na": "",
     "pnt-time": "Doba tisku",
     "rem-time": "Zbývající čas",
     "sla-csm-mt": "Spotřeba pryskyřice",
@@ -77,6 +79,7 @@
     "temp-led": "Teplota UV LED",
     "temp-nozzle": "Teplota Trysky",
     "time-est": "Odhad Doby Tisku",
+    "tmw": "Zítra",
     "z-height": "Výška -Z",
     "exp-time": "doba expozice",
     "layer-1st": "první vrstva"
@@ -90,6 +93,10 @@
     "y": "Teplota [°C]"
   },
   "unit": {
+    "h": "h",
+    "min": "min",
+    "minute": "minuta",
+    "minute_plural": "minut",
     "ml": "ml",
     "rpm": "RPM"
   },

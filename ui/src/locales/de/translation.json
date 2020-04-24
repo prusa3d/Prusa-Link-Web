@@ -52,6 +52,7 @@
     "cover": "Abdeckungsstatus",
     "cover-closed": "Geschlossen",
     "cover-opened": "Geöffnet",
+    "d+": "D+",
     "est-end": "Erwartetes Ende",
     "exp-times": "Belichtungszeiten",
     "fan-blower": "Kühllüfter",
@@ -64,6 +65,7 @@
     "layers": "Schichten",
     "less-than": "Weniger als eine Minute",
     "material": "Material",
+    "na": "",
     "pnt-time": "Druckzeit",
     "rem-time": "Restzeit",
     "sla-csm-mt": "Verbrauchtes Harz",
@@ -77,6 +79,7 @@
     "temp-led": "UV LED Temperatur",
     "temp-nozzle": "Düsentemperatur",
     "time-est": "Druckzeit Schätzen",
+    "tmw": "Morgen",
     "z-height": "Z-Höhe",
     "exp-time": "Belichtungszeit",
     "layer-1st": "Erste Schicht"
@@ -90,6 +93,10 @@
     "y": "Temperatur [°C]"
   },
   "unit": {
+    "h": "h",
+    "min": "min",
+    "minute": "Minute",
+    "minute_plural": "Minuten",
     "ml": "ml",
     "rpm": "UPM"
   },

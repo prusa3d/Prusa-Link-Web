@@ -18,7 +18,7 @@ export interface ProjectProps extends network {
   display: string;
   preview_src: string;
   not_found: string[];
-  printing_time: string;
+  printing_time: number;
   layer_height: number;
   title: string;
 }

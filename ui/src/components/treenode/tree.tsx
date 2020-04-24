@@ -7,7 +7,6 @@ import { useTranslation } from "react-i18next";
 
 import "./style.scss";
 import { network, apiKey } from "../utils/network";
-import { formatTime } from "../utils/format";
 import Title from "../../components/title";
 import FolderUp from "./folderUp";
 import ProjectNode from "./projectNode";
@@ -27,7 +26,7 @@ interface nodeFolder extends nodeInfo {
 }
 
 interface FileProperties {
-  printing_time: string;
+  printing_time: number;
   material: string;
   layer_height: number;
 }
@@ -192,9 +191,7 @@ class Tree extends Component<P, S> {
         let gcodeAnalysis = file_or_folder["gcodeAnalysis"];
         if (gcodeAnalysis) {
           if (gcodeAnalysis["estimatedPrintTime"]) {
-            obj["printing_time"] = formatTime(
-              gcodeAnalysis["estimatedPrintTime"]
-            );
+            obj["printing_time"] = gcodeAnalysis["estimatedPrintTime"];
           }
           let material = gcodeAnalysis["material"];
           obj["material"] = material
