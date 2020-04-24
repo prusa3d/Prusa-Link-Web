@@ -34,7 +34,9 @@ class Job extends Component<P, S> {
   };
 
   onclick = (nextShow: number) => {
-    this.setState({ show: nextShow });
+    this.setState({ show: nextShow }, () => {
+      this.forceUpdate();
+    });
   };
 
   onBack = (e: Event) => {
@@ -53,7 +55,7 @@ class Job extends Component<P, S> {
           {children && children}
         </div>
       );
-    } else if (isPrintingFeedMe(printer_state) || show == 2) {
+    } else if (isPrintingFeedMe(printer_state)) {
       return (
         <Refill
           printer_state={printer_state}
