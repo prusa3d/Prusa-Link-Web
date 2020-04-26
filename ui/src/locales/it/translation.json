@@ -1,5 +1,6 @@
 {
   "btn": {
+    "back": "Indietro",
     "cancel": "Annulla",
     "cancel-pt": "Annulla stampa",
     "chg-exp": "Cambia i tempi di esposizione",
@@ -8,8 +9,7 @@
     "sla-refill": "Riempire la resina",
     "sla-refilled": "Resina completamente riempita",
     "start-pt": "Inizia stampa",
-    "yes": "Sì",
-    "back": "Indietro"
+    "yes": "Sì"
   },
   "exp-times": {
     "exp-time": "Esposizione [s]",
@@ -30,8 +30,8 @@
     "cancel": "Vuoi davvero annullare la stampa?",
     "modal-p1": "Benvenuto nell'interfaccia web del tuo",
     "modal-p2": "Si noti che i valori vengono visualizzati solo durante la stampa.",
-    "sla-fly-fill": "Si prega di riempire completamente il serbatoio della resina.",
-    "sla-fill": "Si prega di riempire il serbatoio della resina e chiudere il coperchio."
+    "sla-fill": "Si prega di riempire il serbatoio della resina e chiudere il coperchio.",
+    "sla-fly-fill": "Si prega di riempire completamente il serbatoio della resina."
   },
   "ntf": {
     "actn-pending": "L'azione verrà eseguita dopo il completamento del layer",
@@ -54,6 +54,7 @@
     "cover-opened": "Aperto",
     "d+": "D+",
     "est-end": "Fine prevista",
+    "exp-time": "tempo di esposizione",
     "exp-times": "Tempi di esposizione",
     "fan-blower": "Ventola",
     "fan-led": "Ventola LED UV",
@@ -61,6 +62,7 @@
     "fdm-sensor": "Sensore del filamento",
     "flow": "Flusso di stampa",
     "last-mod": "Ultima Modifica",
+    "layer-1st": "primo layer",
     "layer-ht": "Altezza Layer",
     "layers": "Layer",
     "less-than": "Meno di un minuto",
@@ -80,9 +82,7 @@
     "temp-nozzle": "Temperatura ugello",
     "time-est": "Stima del Tempo di Stampa",
     "tmw": "Domani",
-    "z-height": "Altezza-Z",
-    "exp-time": "tempo di esposizione",
-    "layer-1st": "primo layer"
+    "z-height": "Altezza-Z"
   },
   "refill": {
     "title": "Riempire la resina"

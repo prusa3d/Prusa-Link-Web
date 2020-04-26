@@ -1,5 +1,6 @@
 {
   "btn": {
+    "back": "Back",
     "cancel": "Cancel",
     "cancel-pt": "Cancel print",
     "chg-exp": "Change exposure times",
@@ -8,8 +9,7 @@
     "sla-refill": "Refill resin",
     "sla-refilled": "Resin fully refilled",
     "start-pt": "Start print",
-    "yes": "Yes",
-    "back": "Back"
+    "yes": "Yes"
   },
   "exp-times": {
     "exp-time": "Exposure [s]",
@@ -30,8 +30,8 @@
     "cancel": "Do you really want to cancel print?",
     "modal-p1": "Welcome to the web interface of your",
     "modal-p2": "Please note that values are shown only when the printer is printing.",
-    "sla-fly-fill": "Please fully refill resin tank.",
-    "sla-fill": "Please fill the resin tank and close the cover."
+    "sla-fill": "Please fill the resin tank and close the cover.",
+    "sla-fly-fill": "Please fully refill resin tank."
   },
   "ntf": {
     "actn-pending": "Action will be executed after layer finish",
@@ -54,6 +54,7 @@
     "cover-opened": "Opened",
     "d+": "D+",
     "est-end": "Estimated end",
+    "exp-time": "exposure time",
     "exp-times": "Exposure times",
     "fan-blower": "Blower fan",
     "fan-led": "UV LED fan",
@@ -61,6 +62,7 @@
     "fdm-sensor": "Filament sensor",
     "flow": "Printing Flow",
     "last-mod": "Last Modified",
+    "layer-1st": "first layer",
     "layer-ht": "Layer Height",
     "layers": "Layers",
     "less-than": "Less than a minute",
@@ -80,9 +82,7 @@
     "temp-nozzle": "Nozzle Temperature",
     "time-est": "Print Time Estimate",
     "tmw": "Tomorrow",
-    "z-height": "Z-Height",
-    "exp-time": "exposure time",
-    "layer-1st": "first layer"
+    "z-height": "Z-Height"
   },
   "refill": {
     "title": "Refill resin"

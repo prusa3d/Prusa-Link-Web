@@ -1,5 +1,6 @@
 {
   "btn": {
+    "back": "Wstecz",
     "cancel": "Anuluj",
     "cancel-pt": "Anuluj wydruk",
     "chg-exp": "Zmień czasy naświetlania",
@@ -8,8 +9,7 @@
     "sla-refill": "Uzupełnij żywicę",
     "sla-refilled": "Żywica uzupełniona",
     "start-pt": "Start druku",
-    "yes": "Tak",
-    "back": "Wstecz"
+    "yes": "Tak"
   },
   "exp-times": {
     "exp-time": "Czas naświetlania [s]",
@@ -30,8 +30,8 @@
     "cancel": "Czy na pewno chcesz anulować wydruk?",
     "modal-p1": "Witaj w interfejsie Twojej",
     "modal-p2": "Wartości będą wyświetlane tylko podczas drukowania.",
-    "sla-fly-fill": "Uzupełnij żywicę do znacznika 100%.",
-    "sla-fill": "Uzupełnij żywicę i zamknij pokrywę."
+    "sla-fill": "Uzupełnij żywicę i zamknij pokrywę.",
+    "sla-fly-fill": "Uzupełnij żywicę do znacznika 100%."
   },
   "ntf": {
     "actn-pending": "Akcja zostanie wykonana po zakończeniu warstwy",
@@ -54,6 +54,7 @@
     "cover-opened": "Otwarta",
     "d+": "D+",
     "est-end": "Szacowane zakończenie",
+    "exp-time": "czas naświetlania",
     "exp-times": "Czasy naświetlania",
     "fan-blower": "Wentylator boczny",
     "fan-led": "Wentylator UV LED",
@@ -61,6 +62,7 @@
     "fdm-sensor": "Czujnik filamentu",
     "flow": "Przepływ filamentu",
     "last-mod": "Ostatnio Zmodyfikowany",
+    "layer-1st": "pierwsza warstwa",
     "layer-ht": "Wysokość Warstwy",
     "layers": "Warstwy",
     "less-than": "Mniej niż minuta",
@@ -80,9 +82,7 @@
     "temp-nozzle": "Temperatura dyszy",
     "time-est": "Szacowany Czas Druku",
     "tmw": "Jutro",
-    "z-height": "Wysokość Z",
-    "exp-time": "czas naświetlania",
-    "layer-1st": "pierwsza warstwa"
+    "z-height": "Wysokość Z"
   },
   "refill": {
     "title": "Uzupełnij żywicę"

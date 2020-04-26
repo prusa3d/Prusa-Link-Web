@@ -46,7 +46,7 @@ export function formatEstimatedTime(
     const days = Math.abs(end.getDate() - now.getDate());
     let plus_days = "";
     if (days == 1) {
-      plus_days = +t("prop.tmw") + " ";
+      plus_days = t("prop.tmw") + " ";
     } else if (days > 1) {
       plus_days = days + " " + t("prop.d+");
     }

@@ -56,7 +56,20 @@ function createRegex(english_key) {
               const keys = english_key[match[1]];
               translations[keys[0]][keys[1]] = match[2].replace("&apos;", "'");
             }
-            const contents = JSON.stringify(translations, null, 2) + "\n";
+            const ordered = {};
+            Object.keys(translations)
+              .sort()
+              .forEach(function(key) {
+                const ordered_inside = {};
+                const unordered = translations[key];
+                Object.keys(unordered)
+                  .sort()
+                  .forEach(function(key2) {
+                    ordered_inside[key2] = unordered[key2];
+                  });
+                ordered[key] = ordered_inside;
+              });
+            const contents = JSON.stringify(ordered, null, 2) + "\n";
             fs.writeFile(url_out, contents, "utf8", err => {
               if (err) throw err;
               console.log(url_out + "  ->  Done");

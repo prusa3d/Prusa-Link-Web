@@ -1,5 +1,6 @@
 {
   "btn": {
+    "back": "Atrás",
     "cancel": "Cancelar",
     "cancel-pt": "Cancelar impresión",
     "chg-exp": "Cambiar tiempos de exposición",
@@ -8,8 +9,7 @@
     "sla-refill": "Rellenar resina",
     "sla-refilled": "Resina completamente rellenada",
     "start-pt": "Empezar impresión",
-    "yes": "Sí",
-    "back": "Atrás"
+    "yes": "Sí"
   },
   "exp-times": {
     "exp-time": "Exposición [s]",
@@ -30,8 +30,8 @@
     "cancel": "¿Realmente quieres cancelar la impresión?",
     "modal-p1": "Bienvenido a la interfaz web de tu",
     "modal-p2": "Tenga en cuenta que los valores se muestran solo cuando la impresora está imprimiendo.",
-    "sla-fly-fill": "Rellena completamente el tanque de resina.",
-    "sla-fill": "Llena el tanque de resina y cierra la tapa."
+    "sla-fill": "Llena el tanque de resina y cierra la tapa.",
+    "sla-fly-fill": "Rellena completamente el tanque de resina."
   },
   "ntf": {
     "actn-pending": "La acción se realizará al terminar la capa",
@@ -54,6 +54,7 @@
     "cover-opened": "Abierta",
     "d+": "D+",
     "est-end": "Fin estimado",
+    "exp-time": "tiempo de exposición",
     "exp-times": "Tiempos de exposición",
     "fan-blower": "Ventilador radial",
     "fan-led": "Ventilador LED UV",
@@ -61,6 +62,7 @@
     "fdm-sensor": "Sensor de filamento",
     "flow": "Flujo de impresión",
     "last-mod": "Ultima Modificación",
+    "layer-1st": "primera capa",
     "layer-ht": "Altura de Capa",
     "layers": "Capas",
     "less-than": "Menos de un minuto",
@@ -80,9 +82,7 @@
     "temp-nozzle": "Temperatura del nozzle",
     "time-est": "Tiempo Estimado de Impresión",
     "tmw": "Mañana",
-    "z-height": "Altura-Z",
-    "exp-time": "tiempo de exposición",
-    "layer-1st": "primera capa"
+    "z-height": "Altura-Z"
   },
   "refill": {
     "title": "Rellenar resina"

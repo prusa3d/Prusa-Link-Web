@@ -1,5 +1,6 @@
 {
   "btn": {
+    "back": "Zurück",
     "cancel": "Abbrechen",
     "cancel-pt": "Druck abbrechen",
     "chg-exp": "Belichtungszeiten ändern",
@@ -8,8 +9,7 @@
     "sla-refill": "Harz auffüllen",
     "sla-refilled": "Harz voll aufgefüllt",
     "start-pt": "Druck starten",
-    "yes": "Ja",
-    "back": "Zurück"
+    "yes": "Ja"
   },
   "exp-times": {
     "exp-time": "Belichtung [s]",
@@ -30,8 +30,8 @@
     "cancel": "Wollen Sie den Druck wirklich abbrechen?",
     "modal-p1": "Willkommen zur Weboberfläche Ihres",
     "modal-p2": "Bitte beachten Sie, dass die Werte nur angezeigt werden, wenn der Drucker gerade druckt.",
-    "sla-fly-fill": "Bitte füllen Sie den Harztank vollständig auf.",
-    "sla-fill": "Bitte füllen Sie den Harzbehälter und schließen Sie den Deckel."
+    "sla-fill": "Bitte füllen Sie den Harzbehälter und schließen Sie den Deckel.",
+    "sla-fly-fill": "Bitte füllen Sie den Harztank vollständig auf."
   },
   "ntf": {
     "actn-pending": "Aktion wird nach Beendigung der Schicht ausgeführt",
@@ -54,6 +54,7 @@
     "cover-opened": "Geöffnet",
     "d+": "D+",
     "est-end": "Erwartetes Ende",
+    "exp-time": "Belichtungszeit",
     "exp-times": "Belichtungszeiten",
     "fan-blower": "Kühllüfter",
     "fan-led": "UV LED Lüfter",
@@ -61,6 +62,7 @@
     "fdm-sensor": "Filament-Sensor",
     "flow": "Druckfluss",
     "last-mod": "Zuletzt Geändert",
+    "layer-1st": "Erste Schicht",
     "layer-ht": "Schichthöhe",
     "layers": "Schichten",
     "less-than": "Weniger als eine Minute",
@@ -80,9 +82,7 @@
     "temp-nozzle": "Düsentemperatur",
     "time-est": "Druckzeit Schätzen",
     "tmw": "Morgen",
-    "z-height": "Z-Höhe",
-    "exp-time": "Belichtungszeit",
-    "layer-1st": "Erste Schicht"
+    "z-height": "Z-Höhe"
   },
   "refill": {
     "title": "Harz auffüllen"

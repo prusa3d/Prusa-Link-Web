@@ -1,5 +1,6 @@
 {
   "btn": {
+    "back": "Retour",
     "cancel": "Annuler",
     "cancel-pt": "Annuler l'impression",
     "chg-exp": "Modifier les temps d'exposition",
@@ -8,8 +9,7 @@
     "sla-refill": "Faire le plein de résine",
     "sla-refilled": "Plein de résine fait",
     "start-pt": "Lancer l'impression",
-    "yes": "Oui",
-    "back": "Retour"
+    "yes": "Oui"
   },
   "exp-times": {
     "exp-time": "Exposition [s] ",
@@ -30,8 +30,8 @@
     "cancel": "Voulez-vous vraiment annuler l'impression ?",
     "modal-p1": "Bienvenue dans l'interface web de votre",
     "modal-p2": "Veuillez noter que les valeurs sont affichées uniquement lorsque l'imprimante imprime.",
-    "sla-fly-fill": "Veuillez remplir complètement le réservoir de résine.",
-    "sla-fill": "Veuillez remplir le réservoir de résine et fermer le couvercle."
+    "sla-fill": "Veuillez remplir le réservoir de résine et fermer le couvercle.",
+    "sla-fly-fill": "Veuillez remplir complètement le réservoir de résine."
   },
   "ntf": {
     "actn-pending": "",
@@ -54,6 +54,7 @@
     "cover-opened": "Ouvert",
     "d+": "D+",
     "est-end": "Fin estimée",
+    "exp-time": "temps d'exposition",
     "exp-times": "Temps d'exposition",
     "fan-blower": "Ventilateur radial",
     "fan-led": "Ventilateur des LED UV",
@@ -61,6 +62,7 @@
     "fdm-sensor": "Capteur de filament",
     "flow": "Flux d'impression",
     "last-mod": "Dernière Modification",
+    "layer-1st": "première couche",
     "layer-ht": "Hauteur de Couche",
     "layers": "Couches",
     "less-than": "Moins d'une minute",
@@ -80,9 +82,7 @@
     "temp-nozzle": "Température de la buse",
     "time-est": "Estimation du Temps D'impression",
     "tmw": "Demain",
-    "z-height": "Hauteur en Z",
-    "exp-time": "temps d'exposition",
-    "layer-1st": "première couche"
+    "z-height": "Hauteur en Z"
   },
   "refill": {
     "title": "Faire le plein de résine"

@@ -1,5 +1,6 @@
 {
   "btn": {
+    "back": "Zpět",
     "cancel": "Zrušit",
     "cancel-pt": "Zrušit tisk",
     "chg-exp": "Změnit čas expozice",
@@ -8,8 +9,7 @@
     "sla-refill": "Doplňte pryskyřici",
     "sla-refilled": "Pryskyřice doplněna",
     "start-pt": "Start tisku",
-    "yes": "Ano",
-    "back": "Zpět"
+    "yes": "Ano"
   },
   "exp-times": {
     "exp-time": "Doba osvitu [s]",
@@ -30,8 +30,8 @@
     "cancel": "Chcete opravdu zrušit tisk?",
     "modal-p1": "Vítejte na webovém rozhraní vaší",
     "modal-p2": "Poznamenejte si prosím, že hodnoty jsou zobrazeny pouze v průběhu tisku.",
-    "sla-fly-fill": "Doplňte prosím na plno nádobu na pryskyřici.",
-    "sla-fill": "Naplňte prosím nádržku na pryskyřici a zavřete víko."
+    "sla-fill": "Naplňte prosím nádržku na pryskyřici a zavřete víko.",
+    "sla-fly-fill": "Doplňte prosím na plno nádobu na pryskyřici."
   },
   "ntf": {
     "actn-pending": "",
@@ -54,6 +54,7 @@
     "cover-opened": "Otevřený",
     "d+": "D+",
     "est-end": "Odhadovaný konec",
+    "exp-time": "doba expozice",
     "exp-times": "Doba expozice",
     "fan-blower": "Ventilátor",
     "fan-led": "Ventilátor UV LED",
@@ -61,6 +62,7 @@
     "fdm-sensor": "Senzor filamentu",
     "flow": "Tok tisku",
     "last-mod": "Naposledy Upraveno",
+    "layer-1st": "první vrstva",
     "layer-ht": "Výška Vrstvy",
     "layers": "Vrstvy",
     "less-than": "Méně než minuta",
@@ -80,9 +82,7 @@
     "temp-nozzle": "Teplota Trysky",
     "time-est": "Odhad Doby Tisku",
     "tmw": "Zítra",
-    "z-height": "Výška -Z",
-    "exp-time": "doba expozice",
-    "layer-1st": "první vrstva"
+    "z-height": "Výška -Z"
   },
   "refill": {
     "title": "Doplnit pryskyřici"
