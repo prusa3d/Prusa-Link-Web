@@ -20,8 +20,10 @@ class Header extends Component<{}, S> {
 
   render(props, state) {
     let extra_burger_class = "";
+    let extra_burger_class_icon = "";
     if (state.is_burger_active) {
       extra_burger_class = "is-active";
+      extra_burger_class_icon = " open";
     }
 
     return (
@@ -35,7 +37,11 @@ class Header extends Component<{}, S> {
               aria-label="main navigation"
             >
               <div class="navbar-brand">
-                <a class="navbar-item navbar-logo" href="/"></a>
+                <a class="navbar-item" href="/">
+                  <img
+                    src={require("../../assets/prusa_connect_local_logo_black.svg")}
+                  />
+                </a>
                 <a
                   role="button"
                   class={"navbar-burger burger " + extra_burger_class}
@@ -44,9 +50,7 @@ class Header extends Component<{}, S> {
                   data-target="navbarBasicMenu"
                   onClick={this.onClickBurger}
                 >
-                  <span aria-hidden="true"></span>
-                  <span aria-hidden="true"></span>
-                  <span aria-hidden="true"></span>
+                  <div class={"icon" + extra_burger_class_icon}></div>
                 </a>
               </div>
               <div

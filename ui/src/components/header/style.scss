@@ -4,17 +4,19 @@
 
 @use '../../style/_defines.scss' as defines;
 
-.navbar-logo {
-  background: url(../../assets/prusa_connect_local_logo_black.svg) no-repeat
-    center center;
-  background-size: cover;
-  width: 328px;
-  height: auto;
-  bottom: 1.25rem;
+.navbar-item {
+  flex-grow: 1;
+  img {
+    max-height: max-content;
+    width: 96%;
+    height: auto;
+    margin-bottom: 0.5rem;
+  }
 }
 
 .prusa-link {
   margin-bottom: -1px;
+  padding-top: 1rem;
   border-bottom: defines.$line-size solid defines.$color-grey;
   &:hover {
     border-bottom: defines.$line-size solid defines.$color-white;
@@ -23,6 +25,60 @@
     border-bottom: defines.$line-size solid defines.$color-orange;
     &:hover {
       border-bottom: defines.$line-size solid defines.$color-white;
+    }
+  }
+}
+
+@media (min-width: 1024px) {
+  .navbar-item img {
+    width: 328px;
+  }
+}
+
+.navbar-burger {
+  flex-grow: 1;
+  max-width: 10%;
+}
+
+$light: #efefef;
+$height: 10px;
+$width: 75px;
+$dist: 25px;
+.icon {
+  transition-duration: 0.5s;
+  position: absolute;
+  height: $height;
+  width: $width;
+  top: 4.5rem;
+  background-color: $light;
+  &:before {
+    transition-duration: 0.5s;
+    position: absolute;
+    width: $width;
+    height: $height;
+    content: "";
+    background-color: $light;
+    top: -$dist;
+  }
+
+  &:after {
+    transition-duration: 0.5s;
+    position: absolute;
+    width: $width;
+    height: $height;
+    content: "";
+    background-color: $light;
+    top: $dist;
+  }
+
+  &.open {
+    transition-duration: 0.5s;
+    background: transparent;
+    &:before {
+      transform: rotateZ(45deg) scaleX(1.25) translate(17px, 17px);
+    }
+    &:after {
+      transform: rotateZ(-45deg) scaleX(1.25) translate(14px, -14px);
     }
   }
 }

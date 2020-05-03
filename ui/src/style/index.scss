@@ -16,6 +16,7 @@ $navbar-item-hover-background-color: $body-background-color;
 $navbar-background-color: $body-background-color;
 $navbar-item-hover-color: $text-strong;
 $success: defines.$text-orange;
+$section-padding: 3rem 3rem;
 
 @import "../../../node_modules/bulma/sass/utilities/_all.sass";
 @import "../../../node_modules/bulma/sass/base/_all.sass";
@@ -58,4 +59,8 @@ $success: defines.$text-orange;
   margin-top: 0.8rem;
 }
 
-//@import "../../node_modules/bulma/bulma.sass";
+@media (min-width: 1024px) {
+  .section {
+    padding: 1rem 1.5rem;
+  }
+}

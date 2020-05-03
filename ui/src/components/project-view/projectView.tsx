@@ -117,7 +117,7 @@ class View extends Component<ProjectProps, S> {
                 {this.props.display}
               </p>
             </div>
-            <div class="column is-two-fifths-widescreen is-full-desktop">
+            <div class="column is-two-fifths-widescreen is-full-desktop is-full-touch">
               <img class="proje-preview" ref={this.ref} src={preview} />
             </div>
             <div class="column">
