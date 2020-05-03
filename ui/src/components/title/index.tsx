@@ -33,12 +33,12 @@ class Title extends Component<P, S> {
     const { t, i18n, ready } = useTranslation(null, { useSuspense: false });
     return (
       <div class="box has-background-black is-paddingless prusa-line">
-        <div class="columns is-centered">
-          <div class="column txt-normal txt-size-1 txt-grey prusa-break-word">
+        <div class="columns is-multiline is-centered">
+          <div class="column is-full-touch is-half-desktop txt-normal txt-size-1 txt-grey prusa-break-word">
             {title}
             {children && children}
           </div>
-          <div class="column has-text-right txt-normal txt-size-1 prusa-preserve">
+          <div class="column is-full-touch is-half-desktop txt-normal txt-size-1 prusa-preserve">
             {hostname && ready && (
               <p class="txt-grey">
                 {t("glob.hostname")}: <span class="txt-orange">{hostname}</span>

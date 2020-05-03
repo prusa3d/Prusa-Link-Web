@@ -50,7 +50,7 @@ class Header extends Component<{}, S> {
                   data-target="navbarBasicMenu"
                   onClick={this.onClickBurger}
                 >
-                  <div class={"icon" + extra_burger_class_icon}></div>
+                  <div class={"icon-heard" + extra_burger_class_icon}></div>
                 </a>
               </div>
               <div
