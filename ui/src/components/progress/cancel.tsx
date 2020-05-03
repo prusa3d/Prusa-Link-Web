@@ -23,7 +23,7 @@ const notify = () => {
     if (ready) {
       resolve(t("ntf.actn-pending"));
     }
-  }).then(message => Toast.notify(t("btn.cancel-pt"), message));
+  }).then(message => Toast.info(t("btn.cancel-pt"), message));
 };
 
 const Cancel: preact.FunctionalComponent<P> = ({

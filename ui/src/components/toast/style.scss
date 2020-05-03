@@ -12,13 +12,70 @@
   right: 0;
   bottom: 0;
 
+  @mixin ntf-type($bg, $clr, $title-bg, $title-clr) {
+    background-color: $bg;
+    & > div.toast-header {
+      background-color: $title-bg;
+      color: $title-clr;
+    }
+    & > div.toast-body {
+      color: $clr;
+    }
+  }
+
   & > article {
     text-align: center;
     margin: 7px;
-    background-color: defines.$color-grey;
+    background-color: defines.$toast-default-bg;
     border-radius: 10px;
-    -webkit-animation: slideInUp 0.5s, zoomOut 0.5s 10s;
-    animation: slideInUp 0.5s, zoomOut 0.5s 10s;
+    -webkit-animation: slideInUp 0.5s, zoomOut 0.5s defines.$toast-delay;
+    animation: slideInUp 0.5s, zoomOut 0.5s defines.$toast-delay;
+
+    & > div.toast-header {
+      align-items: center;
+      border-radius: 10px 10px 0 0;
+      display: flex;
+      justify-content: space-between;
+      line-height: 1.25;
+      padding: 0.75em 1em;
+      position: relative;
+      font-family: "Atlas Grotesk Bold Web";
+      background-color: defines.$toast-default-title-bg;
+      color: defines.$toast-default-title-color;
+    }
+
+    & > div.toast-body {
+      padding: 1.25em 1.5em;
+      font-family: "Atlas Grotesk Regular Web";
+      color: defines.$toast-default-color;
+    }
+
+    &.warning {
+      @include ntf-type(
+        defines.$toast-warning-bg,
+        defines.$toast-warning-color,
+        defines.$toast-warning-title-bg,
+        defines.$toast-warning-title-color
+      );
+    }
+
+    &.error {
+      @include ntf-type(
+        defines.$toast-error-bg,
+        defines.$toast-error-color,
+        defines.$toast-error-title-bg,
+        defines.$toast-error-title-color
+      );
+    }
+
+    &.success {
+      @include ntf-type(
+        defines.$toast-success-bg,
+        defines.$toast-success-color,
+        defines.$toast-success-title-bg,
+        defines.$toast-success-title-color
+      );
+    }
   }
 }
 
@@ -78,19 +135,4 @@
     -webkit-transform: translate3d(0, 0, 0);
     transform: translate3d(0, 0, 0);
   }
-}
-
-.toast-header {
-  align-items: center;
-  background-color: #4a4a4a;
-  border-radius: 10px 10px 0 0;
-  display: flex;
-  justify-content: space-between;
-  line-height: 1.25;
-  padding: 0.75em 1em;
-  position: relative;
-}
-
-.toast-body {
-  padding: 1.25em 1.5em;
 }

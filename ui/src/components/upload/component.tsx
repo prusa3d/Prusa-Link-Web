@@ -22,6 +22,11 @@ interface S {
   progress: { [index: string]: number };
 }
 
+interface NTF {
+  ok: boolean;
+  message: string;
+}
+
 class Upload extends Component<P, S> {
   ref = createRef();
   state = {
@@ -79,24 +84,34 @@ class Upload extends Component<P, S> {
 
   notify = (status, file_name) => {
     const { t, i18n, ready } = useTranslation(null, { useSuspense: false });
-    return new Promise<string>(function(resolve, reject) {
+    return new Promise<NTF>(function(resolve, reject) {
       if (ready) {
+        let ok = false;
+        let message = "";
         switch (status) {
           case 201:
-            resolve(t("ntf.upld-suc", { file_name }));
+            ok = true;
+            message = t("ntf.upld-suc", { file_name });
             break;
           case 409:
-            resolve(t("ntf.upld-exists", { file_name }));
+            message = t("ntf.upld-exists", { file_name });
             break;
           case 415:
-            resolve(t("ntf.upld-not-sup", { file_name }));
+            message = t("ntf.upld-not-sup", { file_name });
             break;
           default:
-            resolve(t("ntf.upld-unsuc", { file_name }));
+            message = t("ntf.upld-unsuc", { file_name });
             break;
         }
+        resolve({ ok, message });
       }
-    }).then(message => Toast.notify(t("upld.title"), message));
+    }).then(result => {
+      if (result.ok) {
+        Toast.success(t("upld.title"), result.message);
+      } else {
+        Toast.error(t("upld.title"), result.message);
+      }
+    });
   };
 
   uploadFile = (file: File) => {

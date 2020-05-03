@@ -38,7 +38,7 @@ class Title extends Component<P, S> {
             {title}
             {children && children}
           </div>
-          <div class="column is-full-touch is-half-desktop txt-normal txt-size-1 prusa-preserve">
+          <div class="column is-full-touch is-half-desktop txt-normal txt-size-1 prusa-preserve has-text-right-desktop">
             {hostname && ready && (
               <p class="txt-grey">
                 {t("glob.hostname")}: <span class="txt-orange">{hostname}</span>

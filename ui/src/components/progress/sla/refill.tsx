@@ -29,7 +29,7 @@ class Refill extends Component<P, {}> {
       if (ready) {
         resolve(t("ntf.actn-pending"));
       }
-    }).then(message => Toast.notify(t("refill.title"), message));
+    }).then(message => Toast.info(t("refill.title"), message));
   };
 
   onBack = (e: MouseEvent) => {

@@ -13,6 +13,25 @@ $color-grey: #707070;
 $color-orange: #f8651b;
 $line-size: 1px;
 
+// toast time
+$toast-delay: 10s;
+$toast-default-bg: $color-grey;
+$toast-default-color: $text-white;
+$toast-default-title-bg: #4a4a4a;
+$toast-default-title-color: $text-white;
+$toast-warning-bg: #fffbeb;
+$toast-warning-color: #947600;
+$toast-warning-title-bg: #ffdd57;
+$toast-warning-title-color: rgba(0, 0, 0, 0.7);
+$toast-error-bg: #feecf0;
+$toast-error-color: #cc0f35;
+$toast-error-title-bg: #f14668;
+$toast-error-title-color: $text-white;
+$toast-success-bg: #effaf3;
+$toast-success-color: #257942;
+$toast-success-title-bg: #48c774;
+$toast-success-title-color: $text-white;
+
 // font size
 $font-size-1-mobile: 2.5rem;
 $font-size-1-desktop: 1.15rem;

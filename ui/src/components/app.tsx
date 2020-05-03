@@ -83,7 +83,7 @@ class App extends Component<{}, S> implements network, apiKey {
           resolve(t("ntf.e-307"));
         }
       }
-    }).then(message => Toast.notify(t("ntf.error"), message));
+    }).then(message => Toast.error(t("ntf.error"), message));
   };
 
   updateData = data => {

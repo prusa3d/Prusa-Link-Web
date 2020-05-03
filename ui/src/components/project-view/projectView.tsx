@@ -34,7 +34,7 @@ class View extends Component<ProjectProps, S> {
       if (ready) {
         resolve(t("ntf.start-print"));
       }
-    }).then(message => Toast.notify(t("btn.start-pt"), message));
+    }).then(message => Toast.info(t("btn.start-pt"), message));
   };
 
   onStartPrint = (e: Event) => {

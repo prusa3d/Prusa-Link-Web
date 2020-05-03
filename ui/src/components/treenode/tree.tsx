@@ -125,10 +125,11 @@ class Tree extends Component<P, S> {
       },
       options,
       except: e => {
+        // TODO add translations
         if (e.message == "Not Calibrated") {
-          Toast.notify("Printer Error", "Printer is not calibrated!");
+          Toast.error("Printer Error", "Printer is not calibrated!");
         } else if (e.message == "Conflict") {
-          Toast.notify("Printer Error", "Printer is not idle!");
+          Toast.error("Printer Error", "Printer is not idle!");
         }
       }
     });
