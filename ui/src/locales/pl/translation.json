@@ -37,6 +37,8 @@
     "actn-pending": "Akcja zostanie wykonana po zakończeniu warstwy",
     "e-307": "Niepowodzenie pomiaru poziomu żywicy!",
     "error": "Błąd",
+    "n-calibrated": "Drukarka nie jest skalibrowana!",
+    "not-idle": "",
     "start-print": "Drukarka jest przygotowywana",
     "upld-exists": "Istnieje już projekt o nazwie {{file_name}}",
     "upld-not-sup": "Typ pliku {{file_name}} jest nieobsługiwany",

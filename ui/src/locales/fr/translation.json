@@ -37,6 +37,8 @@
     "actn-pending": "",
     "e-307": "La mesure de la résine a échoué",
     "error": "Erreur",
+    "n-calibrated": "L'imprimante n'est pas calibrée !",
+    "not-idle": "",
     "start-print": "",
     "upld-exists": "",
     "upld-not-sup": "",

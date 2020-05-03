@@ -37,6 +37,8 @@
     "actn-pending": "Aktion wird nach Beendigung der Schicht ausgeführt",
     "e-307": "Harzmessung fehlgeschlagen!",
     "error": "Fehler",
+    "n-calibrated": "Der Drucker ist nicht kalibriert!",
+    "not-idle": "",
     "start-print": "Der Drucker bereitet sich vor",
     "upld-exists": "Das Projekt {{file_name}} existiert bereits",
     "upld-not-sup": "Das Projekt {{file_name}} wird nicht unterstützt",

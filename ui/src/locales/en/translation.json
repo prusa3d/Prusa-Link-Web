@@ -37,6 +37,8 @@
     "actn-pending": "Action will be executed after layer finish",
     "e-307": "Resin measuring failed!",
     "error": "Error",
+    "n-calibrated": "Printer is not calibrated!",
+    "not-idle": "Printer is not idle!",
     "start-print": "The printer is getting ready",
     "upld-exists": "The project {{file_name}} already exists",
     "upld-not-sup": "The project {{file_name}} is not supported",
@@ -45,7 +47,7 @@
   },
   "proj": {
     "link": "Projects",
-    "main": "",
+    "main": "main",
     "title": "Project files"
   },
   "prop": {

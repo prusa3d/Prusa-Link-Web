@@ -37,6 +37,8 @@
     "actn-pending": "L'azione verrà eseguita dopo il completamento del layer",
     "e-307": "Misurazione resina non riuscita!",
     "error": "Errore",
+    "n-calibrated": "La stampante è ora calibrata!",
+    "not-idle": "",
     "start-print": "Preparazione della stampante",
     "upld-exists": "Progetto {{file_name}} già esistente",
     "upld-not-sup": "Progetto {{file_name}} non supportato",

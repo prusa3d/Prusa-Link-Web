@@ -37,6 +37,8 @@
     "actn-pending": "",
     "e-307": "Chyba při měření množství resinu!",
     "error": "Chyba",
+    "n-calibrated": "Tiskárna není zkalibrovaná.",
+    "not-idle": "",
     "start-print": "",
     "upld-exists": "",
     "upld-not-sup": "",

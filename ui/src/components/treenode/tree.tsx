@@ -125,12 +125,16 @@ class Tree extends Component<P, S> {
       },
       options,
       except: e => {
-        // TODO add translations
-        if (e.message == "Not Calibrated") {
-          Toast.error("Printer Error", "Printer is not calibrated!");
-        } else if (e.message == "Conflict") {
-          Toast.error("Printer Error", "Printer is not idle!");
-        }
+        const { t, i18n, ready } = useTranslation(null, { useSuspense: false });
+        new Promise<string>(function(resolve, reject) {
+          if (ready) {
+            if (e.message == "Not Calibrated") {
+              resolve(t("ntf.n-calibrated"));
+            } else if (e.message == "Conflict") {
+              resolve(t("ntf.not-idle"));
+            }
+          }
+        }).then(message => Toast.error(t("ntf.error"), message));
       }
     });
   };

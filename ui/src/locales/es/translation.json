@@ -37,6 +37,8 @@
     "actn-pending": "La acción se realizará al terminar la capa",
     "e-307": "Falló la medición de resina.",
     "error": "Error",
+    "n-calibrated": "¡La impresora no está calibrada!",
+    "not-idle": "",
     "start-print": "La impresora se está preparando ",
     "upld-exists": "El proyecto {{file_name}} ya existe",
     "upld-not-sup": "El proyecto {{file_name}} no está soportado",
