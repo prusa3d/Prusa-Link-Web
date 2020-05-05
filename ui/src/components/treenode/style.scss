@@ -39,6 +39,8 @@
 
 .prusa-container {
   display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
 }
 
 .prusa-properties {
@@ -46,6 +48,7 @@
   flex: 1 0 auto;
   align-items: center;
   justify-content: flex-start;
+  margin-right: 1rem;
 
   & > .icon {
     width: 24px;
@@ -65,4 +68,9 @@
     height: 28px !important;
     width: 28px !important;
   }
+}
+
+.tree-marginless {
+  margin-left: 0px;
+  margin-right: 0px;
 }

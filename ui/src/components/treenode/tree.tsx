@@ -353,7 +353,7 @@ class Tree extends Component<P, S> {
           showTree ? (
             <Fragment>
               {ready && <Title title={title} onFetch={onFetch} />}
-              <div class="columns is-multiline is-mobile">
+              <div class="columns is-multiline is-mobile tree-marginless">
                 {current_path && (
                   <FolderUp
                     upload_info={this.createUploadLink(current_path)}
