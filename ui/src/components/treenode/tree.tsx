@@ -74,7 +74,10 @@ class Tree extends Component<P, S> {
     this.state = state;
   }
 
-  onUpFolder = () => {
+  onUpFolder = (update: boolean = false) => {
+    if (update) {
+      this.connect();
+    }
     let path = this.state.parent_path;
     let newView = this.createView(path, this.state.container);
     this.setState((prevState, props) => ({
@@ -89,11 +92,18 @@ class Tree extends Component<P, S> {
       nodeFolder | nodeFile
     >).find(e => e.path === path) as nodeFolder;
     let children = folder.children;
-    if (Object.keys(children).length > 0) {
+    if (children && Object.keys(children).length > 0) {
       const newView = this.createView(null, children);
       this.setState((prevState, props) => ({
         ...prevState,
         current_view: newView.current_view,
+        parent_path: this.state.current_path,
+        current_path: folder.path
+      }));
+    } else {
+      this.setState((prevState, props) => ({
+        ...prevState,
+        current_view: [],
         parent_path: this.state.current_path,
         current_path: folder.path
       }));

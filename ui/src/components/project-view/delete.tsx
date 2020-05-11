@@ -14,17 +14,8 @@ export interface DeleteProps extends network {
   url: string;
   display: string;
   onCancel(e: MouseEvent): void;
-  onConfirm(e: MouseEvent): void;
+  onConfirm(e: boolean): void;
 }
-
-const notify = () => {
-  const { t, i18n, ready } = useTranslation(null, { useSuspense: false });
-  return new Promise<string>(function(resolve, reject) {
-    if (ready) {
-      resolve(t("ntf.actn-pending"));
-    }
-  }).then(message => Toast.info(t("btn.cancel-pt"), message));
-};
 
 export const Delete: preact.FunctionalComponent<DeleteProps> = ({
   url,
@@ -39,8 +30,7 @@ export const Delete: preact.FunctionalComponent<DeleteProps> = ({
     onFetch({
       url,
       then: response => {
-        onConfirm(e);
-        notify();
+        onConfirm(true);
       },
       options: {
         method: "DELETE",
