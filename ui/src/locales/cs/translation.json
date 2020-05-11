@@ -28,6 +28,7 @@
   "msg": {
     "api-key": "API klíč",
     "cancel": "Chcete opravdu zrušit tisk?",
+    "del-proj": "",
     "modal-p1": "Vítejte na webovém rozhraní vaší",
     "modal-p2": "Poznamenejte si prosím, že hodnoty jsou zobrazeny pouze v průběhu tisku.",
     "sla-fill": "Naplňte prosím nádržku na pryskyřici a zavřete víko.",
@@ -46,6 +47,7 @@
     "upld-unsuc": ""
   },
   "proj": {
+    "del": "Delete File",
     "link": "Projekty",
     "main": "",
     "title": "Soubory projektu"

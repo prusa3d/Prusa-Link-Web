@@ -4,6 +4,7 @@
 
 import { h } from "preact";
 import { PrinterStatus } from "../telemetry";
+import "./style.scss";
 
 interface P {
   printer_status: PrinterStatus;

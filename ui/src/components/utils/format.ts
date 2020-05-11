@@ -48,7 +48,7 @@ export function formatEstimatedTime(
     if (days == 1) {
       plus_days = t("prop.tmw") + " ";
     } else if (days > 1) {
-      plus_days = days + " " + t("prop.d+");
+      plus_days = `${days} ${t("prop.d+")} `;
     }
     return (
       plus_days +

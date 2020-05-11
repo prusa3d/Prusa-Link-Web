@@ -54,8 +54,8 @@ const StatusLeftItem: preact.FunctionalComponent<S> = ({
 }) => {
   return (
     <div class="column is-half-touch is-full-desktop">
-      <div class="media">
-        <img class="media-left image is-24x24" src={icons(icon_id)} />
+      <div class="media media-hd-status">
+        <img class="media-left icon-hd-status" src={icons(icon_id)} />
         <div class="media-content is-clipped">
           <p class="txt-normal txt-size-2 txt-grey">{name}</p>
           <p class="txt-bold txt-size-2">{value}</p>

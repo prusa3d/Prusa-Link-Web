@@ -28,6 +28,7 @@
   "msg": {
     "api-key": "Clave API",
     "cancel": "¿Realmente quieres cancelar la impresión?",
+    "del-proj": "",
     "modal-p1": "Bienvenido a la interfaz web de tu",
     "modal-p2": "Tenga en cuenta que los valores se muestran solo cuando la impresora está imprimiendo.",
     "sla-fill": "Llena el tanque de resina y cierra la tapa.",
@@ -46,6 +47,7 @@
     "upld-unsuc": "El envío del proyecto {{file_name}} ha fallado"
   },
   "proj": {
+    "del": "Delete File",
     "link": "Projectos",
     "main": "Principal ",
     "title": "Archivos de proyecto"

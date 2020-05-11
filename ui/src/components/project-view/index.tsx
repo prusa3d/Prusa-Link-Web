@@ -8,9 +8,10 @@ import { network } from "../utils/network";
 import View from "./projectView";
 import { ProjectProps } from "./projectView";
 import ExposureTimes from "../progress/sla/exposure-times";
+import { Delete, DeleteProps } from "./delete";
 import "./style.scss";
 
-interface P extends ProjectProps, network {}
+interface P extends ProjectProps, network, DeleteProps {}
 
 interface S {
   show: number;
@@ -37,6 +38,16 @@ class ProjectView extends Component<P, S> {
     switch (show) {
       case 1:
         return <ExposureTimes onBack={this.onBack} onFetch={props.onFetch} />;
+      case 2:
+        return (
+          <Delete
+            url={props.url}
+            display={props.display}
+            onFetch={props.onFetch}
+            onCancel={this.onBack}
+            onConfirm={props.onBack}
+          />
+        );
       default:
         return <View {...props} onclick={this.onclick} />;
     }

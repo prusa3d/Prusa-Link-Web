@@ -28,6 +28,7 @@
   "msg": {
     "api-key": "Clé d'API",
     "cancel": "Voulez-vous vraiment annuler l'impression ?",
+    "del-proj": "",
     "modal-p1": "Bienvenue dans l'interface web de votre",
     "modal-p2": "Veuillez noter que les valeurs sont affichées uniquement lorsque l'imprimante imprime.",
     "sla-fill": "Veuillez remplir le réservoir de résine et fermer le couvercle.",
@@ -46,6 +47,7 @@
     "upld-unsuc": ""
   },
   "proj": {
+    "del": "Delete File",
     "link": "Projets",
     "main": "",
     "title": "Fichiers de projet"

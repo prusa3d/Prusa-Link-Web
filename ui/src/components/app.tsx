@@ -201,7 +201,7 @@ class App extends Component<{}, S> implements network, apiKey {
               </div>
               {is_mobile && (
                 <div class="column is-full-mobile">
-                  <div class="column is-full">
+                  <div class="column is-full mobile_margin">
                     <p class="txt-bold txt-grey txt-size-2 is-marginless prusa-line">
                       {ready ? t("glob.hd-st") : ""}
                     </p>

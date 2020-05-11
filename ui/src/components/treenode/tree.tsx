@@ -371,6 +371,7 @@ class Tree extends Component<P, S> {
               not_found={not_found_images}
               title={title}
               onFetch={onFetch}
+              url={this.createLink((current_view as nodeFile).path)}
             />
           )
         ) : first_time ? (

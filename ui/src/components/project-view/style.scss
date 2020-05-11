@@ -12,8 +12,6 @@
 .proj-icon {
   display: flex;
   align-items: center;
-  min-width: 24px;
-  max-width: 48px;
   & > img {
     width: 48px;
     height: auto;
@@ -26,5 +24,14 @@
       width: 24px;
       height: auto;
     }
+  }
+}
+
+.prusa-flex-lr {
+  float: right;
+}
+@media (min-width: 1273px) {
+  .prusa-flex-lr {
+    float: left;
   }
 }

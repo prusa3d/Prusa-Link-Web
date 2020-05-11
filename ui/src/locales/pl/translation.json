@@ -28,6 +28,7 @@
   "msg": {
     "api-key": "Klucz API",
     "cancel": "Czy na pewno chcesz anulować wydruk?",
+    "del-proj": "",
     "modal-p1": "Witaj w interfejsie Twojej",
     "modal-p2": "Wartości będą wyświetlane tylko podczas drukowania.",
     "sla-fill": "Uzupełnij żywicę i zamknij pokrywę.",
@@ -46,6 +47,7 @@
     "upld-unsuc": "Przesyłanie projektu {{file_name}} nie powiodło się"
   },
   "proj": {
+    "del": "Delete File",
     "link": "Projekty",
     "main": "Główne",
     "title": "Pliki projektu"

@@ -8,7 +8,7 @@ import { useTranslation } from "react-i18next";
 import { network } from "../utils/network";
 import preview from "../../assets/thumbnail.png";
 import Title from "../../components/title";
-import { ActionButton, NoButton, YesButton } from "../buttons";
+import { ActionButton, NoButton, YesButton, DelButton } from "../buttons";
 import Properties from "./properties";
 import Toast from "../toast";
 
@@ -128,23 +128,34 @@ class View extends Component<ProjectProps, S> {
               />
             </div>
             <div class="column is-full">
-              <div class="prusa-button-wrapper">
-                <ActionButton
-                  icon="exp-times"
-                  text={t("btn.chg-exp").toLowerCase()}
-                  onClick={e => this.props.onclick(e, 1)}
-                  wrap
-                />
-                <YesButton
-                  text={t("btn.start-pt").toLowerCase()}
-                  onClick={e => this.onStartPrint(e)}
-                  wrap
-                />
-                <NoButton
-                  text={t("btn.cancel-pt").toLowerCase()}
-                  onClick={e => this.onCancel(e)}
-                  wrap
-                />
+              <div class="columns is-multiline">
+                <div class="column is-full-touch">
+                  <DelButton
+                    text={"delete"}
+                    onClick={e => this.props.onclick(e, 2)}
+                    className="prusa-flex-lr"
+                  />
+                </div>
+                <div class="column column is-full-touch">
+                  <div class="prusa-button-wrapper">
+                    <ActionButton
+                      icon="exp-times"
+                      text={t("btn.chg-exp").toLowerCase()}
+                      onClick={e => this.props.onclick(e, 1)}
+                      wrap
+                    />
+                    <YesButton
+                      text={t("btn.start-pt").toLowerCase()}
+                      onClick={e => this.onStartPrint(e)}
+                      wrap
+                    />
+                    <NoButton
+                      text={t("btn.cancel-pt").toLowerCase()}
+                      onClick={e => this.onCancel(e)}
+                      wrap
+                    />
+                  </div>
+                </div>
               </div>
             </div>
           </div>

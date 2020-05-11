@@ -28,6 +28,7 @@
   "msg": {
     "api-key": "API key",
     "cancel": "Do you really want to cancel print?",
+    "del-proj": "Do you really want to delete {{file_name}}?",
     "modal-p1": "Welcome to the web interface of your",
     "modal-p2": "Please note that values are shown only when the printer is printing.",
     "sla-fill": "Please fill the resin tank and close the cover.",
@@ -46,6 +47,7 @@
     "upld-unsuc": "The project {{file_name}} upload was unsuccessful"
   },
   "proj": {
+    "del": "Delete File",
     "link": "Projects",
     "main": "main",
     "title": "Project files"
