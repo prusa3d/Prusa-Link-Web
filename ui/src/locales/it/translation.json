@@ -28,7 +28,7 @@
   "msg": {
     "api-key": "Chiave API",
     "cancel": "Vuoi davvero annullare la stampa?",
-    "del-proj": "",
+    "del-proj": "Do you really want to delete {{file_name}}?",
     "modal-p1": "Benvenuto nell'interfaccia web del tuo",
     "modal-p2": "Si noti che i valori vengono visualizzati solo durante la stampa.",
     "sla-fill": "Si prega di riempire il serbatoio della resina e chiudere il coperchio.",
@@ -38,13 +38,13 @@
     "actn-pending": "L'azione verrà eseguita dopo il completamento del layer",
     "e-307": "Misurazione resina non riuscita!",
     "error": "Errore",
-    "n-calibrated": "La stampante è ora calibrata!",
-    "not-idle": "",
-    "start-print": "Preparazione della stampante",
-    "upld-exists": "Progetto {{file_name}} già esistente",
-    "upld-not-sup": "Progetto {{file_name}} non supportato",
-    "upld-suc": "Caricamento del progetto {{file_name}} riuscito",
-    "upld-unsuc": "Caricamento del progetto {{file_name}} non riuscito"
+    "n-calibrated": "La stampante adesso è calibrata!",
+    "not-idle": "La stampante non è inattiva!",
+    "start-print": "Preparazione della stampante.",
+    "upld-exists": "Progetto {{file_name}} già esistente.",
+    "upld-not-sup": "Progetto {{file_name}} non supportato.",
+    "upld-suc": "Caricamento del progetto {{file_name}} riuscito.",
+    "upld-unsuc": "Caricamento del progetto {{file_name}} non riuscito."
   },
   "proj": {
     "del": "Delete File",
@@ -71,7 +71,7 @@
     "layers": "Layer",
     "less-than": "Meno di un minuto",
     "material": "Materiale",
-    "na": "",
+    "na": "ND",
     "pnt-time": "Tempo di stampa",
     "rem-time": "Tempo residuo",
     "sla-csm-mt": "Resina consumata",

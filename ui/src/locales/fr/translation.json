@@ -28,28 +28,28 @@
   "msg": {
     "api-key": "Clé d'API",
     "cancel": "Voulez-vous vraiment annuler l'impression ?",
-    "del-proj": "",
+    "del-proj": "Do you really want to delete {{file_name}}?",
     "modal-p1": "Bienvenue dans l'interface web de votre",
     "modal-p2": "Veuillez noter que les valeurs sont affichées uniquement lorsque l'imprimante imprime.",
     "sla-fill": "Veuillez remplir le réservoir de résine et fermer le couvercle.",
     "sla-fly-fill": "Veuillez remplir complètement le réservoir de résine."
   },
   "ntf": {
-    "actn-pending": "",
+    "actn-pending": "L'action sera exécutée une fois la couche terminée.",
     "e-307": "La mesure de la résine a échoué",
     "error": "Erreur",
     "n-calibrated": "L'imprimante n'est pas calibrée !",
-    "not-idle": "",
-    "start-print": "",
-    "upld-exists": "",
-    "upld-not-sup": "",
-    "upld-suc": "",
-    "upld-unsuc": ""
+    "not-idle": "L'imprimante n'est pas au repos !",
+    "start-print": "Préparation de l'imprimante.",
+    "upld-exists": "Le projet {{file_name}} existe déjà.",
+    "upld-not-sup": "Le projet {{file_name}} n'est pas pris en charge.",
+    "upld-suc": "Le projet {{file_name}} a été téléchargé correctement.",
+    "upld-unsuc": " Le téléchargement du projet {{file_name}} a échoué."
   },
   "proj": {
     "del": "Delete File",
     "link": "Projets",
-    "main": "",
+    "main": "Principal",
     "title": "Fichiers de projet"
   },
   "prop": {
@@ -71,7 +71,7 @@
     "layers": "Couches",
     "less-than": "Moins d'une minute",
     "material": "Matériau",
-    "na": "",
+    "na": "NA",
     "pnt-time": "Temps d'impression",
     "rem-time": "Temps restant",
     "sla-csm-mt": "Résine consommée",
@@ -107,6 +107,6 @@
   "upld": {
     "loading": "Téléchargement...",
     "open": "Choisissez un {{file}} ou déposez-le ici.",
-    "title": ""
+    "title": "télécharger un projet"
   }
 }

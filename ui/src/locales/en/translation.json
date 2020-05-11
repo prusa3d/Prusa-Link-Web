@@ -40,11 +40,11 @@
     "error": "Error",
     "n-calibrated": "Printer is not calibrated!",
     "not-idle": "Printer is not idle!",
-    "start-print": "The printer is getting ready",
-    "upld-exists": "The project {{file_name}} already exists",
-    "upld-not-sup": "The project {{file_name}} is not supported",
-    "upld-suc": "The project {{file_name}} uploaded successfully",
-    "upld-unsuc": "The project {{file_name}} upload was unsuccessful"
+    "start-print": "The printer is getting ready.",
+    "upld-exists": "The project {{file_name}} already exists.",
+    "upld-not-sup": "The project {{file_name}} is not supported.",
+    "upld-suc": "The project {{file_name}} uploaded successfully.",
+    "upld-unsuc": "The project {{file_name}} upload was unsuccessful."
   },
   "proj": {
     "del": "Delete File",
@@ -99,8 +99,8 @@
   "unit": {
     "h": "h",
     "min": "min",
-    "minute": "minute",
-    "minute_plural": "minutes",
+    "minute": "min",
+    "minute_plural": "min",
     "ml": "ml",
     "rpm": "RPM"
   },

@@ -18,7 +18,7 @@
     "title": "Cambiar tiempos de exposición"
   },
   "glob": {
-    "hd-st": "estado de hardware",
+    "hd-st": "estado del hardware",
     "hostname": "Nombre del Host"
   },
   "home": {
@@ -28,23 +28,23 @@
   "msg": {
     "api-key": "Clave API",
     "cancel": "¿Realmente quieres cancelar la impresión?",
-    "del-proj": "",
+    "del-proj": "Do you really want to delete {{file_name}}?",
     "modal-p1": "Bienvenido a la interfaz web de tu",
     "modal-p2": "Tenga en cuenta que los valores se muestran solo cuando la impresora está imprimiendo.",
     "sla-fill": "Llena el tanque de resina y cierra la tapa.",
     "sla-fly-fill": "Rellena completamente el tanque de resina."
   },
   "ntf": {
-    "actn-pending": "La acción se realizará al terminar la capa",
+    "actn-pending": "La acción se realizará al terminar la capa.",
     "e-307": "Falló la medición de resina.",
     "error": "Error",
     "n-calibrated": "¡La impresora no está calibrada!",
-    "not-idle": "",
-    "start-print": "La impresora se está preparando ",
-    "upld-exists": "El proyecto {{file_name}} ya existe",
-    "upld-not-sup": "El proyecto {{file_name}} no está soportado",
+    "not-idle": "¡La impresora no está inactiva!",
+    "start-print": "La impresora se está preparando.",
+    "upld-exists": "El proyecto {{file_name}} ya existe.",
+    "upld-not-sup": "El proyecto {{file_name}} no es compatible.",
     "upld-suc": "El envío del proyecto {{file_name}} se completó.",
-    "upld-unsuc": "El envío del proyecto {{file_name}} ha fallado"
+    "upld-unsuc": "El envío del proyecto {{file_name}} ha fallado."
   },
   "proj": {
     "del": "Delete File",
@@ -71,7 +71,7 @@
     "layers": "Capas",
     "less-than": "Menos de un minuto",
     "material": "Material",
-    "na": "",
+    "na": "NA",
     "pnt-time": "Tiempo de impresión",
     "rem-time": "Tiempo restante",
     "sla-csm-mt": "Resina consumida",
@@ -99,8 +99,8 @@
   "unit": {
     "h": "h",
     "min": "min",
-    "minute": "minuto",
-    "minute_plural": "minutos",
+    "minute": "min",
+    "minute_plural": "min",
     "ml": "ml",
     "rpm": "RPM"
   },

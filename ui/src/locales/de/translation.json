@@ -18,7 +18,7 @@
     "title": "Belichtungszeiten ändern"
   },
   "glob": {
-    "hd-st": "hardwarestatus",
+    "hd-st": "Hardwarestatus",
     "hostname": "Hostname"
   },
   "home": {
@@ -28,23 +28,23 @@
   "msg": {
     "api-key": "API Key",
     "cancel": "Wollen Sie den Druck wirklich abbrechen?",
-    "del-proj": "",
+    "del-proj": "Do you really want to delete {{file_name}}?",
     "modal-p1": "Willkommen zur Weboberfläche Ihres",
     "modal-p2": "Bitte beachten Sie, dass die Werte nur angezeigt werden, wenn der Drucker gerade druckt.",
     "sla-fill": "Bitte füllen Sie den Harzbehälter und schließen Sie den Deckel.",
     "sla-fly-fill": "Bitte füllen Sie den Harztank vollständig auf."
   },
   "ntf": {
-    "actn-pending": "Aktion wird nach Beendigung der Schicht ausgeführt",
+    "actn-pending": "Aktion wird nach Beendigung der Schicht ausgeführt.",
     "e-307": "Harzmessung fehlgeschlagen!",
     "error": "Fehler",
     "n-calibrated": "Der Drucker ist nicht kalibriert!",
-    "not-idle": "",
-    "start-print": "Der Drucker bereitet sich vor",
-    "upld-exists": "Das Projekt {{file_name}} existiert bereits",
-    "upld-not-sup": "Das Projekt {{file_name}} wird nicht unterstützt",
-    "upld-suc": "Das Hochladen des Projekts {{file_name}} war erfolgreich",
-    "upld-unsuc": "Das Hochladen des Projekts {{file_name}} war nicht erfolgreich"
+    "not-idle": "Der Drucker arbeitet!",
+    "start-print": "Der Drucker bereitet sich vor.",
+    "upld-exists": "Das Projekt {{file_name}} existiert bereits.",
+    "upld-not-sup": "Das Projekt {{file_name}} wird nicht unterstützt.",
+    "upld-suc": "Das Hochladen des Projekts {{file_name}} war erfolgreich.",
+    "upld-unsuc": "Das Hochladen des Projekts {{file_name}} war nicht erfolgreich."
   },
   "proj": {
     "del": "Delete File",
@@ -71,7 +71,7 @@
     "layers": "Schichten",
     "less-than": "Weniger als eine Minute",
     "material": "Material",
-    "na": "",
+    "na": "NV",
     "pnt-time": "Druckzeit",
     "rem-time": "Restzeit",
     "sla-csm-mt": "Verbrauchtes Harz",
@@ -99,8 +99,8 @@
   "unit": {
     "h": "h",
     "min": "min",
-    "minute": "Minute",
-    "minute_plural": "Minuten",
+    "minute": "Min.",
+    "minute_plural": "Min.",
     "ml": "ml",
     "rpm": "UPM"
   },
