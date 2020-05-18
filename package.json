@@ -8,6 +8,7 @@
     "api:build": "swagger-repo build -o docs",
     "api:test": "swagger-repo validate",
     "ui:build": "webpack --config ./webpack.config.js --mode production --env.apiKey=developer --env.printer=sl1 --progress",
+    "ui:build-mini": "webpack --config ./webpack.config.js --mode production --env.apiKey=developer --env.printer=mini --progress",
     "ui:dev": "webpack --config ./webpack.config.js --mode development",
     "ui:start": "webpack-dev-server --config ./webpack.config.js --env.prod=1 --mode development",
     "ui:start-mini": "webpack-dev-server --config ./webpack.config.js --env.prod=1 --mode development --env.printer=mini",
