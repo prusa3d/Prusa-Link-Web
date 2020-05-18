@@ -28,26 +28,26 @@
   "msg": {
     "api-key": "Klucz API",
     "cancel": "Czy na pewno chcesz anulować wydruk?",
-    "del-proj": "Do you really want to delete {{file_name}}?",
+    "del-proj": "Czy na pewno chcesz usunąć plik {{file_name}}?",
     "modal-p1": "Witaj w interfejsie Twojej",
     "modal-p2": "Wartości będą wyświetlane tylko podczas drukowania.",
     "sla-fill": "Uzupełnij żywicę i zamknij pokrywę.",
     "sla-fly-fill": "Uzupełnij żywicę do znacznika 100%."
   },
   "ntf": {
-    "actn-pending": "Akcja zostanie wykonana po zakończeniu warstwy",
+    "actn-pending": "Akcja zostanie wykonana po zakończeniu warstwy.",
     "e-307": "Niepowodzenie pomiaru poziomu żywicy!",
     "error": "Błąd",
     "n-calibrated": "Drukarka nie jest skalibrowana!",
     "not-idle": "Drukarka nie znajduje się w stanie oczekiwania.",
-    "start-print": "Drukarka jest przygotowywana",
-    "upld-exists": "Istnieje już projekt o nazwie {{file_name}}",
-    "upld-not-sup": "Typ pliku {{file_name}} jest nieobsługiwany",
-    "upld-suc": "Przesyłanie projektu {{file_name}} powiodło się",
-    "upld-unsuc": "Przesyłanie projektu {{file_name}} nie powiodło się"
+    "start-print": "Drukarka jest przygotowywana.",
+    "upld-exists": "Istnieje już projekt o nazwie {{file_name}}.",
+    "upld-not-sup": "Typ pliku {{file_name}} jest nieobsługiwany.",
+    "upld-suc": "Przesyłanie projektu {{file_name}} powiodło się.",
+    "upld-unsuc": "Przesyłanie projektu {{file_name}} nie powiodło się."
   },
   "proj": {
-    "del": "Delete File",
+    "del": "Usuń plik",
     "link": "Projekty",
     "main": "Główne",
     "title": "Pliki projektu"
@@ -99,8 +99,8 @@
   "unit": {
     "h": "g",
     "min": "min",
-    "minute": "min",
-    "minute_plural": "min",
+    "minute": "minuta",
+    "minute_plural": "minuty",
     "ml": "ml",
     "rpm": "Obroty"
   },

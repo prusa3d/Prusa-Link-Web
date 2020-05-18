@@ -28,7 +28,7 @@
   "msg": {
     "api-key": "Clé d'API",
     "cancel": "Voulez-vous vraiment annuler l'impression ?",
-    "del-proj": "Do you really want to delete {{file_name}}?",
+    "del-proj": "Voulez-vous vraiment supprimer le fichier {{file_name}} ?",
     "modal-p1": "Bienvenue dans l'interface web de votre",
     "modal-p2": "Veuillez noter que les valeurs sont affichées uniquement lorsque l'imprimante imprime.",
     "sla-fill": "Veuillez remplir le réservoir de résine et fermer le couvercle.",
@@ -47,7 +47,7 @@
     "upld-unsuc": " Le téléchargement du projet {{file_name}} a échoué."
   },
   "proj": {
-    "del": "Delete File",
+    "del": "Supprimer le Fichier",
     "link": "Projets",
     "main": "Principal",
     "title": "Fichiers de projet"

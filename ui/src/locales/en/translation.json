@@ -35,7 +35,7 @@
     "sla-fly-fill": "Please fully refill resin tank."
   },
   "ntf": {
-    "actn-pending": "Action will be executed after layer finish",
+    "actn-pending": "Action will be executed after layer finish.",
     "e-307": "Resin measuring failed!",
     "error": "Error",
     "n-calibrated": "Printer is not calibrated!",
@@ -49,7 +49,7 @@
   "proj": {
     "del": "Delete File",
     "link": "Projects",
-    "main": "main",
+    "main": "Main",
     "title": "Project files"
   },
   "prop": {
@@ -99,8 +99,8 @@
   "unit": {
     "h": "h",
     "min": "min",
-    "minute": "min",
-    "minute_plural": "min",
+    "minute": "minute",
+    "minute_plural": "minutes",
     "ml": "ml",
     "rpm": "RPM"
   },

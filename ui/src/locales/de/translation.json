@@ -28,7 +28,7 @@
   "msg": {
     "api-key": "API Key",
     "cancel": "Wollen Sie den Druck wirklich abbrechen?",
-    "del-proj": "Do you really want to delete {{file_name}}?",
+    "del-proj": "Wollen Sie wirklich {{file_name}} löschen?",
     "modal-p1": "Willkommen zur Weboberfläche Ihres",
     "modal-p2": "Bitte beachten Sie, dass die Werte nur angezeigt werden, wenn der Drucker gerade druckt.",
     "sla-fill": "Bitte füllen Sie den Harzbehälter und schließen Sie den Deckel.",
@@ -47,7 +47,7 @@
     "upld-unsuc": "Das Hochladen des Projekts {{file_name}} war nicht erfolgreich."
   },
   "proj": {
-    "del": "Delete File",
+    "del": "Datei löschen",
     "link": "Projekte",
     "main": "Startseite",
     "title": "Projektdateien"
@@ -99,8 +99,8 @@
   "unit": {
     "h": "h",
     "min": "min",
-    "minute": "Min.",
-    "minute_plural": "Min.",
+    "minute": "Minute",
+    "minute_plural": "Minuten",
     "ml": "ml",
     "rpm": "UPM"
   },

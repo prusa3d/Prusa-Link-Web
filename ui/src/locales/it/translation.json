@@ -28,14 +28,14 @@
   "msg": {
     "api-key": "Chiave API",
     "cancel": "Vuoi davvero annullare la stampa?",
-    "del-proj": "Do you really want to delete {{file_name}}?",
+    "del-proj": "Vuoi davvero eliminare il file {{file_name}}?",
     "modal-p1": "Benvenuto nell'interfaccia web del tuo",
     "modal-p2": "Si noti che i valori vengono visualizzati solo durante la stampa.",
     "sla-fill": "Si prega di riempire il serbatoio della resina e chiudere il coperchio.",
     "sla-fly-fill": "Si prega di riempire completamente il serbatoio della resina."
   },
   "ntf": {
-    "actn-pending": "L'azione verrà eseguita dopo il completamento del layer",
+    "actn-pending": "L'azione verrà eseguita dopo il completamento del layer.",
     "e-307": "Misurazione resina non riuscita!",
     "error": "Errore",
     "n-calibrated": "La stampante adesso è calibrata!",
@@ -47,7 +47,7 @@
     "upld-unsuc": "Caricamento del progetto {{file_name}} non riuscito."
   },
   "proj": {
-    "del": "Delete File",
+    "del": "Elimina File",
     "link": "Progetti",
     "main": "Principale",
     "title": "File di progetto"

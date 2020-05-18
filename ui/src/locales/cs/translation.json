@@ -3,10 +3,10 @@
     "back": "Zpět",
     "cancel": "Zrušit",
     "cancel-pt": "Zrušit tisk",
-    "chg-exp": "Změnit čas expozice",
+    "chg-exp": "Změnit časy expozice",
     "no": "Ne",
     "save-chgs": "Uložit změny",
-    "sla-refill": "Doplňte pryskyřici",
+    "sla-refill": "Doplnit pryskyřici",
     "sla-refilled": "Pryskyřice doplněna",
     "start-pt": "Start tisku",
     "yes": "Ano"
@@ -15,7 +15,7 @@
     "exp-time": "Doba osvitu [s]",
     "inc": "Navýšení expozice (s)",
     "layer-1st": "Osvit první vrstvy [s]",
-    "title": "Změnit časy expozice"
+    "title": "Změnit expoziční časy"
   },
   "glob": {
     "hd-st": "stav zařízení",
@@ -28,34 +28,34 @@
   "msg": {
     "api-key": "API klíč",
     "cancel": "Chcete opravdu zrušit tisk?",
-    "del-proj": "Do you really want to delete {{file_name}}?",
+    "del-proj": "Opravdu chcete smazat {{file_name}}?",
     "modal-p1": "Vítejte na webovém rozhraní vaší",
-    "modal-p2": "Poznamenejte si prosím, že hodnoty jsou zobrazeny pouze v průběhu tisku.",
+    "modal-p2": "Vezměte prosím na vědomí, že některé hodnoty jsou zobrazeny pouze v průběhu tisku.",
     "sla-fill": "Naplňte prosím nádržku na pryskyřici a zavřete víko.",
-    "sla-fly-fill": "Doplňte prosím na plno nádobu na pryskyřici."
+    "sla-fly-fill": "Prosím naplňte vaničku na pryskyřici."
   },
   "ntf": {
-    "actn-pending": "",
+    "actn-pending": "Akce se vykoná po dokončení vytvrzení vrstvy.",
     "e-307": "Chyba při měření množství resinu!",
     "error": "Chyba",
-    "n-calibrated": "Tiskárna není zkalibrovaná.",
-    "not-idle": "Printer is not idle!",
-    "start-print": "The printer is getting ready.",
-    "upld-exists": "The project {{file_name}} already exists.",
-    "upld-not-sup": "The project {{file_name}} is not supported.",
-    "upld-suc": "The project {{file_name}} uploaded successfully.",
-    "upld-unsuc": "The project {{file_name}} upload was unsuccessful."
+    "n-calibrated": "Tiskárna není zkalibrovaná!",
+    "not-idle": "Tiskárna je zaneprázdněna, prosím vyčkejte!",
+    "start-print": "Tiskárna se připravuje.",
+    "upld-exists": "Projekt s názvem {{file_name}} již existuje",
+    "upld-not-sup": "Projekt {{file_name}} není podporován",
+    "upld-suc": "Projekt {{file_name}} úspěšně nahrán.",
+    "upld-unsuc": "Nahrání projektu {{file_name}} selhalo."
   },
   "proj": {
-    "del": "Delete File",
+    "del": "Smazat Soubor",
     "link": "Projekty",
-    "main": "main",
+    "main": "Zpět",
     "title": "Soubory projektu"
   },
   "prop": {
     "cover": "Stav víka",
-    "cover-closed": "Uzavřený",
-    "cover-opened": "Otevřený",
+    "cover-closed": "Uzavřené",
+    "cover-opened": "Otevřené",
     "d+": "D+",
     "est-end": "Odhadovaný konec",
     "exp-time": "doba expozice",
@@ -71,13 +71,13 @@
     "layers": "Vrstvy",
     "less-than": "Méně než minuta",
     "material": "Materiál",
-    "na": "NA",
+    "na": "N/A",
     "pnt-time": "Doba tisku",
     "rem-time": "Zbývající čas",
     "sla-csm-mt": "Spotřeba pryskyřice",
     "sla-rmn-mt": "Zbývající pryskyřice",
     "speed": "Rychlost tisku",
-    "st-idle": "Volný",
+    "st-idle": "Nečinná",
     "st-printing": "Probíhá tisk",
     "temp-amb": "Teplota okolí",
     "temp-bed": "Vyhřívaná podložka",
@@ -106,7 +106,7 @@
   },
   "upld": {
     "loading": "Nahrává se...",
-    "open": "Vyberte {{file}} nebo jej sem přetáhněte.",
-    "title": "upload project"
+    "open": "Vyberte {{file}} nebo jej přetáhněte sem.",
+    "title": "nahrát projekt"
   }
 }

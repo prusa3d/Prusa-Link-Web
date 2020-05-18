@@ -28,7 +28,7 @@
   "msg": {
     "api-key": "Clave API",
     "cancel": "¿Realmente quieres cancelar la impresión?",
-    "del-proj": "Do you really want to delete {{file_name}}?",
+    "del-proj": "¿Realmente deseas borrar {{file_name}}?",
     "modal-p1": "Bienvenido a la interfaz web de tu",
     "modal-p2": "Tenga en cuenta que los valores se muestran solo cuando la impresora está imprimiendo.",
     "sla-fill": "Llena el tanque de resina y cierra la tapa.",
@@ -47,7 +47,7 @@
     "upld-unsuc": "El envío del proyecto {{file_name}} ha fallado."
   },
   "proj": {
-    "del": "Delete File",
+    "del": "Borrar archivo",
     "link": "Projectos",
     "main": "Principal ",
     "title": "Archivos de proyecto"
@@ -99,8 +99,8 @@
   "unit": {
     "h": "h",
     "min": "min",
-    "minute": "min",
-    "minute_plural": "min",
+    "minute": "minuto",
+    "minute_plural": "minutos",
     "ml": "ml",
     "rpm": "RPM"
   },
