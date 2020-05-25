@@ -21,6 +21,7 @@
   border-color: transparent;
   font-size: defines.$font-size-2-mobile;
   font-family: "Atlas Grotesk Bold Web";
+  flex-shrink: unset;
 }
 
 .prusa-button-yes {
@@ -87,7 +88,7 @@
 }
 
 .prusa-button-icon {
-  width: 48px;
+  width: 36px;
   height: 100%;
 }
 
@@ -97,6 +98,7 @@
   .prusa-button-action {
     font-size: defines.$font-size-2-desktop;
     border-radius: 4px;
+    flex-shrink: 0;
   }
   .prusa-button-icon {
     height: 24px;

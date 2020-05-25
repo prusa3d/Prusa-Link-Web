@@ -65,13 +65,14 @@ let state = {
 };
 
 const not_found_images = [];
-let first_time = true;
 
 class Tree extends Component<P, S> {
   timer: any;
+  first_time: boolean;
   constructor() {
     super();
     this.state = state;
+    this.first_time = true;
   }
 
   onUpFolder = (update: boolean = false) => {
@@ -266,7 +267,7 @@ class Tree extends Component<P, S> {
 
   componentDidMount() {
     this.connect().finally(() => {
-      first_time = false;
+      this.first_time = false;
     });
     this.timer = setInterval(this.connect, Number(process.env.UPDATE_FILES));
   }
@@ -384,7 +385,7 @@ class Tree extends Component<P, S> {
               url={this.createLink((current_view as nodeFile).path)}
             />
           )
-        ) : first_time ? (
+        ) : this.first_time ? (
           <Loading />
         ) : null}
       </Fragment>

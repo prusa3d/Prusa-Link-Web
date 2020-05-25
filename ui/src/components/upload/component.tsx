@@ -182,7 +182,7 @@ class Upload extends Component<P, S> {
             {ready ? t("upld.title") : ""}
           </p>
         </div>
-        <div class="column is-10 is-offset-1">
+        <div class="column is-10 is-offset-1 prusa-upload-margin">
           {Object.keys(progress).length > 0 ? (
             <Dynamic progress={progress} />
           ) : (

@@ -27,11 +27,30 @@
   }
 }
 
-.prusa-flex-lr {
-  float: right;
+.prop-buttons {
+  display: -webkit-flex;
+  display: flex;
+  padding: 0;
+  justify-content: flex-end;
+  flex-wrap: wrap;
 }
-@media (min-width: 1273px) {
-  .prusa-flex-lr {
-    float: left;
+
+.prop-buttons-first {
+  margin-right: unset;
+  margin-bottom: 1rem;
+}
+
+.prop-buttons-second {
+  flex-wrap: nowrap;
+  display: flex;
+}
+
+.prop-buttons-shrink {
+  flex-shrink: unset;
+}
+
+@media (min-width: 1400px) {
+  .prop-buttons-first {
+    margin-right: auto;
   }
 }

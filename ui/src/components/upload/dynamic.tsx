@@ -26,7 +26,7 @@ const Dynamic: preact.FunctionalComponent<P> = ({ progress }) => {
           max="100"
         />
       </div>
-      <div class="column is-full has-text-centered subtitle is-size-3 is-size-6-desktop">
+      <div class="column is-full has-text-centered txt-normal txt-size-2">
         {t("upld.loading")}
       </div>
     </div>

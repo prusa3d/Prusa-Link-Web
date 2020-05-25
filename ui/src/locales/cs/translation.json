@@ -6,8 +6,8 @@
     "chg-exp": "Změnit časy expozice",
     "no": "Ne",
     "save-chgs": "Uložit změny",
-    "sla-refill": "Doplnit pryskyřici",
-    "sla-refilled": "Pryskyřice doplněna",
+    "sla-refill": "Doplnit resin",
+    "sla-refilled": "Resin doplněn",
     "start-pt": "Start tisku",
     "yes": "Ano"
   },
@@ -22,7 +22,7 @@
     "hostname": "Hostname"
   },
   "home": {
-    "link": "Přístrojová deska",
+    "link": "Přehled",
     "title": "Stav tiskárny"
   },
   "msg": {
@@ -30,9 +30,9 @@
     "cancel": "Chcete opravdu zrušit tisk?",
     "del-proj": "Opravdu chcete smazat {{file_name}}?",
     "modal-p1": "Vítejte na webovém rozhraní vaší",
-    "modal-p2": "Vezměte prosím na vědomí, že některé hodnoty jsou zobrazeny pouze v průběhu tisku.",
-    "sla-fill": "Naplňte prosím nádržku na pryskyřici a zavřete víko.",
-    "sla-fly-fill": "Prosím naplňte vaničku na pryskyřici."
+    "modal-p2": "Upozornění: některé hodnoty jsou zobrazeny pouze v průběhu tisku.",
+    "sla-fill": "Naplňte prosím nádržku na resin a zavřete víko.",
+    "sla-fly-fill": "Prosím naplňte vaničku na resin."
   },
   "ntf": {
     "actn-pending": "Akce se vykoná po dokončení vytvrzení vrstvy.",
@@ -47,7 +47,7 @@
     "upld-unsuc": "Nahrání projektu {{file_name}} selhalo."
   },
   "proj": {
-    "del": "Smazat Soubor",
+    "del": "Smazat soubor",
     "link": "Projekty",
     "main": "Zpět",
     "title": "Soubory projektu"
@@ -65,17 +65,17 @@
     "fan-rear": "Zadní ventilátor",
     "fdm-sensor": "Senzor filamentu",
     "flow": "Tok tisku",
-    "last-mod": "Naposledy Upraveno",
+    "last-mod": "Naposledy upraveno",
     "layer-1st": "první vrstva",
-    "layer-ht": "Výška Vrstvy",
+    "layer-ht": "Výška vrstvy",
     "layers": "Vrstvy",
     "less-than": "Méně než minuta",
     "material": "Materiál",
     "na": "N/A",
     "pnt-time": "Doba tisku",
     "rem-time": "Zbývající čas",
-    "sla-csm-mt": "Spotřeba pryskyřice",
-    "sla-rmn-mt": "Zbývající pryskyřice",
+    "sla-csm-mt": "Spotřeba resinu",
+    "sla-rmn-mt": "Zbývající resin",
     "speed": "Rychlost tisku",
     "st-idle": "Nečinná",
     "st-printing": "Probíhá tisk",
@@ -83,13 +83,13 @@
     "temp-bed": "Vyhřívaná podložka",
     "temp-cpu": "Teplota CPU",
     "temp-led": "Teplota UV LED",
-    "temp-nozzle": "Teplota Trysky",
-    "time-est": "Odhad Doby Tisku",
+    "temp-nozzle": "Teplota trysky",
+    "time-est": "Odhad doby tisku",
     "tmw": "Zítra",
-    "z-height": "Výška -Z"
+    "z-height": "Výška Z"
   },
   "refill": {
-    "title": "Doplnit pryskyřici"
+    "title": "Doplnit resin"
   },
   "temps": {
     "title": "Teploty",

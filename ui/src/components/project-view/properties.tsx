@@ -39,7 +39,6 @@ class Properties extends Component<P, S> {
             const result = {
               exposure_times: data.exposure_times,
               last_modified: last_modified.substring(0, 25),
-              remaining_time: data.remaining_time,
               total_layers: data.total_layers
             };
             this.setState(prevState => ({ ...prevState, ...result }));
@@ -50,7 +49,7 @@ class Properties extends Component<P, S> {
 
   render(
     { printing_time, layer_height },
-    { exposure_times, last_modified, total_layers, remaining_time }
+    { exposure_times, last_modified, total_layers }
   ) {
     const { t, i18n, ready } = useTranslation(null, { useSuspense: false });
     return (
@@ -74,7 +73,9 @@ class Properties extends Component<P, S> {
                   {t("prop.est-end")}
                 </p>
                 <p class="txt-bold txt-size-2">
-                  {formatEstimatedTime(remaining_time, t)}
+                  {printing_time
+                    ? formatEstimatedTime(printing_time, t)
+                    : t("prop.na")}
                 </p>
               </div>
             </div>

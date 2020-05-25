@@ -59,9 +59,26 @@ $section-padding: 3rem 3rem;
   margin-top: 0.8rem;
 }
 
+.delete-size {
+  height: defines.$delete-size-mobile;
+  max-height: defines.$delete-size-mobile;
+  max-width: defines.$delete-size-mobile;
+  min-height: defines.$delete-size-mobile;
+  min-width: defines.$delete-size-mobile;
+  width: defines.$delete-size-mobile;
+}
+
 @media (min-width: 1024px) {
   .section {
     padding: 1rem 1.5rem;
+  }
+  .delete-size {
+    height: defines.$delete-size-desktop;
+    max-height: defines.$delete-size-desktop;
+    max-width: defines.$delete-size-desktop;
+    min-height: defines.$delete-size-desktop;
+    min-width: defines.$delete-size-desktop;
+    width: defines.$delete-size-desktop;
   }
 }
 

@@ -5,7 +5,7 @@
 import { h, Component } from "preact";
 import { Translation } from "react-i18next";
 const Logo = require("../../assets/prusa_connect_local_logo_black.svg");
-
+import "./style.scss";
 interface S {
   showWelcome: boolean;
 }
@@ -35,17 +35,20 @@ class Welcome extends Component<{}, S> {
       <Translation useSuspense={false}>
         {(t, { i18n }, ready) =>
           ready && (
-            <div class={showWelcome ? "modal is-active" : "modal"}>
+            <div
+              class={showWelcome ? "modal is-active" : "modal"}
+              onClick={e => this.onClose()}
+            >
               <div class="modal-background"></div>
               <div class="modal-content">
                 <div class="box has-background-grey-dark">
-                  <button
-                    class="delete is-pulled-right"
-                    onClick={e => this.onClose()}
-                  ></button>
                   <div class="columns is-multiline">
                     <div class="column is-full">
-                      <img src={Logo} style="width: 250px;" />
+                      <img src={Logo} class="well-logo" />
+                      <button
+                        class="delete delete-size is-pulled-right"
+                        onClick={e => this.onClose()}
+                      ></button>
                     </div>
                     <div class="column is-full has-text-centered">
                       <p

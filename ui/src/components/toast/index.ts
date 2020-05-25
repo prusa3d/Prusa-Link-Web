@@ -23,7 +23,7 @@ class Toast {
     header.appendChild(header_title);
 
     const button = document.createElement("button");
-    button.className = "delete";
+    button.className = "delete delete-size";
     button.addEventListener("click", e => {
       e.preventDefault();
       e.stopPropagation();

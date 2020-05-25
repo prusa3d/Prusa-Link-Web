@@ -128,33 +128,33 @@ class View extends Component<ProjectProps, S> {
               />
             </div>
             <div class="column is-full">
-              <div class="columns is-multiline">
-                <div class="column is-full-touch">
+              <div class="prop-buttons">
+                <div class="prop-buttons-first">
                   <DelButton
                     text={"delete"}
                     onClick={e => this.props.onclick(e, 2)}
-                    className="prusa-flex-lr"
                   />
                 </div>
-                <div class="column column is-full-touch">
-                  <div class="prusa-button-wrapper">
-                    <ActionButton
-                      icon="exp-times"
-                      text={t("btn.chg-exp").toLowerCase()}
-                      onClick={e => this.props.onclick(e, 1)}
-                      wrap
-                    />
-                    <YesButton
-                      text={t("btn.start-pt").toLowerCase()}
-                      onClick={e => this.onStartPrint(e)}
-                      wrap
-                    />
-                    <NoButton
-                      text={t("btn.cancel-pt").toLowerCase()}
-                      onClick={e => this.onCancel(e)}
-                      wrap
-                    />
-                  </div>
+                <div class="prop-buttons-second">
+                  <ActionButton
+                    icon="exp-times"
+                    text={t("btn.chg-exp").toLowerCase()}
+                    onClick={e => this.props.onclick(e, 1)}
+                    className="prop-buttons-shrink"
+                    wrap
+                  />
+                  <YesButton
+                    text={t("btn.start-pt").toLowerCase()}
+                    onClick={e => this.onStartPrint(e)}
+                    className="prop-buttons-shrink"
+                    wrap
+                  />
+                  <NoButton
+                    text={t("btn.cancel-pt").toLowerCase()}
+                    onClick={e => this.onCancel(e)}
+                    className="prop-buttons-shrink"
+                    wrap
+                  />
                 </div>
               </div>
             </div>
