@@ -4,7 +4,12 @@
 
 import { h, Fragment } from "preact";
 import { Text } from "preact-i18n";
-import { numberFormat, formatTime, formatTimeEnd } from "../utils/index";
+import {
+  numberFormat,
+  formatTime,
+  formatTimeEnd,
+  formatEstimatedTime
+} from "../utils/index";
 
 interface StatusBoardItemProps {
   id: string;
@@ -22,7 +27,6 @@ export interface StatusBoardTableProps {
   readonly printing_speed?: number;
   readonly flow_factor?: number;
   readonly print_dur?: number;
-  readonly time_est?: string;
   readonly filament_status?: string;
 }
 
@@ -92,8 +96,7 @@ export const StatusBoardMini = ({
   printing_speed,
   flow_factor,
   print_dur,
-  time_est,
-  filament_status
+  remaining_time
 }: StatusBoardTableProps) => {
   const available = (value, unit = null) =>
     value ? value + (unit ? " " + unit : "") : "NA";
@@ -118,9 +121,9 @@ export const StatusBoardMini = ({
       </div>
       <div class="columns">
         <StatusBoardItem
-          id="time-est"
-          title="Remaining time"
-          value={available(time_est)}
+          id="estimated-end"
+          title="Estimated end"
+          value={formatEstimatedTime(remaining_time)}
         />
         <StatusBoardItem
           id="print-dur"

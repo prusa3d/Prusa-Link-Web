@@ -1097,8 +1097,6 @@ components:
           type: number
         print_dur:
           type: string
-        time_est:
-          type: string
         filament_status:
           type: string
     TelemetrySL1:

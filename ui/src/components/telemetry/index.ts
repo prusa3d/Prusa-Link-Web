@@ -16,7 +16,6 @@ export interface printerState {
   pos_z_mm?: number;
   printing_speed?: number;
   flow_factor?: number;
-  time_est?: string;
   filament_status?: string;
 }
 
@@ -53,7 +52,7 @@ if (process.env.PRINTER == "Original Prusa SL1") {
     "printing_speed",
     "flow_factor",
     "print_dur",
-    "time_est",
+    "remaining_time",
     "filament_status"
   ];
   printerState = {
