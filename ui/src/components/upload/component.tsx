@@ -3,12 +3,15 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import { h, Component, createRef } from "preact";
+import { useTranslation } from "react-i18next";
 import "./style.scss";
 
+import { apiKey } from "../utils/network";
 import Static from "./static";
 import Dynamic from "./dynamic";
+import Toast from "../toast";
 
-interface P {
+export interface P extends apiKey {
   url?: string;
   path?: string;
   update?: () => void;
@@ -17,6 +20,11 @@ interface P {
 interface S {
   active: boolean;
   progress: { [index: string]: number };
+}
+
+interface NTF {
+  ok: boolean;
+  message: string;
 }
 
 class Upload extends Component<P, S> {
@@ -74,6 +82,38 @@ class Upload extends Component<P, S> {
     [...files].forEach(this.uploadFile);
   };
 
+  notify = (status, file_name) => {
+    const { t, i18n, ready } = useTranslation(null, { useSuspense: false });
+    return new Promise<NTF>(function(resolve, reject) {
+      if (ready) {
+        let ok = false;
+        let message = "";
+        switch (status) {
+          case 201:
+            ok = true;
+            message = t("ntf.upld-suc", { file_name });
+            break;
+          case 409:
+            message = t("ntf.upld-exists", { file_name });
+            break;
+          case 415:
+            message = t("ntf.upld-not-sup", { file_name });
+            break;
+          default:
+            message = t("ntf.upld-unsuc", { file_name });
+            break;
+        }
+        resolve({ ok, message });
+      }
+    }).then(result => {
+      if (result.ok) {
+        Toast.success(t("upld.title"), result.message);
+      } else {
+        Toast.error(t("upld.title"), result.message);
+      }
+    });
+  };
+
   uploadFile = (file: File) => {
     let { url, path, update } = this.props;
     url = url ? url : "/api/files/local";
@@ -86,7 +126,7 @@ class Upload extends Component<P, S> {
 
     const request = new XMLHttpRequest();
     request.open("POST", url);
-    request.setRequestHeader("X-Api-Key", process.env.APIKEY);
+    request.setRequestHeader("X-Api-Key", this.props.getApikey());
 
     request.upload.onprogress = function(e: ProgressEvent) {
       that.setState(prev => {
@@ -105,7 +145,8 @@ class Upload extends Component<P, S> {
       });
     };
 
-    request.onloadend = function(e: ProgressEvent) {
+    request.onloadend = (e: ProgressEvent) => {
+      this.notify((e.target as XMLHttpRequest).status, file.name);
       that.setState(prev => {
         const progress = prev.progress;
         let n = Object.keys(progress).length;
@@ -127,6 +168,7 @@ class Upload extends Component<P, S> {
   };
 
   render({}, { active, progress }) {
+    const { t, i18n, ready } = useTranslation(null, { useSuspense: false });
     return (
       <div
         class="columns is-multiline is-mobile"
@@ -135,12 +177,12 @@ class Upload extends Component<P, S> {
         onDragEnter={e => this.handleDragEnter(e)}
         onDragLeave={e => this.handleDragLeave(e)}
       >
-        <div class="column is-full prusa-title-upload">
-          <p class="subtitle is-size-2 is-size-4-desktop has-text-grey is-marginless prusa-line-upload">
-            upload project
+        <div class="column is-full">
+          <p class="txt-bold txt-grey txt-size-2 is-marginless prusa-line">
+            {ready ? t("upld.title") : ""}
           </p>
         </div>
-        <div class="column is-10 is-offset-1">
+        <div class="column is-10 is-offset-1 prusa-upload-margin">
           {Object.keys(progress).length > 0 ? (
             <Dynamic progress={progress} />
           ) : (
@@ -153,6 +195,7 @@ class Upload extends Component<P, S> {
           type="file"
           multiple
           onInput={e => this.handleInput(e)}
+          accept=".sl1"
         />
       </div>
     );

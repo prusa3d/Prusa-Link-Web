@@ -2,28 +2,53 @@
 // Copyright (C) 2018-2019 Prusa Research s.r.o. - www.prusa3d.com
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-import { h } from "preact";
-import "./style.scss";
+import { h, Component } from "preact";
+import { useTranslation } from "react-i18next";
 
-interface P {
+import { network } from "../utils/network";
+
+interface P extends network {
   title: string;
   children?: any;
 }
 
-const Title: preact.FunctionalComponent<P> = ({ title, children }) => {
-  return (
-    <div class="box has-background-black is-paddingless prusa-line">
-      <div class="columns is-centered">
-        <div class="column title is-size-3 is-size-4-desktop has-text-grey botton-paddingless">
-          {title}
-          {children && children}
-        </div>
-        <div class="column has-text-right title is-size-2 is-size-4-desktop prusa-text-orange botton-paddingless">
-          {process.env.PRINTER}
+interface S {
+  hostname: string;
+}
+
+class Title extends Component<P, S> {
+  state = { hostname: null };
+
+  componentDidMount = () => {
+    this.props.onFetch({
+      url: "/api/hostname",
+      then: response =>
+        response.json().then(data => {
+          this.setState({ hostname: data.hostname });
+        })
+    });
+  };
+
+  render({ title, children, onFetch }, { hostname }) {
+    const { t, i18n, ready } = useTranslation(null, { useSuspense: false });
+    return (
+      <div class="box has-background-black is-paddingless prusa-line">
+        <div class="columns is-multiline is-centered">
+          <div class="column is-full-touch is-half-desktop txt-normal txt-size-1 txt-grey prusa-break-word">
+            {title}
+            {children && children}
+          </div>
+          <div class="column is-full-touch is-half-desktop txt-normal txt-size-1 prusa-preserve has-text-right-desktop">
+            {hostname && ready && (
+              <p class="txt-grey">
+                {t("glob.hostname")}: <span class="txt-orange">{hostname}</span>
+              </p>
+            )}
+          </div>
         </div>
       </div>
-    </div>
-  );
-};
+    );
+  }
+}
 
 export default Title;

@@ -3,12 +3,16 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import { h, Component } from "preact";
+
+import { network, apiKey } from "../utils/network";
 import Tree from "./tree";
 
-class TreeNode extends Component<{}, {}> {
+interface P extends network, apiKey {}
+
+class TreeNode extends Component<P, {}> {
   shouldComponentUpdate = () => false;
-  render() {
-    return <Tree />;
+  render({ onFetch, getApikey }, {}) {
+    return <Tree onFetch={onFetch} getApikey={getApikey} />;
   }
 }
 

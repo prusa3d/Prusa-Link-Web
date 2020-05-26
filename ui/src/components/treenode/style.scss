@@ -2,38 +2,17 @@
 // Copyright (C) 2018-2019 Prusa Research s.r.o. - www.prusa3d.com
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-$line-color: gray;
-$line-size: 0.08rem;
-$project-bottom-bg-color: hsl(130, 85%, 39%);
-$project-bottom-bg-hover-color: hsl(130, 38%, 46%);
-$text: hsl(0, 0%, 96%);
-$background-color-selection: #313131;
+@use '../../style/_defines.scss' as defines;
 
 %selection {
-  background-color: $background-color-selection;
+  background-color: defines.$body-background-color-hover;
   cursor: pointer;
-}
-
-.project-button-container {
-  padding-top: 1.5rem;
-}
-
-.project-button {
-  color: $text;
-  background-color: $project-bottom-bg-color;
-  border-color: $project-bottom-bg-color;
-}
-
-.project-button:hover {
-  color: $text;
-  background-color: $project-bottom-bg-hover-color;
-  border-color: $project-bottom-bg-hover-color;
 }
 
 .tree-node-item {
   padding-bottom: 0.5rem;
   padding-top: 0.5rem;
-  border-bottom: $line-size solid $line-color;
+  border-bottom: defines.$line-size solid defines.$color-grey;
 }
 
 .tree-node-item:hover {
@@ -44,10 +23,44 @@ $background-color-selection: #313131;
   @extend %selection;
 }
 
+.prusa-media {
+  align-items: center;
+  display: flex;
+  text-align: center;
+}
+
 .project-preview {
   max-width: 112px;
   width: 100%;
   height: auto;
+  display: flex;
+  margin-right: 1rem;
+}
+
+.prusa-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+
+.prusa-properties {
+  display: flex;
+  flex: 1 0 auto;
+  align-items: center;
+  justify-content: flex-start;
+  margin-right: 1rem;
+
+  & > .icon {
+    width: 24px;
+    height: auto;
+    margin-right: 0.35rem;
+  }
+
+  & > .text {
+    text-align: center;
+    -webkit-box-flex: 0;
+    flex: 0 1 auto;
+  }
 }
 
 @media screen and (min-width: 1024px) {
@@ -55,4 +68,9 @@ $background-color-selection: #313131;
     height: 28px !important;
     width: 28px !important;
   }
+}
+
+.tree-marginless {
+  margin-left: 0px;
+  margin-right: 0px;
 }

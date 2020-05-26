@@ -27,7 +27,7 @@ const Static: preact.FunctionalComponent<P> = ({ active, onclickFile }) => {
             src={icon_download}
           />
         </div>
-        <div class="column is-full has-text-centered prusa-default-text">
+        <div class="column is-full has-text-centered txt-normal txt-size-2">
           {t("upld.open", { file: "*.sl1" })}
         </div>
       </div>

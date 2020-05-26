@@ -38,9 +38,7 @@ module.exports = (env, args) => {
     console.log("== Development mode");
   }
   const update_printer =
-    typeof env.update_printer !== "undefined"
-      ? env.update_printer
-      : update_timer;
+    typeof env.update_printer !== "undefined" ? env.update_printer : 1000;
   const update_progress =
     typeof env.update_progress !== "undefined"
       ? env.update_progress
@@ -60,7 +58,8 @@ module.exports = (env, args) => {
     entry: "./ui/src/index.tsx",
     output: {
       path: __dirname + "/dist/",
-      filename: "main.[hash].js"
+      filename: "main.[hash].js",
+      publicPath: "/"
     },
     target: "web",
     devtool: devMode ? "source-map" : false,
@@ -108,10 +107,13 @@ module.exports = (env, args) => {
           }
         },
         {
-          test: /\.(png|jpe?g|gif|ico)$/i,
+          test: /\.(png|jpe?g|gif|ico|eot|woff2?)$/i,
           use: [
             {
-              loader: "file-loader"
+              loader: "file-loader",
+              options: {
+                outputPath: "assets"
+              }
             }
           ]
         }
@@ -126,7 +128,8 @@ module.exports = (env, args) => {
       port: 1234,
       proxy: {
         "/api": "http://localhost:8080"
-      }
+      },
+      historyApiFallback: true
     },
     plugins: [
       new CleanWebpackPlugin(),
@@ -136,7 +139,8 @@ module.exports = (env, args) => {
         "process.env.UPDATE_PRINTER": JSON.stringify(update_printer),
         "process.env.UPDATE_PROGRESS": JSON.stringify(update_progress),
         "process.env.UPDATE_FILES": JSON.stringify(update_files),
-        "process.env.DEVELOPMENT": JSON.stringify(devMode)
+        "process.env.DEVELOPMENT": JSON.stringify(devMode),
+        "process.env.IS_SL1": JSON.stringify(printer === printers["sl1"])
       }),
       new ForkTsCheckerWebpackPlugin(),
       new MiniCssExtractPlugin({
@@ -145,13 +149,15 @@ module.exports = (env, args) => {
       }),
       new HtmlWebpackPlugin({
         title: `${printer} - Prusa Connect`,
-        favicon: "./ui/src/assets/favicon.ico",
         template: "./ui/src/index.html"
       }),
       new PurgecssPlugin({
         paths: glob.sync(`${PATHS.src}/**/*`, { nodir: true })
       }),
-      new CopyPlugin([{ from: "./ui/src/locales", to: "./locales" }])
+      new CopyPlugin([
+        { from: "./ui/src/locales", to: "./locales" },
+        { from: "./ui/src/assets/icons", to: "./assets" }
+      ])
     ],
     optimization: {
       minimize: true,

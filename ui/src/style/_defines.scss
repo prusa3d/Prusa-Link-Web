@@ -1,0 +1,51 @@
+// This file is part of Prusa-Connect-Local
+// Copyright (C) 2018-2019 Prusa Research s.r.o. - www.prusa3d.com
+// SPDX-License-Identifier: GPL-3.0-or-later
+
+// default
+$body-background-color: hsl(0, 0%, 4%);
+$body-background-color-hover: #313131;
+$text-white: #ffffff;
+$text-grey: #707070;
+$text-orange: #f8651b;
+$color-white: #ffffff;
+$color-grey: #707070;
+$color-orange: #f8651b;
+$line-size: 1px;
+
+// toast time
+$toast-delay: 10s;
+$toast-default-bg: $color-grey;
+$toast-default-color: $text-white;
+$toast-default-title-bg: #4a4a4a;
+$toast-default-title-color: $text-white;
+$toast-warning-bg: #fffbeb;
+$toast-warning-color: #947600;
+$toast-warning-title-bg: #ffdd57;
+$toast-warning-title-color: rgba(0, 0, 0, 0.7);
+$toast-error-bg: #feecf0;
+$toast-error-color: #cc0f35;
+$toast-error-title-bg: #f14668;
+$toast-error-title-color: $text-white;
+$toast-success-bg: #effaf3;
+$toast-success-color: #257942;
+$toast-success-title-bg: #48c774;
+$toast-success-title-color: $text-white;
+
+// font size
+$font-size-1-mobile: 2.5rem;
+$font-size-1-desktop: 1.15rem;
+$font-size-2-mobile: 1.8rem;
+$font-size-2-desktop: 1rem;
+
+// button
+$buttom-bg-color-yes: #35a913;
+$buttom-bg-color-yes-hover: #6ba959;
+$buttom-bg-color-no: #be0000;
+$buttom-bg-color-no-hover: #b34a4a;
+$buttom-bg-color-action: #5b5b5b;
+$buttom-bg-color-action-hover: #6b6868;
+$buttom-margin-left: 12px;
+$buttom-border-color-disabled: #dbdbdb;
+$delete-size-mobile: 48px;
+$delete-size-desktop: 24px;

@@ -1,0 +1,56 @@
+// This file is part of Prusa-Connect-Local
+// Copyright (C) 2018-2019 Prusa Research s.r.o. - www.prusa3d.com
+// SPDX-License-Identifier: GPL-3.0-or-later
+
+@use '../../style/_defines.scss' as defines;
+
+.proje-preview {
+  width: 100%;
+  height: auto;
+}
+
+.proj-icon {
+  display: flex;
+  align-items: center;
+  & > img {
+    width: 48px;
+    height: auto;
+  }
+}
+
+@media screen and (min-width: 1024px) {
+  .proj-icon {
+    & > img {
+      width: 24px;
+      height: auto;
+    }
+  }
+}
+
+.prop-buttons {
+  display: -webkit-flex;
+  display: flex;
+  padding: 0;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+}
+
+.prop-buttons-first {
+  margin-right: unset;
+  margin-bottom: 1rem;
+}
+
+.prop-buttons-second {
+  flex-wrap: nowrap;
+  display: flex;
+}
+
+.prop-buttons-shrink {
+  flex-shrink: unset;
+}
+
+@media (min-width: 1400px) {
+  .prop-buttons-first {
+    margin-right: auto;
+  }
+}

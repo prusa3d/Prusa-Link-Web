@@ -11,7 +11,7 @@ interface TempProps {
 }
 
 interface P extends TempProps {
-  bigSize: boolean;
+  bigSize?: boolean;
 }
 
 const Temperature: preact.FunctionalComponent<P> = props => {
@@ -38,10 +38,10 @@ const Temperature: preact.FunctionalComponent<P> = props => {
     <div class="box has-background-black is-paddingless">
       {!props.bigSize && (
         <p
-          class="prusa-line subtitle is-size-2 is-size-4-desktop has-text-grey is-marginless"
+          class="prusa-line txt-bold txt-grey txt-size-2 is-marginless"
           style={{ padding: 0 }}
         >
-          {t("temps.title")}
+          {t("temps.title").toLowerCase()}
         </p>
       )}
       <svg

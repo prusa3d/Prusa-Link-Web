@@ -12,20 +12,18 @@ interface S {
 }
 
 class Header extends Component<{}, S> {
-  constructor() {
-    super();
-    this.state = { is_burger_active: false };
-    this.onClickBurger = this.onClickBurger.bind(this);
-  }
+  state = { is_burger_active: false };
 
-  onClickBurger() {
+  onClickBurger = () => {
     this.setState({ is_burger_active: !this.state.is_burger_active });
-  }
+  };
 
   render(props, state) {
     let extra_burger_class = "";
+    let extra_burger_class_icon = "";
     if (state.is_burger_active) {
       extra_burger_class = "is-active";
+      extra_burger_class_icon = " open";
     }
 
     return (
@@ -39,10 +37,11 @@ class Header extends Component<{}, S> {
               aria-label="main navigation"
             >
               <div class="navbar-brand">
-                <a
-                  class="navbar-item navbar-logo"
-                  href="https://www.prusa3d.com/"
-                ></a>
+                <a class="navbar-item" href="/">
+                  <img
+                    src={require("../../assets/prusa_connect_local_logo_black.svg")}
+                  />
+                </a>
                 <a
                   role="button"
                   class={"navbar-burger burger " + extra_burger_class}
@@ -51,9 +50,7 @@ class Header extends Component<{}, S> {
                   data-target="navbarBasicMenu"
                   onClick={this.onClickBurger}
                 >
-                  <span aria-hidden="true"></span>
-                  <span aria-hidden="true"></span>
-                  <span aria-hidden="true"></span>
+                  <div class={"icon-heard" + extra_burger_class_icon}></div>
                 </a>
               </div>
               <div
@@ -62,16 +59,16 @@ class Header extends Component<{}, S> {
               >
                 <div class="navbar-end">
                   <Link
-                    class="navbar-item prusa-menu-item is-size-2 is-size-6-desktop"
+                    class="navbar-item prusa-link txt-bold txt-size-2"
                     activeClassName="active"
                     href="/"
                     onClick={this.onClickBurger}
                   >
                     {t("home.link")}
                   </Link>
-                  {process.env.PRINTER != "Original Prusa Mini" && (
+                  {process.env.IS_SL1 && (
                     <Link
-                      class="navbar-item prusa-menu-item is-size-2 is-size-6-desktop"
+                      class="navbar-item prusa-link txt-bold txt-size-2"
                       activeClassName="active"
                       href="/projects"
                       onClick={this.onClickBurger}
@@ -80,7 +77,7 @@ class Header extends Component<{}, S> {
                     </Link>
                   )}
                   <Link
-                    class="navbar-item prusa-menu-item is-size-2 is-size-6-desktop"
+                    class="navbar-item prusa-link txt-bold txt-size-2"
                     activeClassName="active"
                     href="/temperatures"
                     onClick={this.onClickBurger}

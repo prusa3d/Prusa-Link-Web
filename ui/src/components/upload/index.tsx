@@ -4,8 +4,10 @@
 
 import { h } from "preact";
 
-const Upload = props => {
-  if (process.env.PRINTER != "Original Prusa Mini") {
+import { P } from "./component";
+
+const Upload: preact.FunctionalComponent<P> = props => {
+  if (process.env.IS_SL1) {
     const Uploaded = require("./component").default;
     return <Uploaded {...props} />;
   } else {

@@ -3,16 +3,20 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 @charset "utf-8";
-$body-background-color: hsl(0, 0%, 4%);
-$text: hsl(0, 0%, 96%);
+@use './_defines.scss' as defines;
+@use './prusa-fonts.scss';
+$body-background-color: defines.$body-background-color;
+$text: defines.$text-white;
+$text-grey: defines.$text-grey;
 $text-light: hsl(0, 0%, 71%);
-$text-strong: hsl(0, 0%, 100%);
+$text-strong: defines.$text-white;
 $progress-bar-background-color: hsl(0, 0%, 48%);
 $progress-border-radius: 0px;
 $navbar-item-hover-background-color: $body-background-color;
 $navbar-background-color: $body-background-color;
 $navbar-item-hover-color: $text-strong;
-$success: #f8651b;
+$success: defines.$text-orange;
+$section-padding: 3rem 3rem;
 
 @import "../../../node_modules/bulma/sass/utilities/_all.sass";
 @import "../../../node_modules/bulma/sass/base/_all.sass";
@@ -23,115 +27,17 @@ $success: #f8651b;
 @import "../../../node_modules/bulma/sass/elements/image.sass";
 @import "../../../node_modules/bulma/sass/elements/progress.sass";
 @import "../../../node_modules/bulma/sass/elements/other.sass";
+@import "../../../node_modules/bulma/sass/form/shared.sass";
+@import "../../../node_modules/bulma/sass/form/input-textarea.sass";
+@import "../../../node_modules/bulma/sass/form/tools.sass";
 @import "../../../node_modules/bulma/sass/components/media.sass";
 @import "../../../node_modules/bulma/sass/components/navbar.sass";
 @import "../../../node_modules/bulma/sass/components/modal.sass";
 @import "../../../node_modules/bulma/sass/layout/section.sass";
 @import "../../../node_modules/bulma/sass/grid/_all.sass";
 
-$prusa-buttom-bg-color: hsl(130, 85%, 39%);
-$prusa-buttom-bg-hover-color: hsl(130, 38%, 46%);
-$prusa-buttom-bg-color-cancel: #f8651b;
-$prusa-buttom-bg-hover-color-cancel: #fb7431;
-$prusa-buttom-bg-color-grey: hsl(0, 0%, 48%);
-$prusa-buttom-bg-hover-color-grey: #8e8a8a;
-$prusa-buttom-margin-left: 12px;
-
 .prusa-no-focus:focus {
   outline: none;
-}
-
-.prusa-is-flex-end {
-  display: -webkit-box !important;
-  display: flex !important;
-  justify-content: flex-end;
-}
-
-.prusa-button-confirm {
-  margin-left: $prusa-buttom-margin-left;
-  border-color: transparent;
-  color: $text;
-  background-color: $prusa-buttom-bg-color;
-  &:hover {
-    cursor: pointer;
-    border-color: transparent;
-    color: $text;
-    background-color: $prusa-buttom-bg-hover-color;
-  }
-
-  &:disabled {
-    background-color: $prusa-buttom-bg-hover-color;
-    cursor: default;
-    pointer-events: none;
-    border-color: #dbdbdb;
-    box-shadow: none;
-    opacity: 0.5;
-  }
-}
-
-.prusa-button-cancel {
-  margin-left: $prusa-buttom-margin-left;
-  border-color: transparent;
-  color: $text;
-  background-color: $prusa-buttom-bg-color-cancel;
-  &:hover {
-    cursor: pointer;
-    border-color: transparent;
-    color: $text;
-    background-color: $prusa-buttom-bg-hover-color-cancel;
-  }
-
-  &:disabled {
-    background-color: $prusa-buttom-bg-hover-color-cancel;
-    cursor: default;
-    pointer-events: none;
-    border-color: #dbdbdb;
-    box-shadow: none;
-    opacity: 0.5;
-  }
-}
-
-.prusa-button-grey {
-  margin-left: $prusa-buttom-margin-left;
-  border-color: transparent;
-  color: $text;
-  background-color: $prusa-buttom-bg-color-grey;
-
-  &:hover {
-    cursor: pointer;
-    border-color: transparent;
-    color: $text;
-    background-color: $prusa-buttom-bg-hover-color-grey;
-  }
-
-  &:disabled {
-    background-color: $prusa-buttom-bg-hover-color-grey;
-    cursor: default;
-    pointer-events: none;
-    border-color: #dbdbdb;
-    box-shadow: none;
-    opacity: 0.5;
-  }
-}
-
-.prusa-default-text {
-  font-size: 2.15rem;
-  color: #fff;
-}
-
-.prusa-default-text-grey {
-  font-size: 2.15rem;
-  color: #7a7a7a;
-}
-
-@media (min-width: 1024px) {
-  .prusa-default-text {
-    font-size: 1.15rem;
-  }
-
-  .prusa-default-text-grey {
-    font-size: 1.15rem;
-  }
 }
 
 .prusa-break-word {
@@ -139,4 +45,43 @@ $prusa-buttom-margin-left: 12px;
   word-break: break-all;
 }
 
-//@import "../../node_modules/bulma/bulma.sass";
+.prusa-preserve {
+  white-space: pre;
+}
+
+.prusa-line {
+  border-bottom: defines.$line-size solid defines.$color-grey;
+  border-radius: 0px;
+  padding-bottom: 0px;
+}
+
+.prusa-after-nav {
+  margin-top: 0.8rem;
+}
+
+.delete-size {
+  height: defines.$delete-size-mobile;
+  max-height: defines.$delete-size-mobile;
+  max-width: defines.$delete-size-mobile;
+  min-height: defines.$delete-size-mobile;
+  min-width: defines.$delete-size-mobile;
+  width: defines.$delete-size-mobile;
+}
+
+@media (min-width: 1024px) {
+  .section {
+    padding: 1rem 1.5rem;
+  }
+  .delete-size {
+    height: defines.$delete-size-desktop;
+    max-height: defines.$delete-size-desktop;
+    max-width: defines.$delete-size-desktop;
+    min-height: defines.$delete-size-desktop;
+    min-width: defines.$delete-size-desktop;
+    width: defines.$delete-size-desktop;
+  }
+}
+
+.mobile_margin {
+  margin-bottom: 1rem;
+}

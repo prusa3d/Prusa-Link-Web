@@ -5,7 +5,7 @@
 import { h } from "preact";
 
 let icons = icon_id => null;
-if (process.env.PRINTER == "Original Prusa SL1") {
+if (process.env.IS_SL1) {
   const tem_svg = require("../../assets/temperature_color.svg");
   const fan_svg = require("../../assets/fan_color.svg");
   const cover_svg = require("../../assets/cover_color.svg");
@@ -54,11 +54,11 @@ const StatusLeftItem: preact.FunctionalComponent<S> = ({
 }) => {
   return (
     <div class="column is-half-touch is-full-desktop">
-      <div class="media">
-        <img class="media-left image is-24x24" src={icons(icon_id)} />
+      <div class="media media-hd-status">
+        <img class="media-left icon-hd-status" src={icons(icon_id)} />
         <div class="media-content is-clipped">
-          <p class="prusa-default-text-grey">{name}</p>
-          <p class="prusa-default-text">{value}</p>
+          <p class="txt-normal txt-size-2 txt-grey">{name}</p>
+          <p class="txt-bold txt-size-2">{value}</p>
         </div>
       </div>
     </div>

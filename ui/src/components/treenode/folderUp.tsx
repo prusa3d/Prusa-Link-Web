@@ -3,9 +3,12 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import { h, Fragment } from "preact";
+import { useTranslation } from "react-i18next";
+
+import { apiKey } from "../utils/network";
 import Upload from "../upload";
 
-interface upload_info {
+interface upload_info extends apiKey {
   url: string;
   path: string;
 }
@@ -15,9 +18,10 @@ interface Props {
 }
 
 const FolderUp: preact.FunctionalComponent<Props> = props => {
+  const { t, i18n, ready } = useTranslation(null, { useSuspense: false });
   return (
     <Fragment>
-      <div class="column is-full-touch is-half-desktop">
+      <div class="column is-full">
         <Upload {...props.upload_info} />
       </div>
       <div
@@ -32,7 +36,7 @@ const FolderUp: preact.FunctionalComponent<Props> = props => {
             <img src={require("../../assets/up_folder.svg")} />
           </figure>
           <div class="media-content">
-            <p class="title is-size-3 is-size-6-desktop">Main</p>
+            <p class="txt-normal txt-size-2">{t("proj.main")}</p>
           </div>
         </div>
       </div>

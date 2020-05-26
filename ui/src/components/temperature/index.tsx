@@ -9,11 +9,11 @@ export interface TempProps {
 }
 
 interface P extends TempProps {
-  bigSize: boolean;
+  bigSize?: boolean;
 }
 
 export const Temperature: preact.FunctionalComponent<P> = props => {
-  if (process.env.PRINTER == "Original Prusa SL1") {
+  if (process.env.IS_SL1) {
     const Temperature = require("./temp-sla").default;
     return <Temperature {...props} />;
   } else {

@@ -1,12 +1,13 @@
 import { h, Component, Fragment } from "preact";
+
+import { network } from "../utils/network";
 import StatusProgress from "./progress";
-import { update, updateProjectName } from "../telemetry/progress";
 import { isPrinting } from "../utils/states";
 import { PrinterState } from "../telemetry";
 
 let StatusBoardTable;
 let initState;
-if (process.env.PRINTER == "Original Prusa SL1") {
+if (process.env.IS_SL1) {
   initState = require("./board-sla").initState;
   StatusBoardTable = require("./board-sla").StatusBoardSL1;
 } else {
@@ -14,8 +15,8 @@ if (process.env.PRINTER == "Original Prusa SL1") {
   StatusBoardTable = require("./board-mini").StatusBoardMini;
 }
 
-interface P {
-  isJob?: boolean;
+interface P extends network {
+  isHalf?: boolean;
   printer_state: PrinterState;
 }
 
@@ -41,13 +42,13 @@ class StatusBoard extends Component<P, S> {
     } else {
       this.wasPrinting = is_printing;
       if (is_printing) {
-        updateProjectName(this.updateData);
-        update(this.updateData, this.clearData)();
+        this.updateProjectName();
+        this.updateData();
+        const update = this.updateData;
         if (!this.timer) {
-          this.timer = setInterval(
-            update(this.updateData, this.clearData),
-            Number(process.env.UPDATE_PROGRESS)
-          );
+          this.timer = setInterval(function() {
+            update();
+          }, Number(process.env.UPDATE_PROGRESS));
         }
         return true;
       } else {
@@ -62,12 +63,12 @@ class StatusBoard extends Component<P, S> {
 
   componentDidMount = () => {
     if (isPrinting(this.props.printer_state)) {
-      updateProjectName(this.updateData);
-      update(this.updateData, this.clearData)();
-      this.timer = setInterval(
-        update(this.updateData, this.clearData),
-        Number(process.env.UPDATE_PROGRESS)
-      );
+      this.updateProjectName();
+      this.updateData();
+      const update = this.updateData;
+      this.timer = setInterval(function() {
+        update();
+      }, Number(process.env.UPDATE_PROGRESS));
     }
   };
 
@@ -77,8 +78,32 @@ class StatusBoard extends Component<P, S> {
     }
   };
 
-  updateData = data => {
-    this.setState((prevState, props) => ({ ...prevState, ...data }));
+  updateProjectName = () => {
+    this.props.onFetch({
+      url: "/api/project-name",
+      then: response =>
+        response
+          .json()
+          .then(data =>
+            this.setState((prevState, props) => ({ ...prevState, ...data }))
+          ),
+      except: e =>
+        this.setState((prevState, props) => ({
+          ...prevState,
+          project_name: ""
+        }))
+    });
+  };
+
+  updateData = () => {
+    this.props.onFetch({
+      url: "/api/progress",
+      then: response =>
+        response.json().then(data => {
+          this.setState((prevState, props) => ({ ...prevState, ...data }));
+        }),
+      except: e => this.clearData()
+    });
   };
 
   clearData = () => {
@@ -87,9 +112,9 @@ class StatusBoard extends Component<P, S> {
   };
 
   render(props, { project_name, progress, ...others }) {
-    const class_name = props.isJob
-      ? "column is-full"
-      : "column is-full-touch is-half-desktop";
+    const class_name = props.isHalf
+      ? "column is-full-touch is-half-desktop"
+      : "column is-full";
     return (
       <Fragment>
         <div class={class_name}>

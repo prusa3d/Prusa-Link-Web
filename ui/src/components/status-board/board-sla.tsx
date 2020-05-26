@@ -38,36 +38,36 @@ export const StatusBoardSL1: preact.FunctionalComponent<P> = ({
     <Fragment>
       <div class="columns">
         <StatusBoardItem
-          title={t("prop.rem-time")}
-          value={formatTime(remaining_time, t("prop.less-than"), "NA")}
+          title={t("prop.rem-time").toLowerCase()}
+          value={formatTime(remaining_time, t)}
         />
         <StatusBoardItem
-          title={t("prop.est-end")}
-          value={formatEstimatedTime(remaining_time)}
+          title={t("prop.est-end").toLowerCase()}
+          value={formatEstimatedTime(remaining_time, t)}
         />
         <StatusBoardItem
-          title={t("prop.pnt-time")}
-          value={formatTime(time_elapsed, t("prop.less-than"), "NA")}
+          title={t("prop.pnt-time").toLowerCase()}
+          value={formatTime(time_elapsed, t)}
         />
       </div>
       <div class="columns">
         <StatusBoardItem
-          title={t("prop.layers")}
+          title={t("prop.layers").toLowerCase()}
           value={total_layers > 0 ? `${current_layer}/${total_layers}` : "0/0"}
         />
         <StatusBoardItem
-          title={t("prop.sla-rmn-mt")}
+          title={t("prop.sla-rmn-mt").toLowerCase()}
           value={
             remaining_material > 0
-              ? `${numberFormat(remaining_material)} ml`
+              ? numberFormat(remaining_material) + " " + t("unit.ml")
               : "NA"
           }
         />
         <StatusBoardItem
-          title={t("prop.sla-csm-mt")}
+          title={t("prop.sla-csm-mt").toLowerCase()}
           value={
             consumed_material > 0
-              ? `${numberFormat(consumed_material)} ml`
+              ? numberFormat(consumed_material) + " " + t("unit.ml")
               : "NA"
           }
         />

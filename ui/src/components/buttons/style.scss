@@ -1,0 +1,109 @@
+// This file is part of Prusa-Connect-Local
+// Copyright (C) 2018-2019 Prusa Research s.r.o. - www.prusa3d.com
+// SPDX-License-Identifier: GPL-3.0-or-later
+
+@use '../../style/_defines.scss' as defines;
+
+.prusa-button-wrapper {
+  display: -webkit-box !important;
+  display: flex !important;
+  justify-content: flex-end;
+}
+
+.prusa-button-margin {
+  margin-left: defines.$buttom-margin-left;
+}
+
+%button-comum {
+  align-items: center;
+  color: defines.$text-white;
+  border-radius: 8px;
+  border-color: transparent;
+  font-size: defines.$font-size-2-mobile;
+  font-family: "Atlas Grotesk Bold Web";
+  flex-shrink: unset;
+}
+
+.prusa-button-yes {
+  @extend %button-comum;
+  background-color: defines.$buttom-bg-color-yes;
+
+  &:hover {
+    cursor: pointer;
+    border-color: transparent;
+    color: defines.$text-white;
+    background-color: defines.$buttom-bg-color-yes-hover;
+  }
+
+  &:disabled {
+    background-color: defines.$buttom-bg-color-yes-hover;
+    cursor: default;
+    pointer-events: none;
+    border-color: defines.$buttom-border-color-disabled;
+    box-shadow: none;
+    opacity: 0.5;
+  }
+}
+
+.prusa-button-no {
+  @extend %button-comum;
+  background-color: defines.$buttom-bg-color-no;
+
+  &:hover {
+    cursor: pointer;
+    color: defines.$text-white;
+    border-color: transparent;
+    background-color: defines.$buttom-bg-color-no-hover;
+  }
+
+  &:disabled {
+    background-color: defines.$buttom-bg-color-no-hover;
+    cursor: default;
+    pointer-events: none;
+    border-color: defines.$buttom-border-color-disabled;
+    box-shadow: none;
+    opacity: 0.5;
+  }
+}
+
+.prusa-button-action {
+  @extend %button-comum;
+  background-color: defines.$buttom-bg-color-action;
+
+  &:hover {
+    cursor: pointer;
+    color: defines.$text-white;
+    border-color: transparent;
+    background-color: defines.$buttom-bg-color-action-hover;
+  }
+
+  &:disabled {
+    background-color: defines.$buttom-bg-color-action-hover;
+    cursor: default;
+    pointer-events: none;
+    border-color: defines.$buttom-border-color-disabled;
+    box-shadow: none;
+    opacity: 0.5;
+  }
+}
+
+.prusa-button-icon {
+  width: 36px;
+  height: 100%;
+}
+
+@media (min-width: 1024px) {
+  .prusa-button-yes,
+  .prusa-button-no,
+  .prusa-button-action {
+    font-size: defines.$font-size-2-desktop;
+    border-radius: 4px;
+    flex-shrink: 0;
+  }
+  .prusa-button-icon {
+    height: 24px;
+    width: 24px;
+    display: block;
+    position: relative;
+  }
+}

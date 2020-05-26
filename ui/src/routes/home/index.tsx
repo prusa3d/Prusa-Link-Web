@@ -3,55 +3,70 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import { h, Fragment } from "preact";
-import { Translation } from "react-i18next";
+
+import { network, apiKey } from "../../components/utils/network";
+import { useTranslation } from "react-i18next";
 import Title from "../../components/title";
 import Welcome from "../../components/notification/welcome";
-import StatusBoard from "../../components/status-board";
+import Progress from "../../components/progress";
 import { TempProps, Temperature } from "../../components/temperature";
 import Upload from "../../components/upload";
 import { isPrinting } from "../../components/utils/states";
 import { PrinterState } from "../../components/telemetry";
 
-interface homeProps extends TempProps {
+interface homeProps extends TempProps, network, apiKey {
   printer_state: PrinterState;
 }
 
-const Home: preact.FunctionalComponent<homeProps> = ({
-  printer_state,
-  temperatures
-}) => {
+const Contents = props => (
+  <Fragment>
+    <div class="column is-full-touch is-half-desktop">
+      <Upload getApikey={props.getApikey} />
+    </div>
+    <div class="column is-full-touch is-half-desktop">
+      <Temperature temperatures={props.temperatures} />
+    </div>
+  </Fragment>
+);
+
+const ViewProgress = props => (
+  <div class="column is-full">
+    <Progress
+      printer_state={props.printer_state}
+      onFetch={props.onFetch}
+      isHalf
+    >
+      <Contents temperatures={props.temperatures} getApikey={props.getApikey} />
+    </Progress>
+  </div>
+);
+
+const ViewDefault = props => {
+  const { t, i18n, ready } = useTranslation(null, { useSuspense: false });
   return (
     <Fragment>
-      {/* 
-      // @ts-ignore */}
-      <Translation useSuspense={false}>
-        {(t, { i18n }, ready) =>
-          ready && (
-            <Title title={t("home.title") + ": "}>
-              {
-                <span class="title is-size-3 is-size-4-desktop prusa-text-orange">
-                  {isPrinting(printer_state)
-                    ? t("prop.st-priting")
-                    : t("prop.st-idle")}
-                </span>
-              }
-            </Title>
-          )
-        }
-      </Translation>
-      <Welcome />
-      <div class="columns is-multiline">
-        <StatusBoard printer_state={printer_state} />
-        <div class="column is-full-touch is-half-desktop">
-          <Upload />
-        </div>
+      <div class="column is-full">
+        {ready && (
+          <Title title={t("home.title") + ": "} onFetch={props.onFetch}>
+            <span class="txt-white ">{t("prop.st-idle")}</span>
+          </Title>
+        )}
       </div>
-      <div class="columns is-multiline is-mobile">
-        <div class="column is-full">
-          <Temperature temperatures={temperatures} bigSize={false} />
-        </div>
-      </div>
+      <Contents temperatures={props.temperatures} getApikey={props.getApikey} />
     </Fragment>
+  );
+};
+
+const Home: preact.FunctionalComponent<homeProps> = props => {
+  return (
+    <div class="columns is-multiline">
+      <Welcome />
+      {isPrinting(props.printer_state) ? (
+        <ViewProgress {...props} />
+      ) : (
+        <ViewDefault {...props} />
+      )}
+    </div>
   );
 };
 

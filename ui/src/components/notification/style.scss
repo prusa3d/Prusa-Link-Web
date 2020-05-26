@@ -2,7 +2,12 @@
 // Copyright (C) 2018-2019 Prusa Research s.r.o. - www.prusa3d.com
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-.prusa-confirm-question {
-  padding-top: 2rem;
-  padding-bottom: 1rem;
+.well-logo {
+  width: 75%;
+}
+
+@media (min-width: 1024px) {
+  .well-logo {
+    width: 50%;
+  }
 }

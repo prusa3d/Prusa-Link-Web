@@ -28,16 +28,16 @@ npm run api:test
 
 ## UI
 
-### Clean ui
-
-```bash
-npm run ui:clean
-```
-
-### Run ui
+### Run ui sla
 
 ```bash
 npm run ui:start
+```
+
+### Run ui fdm
+
+```bash
+npm run ui:start-mini
 ```
 
 ### Build dev

@@ -3,12 +3,17 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import { h, Component, Fragment } from "preact";
+import { useTranslation } from "react-i18next";
+
 import "./style.scss";
-import { FileProperties } from "./projectProperties";
+import { network, apiKey } from "../utils/network";
+import Title from "../../components/title";
 import FolderUp from "./folderUp";
 import ProjectNode from "./projectNode";
 import FolderNode from "./folderNode";
-import ProjectView from "./projectView";
+import ProjectView from "../project-view";
+import Toast from "../toast";
+import Loading from "../loading";
 
 interface nodeInfo {
   path: string;
@@ -20,11 +25,19 @@ interface nodeFolder extends nodeInfo {
   children: nodeTree;
 }
 
+interface FileProperties {
+  printing_time: number;
+  material: string;
+  layer_height: number;
+}
+
 interface nodeFile extends nodeInfo, FileProperties {}
 
 interface nodeTree {
   [path: string]: nodeFolder | nodeFile;
 }
+
+interface P extends network, apiKey {}
 
 interface S {
   parent_path: string;
@@ -53,14 +66,19 @@ let state = {
 
 const not_found_images = [];
 
-class Tree extends Component<{}, S> {
+class Tree extends Component<P, S> {
   timer: any;
+  first_time: boolean;
   constructor() {
     super();
     this.state = state;
+    this.first_time = true;
   }
 
-  onUpFolder = () => {
+  onUpFolder = (update: boolean = false) => {
+    if (update) {
+      this.connect();
+    }
     let path = this.state.parent_path;
     let newView = this.createView(path, this.state.container);
     this.setState((prevState, props) => ({
@@ -75,11 +93,18 @@ class Tree extends Component<{}, S> {
       nodeFolder | nodeFile
     >).find(e => e.path === path) as nodeFolder;
     let children = folder.children;
-    if (Object.keys(children).length > 0) {
+    if (children && Object.keys(children).length > 0) {
       const newView = this.createView(null, children);
       this.setState((prevState, props) => ({
         ...prevState,
         current_view: newView.current_view,
+        parent_path: this.state.current_path,
+        current_path: folder.path
+      }));
+    } else {
+      this.setState((prevState, props) => ({
+        ...prevState,
+        current_view: [],
         parent_path: this.state.current_path,
         current_path: folder.path
       }));
@@ -90,12 +115,39 @@ class Tree extends Component<{}, S> {
     const file: nodeFile = (this.state.current_view as Array<
       nodeFolder | nodeFile
     >).find(e => e.path === path) as nodeFile;
-    this.setState((prevState, props) => ({
-      ...prevState,
-      current_view: file,
-      parent_path: this.state.current_path,
-      current_path: path
-    }));
+
+    const options = {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: '{"command":"select"}'
+    };
+
+    this.props.onFetch({
+      url: this.createLink(path),
+      then: e => {
+        this.setState((prevState, props) => ({
+          ...prevState,
+          current_view: file,
+          parent_path: this.state.current_path,
+          current_path: path
+        }));
+      },
+      options,
+      except: e => {
+        const { t, i18n, ready } = useTranslation(null, { useSuspense: false });
+        new Promise<string>(function(resolve, reject) {
+          if (ready) {
+            if (e.message == "Not Calibrated") {
+              resolve(t("ntf.n-calibrated"));
+            } else if (e.message == "Conflict") {
+              resolve(t("ntf.not-idle"));
+            }
+          }
+        }).then(message => Toast.error(t("ntf.error"), message));
+      }
+    });
   };
 
   createView = (path: string, container: nodeTree) => {
@@ -105,17 +157,19 @@ class Tree extends Component<{}, S> {
     if (path) {
       const path_steps = path.split("/");
       parent_path = path.substring(0, path.lastIndexOf("/"));
-      for (let step of path_steps) {
-        let view = current_view[step] as nodeInfo;
-        if (view.isFolder) {
-          current_view = (view as nodeFolder).children;
-        } else {
-          return {
-            parent_path: parent_path,
-            current_view: view as nodeFile
-          };
+      try {
+        for (let step of path_steps) {
+          let view = current_view[step] as nodeInfo;
+          if (view.isFolder) {
+            current_view = (view as nodeFolder).children;
+          } else {
+            return {
+              parent_path: parent_path,
+              current_view: view as nodeFile
+            };
+          }
         }
-      }
+      } catch (error) {}
     }
     for (let path_key in current_view) {
       views.push(current_view[path_key]);
@@ -153,17 +207,13 @@ class Tree extends Component<{}, S> {
         let gcodeAnalysis = file_or_folder["gcodeAnalysis"];
         if (gcodeAnalysis) {
           if (gcodeAnalysis["estimatedPrintTime"]) {
-            let hours = gcodeAnalysis["estimatedPrintTime"] / 3600;
-            let h = Math.trunc(hours);
-            let m = Math.round((hours - h) * 60);
-            obj["printing_time"] =
-              (h > 0 ? `${h}h ` : "") + `${("0" + m).substr(-2)}m`;
+            obj["printing_time"] = gcodeAnalysis["estimatedPrintTime"];
           }
           let material = gcodeAnalysis["material"];
           obj["material"] = material
             .substring(0, material.indexOf("@") || material.length)
             .trim();
-          obj["leyer_height"] = gcodeAnalysis["dimensions"]["height"];
+          obj["layer_height"] = gcodeAnalysis["dimensions"]["height"];
         }
       }
       if (parent) {
@@ -187,32 +237,38 @@ class Tree extends Component<{}, S> {
   };
 
   connect = async () => {
-    let response = await fetch("/api/files?recursive=true", {
-      method: "GET",
-      headers: {
-        "X-Api-Key": process.env.APIKEY,
-        "If-None-Match": this.state.eTag
+    return this.props.onFetch({
+      url: "/api/files?recursive=true",
+      then: response => {
+        const eTag = response.headers.get("etag");
+        response.json().then(data => {
+          if (data && "files" in data) {
+            const newContainer = this.createContainer(data["files"]);
+            const newView = this.createView(
+              this.state.current_path,
+              newContainer
+            );
+            this.setState((prevState, props) => ({
+              ...prevState,
+              eTag: eTag,
+              container: newContainer,
+              ...newView
+            }));
+          }
+        });
+      },
+      options: {
+        headers: {
+          "If-None-Match": this.state.eTag
+        }
       }
     });
-
-    if (response.ok) {
-      const eTag = response.headers.get("etag");
-      const data = await response.json();
-      if (data && "files" in data) {
-        const newContainer = this.createContainer(data["files"]);
-        const newView = this.createView(this.state.current_path, newContainer);
-        this.setState((prevState, props) => ({
-          ...prevState,
-          eTag: eTag,
-          container: newContainer,
-          ...newView
-        }));
-      }
-    }
   };
 
   componentDidMount() {
-    this.connect();
+    this.connect().finally(() => {
+      this.first_time = false;
+    });
     this.timer = setInterval(this.connect, Number(process.env.UPDATE_FILES));
   }
 
@@ -250,20 +306,29 @@ class Tree extends Component<{}, S> {
       return {
         url: "/api/files/sdcard",
         path: path.substring(3),
-        update: this.connect
+        update: this.connect,
+        getApikey: this.props.getApikey
       };
     }
     return {
       url: "/api/files/local",
       path: path.substring(5),
-      update: this.connect
+      update: this.connect,
+      getApikey: this.props.getApikey
     };
   };
 
-  render({}, { current_view, current_path, ...others }) {
+  render({ onFetch }, { current_view, current_path, ...others }) {
     const showTree = Array.isArray(current_view);
     let listNodes = [];
+    let title;
+    const { t, i18n, ready } = useTranslation(null, { useSuspense: false });
     if (showTree) {
+      title = current_path
+        ? current_path.split("/").join(" > ")
+        : ready
+        ? t("proj.title")
+        : "";
       listNodes = current_view.map((node: nodeInfo) => {
         if (node.isFolder) {
           return (
@@ -279,34 +344,49 @@ class Tree extends Component<{}, S> {
               onSelectFile={() => this.onSelectFile(node.path)}
               preview_src={this.createPreview(node.path)}
               not_found={not_found_images}
+              onFetch={onFetch}
             />
           );
         }
       });
+    } else {
+      title = current_path
+        ? current_path
+            .split("/")
+            .slice(0, -1)
+            .join(" > ")
+        : "";
     }
 
     return (
       <Fragment>
         {current_view ? (
           showTree ? (
-            <div class="columns is-multiline is-mobile">
-              {current_path && (
-                <FolderUp
-                  upload_info={this.createUploadLink(current_path)}
-                  onUpFolder={this.onUpFolder}
-                />
-              )}
-              {listNodes}
-            </div>
+            <Fragment>
+              {ready && <Title title={title} onFetch={onFetch} />}
+              <div class="columns is-multiline is-mobile tree-marginless">
+                {current_path && (
+                  <FolderUp
+                    upload_info={this.createUploadLink(current_path)}
+                    onUpFolder={this.onUpFolder}
+                  />
+                )}
+                {listNodes}
+              </div>
+            </Fragment>
           ) : (
             <ProjectView
               onBack={this.onUpFolder}
               {...current_view}
-              url={this.createLink((current_view as nodeFile).path)}
               preview_src={this.createPreview((current_view as nodeFile).path)}
               not_found={not_found_images}
+              title={title}
+              onFetch={onFetch}
+              url={this.createLink((current_view as nodeFile).path)}
             />
           )
+        ) : this.first_time ? (
+          <Loading />
         ) : null}
       </Fragment>
     );
