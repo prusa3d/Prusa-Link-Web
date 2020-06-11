@@ -52,7 +52,7 @@ if (process.env.PRINTER == "Original Prusa SL1") {
     "printing_speed",
     "flow_factor",
     "print_dur",
-    "remaining_time",
+    "time_est",
     "filament_status"
   ];
   printerState = {

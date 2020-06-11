@@ -28,6 +28,7 @@ export interface StatusBoardTableProps {
   readonly flow_factor?: number;
   readonly print_dur?: number;
   readonly filament_status?: string;
+  readonly time_est?: number;
 }
 
 const StatusBoardItem = (props: StatusBoardItemProps) => {
@@ -96,7 +97,7 @@ export const StatusBoardMini = ({
   printing_speed,
   flow_factor,
   print_dur,
-  remaining_time
+  time_est
 }: StatusBoardTableProps) => {
   const available = (value, unit = null) =>
     value ? value + (unit ? " " + unit : "") : "NA";
@@ -123,7 +124,7 @@ export const StatusBoardMini = ({
         <StatusBoardItem
           id="estimated-end"
           title="Estimated end"
-          value={formatEstimatedTime(remaining_time)}
+          value={formatEstimatedTime(time_est)}
         />
         <StatusBoardItem
           id="print-dur"

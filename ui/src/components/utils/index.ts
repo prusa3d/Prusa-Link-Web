@@ -37,7 +37,7 @@ export function formatTimeEnd(value: number) {
 export function formatEstimatedTime(value: number): string {
   if (value) {
     let now = new Date();
-    let end = new Date(now.getTime() + value);
+    let end = new Date(now.getTime() + value * 1000);
     const days = Math.abs(end.getDate() - now.getDate());
     let plus_days = "";
     if (days == 1) {
