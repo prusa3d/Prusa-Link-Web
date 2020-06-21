@@ -11,6 +11,7 @@
     width: 96%;
     height: auto;
     margin-bottom: 0.5rem;
+    min-height: 132px;
   }
 }
 
@@ -32,6 +33,7 @@
 @media (min-width: 1024px) {
   .navbar-item img {
     width: 328px;
+    min-height: auto;
   }
 }
 
