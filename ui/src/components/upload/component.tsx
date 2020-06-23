@@ -14,7 +14,7 @@ import Toast from "../toast";
 export interface P extends apiKey {
   url?: string;
   path?: string;
-  update?: () => void;
+  update?: (current_path?: string) => void;
 }
 
 interface S {
@@ -122,23 +122,23 @@ class Upload extends Component<P, S> {
 
     const formData = new FormData();
     formData.append("path", path);
+    formData.append("select", "false");
     formData.append("file", file);
 
     const request = new XMLHttpRequest();
     request.open("POST", url);
     request.setRequestHeader("X-Api-Key", this.props.getApikey());
 
-    request.upload.onprogress = function(e: ProgressEvent) {
-      that.setState(prev => {
+    request.upload.onprogress = (e: ProgressEvent) => {
+      this.setState(prev => {
         const progress = prev.progress;
         progress[index] = e.total ? e.loaded / e.total : 0;
         return { ...prev, progress: progress };
       });
     };
 
-    const that = this;
-    request.onloadstart = function(e: ProgressEvent) {
-      that.setState(prev => {
+    request.onloadstart = (e: ProgressEvent) => {
+      this.setState(prev => {
         const progress = prev.progress;
         progress[index] = 0;
         return { ...prev, progress: progress };
@@ -147,20 +147,26 @@ class Upload extends Component<P, S> {
 
     request.onloadend = (e: ProgressEvent) => {
       this.notify((e.target as XMLHttpRequest).status, file.name);
-      that.setState(prev => {
-        const progress = prev.progress;
-        let n = Object.keys(progress).length;
-        let total = 0;
-        for (let path in progress) {
-          total = total + progress[path];
+      const progress = this.state.progress;
+      let n = Object.keys(progress).length;
+      let total = 0;
+      for (let path in progress) {
+        total = total + progress[path];
+      }
+      if (total > 0 && total == n) {
+        this.setState(prev => ({ ...prev, progress: {} }));
+        const current_path =
+          (url == "/api/files/local" ? "local" : "usb") +
+          path +
+          (n == 1 ? "/" + file.name : "");
+        console.log(current_path);
+        if (update) {
+          update(current_path);
+        } else {
+          setTimeout(() => {
+            window.location.href = "/projects?path=" + current_path;
+          }, 2000);
         }
-        if (total == n) {
-          return { ...prev, progress: {} };
-        }
-        return { ...prev };
-      });
-      if (update) {
-        update();
       }
     };
 
