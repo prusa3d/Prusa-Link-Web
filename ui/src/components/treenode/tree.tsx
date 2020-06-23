@@ -115,7 +115,17 @@ class Tree extends Component<P, S> {
     const file: nodeFile = (this.state.current_view as Array<
       nodeFolder | nodeFile
     >).find(e => e.path === path) as nodeFile;
+    this.try_open(path, e => {
+      this.setState((prevState, props) => ({
+        ...prevState,
+        current_view: file,
+        parent_path: this.state.current_path,
+        current_path: path
+      }));
+    });
+  };
 
+  try_open = (path: string, then: (e: any) => void = () => {}) => {
     const options = {
       method: "POST",
       headers: {
@@ -126,14 +136,7 @@ class Tree extends Component<P, S> {
 
     this.props.onFetch({
       url: this.createLink(path),
-      then: e => {
-        this.setState((prevState, props) => ({
-          ...prevState,
-          current_view: file,
-          parent_path: this.state.current_path,
-          current_path: path
-        }));
-      },
+      then: then,
       options,
       except: e => {
         const { t, i18n, ready } = useTranslation(null, { useSuspense: false });
@@ -250,12 +253,19 @@ class Tree extends Component<P, S> {
               current_path ? current_path : this.state.current_path,
               newContainer
             );
-            this.setState((prevState, props) => ({
-              ...prevState,
-              eTag: eTag,
-              container: newContainer,
-              ...newView
-            }));
+            this.setState(
+              (prevState, props) => ({
+                ...prevState,
+                eTag: eTag,
+                container: newContainer,
+                ...newView
+              }),
+              () => {
+                if (current_path && current_path.endsWith(".sl1")) {
+                  this.try_open(current_path);
+                }
+              }
+            );
           }
         });
       },

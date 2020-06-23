@@ -82,7 +82,7 @@ class Upload extends Component<P, S> {
     [...files].forEach(this.uploadFile);
   };
 
-  notify = (status, file_name) => {
+  notify = async (status, file_name) => {
     const { t, i18n, ready } = useTranslation(null, { useSuspense: false });
     return new Promise<NTF>(function(resolve, reject) {
       if (ready) {
@@ -145,8 +145,9 @@ class Upload extends Component<P, S> {
       });
     };
 
-    request.onloadend = (e: ProgressEvent) => {
-      this.notify((e.target as XMLHttpRequest).status, file.name);
+    request.onloadend = async (e: ProgressEvent) => {
+      const status = (e.target as XMLHttpRequest).status;
+      await this.notify(status, file.name);
       const progress = this.state.progress;
       let n = Object.keys(progress).length;
       let total = 0;
@@ -154,19 +155,23 @@ class Upload extends Component<P, S> {
         total = total + progress[path];
       }
       if (total > 0 && total == n) {
-        this.setState(prev => ({ ...prev, progress: {} }));
-        const current_path =
-          (url == "/api/files/local" ? "local" : "usb") +
-          path +
-          (n == 1 ? "/" + file.name : "");
-        console.log(current_path);
-        if (update) {
-          update(current_path);
-        } else {
-          setTimeout(() => {
-            window.location.href = "/projects?path=" + current_path;
-          }, 2000);
-        }
+        this.setState(
+          prev => ({ ...prev, progress: {} }),
+          () => {
+            let current_path =
+              (url == "/api/files/local" ? "local" : "usb") + path;
+            if (n == 1 && status == 201) {
+              current_path = current_path + "/" + file.name;
+            }
+            setTimeout(() => {
+              if (update) {
+                update(current_path);
+              } else {
+                window.location.href = "/projects?path=" + current_path;
+              }
+            }, 2000);
+          }
+        );
       }
     };
 
