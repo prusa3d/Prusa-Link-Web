@@ -165,7 +165,8 @@ class Tree extends Component<P, S> {
           } else {
             return {
               parent_path: parent_path,
-              current_view: view as nodeFile
+              current_view: view as nodeFile,
+              current_path: path
             };
           }
         }
@@ -177,7 +178,8 @@ class Tree extends Component<P, S> {
 
     return {
       parent_path: parent_path,
-      current_view: views.sort(sortByType)
+      current_view: views.sort(sortByType),
+      current_path: path
     };
   };
 
@@ -236,7 +238,7 @@ class Tree extends Component<P, S> {
     return result;
   };
 
-  connect = async () => {
+  connect = async (current_path?: string) => {
     return this.props.onFetch({
       url: "/api/files?recursive=true",
       then: response => {
@@ -245,7 +247,7 @@ class Tree extends Component<P, S> {
           if (data && "files" in data) {
             const newContainer = this.createContainer(data["files"]);
             const newView = this.createView(
-              this.state.current_path,
+              current_path ? current_path : this.state.current_path,
               newContainer
             );
             this.setState((prevState, props) => ({
@@ -266,7 +268,12 @@ class Tree extends Component<P, S> {
   };
 
   componentDidMount() {
-    this.connect().finally(() => {
+    let addr = new URL(window.location.href);
+    let current_path = addr.searchParams.get("path");
+    if (current_path) {
+      history.pushState({ path: current_path }, "", addr.pathname);
+    }
+    this.connect(current_path).finally(() => {
       this.first_time = false;
     });
     this.timer = setInterval(this.connect, Number(process.env.UPDATE_FILES));

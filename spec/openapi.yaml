@@ -1051,6 +1051,10 @@ components:
             type: string
             format: binary
           description: The file to upload, including a valid filename.
+        select:
+          type: string
+          default: "true"
+          description: Whether to select the file directly after upload (true) or not (false). Defaults to true.
       required:
         - path
         - file
