@@ -4,15 +4,17 @@
 
 import { h, Component } from "preact";
 
-import { network, apiKey } from "../utils/network";
-import Tree from "./tree";
+import { Tree, TreeProps } from "./tree";
 
-interface P extends network, apiKey {}
+class TreeNode extends Component<TreeProps, {}> {
+  shouldComponentUpdate = (nextProps, nextState, nextContext) => {
+    return this.props.showPreview != nextProps.showPreview;
+  };
 
-class TreeNode extends Component<P, {}> {
-  shouldComponentUpdate = () => false;
-  render({ onFetch, getApikey }, {}) {
-    return <Tree onFetch={onFetch} getApikey={getApikey} />;
+  render({ onFetch, getApikey, showPreview }, {}) {
+    return (
+      <Tree onFetch={onFetch} getApikey={getApikey} showPreview={showPreview} />
+    );
   }
 }
 

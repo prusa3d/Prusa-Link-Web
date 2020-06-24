@@ -7,7 +7,7 @@ import { h } from "preact";
 import { network, apiKey } from "../../components/utils/network";
 import TreeNode from "../../components/treenode";
 import Progress from "../../components/progress";
-import { isPrinting } from "../../components/utils/states";
+import { isPrinting, isPrintingConfirm } from "../../components/utils/states";
 import { PrinterState } from "../../components/telemetry";
 
 interface P extends network, apiKey {
@@ -23,7 +23,13 @@ const Project: preact.FunctionalComponent<P> = ({
   if (isPrinting(printer_state)) {
     view = <Progress printer_state={printer_state} onFetch={onFetch} />;
   } else {
-    view = <TreeNode onFetch={onFetch} getApikey={getApikey} />;
+    view = (
+      <TreeNode
+        onFetch={onFetch}
+        getApikey={getApikey}
+        showPreview={isPrintingConfirm(printer_state)}
+      />
+    );
   }
   return view;
 };
