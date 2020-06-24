@@ -37,7 +37,9 @@ interface nodeTree {
   [path: string]: nodeFolder | nodeFile;
 }
 
-interface P extends network, apiKey {}
+export interface TreeProps extends network, apiKey {
+  showPreview: boolean;
+}
 
 interface S {
   parent_path: string;
@@ -66,13 +68,11 @@ let state = {
 
 const not_found_images = [];
 
-class Tree extends Component<P, S> {
+export class Tree extends Component<TreeProps, S> {
   timer: any;
-  first_time: boolean;
   constructor() {
     super();
     this.state = state;
-    this.first_time = true;
   }
 
   onUpFolder = (update: boolean = false) => {
@@ -111,21 +111,19 @@ class Tree extends Component<P, S> {
     }
   };
 
-  onSelectFile = (path: string) => {
+  onOpenedFile = (path: string) => {
     const file: nodeFile = (this.state.current_view as Array<
       nodeFolder | nodeFile
     >).find(e => e.path === path) as nodeFile;
-    this.try_open(path, e => {
-      this.setState((prevState, props) => ({
-        ...prevState,
-        current_view: file,
-        parent_path: this.state.current_path,
-        current_path: path
-      }));
-    });
+    this.setState((prevState, props) => ({
+      ...prevState,
+      current_view: file,
+      parent_path: this.state.current_path,
+      current_path: path
+    }));
   };
 
-  try_open = (path: string, then: (e: any) => void = () => {}) => {
+  onOpenFile = (path: string) => {
     const options = {
       method: "POST",
       headers: {
@@ -136,7 +134,7 @@ class Tree extends Component<P, S> {
 
     this.props.onFetch({
       url: this.createLink(path),
-      then: then,
+      then: () => {},
       options,
       except: e => {
         const { t, i18n, ready } = useTranslation(null, { useSuspense: false });
@@ -184,6 +182,28 @@ class Tree extends Component<P, S> {
       current_view: views.sort(sortByType),
       current_path: path
     };
+  };
+
+  componentDidUpdate = (prevProps, prevState, snapshot) => {
+    // show preview
+    if (this.props.showPreview && Array.isArray(this.state.current_view)) {
+      this.props.onFetch({
+        url: "/api/files/preview",
+        then: response => {
+          response.json().then(data => {
+            if (data) {
+              const path = data.origin + data.path;
+              this.onOpenedFile(path);
+            }
+          });
+        }
+      });
+    }
+
+    // don't show preview
+    if (!(this.props.showPreview || Array.isArray(this.state.current_view))) {
+      this.onUpFolder();
+    }
   };
 
   createContainer = (files, parent: string = null) => {
@@ -262,7 +282,7 @@ class Tree extends Component<P, S> {
               }),
               () => {
                 if (current_path && current_path.endsWith(".sl1")) {
-                  this.try_open(current_path);
+                  this.onOpenFile(current_path);
                 }
               }
             );
@@ -283,9 +303,7 @@ class Tree extends Component<P, S> {
     if (current_path) {
       history.pushState({ path: current_path }, "", addr.pathname);
     }
-    this.connect(current_path).finally(() => {
-      this.first_time = false;
-    });
+    this.connect(current_path);
     this.timer = setInterval(this.connect, Number(process.env.UPDATE_FILES));
   }
 
@@ -335,7 +353,7 @@ class Tree extends Component<P, S> {
     };
   };
 
-  render({ onFetch }, { current_view, current_path, ...others }) {
+  render({ onFetch }, { current_view, current_path, container, ...others }) {
     const showTree = Array.isArray(current_view);
     let listNodes = [];
     let title;
@@ -358,7 +376,7 @@ class Tree extends Component<P, S> {
           return (
             <ProjectNode
               {...(node as nodeFile)}
-              onSelectFile={() => this.onSelectFile(node.path)}
+              onSelectFile={() => this.onOpenFile(node.path)}
               preview_src={this.createPreview(node.path)}
               not_found={not_found_images}
               onFetch={onFetch}
@@ -402,7 +420,7 @@ class Tree extends Component<P, S> {
               url={this.createLink((current_view as nodeFile).path)}
             />
           )
-        ) : this.first_time ? (
+        ) : container == null || current_path ? (
           <Loading />
         ) : null}
       </Fragment>
