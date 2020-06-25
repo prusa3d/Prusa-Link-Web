@@ -14,7 +14,7 @@ import Toast from "../toast";
 
 export interface ProjectProps extends network {
   onclick(e: Event, nextShow: number): void;
-  onBack(e: Event): void;
+  onBack(update?: boolean): void;
   display: string;
   preview_src: string;
   not_found: string[];
@@ -41,7 +41,7 @@ class View extends Component<ProjectProps, S> {
     this.props.onFetch({
       url: "/api/job",
       then: response => {
-        this.props.onBack(e);
+        this.props.onBack();
         this.notify();
       },
       options: {
@@ -59,7 +59,7 @@ class View extends Component<ProjectProps, S> {
   onCancel = (e: Event) => {
     this.props.onFetch({
       url: "/api/job",
-      then: response => this.props.onBack(e),
+      then: response => this.props.onBack(),
       options: {
         method: "POST",
         headers: {
