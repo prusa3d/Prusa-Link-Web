@@ -77,15 +77,27 @@ export class Tree extends Component<TreeProps, S> {
 
   onUpFolder = (update: boolean = false) => {
     if (update) {
-      this.connect();
+      this.connect(this.state.parent_path);
+    } else {
+      this.onShow(this.state.parent_path);
     }
-    let path = this.state.parent_path;
-    let newView = this.createView(path, this.state.container);
+  };
+
+  onShow = (path: string) => {
+    const newView = this.createView(path, this.state.container);
     this.setState((prevState, props) => ({
       ...prevState,
-      ...newView,
-      current_path: path
+      ...newView
     }));
+  };
+
+  onback = (update: boolean = false) => {
+    const path = this.state.parent_path;
+    this.setState({ current_view: null }, () => {
+      if (update) {
+        this.connect(path);
+      }
+    });
   };
 
   onSelectFolder = (path: string) => {
@@ -109,18 +121,6 @@ export class Tree extends Component<TreeProps, S> {
         current_path: folder.path
       }));
     }
-  };
-
-  onOpenedFile = (path: string) => {
-    const file: nodeFile = (this.state.current_view as Array<
-      nodeFolder | nodeFile
-    >).find(e => e.path === path) as nodeFile;
-    this.setState((prevState, props) => ({
-      ...prevState,
-      current_view: file,
-      parent_path: this.state.current_path,
-      current_path: path
-    }));
   };
 
   onOpenFile = (path: string) => {
@@ -191,9 +191,9 @@ export class Tree extends Component<TreeProps, S> {
         url: "/api/files/preview",
         then: response => {
           response.json().then(data => {
-            if (data) {
+            if (data.origin) {
               const path = data.origin + data.path;
-              this.onOpenedFile(path);
+              this.onShow(path);
             }
           });
         }
@@ -411,7 +411,7 @@ export class Tree extends Component<TreeProps, S> {
             </Fragment>
           ) : (
             <ProjectView
-              onBack={this.onUpFolder}
+              onBack={this.onback}
               {...current_view}
               preview_src={this.createPreview((current_view as nodeFile).path)}
               not_found={not_found_images}

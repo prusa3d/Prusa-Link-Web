@@ -148,7 +148,7 @@ module.exports = (env, args) => {
         chunkFilename: devMode ? "[id].css" : "[id].[hash].css"
       }),
       new HtmlWebpackPlugin({
-        title: `${printer} - Prusa Connect`,
+        title: `${printer} - PrusaConnect`,
         template: "./ui/src/index.html"
       }),
       new PurgecssPlugin({
