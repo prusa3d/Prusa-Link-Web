@@ -17,7 +17,7 @@ class App extends Component<{}, S> {
 
   componentDidMount() {
     const lang = window.navigator.language.slice(0, 2);
-    if (lang !== "en" && "cs-de-es-fr-it-pl".indexOf(lang) > 0) {
+    if (lang !== "en" && "-cs-de-es-fr-it-pl".indexOf(lang) > 0) {
       this.changeLanguage(lang);
     }
   }
