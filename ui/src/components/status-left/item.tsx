@@ -65,30 +65,15 @@ if (process.env.PRINTER == "Original Prusa SL1") {
   };
 } else {
   title_icon = {
-    nozzle: {
+    temp_nozzle: {
       title: "Nozzle Temperature",
       icon_scr: require("../../assets/status_nozzle.svg"),
       format: formatUnit(" °C")
     },
-    heatbed: {
+    temp_bed: {
       title: "Heatbed",
       icon_scr: require("../../assets/status_heatbed.svg"),
       format: formatUnit(" °C")
-    },
-    speed: {
-      title: "Printing Speed",
-      icon_scr: require("../../assets/status_prnspeed.svg"),
-      format: formatUnit("%")
-    },
-    flow: {
-      title: "Printing Flow",
-      icon_scr: require("../../assets/status_prnflow.svg"),
-      format: numberFormat
-    },
-    height: {
-      title: "Z-Height",
-      icon_scr: require("../../assets/status_z_axis.svg"),
-      format: formatUnit(" mm")
     },
     material: {
       title: "Material",
