@@ -1,5 +1,69 @@
 {
+  "status-left": {
+    "temp_cpu": "Temperatura CPU",
+    "temp_led": "Temperatura UV LED",
+    "temp_amb": "Temperatura otoczenia",
+    "uv_led_fan": "Wentylator UV LED",
+    "blower_fan": "Wentylator boczny",
+    "rear_fan": "Tylny wentylator",
+    "cover_state": "Stan pokrywy",
+    "nozzle": "Temperatura dyszy",
+    "heatbed": "Stół",
+    "speed": "Prędkość drukowania",
+    "flow": "Przepływ filamentu",
+    "height": "Wysokość Z",
+    "material": "Materiał",
+    "cover_state_false": "Zamknięta",
+    "cover_state_true": "Otwarta"
+  },
   "home": {
-    "test": "test"
+    "title": "Stan drukarki:",
+    "status-idle": "Oczekuje",
+    "status-priting": "Drukowanie"
+  },
+  "status-board": {
+    "remaining-time": "Pozostały czas",
+    "estimated-end": "Szacowane zakończenie",
+    "printing-time": "Czas druku",
+    "layer": "Warstwy",
+    "remaining-resin": "Pozostała żywica",
+    "consumed-resin": "Zużyta żywica",
+    "pos_z_mm": "Wysokość Z",
+    "printing-speed": "Prędkość drukowania",
+    "flow-factor": "Przepływ filamentu",
+    "time-est": "Pozostały czas",
+    "print-dur": "Czas druku",
+    "filament-status": "Czujnik filamentu"
+  },
+  "temperature": {
+    "title": "Temperatury",
+    "label_x": "Czas [s]",
+    "label_y": "Temperatura [°C]"
+  },
+  "project": {
+    "title": "Pliki projektu",
+    "material": "Materiał",
+    "leyer-height": "Wysokość Warstwy",
+    "back": "Wstecz",
+    "start_print": "Start druku",
+    "change-exposure": "Zmień czasy naświetlania",
+    "exposure_time_ms": "czas naświetlania",
+    "exposure_time_first_ms": "pierwsza warstwa",
+    "refill-resin": "Uzupełnij żywicę",
+    "cancel-print": "Anuluj wydruk",
+    "cancel-print-question": "Czy na pewno chcesz anulować wydruk?",
+    "please-refill": "Uzupełnij żywicę do znacznika 100%."
+  },
+  "notification": {
+    "welcome-part1": "Witaj w interfejsie Twojej",
+    "welcome-part2": "Wartości będą wyświetlane tylko podczas drukowania."
+  },
+  "under-construction": "Under construction",
+  "questions": {
+    "yes": "Tak",
+    "no": "Nie",
+    "save-changes": "Zapisz zmiany",
+    "resin-fully-refilled": "Żywica uzupełniona",
+    "cancel": "Anuluj"
   }
 }

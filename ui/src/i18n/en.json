@@ -1,7 +1,7 @@
 {
   "status-left": {
     "temp_cpu": "CPU temperature",
-    "temp_led": "UV led temperature",
+    "temp_led": "UV LED temperature",
     "temp_amb": "Ambient temperature",
     "uv_led_fan": "UV LED fan",
     "blower_fan": "Blower fan",
@@ -19,13 +19,13 @@
   "home": {
     "title": "Printer status:",
     "status-idle": "Idle",
-    "status-priting": "Priting"
+    "status-priting": "Printing"
   },
   "status-board": {
     "remaining-time": "Remaining time",
-    "estimated-end": "Rstimated end",
+    "estimated-end": "Estimated end",
     "printing-time": "Printing time",
-    "layer": "Layer",
+    "layer": "Layers",
     "remaining-resin": "Remaining resin",
     "consumed-resin": "Consumed resin",
     "pos_z_mm": "Z-Height",
@@ -36,16 +36,16 @@
     "filament-status": "Filament sensor"
   },
   "temperature": {
-    "title": "Printer temperatures",
+    "title": "Temperatures",
     "label_x": "Time [s]",
     "label_y": "Temperature [°C]"
   },
   "project": {
     "title": "Project files",
     "material": "Material",
-    "leyer-height": "leyer height",
-    "back": "BACK",
-    "start_print": "START PRINT",
+    "leyer-height": "Layer Height",
+    "back": "Back",
+    "start_print": "Start print",
     "change-exposure": "Change exposure times",
     "exposure_time_ms": "exposure time",
     "exposure_time_first_ms": "first layer",
@@ -60,10 +60,10 @@
   },
   "under-construction": "Under construction",
   "questions": {
-    "yes": "yes",
-    "no": "no",
-    "save-changes": "save changes",
-    "resin-fully-refilled": "resin fully refilled",
-    "cancel": "cancel"
+    "yes": "Yes",
+    "no": "No",
+    "save-changes": "Save changes",
+    "resin-fully-refilled": "Resin fully refilled",
+    "cancel": "Cancel"
   }
 }

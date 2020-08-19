@@ -1,5 +1,69 @@
 {
+  "status-left": {
+    "temp_cpu": "Teplota CPU",
+    "temp_led": "Teplota UV LED",
+    "temp_amb": "Teplota okolí",
+    "uv_led_fan": "Ventilátor UV LED",
+    "blower_fan": "Ventilátor",
+    "rear_fan": "Zadní ventilátor",
+    "cover_state": "Stav víka",
+    "nozzle": "Teplota trysky",
+    "heatbed": "Vyhřívaná podložka",
+    "speed": "Rychlost tisku",
+    "flow": "Tok tisku",
+    "height": "Výška Z",
+    "material": "Materiál",
+    "cover_state_false": "Uzavřené",
+    "cover_state_true": "Otevřené"
+  },
   "home": {
-    "test": "test"
+    "title": "Stav tiskárny:",
+    "status-idle": "Nečinná",
+    "status-priting": "Probíhá tisk"
+  },
+  "status-board": {
+    "remaining-time": "Zbývající čas",
+    "estimated-end": "Odhadovaný konec",
+    "printing-time": "Doba tisku",
+    "layer": "Vrstvy",
+    "remaining-resin": "Zbývající resin",
+    "consumed-resin": "Spotřeba resinu",
+    "pos_z_mm": "Výška Z",
+    "printing-speed": "Rychlost tisku",
+    "flow-factor": "Tok tisku",
+    "time-est": "Zbývající čas",
+    "print-dur": "Doba tisku",
+    "filament-status": "Senzor filamentu"
+  },
+  "temperature": {
+    "title": "Teploty",
+    "label_x": "Čas [s]",
+    "label_y": "Teplota [°C]"
+  },
+  "project": {
+    "title": "Soubory projektu",
+    "material": "Materiál",
+    "leyer-height": "Výška vrstvy",
+    "back": "Zpět",
+    "start_print": "Start tisku",
+    "change-exposure": "Změnit expoziční časy",
+    "exposure_time_ms": "doba expozice",
+    "exposure_time_first_ms": "první vrstva",
+    "refill-resin": "Doplnit resin",
+    "cancel-print": "Zrušit tisk",
+    "cancel-print-question": "Chcete opravdu zrušit tisk?",
+    "please-refill": "Prosím naplňte vaničku na resin."
+  },
+  "notification": {
+    "welcome-part1": "Vítejte na webovém rozhraní vaší",
+    "welcome-part2": "Upozornění: některé hodnoty jsou zobrazeny pouze v průběhu tisku."
+  },
+  "under-construction": "Under construction",
+  "questions": {
+    "yes": "Ano",
+    "no": "Ne",
+    "save-changes": "Uložit změny",
+    "resin-fully-refilled": "Resin doplněn",
+    "cancel": "Zrušit"
   }
 }

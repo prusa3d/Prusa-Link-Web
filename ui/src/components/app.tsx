@@ -15,14 +15,12 @@ class App extends Component<{}, S> {
     definition: defaultDefinition
   };
 
-  // componentDidMount() {
-
-  //     const lang = window.navigator.language.slice(0, 2);
-  //     if (lang !== 'en' && "cs-de-es-fr-it-pl".indexOf(lang) > 0) {
-  //         this.changeLanguage(lang);
-  //     }
-
-  // }
+  componentDidMount() {
+    const lang = window.navigator.language.slice(0, 2);
+    if (lang !== "en" && "cs-de-es-fr-it-pl".indexOf(lang) > 0) {
+      this.changeLanguage(lang);
+    }
+  }
 
   changeLanguage = lang => {
     import(`../i18n/${lang}.json`).then(definition =>

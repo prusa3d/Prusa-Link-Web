@@ -1,5 +1,69 @@
 {
+  "status-left": {
+    "temp_cpu": "Temperatura de la CPU",
+    "temp_led": "Temperatura de los LED UV",
+    "temp_amb": "Temperatura ambiente",
+    "uv_led_fan": "Ventilador LED UV",
+    "blower_fan": "Ventilador radial",
+    "rear_fan": "Ventilador trasero",
+    "cover_state": "Estado cubierta",
+    "nozzle": "Temperatura del nozzle",
+    "heatbed": "Base calefactable",
+    "speed": "Velocidad de impresión",
+    "flow": "Flujo de impresión",
+    "height": "Altura-Z",
+    "material": "Material",
+    "cover_state_false": "Cerrada",
+    "cover_state_true": "Abierta"
+  },
   "home": {
-    "test": "test"
+    "title": "Estado de la impresora:",
+    "status-idle": "En espera",
+    "status-priting": "Imprimiendo"
+  },
+  "status-board": {
+    "remaining-time": "Tiempo restante",
+    "estimated-end": "Fin estimado",
+    "printing-time": "Tiempo de impresión",
+    "layer": "Capas",
+    "remaining-resin": "Resina restante",
+    "consumed-resin": "Resina consumida",
+    "pos_z_mm": "Altura-Z",
+    "printing-speed": "Velocidad de impresión",
+    "flow-factor": "Flujo de impresión",
+    "time-est": "Tiempo restante",
+    "print-dur": "Tiempo de impresión",
+    "filament-status": "Sensor de filamento"
+  },
+  "temperature": {
+    "title": "Temperaturas",
+    "label_x": "Tiempo [s]",
+    "label_y": "Temperatura [°C]"
+  },
+  "project": {
+    "title": "Archivos de proyecto",
+    "material": "Material",
+    "leyer-height": "Altura de Capa",
+    "back": "Atrás",
+    "start_print": "Empezar impresión",
+    "change-exposure": "Cambiar tiempos de exposición",
+    "exposure_time_ms": "tiempo de exposición",
+    "exposure_time_first_ms": "primera capa",
+    "refill-resin": "Rellenar resina",
+    "cancel-print": "Cancelar impresión",
+    "cancel-print-question": "¿Realmente quieres cancelar la impresión?",
+    "please-refill": "Rellena completamente el tanque de resina."
+  },
+  "notification": {
+    "welcome-part1": "Bienvenido a la interfaz web de tu",
+    "welcome-part2": "Tenga en cuenta que los valores se muestran solo cuando la impresora está imprimiendo."
+  },
+  "under-construction": "Under construction",
+  "questions": {
+    "yes": "Sí",
+    "no": "No",
+    "save-changes": "Guardar cambios",
+    "resin-fully-refilled": "Resina completamente rellenada",
+    "cancel": "Cancelar"
   }
 }

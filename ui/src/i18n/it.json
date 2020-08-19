@@ -1,5 +1,69 @@
 {
+  "status-left": {
+    "temp_cpu": "Temperatura CPU",
+    "temp_led": "Temperatura LED UV",
+    "temp_amb": "Temperatura ambiente",
+    "uv_led_fan": "Ventola LED UV",
+    "blower_fan": "Ventola",
+    "rear_fan": "Ventola posteriore",
+    "cover_state": "Stato coperchio",
+    "nozzle": "Temperatura ugello",
+    "heatbed": "Piano riscaldato",
+    "speed": "Velocità di stampa",
+    "flow": "Flusso di stampa",
+    "height": "Altezza-Z",
+    "material": "Materiale",
+    "cover_state_false": "Chiuso",
+    "cover_state_true": "Aperto"
+  },
   "home": {
-    "test": "test"
+    "title": "Stato della stampante:",
+    "status-idle": "Inattivo",
+    "status-priting": "Stampa"
+  },
+  "status-board": {
+    "remaining-time": "Tempo residuo",
+    "estimated-end": "Fine prevista",
+    "printing-time": "Tempo di stampa",
+    "layer": "Layer",
+    "remaining-resin": "Resina residua",
+    "consumed-resin": "Resina consumata",
+    "pos_z_mm": "Altezza-Z",
+    "printing-speed": "Velocità di stampa",
+    "flow-factor": "Flusso di stampa",
+    "time-est": "Tempo residuo",
+    "print-dur": "Tempo di stampa",
+    "filament-status": "Sensore del filamento"
+  },
+  "temperature": {
+    "title": "Temperature",
+    "label_x": "Tempo [s]",
+    "label_y": "Temperatura [°C]"
+  },
+  "project": {
+    "title": "File di progetto",
+    "material": "Materiale",
+    "leyer-height": "Altezza Layer",
+    "back": "Indietro",
+    "start_print": "Inizia stampa",
+    "change-exposure": "Cambia i tempi di esposizione",
+    "exposure_time_ms": "tempo di esposizione",
+    "exposure_time_first_ms": "primo layer",
+    "refill-resin": "Riempire la resina",
+    "cancel-print": "Annulla stampa",
+    "cancel-print-question": "Vuoi davvero annullare la stampa?",
+    "please-refill": "Si prega di riempire completamente il serbatoio della resina."
+  },
+  "notification": {
+    "welcome-part1": "Benvenuto nell'interfaccia web del tuo",
+    "welcome-part2": "Si noti che i valori vengono visualizzati solo durante la stampa."
+  },
+  "under-construction": "Under construction",
+  "questions": {
+    "yes": "Sì",
+    "no": "No",
+    "save-changes": "Salva le modifiche",
+    "resin-fully-refilled": "Resina completamente riempita",
+    "cancel": "Annulla"
   }
 }
