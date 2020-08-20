@@ -33,7 +33,10 @@
     "flow-factor": "Przepływ filamentu",
     "time-est": "Pozostały czas",
     "print-dur": "Czas druku",
-    "filament-status": "Czujnik filamentu"
+    "filament-status": "Czujnik filamentu",
+    "tmw-at": "Jutro o",
+    "today-at": "Dzisiaj o",
+    "at": "o"
   },
   "temperature": {
     "title": "Temperatury",

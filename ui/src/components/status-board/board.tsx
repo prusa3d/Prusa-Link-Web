@@ -3,13 +3,8 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import { h, Fragment } from "preact";
-import { Text } from "preact-i18n";
-import {
-  numberFormat,
-  formatTime,
-  formatTimeEnd,
-  formatEstimatedTime
-} from "../utils/index";
+import { Text, withText } from "preact-i18n";
+import { numberFormat, formatTime, formatTimeEnd } from "../utils/index";
 
 interface StatusBoardItemProps {
   id: string;
@@ -43,6 +38,49 @@ const StatusBoardItem = (props: StatusBoardItemProps) => {
     </div>
   );
 };
+
+const EstimatedEndItem: preact.FunctionalComponent<{
+  time_est: number;
+}> = withText({
+  today: <Text id="status-board.today-at">Today at</Text>,
+  tmw: <Text id="status-board.tmw-at">Tomorrow at</Text>,
+  at: <Text id="status-board.at">at</Text>
+})(props => {
+  let estimated_end = "00:00";
+  if (props.time_est) {
+    let now = new Date();
+    let end = new Date(now.getTime() + props.time_est * 1000);
+    const days = (end.getTime() - now.getTime()) / (1000 * 3600 * 24);
+
+    let plus_days = props.today + " ";
+    if (days == 1) {
+      plus_days = props.tmw + " ";
+    }
+
+    if (days > 1) {
+      let options = { month: "numeric", day: "numeric", timeZone: "UTC" };
+      const final_date = end.toLocaleString(window.navigator.language, options);
+      plus_days = `${final_date} ${props.at} `;
+    }
+
+    estimated_end =
+      plus_days +
+      (("0" + end.getHours()).substr(-2) +
+        ":" +
+        ("0" + end.getMinutes()).substr(-2));
+  }
+
+  return (
+    <div class="column is-one-third">
+      <p class="subtitle is-size-3 is-size-6-desktop has-text-grey">
+        <Text id={"status-board.estimated-end"}>Estimated end</Text>
+      </p>
+      <p class="title is-size-2 is-size-5-desktop has-text-white">
+        {estimated_end}
+      </p>
+    </div>
+  );
+});
 
 export const StatusBoardSL1 = ({
   remaining_time,
@@ -121,11 +159,7 @@ export const StatusBoardMini = ({
         />
       </div>
       <div class="columns">
-        <StatusBoardItem
-          id="estimated-end"
-          title="Estimated end"
-          value={formatEstimatedTime(time_est)}
-        />
+        <EstimatedEndItem time_est={time_est} />
         <StatusBoardItem
           id="print-dur"
           title="Printing time"

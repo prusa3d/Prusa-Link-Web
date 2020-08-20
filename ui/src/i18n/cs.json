@@ -33,7 +33,10 @@
     "flow-factor": "Tok tisku",
     "time-est": "Zbývající čas",
     "print-dur": "Doba tisku",
-    "filament-status": "Senzor filamentu"
+    "filament-status": "Senzor filamentu",
+    "today-at": "Dnes v",
+    "tmw-at": "Zítra v",
+    "at": "v"
   },
   "temperature": {
     "title": "Teploty",

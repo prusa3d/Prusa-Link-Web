@@ -33,7 +33,10 @@
     "flow-factor": "Printing Flow",
     "time-est": "Remaining time",
     "print-dur": "Printing time",
-    "filament-status": "Filament sensor"
+    "filament-status": "Filament sensor",
+    "today-at": "Today at",
+    "tmw-at": "Tomorrow at",
+    "at": "Tomorrow at"
   },
   "temperature": {
     "title": "Temperatures",
