@@ -52,14 +52,21 @@ const EstimatedEndItem: preact.FunctionalComponent<{
   if (props.time_est) {
     let now = new Date(new Date().getTime() + props.time_zone * 3600000);
     let end = new Date(now.getTime() + props.time_est * 1000);
-    const days = props.time_est / (3600 * 24);
+    let tomorrow = new Date(now);
+    tomorrow.setDate(tomorrow.getDate() + 1);
 
-    let plus_days = props.today + " ";
-    if (days == 1) {
+    let plus_days = "";
+    if (
+      end.getUTCDate() == now.getUTCDate() &&
+      end.getUTCMonth() == now.getUTCMonth()
+    ) {
+      plus_days = props.today + " ";
+    } else if (
+      end.getUTCDate() == tomorrow.getUTCDate() &&
+      end.getUTCMonth() == tomorrow.getUTCMonth()
+    ) {
       plus_days = props.tmw + " ";
-    }
-
-    if (days > 1) {
+    } else {
       let options = { month: "numeric", day: "numeric", timeZone: "UTC" };
       const final_date = end.toLocaleString(window.navigator.language, options);
       plus_days = `${final_date} ${props.at} `;
