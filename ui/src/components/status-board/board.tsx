@@ -24,6 +24,7 @@ export interface StatusBoardTableProps {
   readonly print_dur?: number;
   readonly filament_status?: string;
   readonly time_est?: number;
+  readonly time_zone?: number;
 }
 
 const StatusBoardItem = (props: StatusBoardItemProps) => {
@@ -41,6 +42,7 @@ const StatusBoardItem = (props: StatusBoardItemProps) => {
 
 const EstimatedEndItem: preact.FunctionalComponent<{
   time_est: number;
+  time_zone: number;
 }> = withText({
   today: <Text id="status-board.today-at">Today at</Text>,
   tmw: <Text id="status-board.tmw-at">Tomorrow at</Text>,
@@ -48,9 +50,9 @@ const EstimatedEndItem: preact.FunctionalComponent<{
 })(props => {
   let estimated_end = "00:00";
   if (props.time_est) {
-    let now = new Date();
+    let now = new Date(new Date().getTime() + props.time_zone * 3600000);
     let end = new Date(now.getTime() + props.time_est * 1000);
-    const days = (end.getTime() - now.getTime()) / (1000 * 3600 * 24);
+    const days = props.time_est / (3600 * 24);
 
     let plus_days = props.today + " ";
     if (days == 1) {
@@ -65,9 +67,9 @@ const EstimatedEndItem: preact.FunctionalComponent<{
 
     estimated_end =
       plus_days +
-      (("0" + end.getHours()).substr(-2) +
-        ":" +
-        ("0" + end.getMinutes()).substr(-2));
+      ("0" + end.getUTCHours()).substr(-2) +
+      ":" +
+      ("0" + end.getUTCMinutes()).substr(-2);
   }
 
   return (
@@ -135,7 +137,8 @@ export const StatusBoardMini = ({
   printing_speed,
   flow_factor,
   print_dur,
-  time_est
+  time_est,
+  time_zone
 }: StatusBoardTableProps) => {
   const available = (value, unit = null) =>
     value ? value + (unit ? " " + unit : "") : "NA";
@@ -159,7 +162,7 @@ export const StatusBoardMini = ({
         />
       </div>
       <div class="columns">
-        <EstimatedEndItem time_est={time_est} />
+        <EstimatedEndItem time_est={time_est} time_zone={time_zone} />
         <StatusBoardItem
           id="print-dur"
           title="Printing time"

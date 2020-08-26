@@ -53,7 +53,8 @@ if (process.env.PRINTER == "Original Prusa SL1") {
     "flow_factor",
     "print_dur",
     "time_est",
-    "filament_status"
+    "filament_status",
+    "time_zone"
   ];
   printerState = {
     temp_bed: 0,
