@@ -11,18 +11,14 @@ interface S {
 }
 
 class Welcome extends Component<{}, S> {
-  constructor(props) {
+  constructor() {
     super();
     const cookieValue = document.cookie.replace(
       /(?:(?:^|.*;\s*)showWelcome\s*\=\s*([^;]*).*$)|^.*$/,
       "$1"
     );
     this.state = {
-      showWelcome: !(
-        cookieValue === "" && props.matches["show-welcome"] === "0"
-      )
-        ? true
-        : false
+      showWelcome: cookieValue === "" ? true : false
     };
   }
 
