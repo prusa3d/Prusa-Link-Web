@@ -154,10 +154,12 @@ module.exports = (env, args) => {
       new PurgecssPlugin({
         paths: glob.sync(`${PATHS.src}/**/*`, { nodir: true })
       }),
-      new CopyPlugin([
-        { from: "./ui/src/locales", to: "./locales" },
-        { from: "./ui/src/assets/icons", to: "./assets" }
-      ])
+      new CopyPlugin({
+        patterns: [
+          { from: "./ui/src/locales", to: "./locales" },
+          { from: "./ui/src/assets/icons", to: "./assets" }
+        ]
+      })
     ],
     optimization: {
       minimize: true,
