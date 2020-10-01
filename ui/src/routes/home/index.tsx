@@ -60,7 +60,7 @@ const ViewDefault = props => {
 const Home: preact.FunctionalComponent<homeProps> = props => {
   return (
     <div class="columns is-multiline">
-      <Welcome />
+      <Welcome {...props} />
       {isPrinting(props.printer_state) ? (
         <ViewProgress {...props} />
       ) : (
