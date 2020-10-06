@@ -86,7 +86,10 @@
     "temp-nozzle": "Température de la buse",
     "time-est": "Estimation du Temps D'impression",
     "tmw": "Demain",
-    "z-height": "Hauteur en Z"
+    "z-height": "Hauteur en Z",
+    "tmw-at": "Demain à",
+    "today-at": "Aujourd'hui à",
+    "at": "à"
   },
   "refill": {
     "title": "Faire le plein de résine"

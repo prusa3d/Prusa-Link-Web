@@ -8,24 +8,6 @@ This is a printer connect webservice. It is compatible with another 3D printer s
 npm install
 ```
 
-## OpenAPI specification:
-
-### Run api
-
-- Documentation (ReDoc)
-- Documentation (SwaggerUI)
-- Swagger Editor
-
-```bash
-npm run api:start
-```
-
-### Validate api
-
-```bash
-npm run api:test
-```
-
 ## UI
 
 ### Run ui sla

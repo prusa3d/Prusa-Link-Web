@@ -86,7 +86,10 @@
     "temp-nozzle": "Nozzle Temperature",
     "time-est": "Print Time Estimate",
     "tmw": "Tomorrow",
-    "z-height": "Z-Height"
+    "z-height": "Z-Height",
+    "today-at": "Today at",
+    "tmw-at": "Tomorrow at",
+    "at": "at"
   },
   "refill": {
     "title": "Refill resin"
