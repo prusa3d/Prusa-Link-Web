@@ -37,28 +37,41 @@ export function formatTime(
 }
 
 export function formatEstimatedTime(
-  value: number,
+  remaining_time: number,
+  time_zone: number,
   t: (text: string) => string
 ): string {
-  if (value) {
-    let now = new Date();
-    let end = new Date(now.getTime() + value);
-    const days = Math.abs(end.getDate() - now.getDate());
+  let estimated_end = "00:00";
+  if (remaining_time) {
+    let now = new Date(new Date().getTime() + time_zone * 3600000);
+    let end = new Date(now.getTime() + remaining_time);
+    let tomorrow = new Date(now);
+    tomorrow.setDate(tomorrow.getDate() + 1);
+
     let plus_days = "";
-    if (days == 1) {
-      plus_days = t("prop.tmw") + " ";
-    } else if (days > 1) {
-      plus_days = `${days} ${t("prop.d+")} `;
+    if (
+      end.getUTCDate() == now.getUTCDate() &&
+      end.getUTCMonth() == now.getUTCMonth()
+    ) {
+      plus_days = t("prop.today-at") + " ";
+    } else if (
+      end.getUTCDate() == tomorrow.getUTCDate() &&
+      end.getUTCMonth() == tomorrow.getUTCMonth()
+    ) {
+      plus_days = t("prop.tmw-at") + " ";
+    } else {
+      let options = { month: "numeric", day: "numeric", timeZone: "UTC" };
+      const final_date = end.toLocaleString(window.navigator.language, options);
+      plus_days = `${final_date} ${t("prop.at")} `;
     }
-    return (
+
+    estimated_end =
       plus_days +
-      (("0" + end.getHours()).substr(-2) +
-        ":" +
-        ("0" + end.getMinutes()).substr(-2))
-    );
-  } else {
-    return "00:00";
+      ("0" + end.getUTCHours()).substr(-2) +
+      ":" +
+      ("0" + end.getUTCMinutes()).substr(-2);
   }
+  return estimated_end;
 }
 
 export function available(value: number | string, unit: string = null) {

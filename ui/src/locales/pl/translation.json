@@ -86,7 +86,10 @@
     "temp-nozzle": "Temperatura dyszy",
     "time-est": "Szacowany Czas Druku",
     "tmw": "Jutro",
-    "z-height": "Wysokość Z"
+    "z-height": "Wysokość Z",
+    "tmw-at": "Jutro o",
+    "today-at": "Dzisiaj o",
+    "at": "o"
   },
   "refill": {
     "title": "Uzupełnij żywicę"

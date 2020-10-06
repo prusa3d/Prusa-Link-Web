@@ -18,6 +18,7 @@ interface S {
   last_modified: string;
   total_layers: number | string;
   remaining_time: string;
+  time_zone: number;
 }
 
 class Properties extends Component<P, S> {
@@ -25,7 +26,8 @@ class Properties extends Component<P, S> {
     exposure_times: "NA",
     last_modified: "NA",
     total_layers: "NA",
-    remaining_time: null
+    remaining_time: null,
+    time_zone: 0
   };
 
   componentDidMount = () => {
@@ -39,7 +41,8 @@ class Properties extends Component<P, S> {
             const result = {
               exposure_times: data.exposure_times,
               last_modified: last_modified.substring(0, 25),
-              total_layers: data.total_layers
+              total_layers: data.total_layers,
+              time_zone: data.time_zone
             };
             this.setState(prevState => ({ ...prevState, ...result }));
           }
@@ -49,7 +52,7 @@ class Properties extends Component<P, S> {
 
   render(
     { printing_time, layer_height },
-    { exposure_times, last_modified, total_layers }
+    { exposure_times, last_modified, total_layers, time_zone }
   ) {
     const { t, i18n, ready } = useTranslation(null, { useSuspense: false });
     return (
@@ -74,7 +77,7 @@ class Properties extends Component<P, S> {
                 </p>
                 <p class="txt-bold txt-size-2">
                   {printing_time
-                    ? formatEstimatedTime(printing_time, t)
+                    ? formatEstimatedTime(printing_time, time_zone, t)
                     : t("prop.na")}
                 </p>
               </div>

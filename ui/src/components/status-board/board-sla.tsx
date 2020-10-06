@@ -14,6 +14,7 @@ interface P {
   readonly total_layers: number;
   readonly remaining_material: number;
   readonly consumed_material: number;
+  readonly time_zone: number;
 }
 
 export const initState = {
@@ -22,7 +23,8 @@ export const initState = {
   current_layer: 0,
   total_layers: 0,
   remaining_material: 0,
-  consumed_material: 0
+  consumed_material: 0,
+  time_zone: 0
 };
 
 export const StatusBoardSL1: preact.FunctionalComponent<P> = ({
@@ -31,7 +33,8 @@ export const StatusBoardSL1: preact.FunctionalComponent<P> = ({
   current_layer,
   total_layers,
   remaining_material,
-  consumed_material
+  consumed_material,
+  time_zone
 }) => {
   const { t, i18n, ready } = useTranslation(null, { useSuspense: false });
   return ready ? (
@@ -43,7 +46,7 @@ export const StatusBoardSL1: preact.FunctionalComponent<P> = ({
         />
         <StatusBoardItem
           title={t("prop.est-end").toLowerCase()}
-          value={formatEstimatedTime(remaining_time, t)}
+          value={formatEstimatedTime(remaining_time, time_zone, t)}
         />
         <StatusBoardItem
           title={t("prop.pnt-time").toLowerCase()}

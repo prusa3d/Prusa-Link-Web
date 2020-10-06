@@ -86,7 +86,10 @@
     "temp-nozzle": "Düsentemperatur",
     "time-est": "Druckzeit Schätzen",
     "tmw": "Morgen",
-    "z-height": "Z-Höhe"
+    "z-height": "Z-Höhe",
+    "tmw-at": "Morgen um",
+    "today-at": "Heute um",
+    "at": "um"
   },
   "refill": {
     "title": "Harz auffüllen"

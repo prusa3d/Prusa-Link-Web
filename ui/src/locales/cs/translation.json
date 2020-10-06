@@ -86,7 +86,10 @@
     "temp-nozzle": "Teplota trysky",
     "time-est": "Odhad doby tisku",
     "tmw": "Zítra",
-    "z-height": "Výška Z"
+    "z-height": "Výška Z",
+    "today-at": "Dnes v",
+    "tmw-at": "Zítra v",
+    "at": "v"
   },
   "refill": {
     "title": "Doplnit resin"

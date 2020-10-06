@@ -86,7 +86,10 @@
     "temp-nozzle": "Temperatura ugello",
     "time-est": "Stima del Tempo di Stampa",
     "tmw": "Domani",
-    "z-height": "Altezza-Z"
+    "z-height": "Altezza-Z",
+    "tmw-at": "Domani alle",
+    "today-at": "Oggi alle",
+    "at": "alle"
   },
   "refill": {
     "title": "Riempire la resina"
