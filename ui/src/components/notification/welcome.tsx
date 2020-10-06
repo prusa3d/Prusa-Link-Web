@@ -19,6 +19,7 @@ class Welcome extends Component<{}, S> {
     this.state = {
       showWelcome: cookieValue === "" ? true : false
     };
+    setTimeout(this.onClose, 5500);
   }
 
   shouldComponentUpdate = () => this.state.showWelcome;
