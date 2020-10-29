@@ -29,7 +29,12 @@ class App extends Component<{}, S> {
   };
 
   render() {
-    return <Container definition={this.state.definition} />;
+    return (
+      <Container
+        definition={this.state.definition}
+        changeLanguage={this.changeLanguage}
+      />
+    );
   }
 }
 

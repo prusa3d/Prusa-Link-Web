@@ -39,7 +39,7 @@ const initState = {
   temperatures: []
 };
 
-class Container extends Component<{ definition: any }, S> {
+class Container extends Component<{ definition: any; changeLanguage: any }, S> {
   timer = null;
   state = {
     ...initState,
@@ -98,7 +98,7 @@ class Container extends Component<{ definition: any }, S> {
         <section id="app" class="section">
           <div class="columns is-vcentered is-centered is-desktop">
             <div class="column is-three-quarters-desktop is-full-mobile">
-              <Header />
+              <Header changeLanguage={this.props.changeLanguage} />
             </div>
           </div>
           <div class="columns is-centered is-desktop">

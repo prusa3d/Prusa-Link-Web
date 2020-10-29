@@ -17,6 +17,7 @@
     "cover_state_true": "Aperto"
   },
   "home": {
+    "link": "Dashboard",
     "title": "Stato della stampante:",
     "status-idle": "Inattivo",
     "status-priting": "Stampa"

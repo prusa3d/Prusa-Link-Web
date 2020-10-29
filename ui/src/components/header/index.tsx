@@ -11,7 +11,55 @@ interface S {
   is_burger_active: boolean;
 }
 
-class Header extends Component<{}, S> {
+class Locale extends Component<{ changeLanguage: any }, { value: string }> {
+  constructor() {
+    super();
+    const lang = window.navigator.language.slice(0, 2);
+    if ("cs-de-es-fr-it-pl".indexOf(lang) > 0) {
+      this.state = { value: lang };
+    } else {
+      this.state = { value: "en" };
+    }
+  }
+
+  shouldComponentUpdate(nextProps, nextState) {
+    if (nextState.value !== this.state.value) {
+      return true;
+    }
+    return false;
+  }
+
+  onChange = e => {
+    const lng = e.target.value;
+    this.setState({ value: lng });
+    this.props.changeLanguage(lng);
+  };
+
+  onSubmit = e => {
+    alert("Submitted " + this.state.value);
+    e.preventDefault();
+  };
+
+  render(_, { value }) {
+    return (
+      <div class="navbar-item">
+        <form class="select" onSubmit={this.onSubmit}>
+          <select value={value} onChange={this.onChange}>
+            <option value="en">EN</option>
+            <option value="cs">CS</option>
+            <option value="de">DE</option>
+            <option value="es">ES</option>
+            <option value="fr">FR</option>
+            <option value="it">IT</option>
+            <option value="pl">PL</option>
+          </select>
+        </form>
+      </div>
+    );
+  }
+}
+
+class Header extends Component<{ changeLanguage: any }, S> {
   constructor() {
     super();
     this.state = { is_burger_active: false };
@@ -60,7 +108,7 @@ class Header extends Component<{}, S> {
               href="/"
               onClick={this.onClickBurger}
             >
-              <Text id="home.title">Dashboard</Text>
+              <Text id="home.link">Dashboard</Text>
             </Link>
             {process.env.PRINTER != "Original Prusa Mini" && (
               <Link
@@ -80,6 +128,7 @@ class Header extends Component<{}, S> {
             >
               <Text id="temperature.title">Temperatures</Text>
             </Link>
+            <Locale changeLanguage={this.props.changeLanguage} />
           </div>
         </div>
       </nav>

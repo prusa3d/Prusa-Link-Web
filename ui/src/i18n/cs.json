@@ -17,6 +17,7 @@
     "cover_state_true": "Otevřené"
   },
   "home": {
+    "link": "Přehled",
     "title": "Stav tiskárny:",
     "status-idle": "Nečinná",
     "status-priting": "Probíhá tisk"

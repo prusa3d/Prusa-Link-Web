@@ -5,7 +5,62 @@
 $gray: gray;
 $orange: #f8651b;
 $green: lime;
-$line-size: 0.1rem;
+$line-size: 1px;
+$color-white: #ffffff;
+$font-size-2-mobile: 1.8rem;
+$font-size-2-desktop: 1rem;
+
+.select {
+  margin-top: 4px;
+  height: auto;
+  outline: none;
+
+  &:not(.is-multiple) {
+    height: auto;
+  }
+
+  &:focus {
+    border: none;
+    outline: none;
+  }
+
+  &:not(.is-multiple):not(.is-loading):after {
+    border-color: $color-white;
+    right: 1.125em;
+    z-index: 4;
+  }
+
+  select {
+    border: none;
+    outline: none;
+    font-family: "Atlas Grotesk Bold Web";
+    font-size: $font-size-2-mobile;
+    background-color: hsl(0, 0%, 4%);
+    height: auto;
+
+    &:focus {
+      border: none;
+      outline: none;
+    }
+
+    &:not(.is-multiple) {
+      height: auto;
+    }
+  }
+}
+
+select:focus {
+  border: none;
+  outline: none;
+}
+
+@media (min-width: 1024px) {
+  .select {
+    select {
+      font-size: $font-size-2-desktop;
+    }
+  }
+}
 
 .prusa-menu {
   border-bottom: $line-size solid $gray;
@@ -15,6 +70,7 @@ $line-size: 0.1rem;
   border-bottom: $line-size solid transparent;
   padding-bottom: 0px;
   padding-top: 0px;
+  bottom: -1px;
 }
 
 .prusa-menu-item:hover,
@@ -27,7 +83,8 @@ $line-size: 0.1rem;
 }
 
 .navbar-logo {
-  background: url(../../assets/prusa_connect_local_logo_black.svg) no-repeat center center;
+  background: url(../../assets/prusa_connect_local_logo_black.svg) no-repeat
+    center center;
   background-size: cover;
   width: 328px;
   height: auto;
