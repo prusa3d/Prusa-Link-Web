@@ -4,11 +4,58 @@
 
 import { h, Component } from "preact";
 import { Link } from "preact-router/match";
-import { Translation } from "react-i18next";
+import { Translation, useTranslation } from "react-i18next";
 import "./style.scss";
 
 interface S {
   is_burger_active: boolean;
+}
+
+class Locale extends Component<{}, { value: string }> {
+  i18n;
+
+  constructor() {
+    super();
+    const { t, i18n, ready } = useTranslation(null, { useSuspense: false });
+    this.i18n = i18n;
+    this.state = { value: i18n.language };
+  }
+
+  shouldComponentUpdate(nextProps, nextState) {
+    if (nextState.value !== this.state.value) {
+      return true;
+    }
+    return false;
+  }
+
+  onChange = e => {
+    const lng = e.target.value;
+    this.setState({ value: lng });
+    this.i18n.changeLanguage(lng);
+  };
+
+  onSubmit = e => {
+    alert("Submitted " + this.state.value);
+    e.preventDefault();
+  };
+
+  render(_, { value }) {
+    return (
+      <div class="navbar-item">
+        <form class="select" onSubmit={this.onSubmit}>
+          <select value={value} onChange={this.onChange}>
+            <option value="en">EN</option>
+            <option value="cs">CS</option>
+            <option value="de">DE</option>
+            <option value="es">ES</option>
+            <option value="fr">FR</option>
+            <option value="it">IT</option>
+            <option value="pl">PL</option>
+          </select>
+        </form>
+      </div>
+    );
+  }
 }
 
 class Header extends Component<{}, S> {
@@ -84,6 +131,7 @@ class Header extends Component<{}, S> {
                   >
                     {t("temps.title")}
                   </Link>
+                  <Locale />
                 </div>
               </div>
             </nav>

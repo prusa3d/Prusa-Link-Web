@@ -33,7 +33,7 @@ const Loging: preact.FunctionalComponent<P> = ({ setApikey }) => {
         <div class="modal-content">
           <div class="box has-background-grey-dark">
             <div class="field">
-              <label class="label txt-bold txt-size-2">
+              <label class="label txt-bold txt-size-2 justify">
                 {t("msg.api-key")}
               </label>
               <div class="control">

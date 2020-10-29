@@ -75,11 +75,11 @@ class App extends Component<{}, S> implements network, apiKey {
 
   getApikey = (): string => this.state.apikey;
 
-  notify = (error_code: number) => {
+  notify = (error_code: string) => {
     const { t, i18n, ready } = useTranslation(null, { useSuspense: false });
     return new Promise<string>(function(resolve, reject) {
       if (ready) {
-        if (error_code == 307) {
+        if (error_code == "#10307") {
           resolve(t("ntf.e-307"));
         }
       }

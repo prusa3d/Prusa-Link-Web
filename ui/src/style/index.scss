@@ -27,6 +27,7 @@ $section-padding: 3rem 3rem;
 @import "../../../node_modules/bulma/sass/elements/image.sass";
 @import "../../../node_modules/bulma/sass/elements/progress.sass";
 @import "../../../node_modules/bulma/sass/elements/other.sass";
+@import "../../../node_modules/bulma/sass/form/select.sass";
 @import "../../../node_modules/bulma/sass/form/shared.sass";
 @import "../../../node_modules/bulma/sass/form/input-textarea.sass";
 @import "../../../node_modules/bulma/sass/form/tools.sass";
@@ -84,4 +85,8 @@ $section-padding: 3rem 3rem;
 
 .mobile_margin {
   margin-bottom: 1rem;
+}
+
+.justify {
+  text-align: justify;
 }

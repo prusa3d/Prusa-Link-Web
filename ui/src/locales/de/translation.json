@@ -4,6 +4,7 @@
     "cancel": "Abbrechen",
     "cancel-pt": "Druck abbrechen",
     "chg-exp": "Belichtungszeiten ändern",
+    "del": "löschen",
     "no": "Nein",
     "save-chgs": "Änderungen speichern",
     "sla-refill": "Harz auffüllen",
@@ -26,7 +27,7 @@
     "title": "Druckerstatus"
   },
   "msg": {
-    "api-key": "API Key",
+    "api-key": "Willkommen auf der Webschnittstelle Prusa Connect Local. Bitte geben Sie den API-Schlüssel ein. Den Schlüssel finden Sie in den Druckereinstellungen -> Erweiterte Einstellungen -> Netzwerk & Prusa Connect -> Anmeldedaten. Geben Sie den Schlüssel an niemanden weiter!",
     "cancel": "Wollen Sie den Druck wirklich abbrechen?",
     "del-proj": "Wollen Sie wirklich {{file_name}} löschen?",
     "modal-p1": "Willkommen zur Weboberfläche Ihres",
