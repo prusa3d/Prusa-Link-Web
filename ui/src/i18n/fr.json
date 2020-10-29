@@ -17,6 +17,7 @@
     "cover_state_true": "Ouvert"
   },
   "home": {
+    "link": "Tableau de bord",
     "title": "État de l'imprimante:",
     "status-idle": "Repos",
     "status-priting": "Impression"

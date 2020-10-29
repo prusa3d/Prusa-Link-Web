@@ -17,6 +17,7 @@
     "cover_state_true": "Geöffnet"
   },
   "home": {
+    "link": "Dashboard",
     "title": "Druckerstatus:",
     "status-idle": "Leerlauf",
     "status-priting": "Druckt"

@@ -17,6 +17,7 @@
     "cover_state_true": "Otwarta"
   },
   "home": {
+    "link": "Panel kontrolny",
     "title": "Stan drukarki:",
     "status-idle": "Oczekuje",
     "status-priting": "Drukowanie"

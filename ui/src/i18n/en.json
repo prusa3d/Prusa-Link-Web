@@ -17,6 +17,7 @@
     "cover_state_true": "Opened"
   },
   "home": {
+    "link": "Dashboard",
     "title": "Printer status:",
     "status-idle": "Idle",
     "status-priting": "Printing"

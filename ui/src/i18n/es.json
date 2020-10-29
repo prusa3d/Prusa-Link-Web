@@ -17,6 +17,7 @@
     "cover_state_true": "Abierta"
   },
   "home": {
+    "link": "Panel principal",
     "title": "Estado de la impresora:",
     "status-idle": "En espera",
     "status-priting": "Imprimiendo"
