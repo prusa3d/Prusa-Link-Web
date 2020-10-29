@@ -4,6 +4,7 @@
     "cancel": "Zrušit",
     "cancel-pt": "Zrušit tisk",
     "chg-exp": "Změnit časy expozice",
+    "del": "smazat",
     "no": "Ne",
     "save-chgs": "Uložit změny",
     "sla-refill": "Doplnit resin",
@@ -26,7 +27,7 @@
     "title": "Stav tiskárny"
   },
   "msg": {
-    "api-key": "API klíč",
+    "api-key": "Vítejte ve webovém rozhraní Prusa Connect Local. Vložte API klíč. Klíč naleznete v menu tiskárny - v sekci Nastavení -> Pokročilé nastavení -> Síť & Prusa Connect -> Přihlašovací údaje. Klíč s nikým nesdílejte!",
     "cancel": "Chcete opravdu zrušit tisk?",
     "del-proj": "Opravdu chcete smazat {{file_name}}?",
     "modal-p1": "Vítejte na webovém rozhraní vaší",

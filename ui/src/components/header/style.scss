@@ -15,6 +15,50 @@
   }
 }
 
+.select {
+  margin-top: 8px;
+  height: auto;
+  outline: none;
+
+  &:not(.is-multiple) {
+    height: auto;
+  }
+
+  &:focus {
+    border: none;
+    outline: none;
+  }
+
+  &:not(.is-multiple):not(.is-loading):after {
+    border-color: defines.$color-white;
+    right: 1.125em;
+    z-index: 4;
+  }
+
+  select {
+    border: none;
+    outline: none;
+    font-family: "Atlas Grotesk Bold Web";
+    font-size: defines.$font-size-2-mobile;
+    background-color: defines.$body-background-color;
+    height: auto;
+
+    &:focus {
+      border: none;
+      outline: none;
+    }
+
+    &:not(.is-multiple) {
+      height: auto;
+    }
+  }
+}
+
+select:focus {
+  border: none;
+  outline: none;
+}
+
 .prusa-link {
   margin-bottom: -1px;
   padding-top: 1rem;
@@ -34,6 +78,12 @@
   .navbar-item img {
     width: 328px;
     min-height: auto;
+  }
+
+  .select {
+    select {
+      font-size: defines.$font-size-2-desktop;
+    }
   }
 }
 

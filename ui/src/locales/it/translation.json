@@ -4,6 +4,7 @@
     "cancel": "Annulla",
     "cancel-pt": "Annulla stampa",
     "chg-exp": "Cambia i tempi di esposizione",
+    "del": "elimina",
     "no": "No",
     "save-chgs": "Salva le modifiche",
     "sla-refill": "Riempire la resina",
@@ -26,7 +27,7 @@
     "title": "Stato della stampante"
   },
   "msg": {
-    "api-key": "Chiave API",
+    "api-key": "Benvenuto nell'interfaccia web di Prusa Connect Local. Si prega di inserire la chiave API. È possibile trovare la chiave nella stampante su Impostazioni -> Impostazioni avanzate -> Rete & Prusa Connect -> Dettagli di accesso. Non condividere la chiave con nessuno!",
     "cancel": "Vuoi davvero annullare la stampa?",
     "del-proj": "Vuoi davvero eliminare il file {{file_name}}?",
     "modal-p1": "Benvenuto nell'interfaccia web del tuo",

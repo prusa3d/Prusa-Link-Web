@@ -70,7 +70,7 @@ const StatusLeftBoard: preact.FunctionalComponent<P> = ({ printer_status }) => {
         icon_id="cover"
         name={t("prop.cover").toLowerCase()}
         value={
-          printer_status.cover_state
+          printer_status.cover_state !== undefined
             ? printer_status.cover_state
               ? t("prop.cover-closed")
               : t("prop.cover-opened")

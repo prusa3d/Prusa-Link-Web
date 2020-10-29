@@ -4,6 +4,7 @@
     "cancel": "Cancel",
     "cancel-pt": "Cancel print",
     "chg-exp": "Change exposure times",
+    "del": "delete",
     "no": "No",
     "save-chgs": "Save changes",
     "sla-refill": "Refill resin",
@@ -26,7 +27,7 @@
     "title": "Printer status"
   },
   "msg": {
-    "api-key": "API key",
+    "api-key": "Welcome to the Prusa Connect Local web interface. Please insert the API key. The key can be found in the printer Settings -> Advanced settings -> Network & Prusa Connect -> Login credentials. Don't share the key with anyone!",
     "cancel": "Do you really want to cancel print?",
     "del-proj": "Do you really want to delete {{file_name}}?",
     "modal-p1": "Welcome to the web interface of your",

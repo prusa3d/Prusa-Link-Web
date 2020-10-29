@@ -4,6 +4,7 @@
     "cancel": "Anuluj",
     "cancel-pt": "Anuluj wydruk",
     "chg-exp": "Zmień czasy naświetlania",
+    "del": "usuń",
     "no": "Nie",
     "save-chgs": "Zapisz zmiany",
     "sla-refill": "Uzupełnij żywicę",
@@ -26,7 +27,7 @@
     "title": "Stan drukarki"
   },
   "msg": {
-    "api-key": "Klucz API",
+    "api-key": "Witaj w interfejsie sieciowym Prusa Connect Local. Wpisz klucz API. Możesz znaleźć go w menu Ustawienia -> Zaawansowane -> Sieć & Prusa Connect -> Dane logowania. Nie udostępniaj nikomu klucza API!",
     "cancel": "Czy na pewno chcesz anulować wydruk?",
     "del-proj": "Czy na pewno chcesz usunąć plik {{file_name}}?",
     "modal-p1": "Witaj w interfejsie Twojej",

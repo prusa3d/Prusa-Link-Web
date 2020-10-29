@@ -4,6 +4,7 @@
     "cancel": "Cancelar",
     "cancel-pt": "Cancelar impresión",
     "chg-exp": "Cambiar tiempos de exposición",
+    "del": "borrar",
     "no": "No",
     "save-chgs": "Guardar cambios",
     "sla-refill": "Rellenar resina",
@@ -26,7 +27,7 @@
     "title": "Estado de la impresora"
   },
   "msg": {
-    "api-key": "Clave API",
+    "api-key": "Bienvenido a la interfaz web Prusa Connect Local. Por favor introduce la clave API. La clave puede encontrarse en la impresora: Ajustes -> Ajustes avanzados -> Red y Prusa Connect -> Credenciales de inicio. ¡No compartas la clave con nadie!",
     "cancel": "¿Realmente quieres cancelar la impresión?",
     "del-proj": "¿Realmente deseas borrar {{file_name}}?",
     "modal-p1": "Bienvenido a la interfaz web de tu",
