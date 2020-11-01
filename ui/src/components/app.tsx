@@ -16,13 +16,17 @@ class App extends Component<{}, S> {
   };
 
   componentDidMount() {
-    const lang = window.navigator.language.slice(0, 2);
-    if (lang !== "en" && "-cs-de-es-fr-it-pl".indexOf(lang) > 0) {
+    const lang = window.localStorage.getItem("lang");
+    if (lang == null) {
+      lang = window.navigator.language.slice(0, 2);
+    }
+    if (lang !== "en" && "-cs-de-es-fr-it-pl".indexOf(lang) > -1) {
       this.changeLanguage(lang);
     }
   }
 
   changeLanguage = lang => {
+    window.localStorage.setItem("lang", lang);
     import(`../i18n/${lang}.json`).then(definition =>
       this.setState({ definition })
     );
