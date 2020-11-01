@@ -14,8 +14,11 @@ interface S {
 class Locale extends Component<{ changeLanguage: any }, { value: string }> {
   constructor() {
     super();
-    const lang = window.navigator.language.slice(0, 2);
-    if ("cs-de-es-fr-it-pl".indexOf(lang) > 0) {
+    const lang = window.localStorage.getItem("lang");
+    if (lang == null) {
+      lang = window.navigator.language.slice(0, 2);
+    }
+    if ("cs-de-es-fr-it-pl".indexOf(lang) > -1) {
       this.state = { value: lang };
     } else {
       this.state = { value: "en" };
