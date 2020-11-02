@@ -131,7 +131,7 @@ class View extends Component<ProjectProps, S> {
               <div class="prop-buttons">
                 <div class="prop-buttons-first">
                   <DelButton
-                    text={"delete"}
+                    text={t("btn.del")}
                     onClick={e => this.props.onclick(e, 2)}
                   />
                 </div>
