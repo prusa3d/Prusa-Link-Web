@@ -16,7 +16,7 @@ class App extends Component<{}, S> {
   };
 
   componentDidMount() {
-    const lang = window.localStorage.getItem("lang");
+    var lang = window.localStorage.getItem("lang");
     if (lang == null) {
       lang = window.navigator.language.slice(0, 2);
     }
