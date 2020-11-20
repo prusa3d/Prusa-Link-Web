@@ -38,12 +38,19 @@ export function formatTime(
 
 export function formatEstimatedTime(
   remaining_time: number,
-  time_zone: number,
+  offset: string,
   t: (text: string) => string
 ): string {
   let estimated_end = "00:00";
   if (remaining_time) {
-    let now = new Date(new Date().getTime() + time_zone * 3600000);
+    var time_zone = 0;
+    if (offset) {
+      var time_zone =
+        parseInt(`${offset.substring(0, 1)}1`) *
+        (parseInt(offset.substring(1, 3)) * 3600000 +
+          parseInt(`0${offset.substring(3)}`) * 60000);
+    }
+    let now = new Date(new Date().getTime() + time_zone);
     let end = new Date(now.getTime() + remaining_time);
     let tomorrow = new Date(now);
     tomorrow.setDate(tomorrow.getDate() + 1);

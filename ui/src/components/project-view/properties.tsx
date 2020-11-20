@@ -18,7 +18,7 @@ interface S {
   last_modified: string;
   total_layers: number | string;
   remaining_time: string;
-  time_zone: number;
+  time_zone: string;
 }
 
 class Properties extends Component<P, S> {
@@ -27,7 +27,7 @@ class Properties extends Component<P, S> {
     last_modified: "NA",
     total_layers: "NA",
     remaining_time: null,
-    time_zone: 0
+    time_zone: null
   };
 
   componentDidMount = () => {

@@ -14,7 +14,7 @@ interface P {
   readonly total_layers: number;
   readonly remaining_material: number;
   readonly consumed_material: number;
-  readonly time_zone: number;
+  readonly time_zone: string;
 }
 
 export const initState = {
@@ -24,7 +24,7 @@ export const initState = {
   total_layers: 0,
   remaining_material: 0,
   consumed_material: 0,
-  time_zone: 0
+  time_zone: null
 };
 
 export const StatusBoardSL1: preact.FunctionalComponent<P> = ({
