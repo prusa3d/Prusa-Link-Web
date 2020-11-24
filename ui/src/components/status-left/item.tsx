@@ -3,7 +3,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import { h } from "preact";
-import { Text } from "preact-i18n";
+// import { Text } from "preact-i18n";
 import { numberFormat } from "../utils/index";
 
 function formatUnit(unit: string) {
@@ -12,80 +12,25 @@ function formatUnit(unit: string) {
   };
 }
 
-function addUnit(unit: string) {
-  return function newFormat(value: number) {
-    return value + unit;
-  };
-}
-
-let title_icon = {};
-if (process.env.PRINTER == "Original Prusa SL1") {
-  const tem_svg = require("../../assets/temperature_color.svg");
-  const fan_svg = require("../../assets/fan_color.svg");
-  const formatCover = (value: string) => {
-    return (
-      <Text id={`status-left.cover_state_${value}`}>
-        {value ? "Opened" : "Closed"}
-      </Text>
-    );
-  };
-
-  title_icon = {
-    temp_cpu: {
-      title: "CPU temperature",
-      icon_scr: tem_svg,
-      format: formatUnit(" °C")
-    },
-    temp_led: {
-      title: "UV led temperature",
-      icon_scr: tem_svg,
-      format: formatUnit(" °C")
-    },
-    temp_amb: {
-      title: "Ambient temperature",
-      icon_scr: tem_svg,
-      format: formatUnit(" °C")
-    },
-    uv_led_fan: {
-      title: "UV LED fan",
-      icon_scr: fan_svg,
-      format: addUnit(" RPM")
-    },
-    blower_fan: {
-      title: "Blower fan",
-      icon_scr: fan_svg,
-      format: addUnit(" RPM")
-    },
-    rear_fan: { title: "Rear fan", icon_scr: fan_svg, format: addUnit(" RPM") },
-    cover_state: {
-      title: "Cover state",
-      icon_scr: require("../../assets/cover_color.svg"),
-      format: formatCover
-    }
-  };
-} else {
-  title_icon = {
-    temp_nozzle: {
-      title: "Nozzle Temperature",
-      icon_scr: require("../../assets/status_nozzle.svg"),
-      format: formatUnit(" °C")
-    },
-    temp_bed: {
-      title: "Heatbed",
-      icon_scr: require("../../assets/status_heatbed.svg"),
-      format: formatUnit(" °C")
-    },
-    material: {
-      title: "Material",
-      icon_scr: require("../../assets/status_filament.svg"),
-      format: null
-    }
-  };
-}
+let title_icon = {
+  temp_nozzle: {
+    icon_scr: require("../../assets/status_nozzle.svg"),
+    format: formatUnit(" °C")
+  },
+  temp_bed: {
+    icon_scr: require("../../assets/status_heatbed.svg"),
+    format: formatUnit(" °C")
+  },
+  material: {
+    icon_scr: require("../../assets/status_filament.svg"),
+    format: null
+  }
+};
 
 interface S {
   type: string;
   value: string;
+  readonly Intl: object;
 }
 
 const StatusLeftItem: preact.FunctionalComponent<S> = props => {
@@ -97,7 +42,8 @@ const StatusLeftItem: preact.FunctionalComponent<S> = props => {
           <img class="media-left image is-24x24" src={icon_scr} />
           <div class="media-content is-clipped">
             <p class="subtitle is-size-3 is-size-5-desktop has-text-grey">
-              <Text id={`status-left.${props.type}`}>{title}</Text>
+              {props.Intl[props.type]}
+              {/* <Text id={`status-left.${}`}>{title}</Text> */}
             </p>
             <p class="title is-size-2 is-size-5-desktop has-text-white">
               {format ? format(props.value) : props.value}

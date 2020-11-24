@@ -4,7 +4,7 @@
 
 import { h, Component } from "preact";
 import { Link } from "preact-router/match";
-import { Text } from "preact-i18n";
+// import { Text } from "preact-i18n";
 import "./style.scss";
 
 interface S {
@@ -38,15 +38,10 @@ class Locale extends Component<{ changeLanguage: any }, { value: string }> {
     this.props.changeLanguage(lng);
   };
 
-  onSubmit = e => {
-    alert("Submitted " + this.state.value);
-    e.preventDefault();
-  };
-
   render(_, { value }) {
     return (
       <div class="navbar-item">
-        <form class="select" onSubmit={this.onSubmit}>
+        <form class="select">
           <select value={value} onChange={this.onChange}>
             <option value="en">EN</option>
             <option value="cs">CS</option>
@@ -62,7 +57,7 @@ class Locale extends Component<{ changeLanguage: any }, { value: string }> {
   }
 }
 
-class Header extends Component<{ changeLanguage: any }, S> {
+class Header extends Component<{ changeLanguage: any; Intl: object }, S> {
   constructor() {
     super();
     this.state = { is_burger_active: false };
@@ -111,7 +106,8 @@ class Header extends Component<{ changeLanguage: any }, S> {
               href="/"
               onClick={this.onClickBurger}
             >
-              <Text id="home.link">Dashboard</Text>
+              {props.Intl["home"]["link"]}
+              {/* <Text id="home.link">Dashboard</Text> */}
             </Link>
             {process.env.PRINTER != "Original Prusa Mini" && (
               <Link
@@ -120,7 +116,8 @@ class Header extends Component<{ changeLanguage: any }, S> {
                 href="/projects"
                 onClick={this.onClickBurger}
               >
-                <Text id="projects.title">Projects</Text>
+                {props.Intl["projects"]["title"]}
+                {/* <Text id="projects.title">Projects</Text> */}
               </Link>
             )}
             <Link
@@ -129,7 +126,8 @@ class Header extends Component<{ changeLanguage: any }, S> {
               href="/temperatures"
               onClick={this.onClickBurger}
             >
-              <Text id="temperature.title">Temperatures</Text>
+              {props.Intl["temperature"]["title"]}
+              {/* <Text id="temperature.title">Temperatures</Text> */}
             </Link>
             <Locale changeLanguage={this.props.changeLanguage} />
           </div>

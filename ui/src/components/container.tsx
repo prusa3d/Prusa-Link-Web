@@ -4,7 +4,7 @@
 
 import { h, Component } from "preact";
 import { Router, RouterOnChangeArgs } from "preact-router";
-import { IntlProvider } from "preact-i18n";
+// import { IntlProvider } from "preact-i18n";
 
 import {
   update,
@@ -12,7 +12,6 @@ import {
   initPrinterState
 } from "../components/telemetry";
 import { homeProps, Home } from "../routes/home";
-import Project from "../routes/project";
 import Header from "./header";
 import StatusLeftBoard from "./status-left";
 import Temperatures from "../routes/temperatures";
@@ -39,7 +38,10 @@ const initState = {
   temperatures: []
 };
 
-class Container extends Component<{ definition: any; changeLanguage: any }, S> {
+class Container extends Component<
+  { definition: object; changeLanguage: any },
+  S
+> {
   timer = null;
   state = {
     ...initState,
@@ -93,39 +95,44 @@ class Container extends Component<{ definition: any; changeLanguage: any }, S> {
       }));
     };
 
+    const translations = this.props.definition;
+    // console.log(JSON.stringify(translations));
+
     return (
-      <IntlProvider definition={this.props.definition}>
-        <section id="app" class="section">
-          <div class="columns is-vcentered is-centered is-desktop">
-            <div class="column is-three-quarters-desktop is-full-mobile">
-              <Header changeLanguage={this.props.changeLanguage} />
-            </div>
+      // <IntlProvider definition={}>
+      <section id="app" class="section">
+        <div class="columns is-vcentered is-centered is-desktop">
+          <div class="column is-three-quarters-desktop is-full-mobile">
+            <Header
+              changeLanguage={this.props.changeLanguage}
+              Intl={translations}
+            />
           </div>
-          <div class="columns is-centered is-desktop">
-            <div class="column is-three-quarters-desktop is-full-mobile">
-              <div class="columns is-centered is-desktop">
-                <div class="column is-full-mobile">
-                  <StatusLeftBoard printer_state={this.state.printer_state} />
-                </div>
-                <div class="column is-three-quarters-desktop is-full-mobile">
-                  <Router onChange={handleRoute}>
-                    <Home path="/" {...this.state} />
-                    <Project
-                      path="/projects/"
-                      progress_bar={this.state.progress_bar}
-                      progress_status={this.state.progress_status}
-                    />
-                    <Temperatures
-                      path="/temperatures/"
-                      temperatures={this.state.temperatures}
-                    />
-                  </Router>
-                </div>
+        </div>
+        <div class="columns is-centered is-desktop">
+          <div class="column is-three-quarters-desktop is-full-mobile">
+            <div class="columns is-centered is-desktop">
+              <div class="column is-full-mobile">
+                <StatusLeftBoard
+                  printer_state={this.state.printer_state}
+                  Intl={translations}
+                />
+              </div>
+              <div class="column is-three-quarters-desktop is-full-mobile">
+                <Router onChange={handleRoute}>
+                  <Home path="/" {...this.state} Intl={translations} />
+                  <Temperatures
+                    path="/temperatures/"
+                    temperatures={this.state.temperatures}
+                    Intl={translations}
+                  />
+                </Router>
               </div>
             </div>
           </div>
-        </section>
-      </IntlProvider>
+        </div>
+      </section>
+      // </IntlProvider>
     );
   }
 }
