@@ -45,16 +45,9 @@ class Welcome extends Component<{ readonly Intl: object }, S> {
             ></button>
             <p class="subtitle is-size-3 is-size-6-desktop">
               {translations["welcome-part1"]}
-              {/* <Text id="notification.welcome-part1">
-                Welcome to the web interface of your
-              </Text> */}
               <span class=" prusa-text-orange"> {process.env.PRINTER}</span>.
               <br />
               {translations["welcome-part2"]}
-              {/* <Text id="notification.welcome-part2">
-                Please note that values are shown only when the printer is
-                printing.
-              </Text> */}
             </p>
           </div>
         </div>

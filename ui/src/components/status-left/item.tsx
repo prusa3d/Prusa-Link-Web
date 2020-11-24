@@ -43,7 +43,6 @@ const StatusLeftItem: preact.FunctionalComponent<S> = props => {
           <div class="media-content is-clipped">
             <p class="subtitle is-size-3 is-size-5-desktop has-text-grey">
               {props.Intl[props.type]}
-              {/* <Text id={`status-left.${}`}>{title}</Text> */}
             </p>
             <p class="title is-size-2 is-size-5-desktop has-text-white">
               {format ? format(props.value) : props.value}

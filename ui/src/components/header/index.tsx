@@ -107,7 +107,6 @@ class Header extends Component<{ changeLanguage: any; Intl: object }, S> {
               onClick={this.onClickBurger}
             >
               {props.Intl["home"]["link"]}
-              {/* <Text id="home.link">Dashboard</Text> */}
             </Link>
             {process.env.PRINTER != "Original Prusa Mini" && (
               <Link
@@ -117,7 +116,6 @@ class Header extends Component<{ changeLanguage: any; Intl: object }, S> {
                 onClick={this.onClickBurger}
               >
                 {props.Intl["projects"]["title"]}
-                {/* <Text id="projects.title">Projects</Text> */}
               </Link>
             )}
             <Link
@@ -127,7 +125,6 @@ class Header extends Component<{ changeLanguage: any; Intl: object }, S> {
               onClick={this.onClickBurger}
             >
               {props.Intl["temperature"]["title"]}
-              {/* <Text id="temperature.title">Temperatures</Text> */}
             </Link>
             <Locale changeLanguage={this.props.changeLanguage} />
           </div>
