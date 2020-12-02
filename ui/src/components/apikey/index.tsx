@@ -36,7 +36,7 @@ const Loging: preact.FunctionalComponent<P> = ({ setApikey }) => {
             <div class="field">
               <label>
                 <p class="label txt-bold txt-size-2">{msg_1 + "."}</p>
-                <p class="txt-bold txt-size-2" style={{ "margin-top": "30px" }}>
+                <p class="txt-bold txt-size-2" style="margin-top: 30px;">
                   {msg_2 + "."}
                 </p>
                 <p class="txt-bold txt-size-2">{msg_3 + "."}</p>

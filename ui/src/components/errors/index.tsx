@@ -15,7 +15,7 @@ export const Error401: preact.FunctionalComponent<{}> = () => {
           <p class="txt-normal txt-size-2">
             The printer uses HTTP digest security.
           </p>
-          <p class="txt-normal txt-size-2" style={{ "margin-top": "80px" }}>
+          <p class="txt-normal txt-size-2" style="margin-top: 80px">
             Please fill in the correct credentials.
             <br />
             You can find it in Settings &gt; Network &gt; Login credentials.
