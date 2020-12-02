@@ -21,6 +21,7 @@ import StatusLeftBoard from "./status-left";
 import Temperatures from "../routes/temperatures";
 import Loging from "./apikey";
 import Toast from "./toast";
+import { Error401 } from "./errors";
 
 interface S {
   currentUrl: string;
@@ -60,13 +61,20 @@ class App extends Component<{}, S> implements network, apiKey {
           error.name = "" + response.status;
           throw error;
         }
+        if (window.location.pathname == "/login-failed") {
+          window.location.href = "/";
+        }
         return response;
       })
       .then(function(response) {
         then(response);
       })
       .catch(e => {
-        if (e.name === "403") {
+        if (e.name === "401") {
+          if (window.location.pathname != "/login-failed") {
+            window.location.href = "/login-failed";
+          }
+        } else if (e.name === "403") {
           this.setState({ apikey: null });
         }
         except(e);
@@ -193,6 +201,7 @@ class App extends Component<{}, S> implements network, apiKey {
                     temperatures={this.state.temperatures}
                     onFetch={this.onFetch}
                   />
+                  <Error401 path="/login-failed" />
                   <div class="txt-normal txt-size-2" default>
                     <p>UH, OH.</p>
                     <p>404</p>

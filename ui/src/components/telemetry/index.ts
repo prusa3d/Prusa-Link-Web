@@ -88,6 +88,11 @@ export function update(updateData: (data) => void) {
       value = data["state"];
       printer_state = value ? value : { state: STATE_IDLE };
 
+      value = data["project_opened"];
+      if (value && !window.location.pathname.startsWith("/projects")) {
+        window.location.pathname = "/projects";
+      }
+
       if (newTemps[1]) {
         updateData({
           printer_status: printerStatus,
