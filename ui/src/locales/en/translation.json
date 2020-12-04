@@ -57,10 +57,8 @@
   },
   "print": {
     "1": "You are about to start a remote print using the web UI. Please, make sure your 3D printer is set up correctly and ready for the print.",
-    "2": " The printing platform is clean and installed in the printer",
-    "3  ": "A sufficient amount of resin is in the tank"
-  },
-  "printt": {
+    "2": "The printing platform is clean and installed in the printer",
+    "3": "A sufficient amount of resin is in the tank",
     "4": "The orange acrylic lid is closed"
   },
   "proj": {

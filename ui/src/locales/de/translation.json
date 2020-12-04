@@ -4,6 +4,7 @@
     "cancel": "Abbrechen",
     "cancel-pt": "Druck abbrechen",
     "chg-exp": "Belichtungszeiten ändern",
+    "confirm": "Bestätigen",
     "del": "löschen",
     "login": "Login",
     "no": "Nein",
@@ -53,6 +54,12 @@
     "upld-not-sup": "Das Projekt {{file_name}} wird nicht unterstützt.",
     "upld-suc": "Das Hochladen des Projekts {{file_name}} war erfolgreich.",
     "upld-unsuc": "Das Hochladen des Projekts {{file_name}} war nicht erfolgreich."
+  },
+  "print": {
+    "1": "Sie sind dabei, einen Remote-Druck über die Web-Benutzeroberfläche zu starten. Bitte stellen Sie sicher, dass Ihr 3D-Drucker korrekt eingerichtet und für den Druck bereit ist.",
+    "2": "Die Druckplattform ist sauber und im Drucker installiert",
+    "3": "Eine ausreichende Menge Harz befindet sich im Tank",
+    "4": "Der orangefarbene Acryldeckel ist geschlossen"
   },
   "proj": {
     "del": "Datei löschen",

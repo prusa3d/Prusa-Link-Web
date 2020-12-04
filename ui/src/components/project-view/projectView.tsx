@@ -11,6 +11,7 @@ import Title from "../../components/title";
 import { ActionButton, NoButton, YesButton, DelButton } from "../buttons";
 import Properties from "./properties";
 import Toast from "../toast";
+import Warning from "./warning";
 
 export interface ProjectProps extends network {
   onclick(e: Event, nextShow: number): void;
@@ -23,10 +24,13 @@ export interface ProjectProps extends network {
   title: string;
 }
 
-interface S {}
+interface S {
+  warning: boolean;
+}
 
 class View extends Component<ProjectProps, S> {
   ref = createRef();
+  status = { warning: false };
 
   notify = () => {
     const { t, i18n, ready } = useTranslation(null, { useSuspense: false });
@@ -37,7 +41,7 @@ class View extends Component<ProjectProps, S> {
     }).then(message => Toast.info(t("btn.start-pt"), message));
   };
 
-  onStartPrint = (e: Event) => {
+  onStartPrint = () => {
     this.props.onFetch({
       url: "/api/job",
       then: response => {
@@ -56,7 +60,7 @@ class View extends Component<ProjectProps, S> {
     });
   };
 
-  onCancel = (e: Event) => {
+  onCancel = () => {
     this.props.onFetch({
       url: "/api/job",
       then: response => this.props.onBack(),
@@ -105,12 +109,41 @@ class View extends Component<ProjectProps, S> {
     }
   };
 
+  onNo = (e: any) => {
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+
+    if (this.state.warning) {
+      this.setState({ warning: false }, () => {
+        this.onCancel();
+      });
+    }
+  };
+
+  onYes = (e: any) => {
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+
+    if (this.state.warning) {
+      this.setState({ warning: false }, () => {
+        this.onStartPrint();
+      });
+    }
+  };
+
   render() {
     const { t, i18n, ready } = useTranslation(null, { useSuspense: false });
     return (
       ready && (
         <Fragment>
           <Title title={this.props.title} onFetch={this.props.onFetch} />
+          {this.state.warning && (
+            <Warning onNo={this.onNo} onYes={this.onYes} />
+          )}
           <div class="columns is-multiline is-mobile">
             <div class="column is-full">
               <p class="txt-bold txt-size-2 prusa-break-word">
@@ -145,13 +178,13 @@ class View extends Component<ProjectProps, S> {
                   />
                   <YesButton
                     text={t("btn.start-pt").toLowerCase()}
-                    onClick={e => this.onStartPrint(e)}
+                    onClick={e => this.setState({ warning: true })}
                     className="prop-buttons-shrink"
                     wrap
                   />
                   <NoButton
                     text={t("btn.cancel-pt").toLowerCase()}
-                    onClick={e => this.onCancel(e)}
+                    onClick={e => this.onCancel()}
                     className="prop-buttons-shrink"
                     wrap
                   />

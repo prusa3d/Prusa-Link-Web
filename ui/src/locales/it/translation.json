@@ -4,6 +4,7 @@
     "cancel": "Annulla",
     "cancel-pt": "Annulla stampa",
     "chg-exp": "Cambia i tempi di esposizione",
+    "confirm": "Conferma",
     "del": "elimina",
     "login": "Accedi",
     "no": "No",
@@ -53,6 +54,12 @@
     "upld-not-sup": "Progetto {{file_name}} non supportato.",
     "upld-suc": "Caricamento del progetto {{file_name}} riuscito.",
     "upld-unsuc": "Caricamento del progetto {{file_name}} non riuscito."
+  },
+  "print": {
+    "1": "Stai per avviare una stampa da remoto utilizzando l'interfaccia utente web. Assicurarsi che la stampante 3D sia impostata correttamente e pronta per la stampa.",
+    "2": "La piattaforma di stampa è pulita e installata sulla stampante",
+    "3": "Nel serbatoio è presente una quantità sufficiente di resina",
+    "4": "Il coperchio acrilico arancione è chiuso"
   },
   "proj": {
     "del": "Elimina File",

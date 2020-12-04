@@ -48,3 +48,8 @@
 .prop-buttons-shrink {
   flex-shrink: unset;
 }
+
+.show-list {
+  display: list-item;
+  list-style-position: inside;
+}
