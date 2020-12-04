@@ -5,12 +5,16 @@
     "cancel-pt": "Druck abbrechen",
     "chg-exp": "Belichtungszeiten ändern",
     "del": "löschen",
+    "login": "Login",
     "no": "Nein",
     "save-chgs": "Änderungen speichern",
     "sla-refill": "Harz auffüllen",
     "sla-refilled": "Harz voll aufgefüllt",
     "start-pt": "Druck starten",
     "yes": "Ja"
+  },
+  "error": {
+    "401-title": "Login fehlgeschlagen"
   },
   "exp-times": {
     "exp-time": "Belichtung [s]",
@@ -27,9 +31,12 @@
     "title": "Druckerstatus"
   },
   "msg": {
-    "api-key": "Willkommen auf der Webschnittstelle Prusa Connect Local. Bitte geben Sie den API-Schlüssel ein. Den Schlüssel finden Sie in den Druckereinstellungen -> Erweiterte Einstellungen -> Netzwerk & Prusa Connect -> Anmeldedaten. Geben Sie den Schlüssel an niemanden weiter!",
+    "api-key": "Willkommen auf der Webschnittstelle Prusa Connect Local. Bitte geben Sie den API-Schlüssel ein. Den Schlüssel finden Sie in den Druckereinstellungen -> Erweiterte Einstellungen -> Netzwerk -> Anmeldedaten. Geben Sie den Schlüssel an niemanden weiter!",
     "cancel": "Wollen Sie den Druck wirklich abbrechen?",
     "del-proj": "Wollen Sie wirklich {{file_name}} löschen?",
+    "e-401-1": "Der Drucker verwendet HTTP-Digest-Sicherheit.",
+    "e-401-2": "Bitte geben Sie die korrekten Anmeldedaten ein.",
+    "e-401-3": "Sie finden Sie in Einstellungen -> Netzwerk -> Anmeldedaten.",
     "modal-p1": "Willkommen zur Weboberfläche Ihres",
     "modal-p2": "Bitte beachten Sie, dass die Werte nur angezeigt werden, wenn der Drucker gerade druckt.",
     "sla-fill": "Bitte füllen Sie den Harzbehälter und schließen Sie den Deckel.",
@@ -54,6 +61,7 @@
     "title": "Projektdateien"
   },
   "prop": {
+    "at": "um",
     "cover": "Abdeckungsstatus",
     "cover-closed": "Geschlossen",
     "cover-opened": "Geöffnet",
@@ -87,10 +95,9 @@
     "temp-nozzle": "Düsentemperatur",
     "time-est": "Druckzeit Schätzen",
     "tmw": "Morgen",
-    "z-height": "Z-Höhe",
     "tmw-at": "Morgen um",
     "today-at": "Heute um",
-    "at": "um"
+    "z-height": "Z-Höhe"
   },
   "refill": {
     "title": "Harz auffüllen"

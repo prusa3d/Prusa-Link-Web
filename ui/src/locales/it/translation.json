@@ -5,12 +5,16 @@
     "cancel-pt": "Annulla stampa",
     "chg-exp": "Cambia i tempi di esposizione",
     "del": "elimina",
+    "login": "Accedi",
     "no": "No",
     "save-chgs": "Salva le modifiche",
     "sla-refill": "Riempire la resina",
     "sla-refilled": "Resina completamente riempita",
     "start-pt": "Inizia stampa",
     "yes": "Sì"
+  },
+  "error": {
+    "401-title": "Accesso non riuscito"
   },
   "exp-times": {
     "exp-time": "Esposizione [s]",
@@ -27,9 +31,12 @@
     "title": "Stato della stampante"
   },
   "msg": {
-    "api-key": "Benvenuto nell'interfaccia web di Prusa Connect Local. Si prega di inserire la chiave API. È possibile trovare la chiave nella stampante su Impostazioni -> Impostazioni avanzate -> Rete & Prusa Connect -> Dettagli di accesso. Non condividere la chiave con nessuno!",
+    "api-key": "Benvenuto nell'interfaccia web di Prusa Connect Local. Si prega di inserire la chiave API. È possibile trovare la chiave nella stampante su Impostazioni -> Impostazioni avanzate -> Rete -> Dettagli di accesso. Non condividere la chiave con nessuno!",
     "cancel": "Vuoi davvero annullare la stampa?",
     "del-proj": "Vuoi davvero eliminare il file {{file_name}}?",
+    "e-401-1": "La stampante utilizza la sicurezza digest HTTP.",
+    "e-401-2": "Inserisci le credenziali corrette.",
+    "e-401-3": "Puoi trovarlo in Impostazioni > Rete > Credenziali di accesso",
     "modal-p1": "Benvenuto nell'interfaccia web del tuo",
     "modal-p2": "Si noti che i valori vengono visualizzati solo durante la stampa.",
     "sla-fill": "Si prega di riempire il serbatoio della resina e chiudere il coperchio.",
@@ -54,6 +61,7 @@
     "title": "File di progetto"
   },
   "prop": {
+    "at": "alle",
     "cover": "Stato coperchio",
     "cover-closed": "Chiuso",
     "cover-opened": "Aperto",
@@ -87,10 +95,9 @@
     "temp-nozzle": "Temperatura ugello",
     "time-est": "Stima del Tempo di Stampa",
     "tmw": "Domani",
-    "z-height": "Altezza-Z",
     "tmw-at": "Domani alle",
     "today-at": "Oggi alle",
-    "at": "alle"
+    "z-height": "Altezza-Z"
   },
   "refill": {
     "title": "Riempire la resina"

@@ -5,12 +5,16 @@
     "cancel-pt": "Annuler l'impression",
     "chg-exp": "Modifier les temps d'exposition",
     "del": "supprimer",
+    "login": "Connexion",
     "no": "Non",
     "save-chgs": "Enregistrer les modifications",
     "sla-refill": "Faire le plein de résine",
     "sla-refilled": "Plein de résine fait",
     "start-pt": "Lancer l'impression",
     "yes": "Oui"
+  },
+  "error": {
+    "401-title": "Échec de la connexion"
   },
   "exp-times": {
     "exp-time": "Exposition [s] ",
@@ -27,9 +31,12 @@
     "title": "État de l'imprimante"
   },
   "msg": {
-    "api-key": "Bienvenue sur l'interface web Prusa Connect Local. Veuillez saisir la clé API. Vous pouvez trouver la clé de l'imprimante en allant dans Réglages > Réglages avancés > Réseau & Prusa Connect -> Autorisation de connexion. Ne partagez la clé avec personne !",
+    "api-key": "Bienvenue sur l'interface web Prusa Connect Local. Veuillez saisir la clé API. Vous pouvez trouver la clé de l'imprimante en allant dans Réglages -> Réglages avancés -> Réseau -> Informations de connexion. Ne partagez la clé avec personne !",
     "cancel": "Voulez-vous vraiment annuler l'impression ?",
     "del-proj": "Voulez-vous vraiment supprimer le fichier {{file_name}} ?",
+    "e-401-1": "L'imprimante utilise la sécurité HTTP Digest.",
+    "e-401-2": "Veuillez remplir les bonnes informations de connexion.",
+    "e-401-3": "Vous pouvez le trouver dans Réglages > Réseau > Informations de connexion.",
     "modal-p1": "Bienvenue dans l'interface web de votre",
     "modal-p2": "Veuillez noter que les valeurs sont affichées uniquement lorsque l'imprimante imprime.",
     "sla-fill": "Veuillez remplir le réservoir de résine et fermer le couvercle.",
@@ -54,6 +61,7 @@
     "title": "Fichiers de projet"
   },
   "prop": {
+    "at": "à",
     "cover": "État du capot",
     "cover-closed": "Fermé",
     "cover-opened": "Ouvert",
@@ -87,10 +95,9 @@
     "temp-nozzle": "Température de la buse",
     "time-est": "Estimation du Temps D'impression",
     "tmw": "Demain",
-    "z-height": "Hauteur en Z",
     "tmw-at": "Demain à",
     "today-at": "Aujourd'hui à",
-    "at": "à"
+    "z-height": "Hauteur en Z"
   },
   "refill": {
     "title": "Faire le plein de résine"

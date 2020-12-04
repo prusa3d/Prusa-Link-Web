@@ -5,12 +5,16 @@
     "cancel-pt": "Anuluj wydruk",
     "chg-exp": "Zmień czasy naświetlania",
     "del": "usuń",
+    "login": "Zaloguj",
     "no": "Nie",
     "save-chgs": "Zapisz zmiany",
     "sla-refill": "Uzupełnij żywicę",
     "sla-refilled": "Żywica uzupełniona",
     "start-pt": "Start druku",
     "yes": "Tak"
+  },
+  "error": {
+    "401-title": "Logowanie nieudane"
   },
   "exp-times": {
     "exp-time": "Czas naświetlania [s]",
@@ -27,9 +31,12 @@
     "title": "Stan drukarki"
   },
   "msg": {
-    "api-key": "Witaj w interfejsie sieciowym Prusa Connect Local. Wpisz klucz API. Możesz znaleźć go w menu Ustawienia -> Zaawansowane -> Sieć & Prusa Connect -> Dane logowania. Nie udostępniaj nikomu klucza API!",
+    "api-key": "Witaj w interfejsie sieciowym Prusa Connect Local. Wpisz klucz API. Możesz znaleźć go w menu Ustawienia -> Zaawansowane -> Sieć -> Dane logowania. Nie udostępniaj nikomu klucza API!",
     "cancel": "Czy na pewno chcesz anulować wydruk?",
     "del-proj": "Czy na pewno chcesz usunąć plik {{file_name}}?",
+    "e-401-1": "Drukarka używa autentykacji HTTP digest.",
+    "e-401-2": "Wprowadź prawidłowe dane logowania.",
+    "e-401-3": "Możesz znaleźć go w sekcji Ustawienia -> Sieć -> Dane logowania",
     "modal-p1": "Witaj w interfejsie Twojej",
     "modal-p2": "Wartości będą wyświetlane tylko podczas drukowania.",
     "sla-fill": "Uzupełnij żywicę i zamknij pokrywę.",
@@ -54,6 +61,7 @@
     "title": "Pliki projektu"
   },
   "prop": {
+    "at": "o",
     "cover": "Stan pokrywy",
     "cover-closed": "Zamknięta",
     "cover-opened": "Otwarta",
@@ -87,10 +95,9 @@
     "temp-nozzle": "Temperatura dyszy",
     "time-est": "Szacowany Czas Druku",
     "tmw": "Jutro",
-    "z-height": "Wysokość Z",
     "tmw-at": "Jutro o",
     "today-at": "Dzisiaj o",
-    "at": "o"
+    "z-height": "Wysokość Z"
   },
   "refill": {
     "title": "Uzupełnij żywicę"

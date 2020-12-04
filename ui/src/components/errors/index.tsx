@@ -1,24 +1,26 @@
 import { h, Fragment } from "preact";
+import { useTranslation } from "react-i18next";
 
 export const Error401: preact.FunctionalComponent<{}> = () => {
-  return (
+  const { t, i18n, ready } = useTranslation(null, { useSuspense: false });
+  return (ready &&
     <Fragment>
       <div class="box has-background-black is-paddingless prusa-line">
         <div class="columns is-multiline is-centered">
           <div class="column is-full txt-normal txt-size-1 txt-grey prusa-break-word">
-            Login failed
+            {t("401-title")}
           </div>
         </div>
       </div>
       <div class="columns is-multiline is-mobile is-vcentered">
         <div class="column is-full">
           <p class="txt-normal txt-size-2">
-            The printer uses HTTP digest security.
+          {t("msg.e-401-1")}
           </p>
           <p class="txt-normal txt-size-2" style="margin-top: 80px">
-            Please fill in the correct credentials.
+          {t("msg.e-401-2")}
             <br />
-            You can find it in Settings &gt; Network &gt; Login credentials.
+            {t("msg.e-401-3")}
           </p>
         </div>
       </div>
