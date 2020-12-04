@@ -8,7 +8,7 @@ export const Error401: preact.FunctionalComponent<{}> = () => {
       <div class="box has-background-black is-paddingless prusa-line">
         <div class="columns is-multiline is-centered">
           <div class="column is-full txt-normal txt-size-1 txt-grey prusa-break-word">
-            {t("401-title")}
+            {t("error.401-title")}
           </div>
         </div>
       </div>
