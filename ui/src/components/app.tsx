@@ -3,7 +3,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import { h, Component } from "preact";
-import { Router, RouterOnChangeArgs } from "preact-router";
+import { Router, RouterOnChangeArgs, route } from "preact-router";
 import { useTranslation } from "react-i18next";
 
 import {
@@ -62,7 +62,7 @@ class App extends Component<{}, S> implements network, apiKey {
           throw error;
         }
         if (window.location.pathname == "/login-failed") {
-          window.location.href = "/";
+          route("/", true);
         }
         return response;
       })
@@ -72,7 +72,7 @@ class App extends Component<{}, S> implements network, apiKey {
       .catch(e => {
         if (e.name === "401") {
           if (window.location.pathname != "/login-failed") {
-            window.location.href = "/login-failed";
+            route("/login-failed", true);
           }
         } else if (e.name === "403") {
           this.setState({ apikey: null });

@@ -298,12 +298,20 @@ export class Tree extends Component<TreeProps, S> {
   };
 
   componentDidMount() {
-    let addr = new URL(window.location.href);
-    let current_path = addr.searchParams.get("path");
-    if (current_path) {
-      history.pushState({ path: current_path }, "", addr.pathname);
+    this.connect(null);
+    if(this.props.showPreview){
+      this.props.onFetch({
+        url: "/api/files/preview",
+        then: response => {
+          response.json().then(data => {
+            if (data.origin) {
+              const path = data.origin + data.path;
+              this.onShow(path);
+            }
+          });
+        }
+      });
     }
-    this.connect(current_path);
     this.timer = setInterval(this.connect, Number(process.env.UPDATE_FILES));
   }
 
