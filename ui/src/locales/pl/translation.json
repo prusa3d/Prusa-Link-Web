@@ -31,7 +31,6 @@
     "title": "Stan drukarki"
   },
   "msg": {
-    "api-key": "Witaj w interfejsie sieciowym Prusa Connect Local. Wpisz klucz API. Możesz znaleźć go w menu Ustawienia -> Zaawansowane -> Sieć -> Dane logowania. Nie udostępniaj nikomu klucza API!",
     "cancel": "Czy na pewno chcesz anulować wydruk?",
     "del-proj": "Czy na pewno chcesz usunąć plik {{file_name}}?",
     "e-401-1": "Drukarka używa autentykacji HTTP digest.",

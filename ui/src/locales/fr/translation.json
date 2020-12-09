@@ -31,7 +31,6 @@
     "title": "État de l'imprimante"
   },
   "msg": {
-    "api-key": "Bienvenue sur l'interface web Prusa Connect Local. Veuillez saisir la clé API. Vous pouvez trouver la clé de l'imprimante en allant dans Réglages -> Réglages avancés -> Réseau -> Informations de connexion. Ne partagez la clé avec personne !",
     "cancel": "Voulez-vous vraiment annuler l'impression ?",
     "del-proj": "Voulez-vous vraiment supprimer le fichier {{file_name}} ?",
     "e-401-1": "L'imprimante utilise la sécurité HTTP Digest.",

@@ -27,7 +27,6 @@
     "title": "Stav tiskárny"
   },
   "msg": {
-    "api-key": "Vítejte ve webovém rozhraní Prusa Connect Local. Vložte API klíč. Klíč naleznete v menu tiskárny - v sekci Nastavení -> Pokročilé nastavení -> Síť & Prusa Connect -> Přihlašovací údaje. Klíč s nikým nesdílejte!",
     "cancel": "Chcete opravdu zrušit tisk?",
     "del-proj": "Opravdu chcete smazat {{file_name}}?",
     "modal-p1": "Vítejte na webovém rozhraní vaší",
@@ -54,6 +53,7 @@
     "title": "Soubory projektu"
   },
   "prop": {
+    "at": "v",
     "cover": "Stav víka",
     "cover-closed": "Uzavřené",
     "cover-opened": "Otevřené",
@@ -87,10 +87,9 @@
     "temp-nozzle": "Teplota trysky",
     "time-est": "Odhad doby tisku",
     "tmw": "Zítra",
-    "z-height": "Výška Z",
-    "today-at": "Dnes v",
     "tmw-at": "Zítra v",
-    "at": "v"
+    "today-at": "Dnes v",
+    "z-height": "Výška Z"
   },
   "refill": {
     "title": "Doplnit resin"

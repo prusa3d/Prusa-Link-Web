@@ -32,7 +32,6 @@
     "title": "Druckerstatus"
   },
   "msg": {
-    "api-key": "Willkommen auf der Webschnittstelle Prusa Connect Local. Bitte geben Sie den API-Schlüssel ein. Den Schlüssel finden Sie in den Druckereinstellungen -> Erweiterte Einstellungen -> Netzwerk -> Anmeldedaten. Geben Sie den Schlüssel an niemanden weiter!",
     "cancel": "Wollen Sie den Druck wirklich abbrechen?",
     "del-proj": "Wollen Sie wirklich {{file_name}} löschen?",
     "e-401-1": "Der Drucker verwendet HTTP-Digest-Sicherheit.",

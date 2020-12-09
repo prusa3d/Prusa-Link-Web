@@ -26,8 +26,7 @@ const Loging: preact.FunctionalComponent<P> = ({ setApikey }) => {
   };
 
   const { t, i18n, ready } = useTranslation(null, { useSuspense: false });
-  const [msg_1, msg_2, msg_3] = t("msg.api-key").split(".");
-  return (
+    return (
     ready && (
       <div class="modal is-active">
         <div class="modal-background"></div>
@@ -35,11 +34,11 @@ const Loging: preact.FunctionalComponent<P> = ({ setApikey }) => {
           <div class="box has-background-grey-dark">
             <div class="field">
               <label>
-                <p class="label txt-bold txt-size-2">{msg_1 + "."}</p>
-                <p class="txt-bold txt-size-2" style="margin-top: 30px;">
-                  {msg_2 + "."}
+                <p class="label txt-bold txt-size-2">{t("msg.api-key-1")}</p>
+                <p class="txt-bold txt-size-2" style="margin-top: 20px;">
+                  {t("msg.api-key-2")}
                 </p>
-                <p class="txt-bold txt-size-2">{msg_3 + "."}</p>
+                <p class="txt-bold txt-size-2">{t("msg.api-key-3")}</p>
               </label>
               <div class="control">
                 <input

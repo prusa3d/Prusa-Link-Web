@@ -32,7 +32,9 @@
     "title": "Printer status"
   },
   "msg": {
-    "api-key": "Welcome to the Prusa Connect Local web interface. Please insert the API key. The key can be found in the printer Settings -> Advanced settings -> Network -> Login credentials. Don't share the key with anyone!",
+    "api-key-1": "Welcome to the Prusa Connect Local web interface.",
+    "api-key-2": "Please insert the API key.",
+    "api-key-3": "You can find it in Settings -> Network -> Login credentials.",
     "cancel": "Do you really want to cancel print?",
     "del-proj": "Do you really want to delete {{file_name}}?",
     "e-401-1": "The printer uses HTTP digest security.",
