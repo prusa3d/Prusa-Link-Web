@@ -116,9 +116,7 @@ class View extends Component<ProjectProps, S> {
     }
 
     if (this.state.warning) {
-      this.setState({ warning: false }, () => {
-        this.onCancel();
-      });
+      this.setState({ warning: false });
     }
   };
 
