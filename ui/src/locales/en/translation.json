@@ -4,13 +4,18 @@
     "cancel": "Cancel",
     "cancel-pt": "Cancel print",
     "chg-exp": "Change exposure times",
+    "confirm": "Confirm",
     "del": "delete",
+    "login": "Login",
     "no": "No",
     "save-chgs": "Save changes",
     "sla-refill": "Refill resin",
     "sla-refilled": "Resin fully refilled",
     "start-pt": "Start print",
     "yes": "Yes"
+  },
+  "error": {
+    "401-title": "Login failed"
   },
   "exp-times": {
     "exp-time": "Exposure [s]",
@@ -27,9 +32,14 @@
     "title": "Printer status"
   },
   "msg": {
-    "api-key": "Welcome to the Prusa Connect Local web interface. Please insert the API key. The key can be found in the printer Settings -> Advanced settings -> Network & Prusa Connect -> Login credentials. Don't share the key with anyone!",
+    "api-key-1": "Welcome to the Prusa Connect Local web interface.",
+    "api-key-2": "Please insert the API key.",
+    "api-key-3": "You can find it in Settings -> Network -> Login credentials.",
     "cancel": "Do you really want to cancel print?",
     "del-proj": "Do you really want to delete {{file_name}}?",
+    "e-401-1": "The printer uses HTTP digest security.",
+    "e-401-2": "Please fill in the correct credentials.",
+    "e-401-3": "You can find it in Settings > Network > Login credentials.",
     "modal-p1": "Welcome to the web interface of your",
     "modal-p2": "Please note that values are shown only when the printer is printing.",
     "sla-fill": "Please fill the resin tank and close the cover.",
@@ -47,6 +57,12 @@
     "upld-suc": "The project {{file_name}} uploaded successfully.",
     "upld-unsuc": "The project {{file_name}} upload was unsuccessful."
   },
+  "print": {
+    "1": "You are about to start a remote print using the web UI. Please, make sure your 3D printer is set up correctly and ready for the print.",
+    "2": "The printing platform is clean and installed in the printer",
+    "3": "A sufficient amount of resin is in the tank",
+    "4": "The orange acrylic lid is closed"
+  },
   "proj": {
     "del": "Delete File",
     "link": "Projects",
@@ -54,6 +70,7 @@
     "title": "Project files"
   },
   "prop": {
+    "at": "at",
     "cover": "Cover state",
     "cover-closed": "Closed",
     "cover-opened": "Opened",
@@ -87,10 +104,9 @@
     "temp-nozzle": "Nozzle Temperature",
     "time-est": "Print Time Estimate",
     "tmw": "Tomorrow",
-    "z-height": "Z-Height",
-    "today-at": "Today at",
     "tmw-at": "Tomorrow at",
-    "at": "at"
+    "today-at": "Today at",
+    "z-height": "Z-Height"
   },
   "refill": {
     "title": "Refill resin"

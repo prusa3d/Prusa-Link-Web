@@ -4,13 +4,18 @@
     "cancel": "Cancelar",
     "cancel-pt": "Cancelar impresión",
     "chg-exp": "Cambiar tiempos de exposición",
+    "confirm": "Confirmar",
     "del": "borrar",
+    "login": "Iniciar sesión",
     "no": "No",
     "save-chgs": "Guardar cambios",
     "sla-refill": "Rellenar resina",
     "sla-refilled": "Resina completamente rellenada",
     "start-pt": "Empezar impresión",
     "yes": "Sí"
+  },
+  "error": {
+    "401-title": "Fallo al iniciar sesión"
   },
   "exp-times": {
     "exp-time": "Exposición [s]",
@@ -27,9 +32,11 @@
     "title": "Estado de la impresora"
   },
   "msg": {
-    "api-key": "Bienvenido a la interfaz web Prusa Connect Local. Por favor introduce la clave API. La clave puede encontrarse en la impresora: Ajustes -> Ajustes avanzados -> Red y Prusa Connect -> Credenciales de inicio. ¡No compartas la clave con nadie!",
     "cancel": "¿Realmente quieres cancelar la impresión?",
     "del-proj": "¿Realmente deseas borrar {{file_name}}?",
+    "e-401-1": "La impresora utiliza HTTP con seguridad mediante acceso con resumen.",
+    "e-401-2": "Por favor introduce las credenciales correctas.",
+    "e-401-3": "Puedes encontrarla en Ajustes > Red > Credenciales de acceso.",
     "modal-p1": "Bienvenido a la interfaz web de tu",
     "modal-p2": "Tenga en cuenta que los valores se muestran solo cuando la impresora está imprimiendo.",
     "sla-fill": "Llena el tanque de resina y cierra la tapa.",
@@ -47,6 +54,12 @@
     "upld-suc": "El envío del proyecto {{file_name}} se completó.",
     "upld-unsuc": "El envío del proyecto {{file_name}} ha fallado."
   },
+  "print": {
+    "1": "Estás a punto de empezar una impresión remota usando la interefaz de la web. Por favor, asegúrate de que la impresora 3D está configurada correctamente y está lista para la impresión.",
+    "2": "La plataforma de impresión está limpia e instalada en la impresora",
+    "3": "Una cantidad suficiente de resina está en el tanque",
+    "4": "La cubierta naranja acrílica está cerrada"
+  },
   "proj": {
     "del": "Borrar archivo",
     "link": "Projectos",
@@ -54,6 +67,7 @@
     "title": "Archivos de proyecto"
   },
   "prop": {
+    "at": "a las",
     "cover": "Estado cubierta",
     "cover-closed": "Cerrada",
     "cover-opened": "Abierta",
@@ -87,10 +101,9 @@
     "temp-nozzle": "Temperatura del nozzle",
     "time-est": "Tiempo Estimado de Impresión",
     "tmw": "Mañana",
-    "z-height": "Altura-Z",
     "tmw-at": "Mañana a las ",
     "today-at": "Hoy a las",
-    "at": "a las"
+    "z-height": "Altura-Z"
   },
   "refill": {
     "title": "Rellenar resina"

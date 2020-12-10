@@ -4,13 +4,18 @@
     "cancel": "Abbrechen",
     "cancel-pt": "Druck abbrechen",
     "chg-exp": "Belichtungszeiten ändern",
+    "confirm": "Bestätigen",
     "del": "löschen",
+    "login": "Login",
     "no": "Nein",
     "save-chgs": "Änderungen speichern",
     "sla-refill": "Harz auffüllen",
     "sla-refilled": "Harz voll aufgefüllt",
     "start-pt": "Druck starten",
     "yes": "Ja"
+  },
+  "error": {
+    "401-title": "Login fehlgeschlagen"
   },
   "exp-times": {
     "exp-time": "Belichtung [s]",
@@ -27,9 +32,11 @@
     "title": "Druckerstatus"
   },
   "msg": {
-    "api-key": "Willkommen auf der Webschnittstelle Prusa Connect Local. Bitte geben Sie den API-Schlüssel ein. Den Schlüssel finden Sie in den Druckereinstellungen -> Erweiterte Einstellungen -> Netzwerk & Prusa Connect -> Anmeldedaten. Geben Sie den Schlüssel an niemanden weiter!",
     "cancel": "Wollen Sie den Druck wirklich abbrechen?",
     "del-proj": "Wollen Sie wirklich {{file_name}} löschen?",
+    "e-401-1": "Der Drucker verwendet HTTP-Digest-Sicherheit.",
+    "e-401-2": "Bitte geben Sie die korrekten Anmeldedaten ein.",
+    "e-401-3": "Sie finden Sie in Einstellungen -> Netzwerk -> Anmeldedaten.",
     "modal-p1": "Willkommen zur Weboberfläche Ihres",
     "modal-p2": "Bitte beachten Sie, dass die Werte nur angezeigt werden, wenn der Drucker gerade druckt.",
     "sla-fill": "Bitte füllen Sie den Harzbehälter und schließen Sie den Deckel.",
@@ -47,6 +54,12 @@
     "upld-suc": "Das Hochladen des Projekts {{file_name}} war erfolgreich.",
     "upld-unsuc": "Das Hochladen des Projekts {{file_name}} war nicht erfolgreich."
   },
+  "print": {
+    "1": "Sie sind dabei, einen Remote-Druck über die Web-Benutzeroberfläche zu starten. Bitte stellen Sie sicher, dass Ihr 3D-Drucker korrekt eingerichtet und für den Druck bereit ist.",
+    "2": "Die Druckplattform ist sauber und im Drucker installiert",
+    "3": "Eine ausreichende Menge Harz befindet sich im Tank",
+    "4": "Der orangefarbene Acryldeckel ist geschlossen"
+  },
   "proj": {
     "del": "Datei löschen",
     "link": "Projekte",
@@ -54,6 +67,7 @@
     "title": "Projektdateien"
   },
   "prop": {
+    "at": "um",
     "cover": "Abdeckungsstatus",
     "cover-closed": "Geschlossen",
     "cover-opened": "Geöffnet",
@@ -87,10 +101,9 @@
     "temp-nozzle": "Düsentemperatur",
     "time-est": "Druckzeit Schätzen",
     "tmw": "Morgen",
-    "z-height": "Z-Höhe",
     "tmw-at": "Morgen um",
     "today-at": "Heute um",
-    "at": "um"
+    "z-height": "Z-Höhe"
   },
   "refill": {
     "title": "Harz auffüllen"

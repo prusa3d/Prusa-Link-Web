@@ -26,15 +26,19 @@ const Loging: preact.FunctionalComponent<P> = ({ setApikey }) => {
   };
 
   const { t, i18n, ready } = useTranslation(null, { useSuspense: false });
-  return (
+    return (
     ready && (
       <div class="modal is-active">
         <div class="modal-background"></div>
         <div class="modal-content">
           <div class="box has-background-grey-dark">
             <div class="field">
-              <label class="label txt-bold txt-size-2 justify">
-                {t("msg.api-key")}
+              <label>
+                <p class="label txt-bold txt-size-2">{t("msg.api-key-1")}</p>
+                <p class="txt-bold txt-size-2" style="margin-top: 20px;">
+                  {t("msg.api-key-2")}
+                </p>
+                <p class="txt-bold txt-size-2">{t("msg.api-key-3")}</p>
               </label>
               <div class="control">
                 <input
@@ -49,7 +53,7 @@ const Loging: preact.FunctionalComponent<P> = ({ setApikey }) => {
             <div class="field is-grouped is-grouped-right">
               <div class="control">
                 <YesButton
-                  text={t("btn.save-chgs").toLowerCase()}
+                  text={t("btn.login")}
                   onClick={onClick}
                 />
               </div>

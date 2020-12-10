@@ -1,6 +1,8 @@
 // This file is part of Prusa-Connect-Local
 // Copyright (C) 2018-2019 Prusa Research s.r.o. - www.prusa3d.com
 // SPDX-License-Identifier: GPL-3.0-or-later
+import { route } from 'preact-router';
+
 import { STATE_IDLE } from "../utils/states";
 
 export interface PrinterStatus {
@@ -87,6 +89,11 @@ export function update(updateData: (data) => void) {
 
       value = data["state"];
       printer_state = value ? value : { state: STATE_IDLE };
+
+      value = data["project_opened"];
+      if (value && !window.location.pathname.startsWith("/projects")) {
+        route("/projects", true);
+      }
 
       if (newTemps[1]) {
         updateData({

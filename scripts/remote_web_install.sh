@@ -18,7 +18,7 @@ rm -fr dist/*
 npm run ui:build
 
 echo "Removing remote web"
-ssh root@${target} "rm -rf /srv/http/intranet/*"
+ssh root@${target} "find /srv/http/intranet/* \( ! -name error_401.txt \) -exec rm -fr {} \; 2>/dev/null"
 
 echo "Installing on target"
 scp -r dist/* root@${target}:/srv/http/intranet/

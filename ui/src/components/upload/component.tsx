@@ -122,7 +122,6 @@ class Upload extends Component<P, S> {
 
     const formData = new FormData();
     formData.append("path", path);
-    formData.append("select", "false");
     formData.append("file", file);
 
     const request = new XMLHttpRequest();
@@ -163,13 +162,9 @@ class Upload extends Component<P, S> {
             if (n == 1 && status == 201) {
               current_path = current_path + "/" + file.name;
             }
-            setTimeout(() => {
-              if (update) {
-                update(current_path);
-              } else {
-                window.location.href = "/projects?path=" + current_path;
-              }
-            }, 2000);
+            if (update) {
+              setTimeout(() => update(current_path), 2000);
+            }
           }
         );
       }
