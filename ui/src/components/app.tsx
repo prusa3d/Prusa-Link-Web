@@ -4,15 +4,23 @@
 
 import { h, Component } from "preact";
 import Container from "./container";
-import defaultDefinition from "../i18n/en.json";
 
 interface S {
-  definition: any;
+  language: string;
 }
 
 class App extends Component<{}, S> {
   state = {
-    definition: defaultDefinition
+    language: "en"
+  };
+  languages = {
+    cs: require("../i18n/cs.json"),
+    de: require("../i18n/de.json"),
+    en: require("../i18n/en.json"),
+    es: require("../i18n/es.json"),
+    fr: require("../i18n/fr.json"),
+    it: require("../i18n/it.json"),
+    pl: require("../i18n/pl.json")
   };
 
   componentDidMount() {
@@ -27,15 +35,13 @@ class App extends Component<{}, S> {
 
   changeLanguage = lang => {
     window.localStorage.setItem("lang", lang);
-    import(`../i18n/${lang}.json`).then(definition =>
-      this.setState({ definition })
-    );
+    this.setState({ language: lang });
   };
 
   render() {
     return (
       <Container
-        definition={this.state.definition}
+        definition={this.languages[this.state.language]}
         changeLanguage={this.changeLanguage}
       />
     );

@@ -3,7 +3,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import { h } from "preact";
-import { Text, withText } from "preact-i18n";
+// import { Text, withText } from "preact-i18n";
 import "./style.scss";
 export interface TempProps {
   temperatures: Array<Array<number>>;
@@ -11,13 +11,10 @@ export interface TempProps {
 
 interface P extends TempProps {
   bigSize: boolean;
+  readonly Intl: object;
 }
 
-export const Temperature: preact.FunctionalComponent<P> = withText({
-  title: <Text id="temperature.title">Temperatures</Text>,
-  label_x: <Text id="temperature.label_x">Time [s]</Text>,
-  label_y: <Text id="temperature.label_y">Temperature [°C]</Text>
-})(props => {
+export const Temperature: preact.FunctionalComponent<P> = props => {
   let temperatures = props.temperatures;
   let temp_lines = [];
 
@@ -44,7 +41,7 @@ export const Temperature: preact.FunctionalComponent<P> = withText({
           class="prusa-line subtitle is-size-2 is-size-4-desktop has-text-grey is-marginless"
           style={{ padding: 0 }}
         >
-          {props.title}
+          {props.Intl["title"]}
         </p>
       )}
       <svg
@@ -165,7 +162,7 @@ export const Temperature: preact.FunctionalComponent<P> = withText({
             id="chart-axis-4-axisLabel-0"
           >
             <tspan x="275" dx="0" text-anchor="middle" class="temp-label-x">
-              {props.label_x}
+              {props.Intl["label_x"]}
             </tspan>
           </text>
           <g role="presentation">
@@ -383,7 +380,7 @@ export const Temperature: preact.FunctionalComponent<P> = withText({
             id="chart-axis-5-axisLabel-0"
           >
             <tspan x="15" dx="0" text-anchor="middle" class="temp-label-y">
-              {props.label_y}
+              {props.Intl["label_y"]}
             </tspan>
           </text>
           <g role="presentation">
@@ -560,4 +557,4 @@ export const Temperature: preact.FunctionalComponent<P> = withText({
       </svg>
     </div>
   );
-});
+};

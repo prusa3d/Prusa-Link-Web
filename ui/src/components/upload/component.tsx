@@ -3,7 +3,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import { h, Component, createRef } from "preact";
-import { Text } from "preact-i18n";
+// import { Text } from "preact-i18n";
 import "./style.scss";
 
 import Static from "./static";

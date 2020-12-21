@@ -6,19 +6,26 @@ import { h, Fragment } from "preact";
 import Title from "../../components/title";
 import { TempProps, Temperature } from "../../components/temperature";
 
-const Temperatures: preact.FunctionalComponent<TempProps> = props => {
-    return (
-        <Fragment>
-            <Title id="temperature.title" default_text="Printer temperatures" />
-            <div class="columns is-centered">
-                <div class="column is-full">
-                    <Temperature temperatures={props.temperatures} bigSize={true} />
-                </div>
-            </div>
-        </Fragment>
-    );
+interface P extends TempProps {
+  Intl: object;
 }
 
-
+const Temperatures: preact.FunctionalComponent<P> = props => {
+  const translations = props.Intl["temperature"];
+  return (
+    <Fragment>
+      <Title text={translations["title"]} />
+      <div class="columns is-centered">
+        <div class="column is-full">
+          <Temperature
+            temperatures={props.temperatures}
+            bigSize={true}
+            Intl={translations}
+          />
+        </div>
+      </div>
+    </Fragment>
+  );
+};
 
 export default Temperatures;

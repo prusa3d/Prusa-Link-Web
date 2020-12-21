@@ -3,11 +3,8 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import { h, Fragment } from "preact";
-import { Text, withText } from "preact-i18n";
-import { numberFormat, formatTime, formatTimeEnd } from "../utils/index";
 
 interface StatusBoardItemProps {
-  id: string;
   title: string;
   value: string | number;
 }
@@ -27,11 +24,15 @@ export interface StatusBoardTableProps {
   readonly time_zone?: number;
 }
 
+interface BoardProps extends StatusBoardTableProps {
+  readonly Intl: object;
+}
+
 const StatusBoardItem = (props: StatusBoardItemProps) => {
   return (
     <div class="column is-one-third">
       <p class="subtitle is-size-3 is-size-6-desktop has-text-grey">
-        <Text id={`status-board.${props.id}`}>{props.title}</Text>
+        {props.title}
       </p>
       <p class="title is-size-2 is-size-5-desktop has-text-white">
         {props.value}
@@ -43,11 +44,8 @@ const StatusBoardItem = (props: StatusBoardItemProps) => {
 const EstimatedEndItem: preact.FunctionalComponent<{
   time_est: number;
   time_zone: number;
-}> = withText({
-  today: <Text id="status-board.today-at">Today at</Text>,
-  tmw: <Text id="status-board.tmw-at">Tomorrow at</Text>,
-  at: <Text id="status-board.at">at</Text>
-})(props => {
+  Intl: object;
+}> = props => {
   let estimated_end = "00:00";
   if (props.time_est) {
     let now = new Date(new Date().getTime() + props.time_zone * 3600000);
@@ -60,16 +58,16 @@ const EstimatedEndItem: preact.FunctionalComponent<{
       end.getUTCDate() == now.getUTCDate() &&
       end.getUTCMonth() == now.getUTCMonth()
     ) {
-      plus_days = props.today + " ";
+      plus_days = props.Intl["today-at"] + " ";
     } else if (
       end.getUTCDate() == tomorrow.getUTCDate() &&
       end.getUTCMonth() == tomorrow.getUTCMonth()
     ) {
-      plus_days = props.tmw + " ";
+      plus_days = props.Intl["tmw-at"] + " ";
     } else {
       let options = { month: "numeric", day: "numeric", timeZone: "UTC" };
       const final_date = end.toLocaleString(window.navigator.language, options);
-      plus_days = `${final_date} ${props.at} `;
+      plus_days = `${final_date} ${props.Intl["at"]} `;
     }
 
     estimated_end =
@@ -82,60 +80,12 @@ const EstimatedEndItem: preact.FunctionalComponent<{
   return (
     <div class="column is-one-third">
       <p class="subtitle is-size-3 is-size-6-desktop has-text-grey">
-        <Text id={"status-board.estimated-end"}>Estimated end</Text>
+        {props.Intl["estimated-end"]}
       </p>
       <p class="title is-size-2 is-size-5-desktop has-text-white">
         {estimated_end}
       </p>
     </div>
-  );
-});
-
-export const StatusBoardSL1 = ({
-  remaining_time,
-  printing_time,
-  current_layer,
-  total_layers,
-  remaining_material,
-  consumed_material
-}: StatusBoardTableProps) => {
-  return (
-    <Fragment>
-      <div class="columns">
-        <StatusBoardItem
-          id="remaining-time"
-          title="Remaining time"
-          value={remaining_time > 0 ? formatTime(remaining_time) : "0 min"}
-        />
-        <StatusBoardItem
-          id="estimated-end"
-          title="Estimated end"
-          value={remaining_time > 0 ? formatTimeEnd(remaining_time) : "00:00"}
-        />
-        <StatusBoardItem
-          id="printing-time"
-          title="Printing time"
-          value={printing_time > 0 ? formatTime(printing_time) : "0 min"}
-        />
-      </div>
-      <div class="columns">
-        <StatusBoardItem
-          id="layer"
-          title="Layer"
-          value={total_layers > 0 ? `${current_layer}/${total_layers}` : "0/0"}
-        />
-        <StatusBoardItem
-          id="remaining-resin"
-          title="Remaining resin"
-          value={`${numberFormat(remaining_material)} ml`}
-        />
-        <StatusBoardItem
-          id="consumed-resin"
-          title="Consumed resin"
-          value={`${numberFormat(consumed_material)} ml`}
-        />
-      </div>
-    </Fragment>
   );
 };
 
@@ -145,45 +95,39 @@ export const StatusBoardMini = ({
   flow_factor,
   print_dur,
   time_est,
-  time_zone
-}: StatusBoardTableProps) => {
+  time_zone,
+  Intl
+}: BoardProps) => {
   const available = (value, unit = null) =>
     value ? value + (unit ? " " + unit : "") : "NA";
+  let translate = Intl["status-board"];
   return (
     <Fragment>
       <div class="columns">
         <StatusBoardItem
-          id="pos_z_mm"
-          title="Z-Height"
+          title={translate["pos_z_mm"]}
           value={available(pos_z_mm, "mm")}
         />
         <StatusBoardItem
-          id="printing-speed"
-          title="Printing Speed"
-          value={available(printing_speed, "%")}
+          title={translate["flow-factor"]}
+          value={available(flow_factor)}
         />
         <StatusBoardItem
-          id="flow-factor"
-          title="Printing Flow"
-          value={available(flow_factor)}
+          title={translate["printing-speed"]}
+          value={available(printing_speed, "%")}
         />
       </div>
       <div class="columns">
-        <EstimatedEndItem time_est={time_est} time_zone={time_zone} />
+        <EstimatedEndItem
+          time_est={time_est}
+          time_zone={time_zone}
+          Intl={translate}
+        />
         <StatusBoardItem
-          id="print-dur"
-          title="Printing time"
+          title={translate["print-dur"]}
           value={available(print_dur)}
         />
       </div>
     </Fragment>
   );
-};
-
-export const StatusBoardTable = (props: StatusBoardTableProps) => {
-  if (process.env.PRINTER == "Original Prusa Mini") {
-    return <StatusBoardMini {...props} />;
-  } else {
-    return <StatusBoardSL1 {...props} />;
-  }
 };

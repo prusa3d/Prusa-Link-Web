@@ -3,13 +3,13 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import { h, Component } from "preact";
-import { Text } from "preact-i18n";
+// import { Text } from "preact-i18n";
 
 interface S {
   showWelcome: boolean;
 }
 
-class Welcome extends Component<{}, S> {
+class Welcome extends Component<{ readonly Intl: object }, S> {
   constructor() {
     super();
     const cookieValue = document.cookie.replace(
@@ -29,7 +29,8 @@ class Welcome extends Component<{}, S> {
     this.setState(prev => ({ showWelcome: false }));
   };
 
-  render({}, { showWelcome }) {
+  render({ Intl }, { showWelcome }) {
+    const translations = Intl["notification"];
     return (
       <div
         class={showWelcome ? "modal is-active" : "modal"}
@@ -43,15 +44,10 @@ class Welcome extends Component<{}, S> {
               onClick={e => this.onClose()}
             ></button>
             <p class="subtitle is-size-3 is-size-6-desktop">
-              <Text id="notification.welcome-part1">
-                Welcome to the web interface of your
-              </Text>
+              {translations["welcome-part1"]}
               <span class=" prusa-text-orange"> {process.env.PRINTER}</span>.
               <br />
-              <Text id="notification.welcome-part2">
-                Please note that values are shown only when the printer is
-                printing.
-              </Text>
+              {translations["welcome-part2"]}
             </p>
           </div>
         </div>
