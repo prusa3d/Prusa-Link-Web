@@ -41,6 +41,7 @@ const initState = {
 
 class App extends Component<{}, S> implements network, apiKey {
   timer = null;
+  http_auth = false;
   state = {
     ...initState,
     currentUrl: "/",
@@ -53,32 +54,34 @@ class App extends Component<{}, S> implements network, apiKey {
     options = { method: "GET", headers: {} },
     except = e => {}
   }: networkProps) => {
-    options.headers["X-Api-Key"] = this.state.apikey;
-    fetch(url, options)
-      .then(async function(response) {
-        if (!response.ok) {
-          const error = Error(await response.text());
-          error.name = "" + response.status;
-          throw error;
-        }
-        if (window.location.pathname == "/login-failed") {
-          route("/", true);
-        }
-        return response;
-      })
-      .then(function(response) {
-        then(response);
-      })
-      .catch(e => {
-        if (e.name === "401") {
-          if (window.location.pathname != "/login-failed") {
-            route("/login-failed", true);
+    if (this.http_auth) {
+      options.headers["X-Api-Key"] = this.state.apikey;
+      fetch(url, options)
+        .then(async function(response) {
+          if (!response.ok) {
+            const error = Error(await response.text());
+            error.name = "" + response.status;
+            throw error;
           }
-        } else if (e.name === "403") {
-          this.setState({ apikey: null });
-        }
-        except(e);
-      });
+          if (window.location.pathname == "/login-failed") {
+            route("/", true);
+          }
+          return response;
+        })
+        .then(function(response) {
+          then(response);
+        })
+        .catch(e => {
+          if (e.name === "401") {
+            if (window.location.pathname != "/login-failed") {
+              route("/login-failed", true);
+            }
+          } else if (e.name === "403") {
+            this.setState({ apikey: null });
+          }
+          except(e);
+        });
+    }
   };
 
   getApikey = (): string => this.state.apikey;
@@ -124,23 +127,38 @@ class App extends Component<{}, S> implements network, apiKey {
     this.setState(prev => ({ ...prev, ...initState }));
   };
 
-  componentDidMount() {
-    this.timer = setInterval(
-      () =>
-        this.onFetch({
-          url: "/api/telemetry",
-          then: update(this.updateData),
-          except: e => this.clearData(),
-          options: {
-            headers: {
-              "Content-Type": "application/json",
-              Accept: "application/json"
-            }
-          }
-        }),
-      Number(process.env.UPDATE_PRINTER)
-    );
-  }
+  componentDidMount = () => {
+    fetch("/api/version").then(response => {
+      if (response.status == 401) {
+        if (window.location.pathname != "/login-failed") {
+          route("/login-failed", true);
+        }
+      } else if (response.status == 403) {
+        this.http_auth = true;
+        this.setState({ apikey: null });
+      } else {
+        this.http_auth = true;
+        this.timer = setInterval(
+          () =>
+            this.onFetch({
+              url: "/api/telemetry",
+              then: update(this.updateData),
+              except: e => this.clearData(),
+              options: {
+                headers: {
+                  "Content-Type": "application/json",
+                  Accept: "application/json"
+                }
+              }
+            }),
+          Number(process.env.UPDATE_PRINTER)
+        );
+        if (window.location.pathname == "/login-failed") {
+          route("/", true);
+        }
+      }
+    });
+  };
 
   componentWillUnmount() {
     clearInterval(this.timer);
