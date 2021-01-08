@@ -54,7 +54,7 @@ class App extends Component<{}, S> implements network, apiKey {
     options = { method: "GET", headers: {} },
     except = e => {}
   }: networkProps) => {
-    if (this.http_auth) {
+    if (navigator.onLine && this.http_auth) {
       options.headers["X-Api-Key"] = this.state.apikey;
       fetch(url, options)
         .then(async function(response) {
