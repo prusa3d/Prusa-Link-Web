@@ -134,7 +134,7 @@ export class Tree extends Component<TreeProps, S> {
 
     this.props.onFetch({
       url: this.createLink(path),
-      then: () => {},
+      then: () => this.onShow(path),
       options,
       except: e => {
         const { t, i18n, ready } = useTranslation(null, { useSuspense: false });
@@ -171,7 +171,9 @@ export class Tree extends Component<TreeProps, S> {
             };
           }
         }
-      } catch (error) {}
+      } catch (error) {
+        path = null;
+      }
     }
     for (let path_key in current_view) {
       views.push(current_view[path_key]);
@@ -182,28 +184,6 @@ export class Tree extends Component<TreeProps, S> {
       current_view: views.sort(sortByType),
       current_path: path
     };
-  };
-
-  componentDidUpdate = (prevProps, prevState, snapshot) => {
-    // show preview
-    if (this.props.showPreview && Array.isArray(this.state.current_view)) {
-      this.props.onFetch({
-        url: "/api/files/preview",
-        then: response => {
-          response.json().then(data => {
-            if (data.origin) {
-              const path = data.origin + data.path;
-              this.onShow(path);
-            }
-          });
-        }
-      });
-    }
-
-    // don't show preview
-    if (!(this.props.showPreview || Array.isArray(this.state.current_view))) {
-      this.onUpFolder();
-    }
   };
 
   createContainer = (files, parent: string = null) => {
@@ -281,8 +261,29 @@ export class Tree extends Component<TreeProps, S> {
                 ...newView
               }),
               () => {
-                if (current_path && current_path.endsWith(".sl1")) {
-                  this.onOpenFile(current_path);
+                if (
+                  this.props.showPreview &&
+                  Array.isArray(this.state.current_view)
+                ) {
+                  this.props.onFetch({
+                    url: "/api/files/preview",
+                    then: response => {
+                      response.json().then(data => {
+                        if (data.origin) {
+                          const path = data.origin + data.path;
+                          this.onShow(path);
+                        }
+                      });
+                    }
+                  });
+                }
+                if (
+                  !(
+                    this.props.showPreview ||
+                    Array.isArray(this.state.current_view)
+                  )
+                ) {
+                  this.onUpFolder();
                 }
               }
             );
@@ -299,19 +300,6 @@ export class Tree extends Component<TreeProps, S> {
 
   componentDidMount() {
     this.connect(null);
-    if(this.props.showPreview){
-      this.props.onFetch({
-        url: "/api/files/preview",
-        then: response => {
-          response.json().then(data => {
-            if (data.origin) {
-              const path = data.origin + data.path;
-              this.onShow(path);
-            }
-          });
-        }
-      });
-    }
     this.timer = setInterval(this.connect, Number(process.env.UPDATE_FILES));
   }
 
