@@ -6,7 +6,7 @@
   "scripts": {
     "ui:build": "webpack --config ./webpack.config.js --mode production --env.apiKey=developer --env.printer=sl1 --progress",
     "ui:build-mini": "webpack --config ./webpack.config.js --mode production --env.apiKey=developer --env.printer=mini --progress",
-    "ui:dev": "webpack --config ./webpack.config.js --mode development",
+    "ui:dev": "webpack --config ./webpack.config.js --mode development --env.apiKey=developer --env.printer=sl1 --progress",
     "ui:start": "webpack-dev-server --config ./webpack.config.js --env.prod=1 --mode development",
     "ui:start-mini": "webpack-dev-server --config ./webpack.config.js --env.prod=1 --mode development --env.printer=mini",
     "ui:translations": "i18next -c ./i18next-parser.config.js",

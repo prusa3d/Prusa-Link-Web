@@ -15,7 +15,7 @@ echo "Target is ${target}"
 
 echo "Building"
 rm -fr dist/*
-npm run ui:build
+npm run ui:dev
 
 echo "Removing remote web"
 ssh root@${target} "find /srv/http/intranet/* \( ! -name error_401.txt \) -exec rm -fr {} \; 2>/dev/null"
