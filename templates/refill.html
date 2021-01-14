@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta name="theme-color" content="#fff" />
+    <title>Original Prusa Mini - PrusaConnect</title>
+    <link href="style.css" rel="stylesheet">
+</head>
+
+<body>
+    <div class="header">
+        <div class="content">
+            <nav>
+                <a href="#!" class="brand-logo">
+                    <img src="img/prusa_connect_local_logo_black.svg"></img>
+                </a>
+                <a class="navbar-burger" onClick="onClickBurger(this)">
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                </a>
+                <ul class="burger-menu" id="navbar">
+                    <li>
+                        <a href="index.html">Dashboard</a>
+                    </li>
+                    <li>
+                        <a href="projects.html">Projects</a>
+                    </li>
+                    <li>
+                        <a href="temperature.html">Temperatures</a>
+                    </li>
+                </ul>
+            </nav>
+
+        </div>
+    </div>
+
+    <div class="content">
+        <div class="content-wrapper">
+
+            <div class="telemetry">
+                <div class="tel-prop">
+                    <img class="icon"
+                        src="data:image/svg+xml,%3C?xml version='1.0' encoding='UTF-8'?%3E %3C!DOCTYPE svg PUBLIC '-//W3C//DTD SVG 1.1//EN' 'http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd'%3E %3C!-- Creator: CorelDRAW 2017 --%3E %3Csvg xmlns='http://www.w3.org/2000/svg' xml:space='preserve' width='3.4368mm' height='6.346mm' version='1.1' style='shape-rendering:geometricPrecision; text-rendering:geometricPrecision; image-rendering:optimizeQuality; fill-rule:evenodd; clip-rule:evenodd' viewBox='0 0 14.61 26.97' xmlns:xlink='http://www.w3.org/1999/xlink'%3E %3Cdefs%3E %3Cstyle type='text/css'%3E %3C!%5BCDATA%5B .fil0 %7Bfill:%23EF7F1A%7D .fil1 %7Bfill:white%7D %5D%5D%3E %3C/style%3E %3C/defs%3E %3Cg id='Layer_x0020_1'%3E %3Cmetadata id='CorelCorpID_0Corel-Layer'/%3E %3Cpath id='temperature.svg' class='fil0' d='M11.24 19.67c0,2.17 -1.76,3.93 -3.93,3.93 -2.17,0 -3.93,-1.76 -3.93,-3.93 0,-1.29 0.68,-2.35 1.57,-3.13 1.13,-0.99 1.81,-1.95 1.81,-3.62l0 -0.56 1.13 0 0 0.56c0,1.67 0.66,2.63 1.81,3.62 0.89,0.78 1.57,1.84 1.57,3.13l-0.02 0z'/%3E %3Cpath id='temperature.svg_0' class='fil1' d='M11.24 3.93l0 8.45c0,0.66 0.3,1.29 0.8,1.72 1.58,1.34 2.57,3.34 2.57,5.57 0,4.03 -3.27,7.3 -7.3,7.3 -4.03,0 -7.3,-3.27 -7.3,-7.3 0,-2.23 1.01,-4.23 2.57,-5.57 0.5,-0.43 0.8,-1.06 0.8,-1.72l0 -8.45c0,-2.17 1.76,-3.93 3.93,-3.93 2.17,0 3.93,1.76 3.93,3.93l0 0zm-5.62 0l0 8.45c0,1.76 -0.57,2.57 -1.58,3.43 -1.13,0.97 -1.79,2.37 -1.79,3.84 0,2.78 2.28,5.06 5.06,5.06 2.78,0 5.06,-2.28 5.06,-5.06 0,-1.48 -0.64,-2.89 -1.79,-3.84 -1.01,-0.85 -1.58,-1.67 -1.58,-3.43l0 -8.45c0,-0.92 -0.77,-1.69 -1.69,-1.69 -0.92,0 -1.69,0.77 -1.69,1.69l0 0z'/%3E %3C/g%3E %3C/svg%3E">
+                    <div class="value">
+                        <p class="txt-normal txt-size-2 txt-grey">CPU temperature</p>
+                        <p class="txt-bold txt-size-2">53.7 °C</p>
+                    </div>
+                </div>
+                <div class="tel-prop">
+                    <img class="icon"
+                        src="data:image/svg+xml,%3C?xml version='1.0' encoding='UTF-8'?%3E %3C!DOCTYPE svg PUBLIC '-//W3C//DTD SVG 1.1//EN' 'http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd'%3E %3C!-- Creator: CorelDRAW 2017 --%3E %3Csvg xmlns='http://www.w3.org/2000/svg' xml:space='preserve' width='3.4368mm' height='6.346mm' version='1.1' style='shape-rendering:geometricPrecision; text-rendering:geometricPrecision; image-rendering:optimizeQuality; fill-rule:evenodd; clip-rule:evenodd' viewBox='0 0 14.61 26.97' xmlns:xlink='http://www.w3.org/1999/xlink'%3E %3Cdefs%3E %3Cstyle type='text/css'%3E %3C!%5BCDATA%5B .fil0 %7Bfill:%23EF7F1A%7D .fil1 %7Bfill:white%7D %5D%5D%3E %3C/style%3E %3C/defs%3E %3Cg id='Layer_x0020_1'%3E %3Cmetadata id='CorelCorpID_0Corel-Layer'/%3E %3Cpath id='temperature.svg' class='fil0' d='M11.24 19.67c0,2.17 -1.76,3.93 -3.93,3.93 -2.17,0 -3.93,-1.76 -3.93,-3.93 0,-1.29 0.68,-2.35 1.57,-3.13 1.13,-0.99 1.81,-1.95 1.81,-3.62l0 -0.56 1.13 0 0 0.56c0,1.67 0.66,2.63 1.81,3.62 0.89,0.78 1.57,1.84 1.57,3.13l-0.02 0z'/%3E %3Cpath id='temperature.svg_0' class='fil1' d='M11.24 3.93l0 8.45c0,0.66 0.3,1.29 0.8,1.72 1.58,1.34 2.57,3.34 2.57,5.57 0,4.03 -3.27,7.3 -7.3,7.3 -4.03,0 -7.3,-3.27 -7.3,-7.3 0,-2.23 1.01,-4.23 2.57,-5.57 0.5,-0.43 0.8,-1.06 0.8,-1.72l0 -8.45c0,-2.17 1.76,-3.93 3.93,-3.93 2.17,0 3.93,1.76 3.93,3.93l0 0zm-5.62 0l0 8.45c0,1.76 -0.57,2.57 -1.58,3.43 -1.13,0.97 -1.79,2.37 -1.79,3.84 0,2.78 2.28,5.06 5.06,5.06 2.78,0 5.06,-2.28 5.06,-5.06 0,-1.48 -0.64,-2.89 -1.79,-3.84 -1.01,-0.85 -1.58,-1.67 -1.58,-3.43l0 -8.45c0,-0.92 -0.77,-1.69 -1.69,-1.69 -0.92,0 -1.69,0.77 -1.69,1.69l0 0z'/%3E %3C/g%3E %3C/svg%3E">
+                    <div class="value">
+                        <p class="txt-normal txt-size-2 txt-grey">CPU temperature</p>
+                        <p class="txt-bold txt-size-2">53.7 °C</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="main">
+                <div class="title">
+                    <p class="title-status">Refill resin</p>
+                    <p class="title-hostname">Hostname: <span>prusa64-sl1</span></p>
+                </div>
+                <div class="main-wrapper">
+
+                    <div>Please fully refill resin tank.</div>
+                    <div class="refill">
+                        <div class="refill-images">
+                            <img src="img/refill.jpg" />
+                        </div>
+                        <div class="refill-images">
+                            <img src="img/tank.jpg" />
+                        </div>
+                    </div>
+
+
+                    <div class="buttons-wrapper">
+                        <button class="yes">
+                            <img src="img/yes_color.svg"></img>
+                            <p>resin fully refilled</p>
+                        </button>
+                        <button class="no">
+                            <img src="img/cancel.svg"></img>
+                            <p>no</p>
+                        </button>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function onClickBurger(e) {
+            if (e.className == "navbar-burger") {
+                e.className = "navbar-burger burger-open";
+                document.getElementById("navbar").className = "";
+            } else {
+                e.className = "navbar-burger";
+                document.getElementById("navbar").className = "burger-menu";
+            }
+        }
+    </script>
+</body>
+
+</html>

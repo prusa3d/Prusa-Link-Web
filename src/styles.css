@@ -1,0 +1,966 @@
+/* normalize.css v8.0.1 | MIT License | github.com/necolas/normalize.css */
+
+html {
+    line-height: 1.15; /* 1 */
+    -webkit-text-size-adjust: 100%; /* 2 */
+}
+
+body {
+    margin: 0;
+}
+
+a {
+    background-color: transparent;
+}
+
+img {
+    border-style: none;
+    height: auto;
+    max-width: 100%;
+}
+
+img {
+    border-style: none;
+    height: auto;
+    width: 100%;
+    max-width: 100%;
+}
+
+.icon {
+    width: 48px;
+    height: 48px;
+    min-width: 48px;
+    padding: 2px;
+}
+
+button > img {
+    width: 36px;
+    height: 36px;
+    min-width: 36px;
+    margin: 2px;
+}
+
+button,
+input {
+    font-family: inherit; /* 1 */
+    font-size: 100%; /* 1 */
+    line-height: 1.15; /* 1 */
+    margin: 0; /* 2 */
+    overflow: visible;
+}
+
+button {
+    text-transform: none;
+}
+
+button::-moz-focus-inner {
+    border-style: none;
+    padding: 0;
+}
+
+button:-moz-focusring {
+    outline: 1px dotted ButtonText;
+}
+
+progress {
+    vertical-align: baseline;
+}
+
+::-webkit-file-upload-button {
+    -webkit-appearance: button; /* 1 */
+    font: inherit; /* 2 */
+}
+
+[hidden] {
+    display: none;
+}
+
+/* Prusa
+     ========================================================================== */
+
+p {
+    margin: 0px;
+}
+
+html {
+    color: white;
+}
+body {
+    background-color: hsl(0, 0%, 4%);
+}
+
+.content {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 95%;
+}
+
+.header {
+    border-bottom: 1px solid #707070;
+    border-radius: 0px;
+    padding-bottom: 0px;
+    padding-bottom: 16px;
+}
+
+nav {
+    padding: 16px 0px 0px 0px;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    min-width: 685px;
+}
+
+nav .brand-logo {
+    display: flex;
+    flex-grow: 10;
+    min-width: 288px;
+    min-height: 125px;
+    padding-bottom: 16px;
+}
+
+nav .brand-logo img {
+    width: 100%;
+    height: auto;
+}
+
+nav ul {
+    padding-left: 0px;
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    width: 100%;
+    margin-bottom: 0px;
+}
+
+nav ul li {
+    display: flex;
+    list-style-type: none;
+    padding: 16px;
+    width: 100%;
+}
+
+nav ul a {
+    font-size: 20px;
+    list-style: none;
+    text-decoration: none;
+    color: #fff;
+    width: 100%;
+    text-align: center;
+}
+
+nav .navbar-burger {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    flex-grow: 1;
+    align-self: flex-end;
+    margin-bottom: auto;
+    margin-top: auto;
+}
+
+nav .navbar-burger div {
+    transition-duration: 0.5s;
+    background-color: #efefef;
+    width: 100px;
+    height: 12px;
+    margin: 11px 0;
+    display: flex;
+    opacity: 1;
+}
+
+.burger-menu {
+    display: none;
+}
+
+nav .navbar-burger.burger-open div:first-child {
+    transform: rotateZ(45deg) scaleX(1.25) translate(19px, 31px);
+}
+
+nav .navbar-burger.burger-open div:nth-child(2) {
+    transition-property: opacity;
+    opacity: 0;
+}
+
+nav .navbar-burger.burger-open div:last-child {
+    transform: rotateZ(-45deg) scaleX(1.25) translate(13px, -24px);
+}
+
+nav .burger-icon.burger-open {
+    transition-duration: 0.5s;
+    background: transparent;
+}
+
+/* ===================================== TEXT ======================================= */
+
+.txt-normal .txt-size-2 .txt-grey .txt-bold {
+    color: white;
+}
+
+/* ===================================== TELEMETRY ======================================= */
+
+body > .content {
+    margin-top: 16px;
+}
+
+.telemetry {
+    display: flex;
+    -webkit-box-flex: 1;
+    flex-shrink: 1;
+    padding: 0.75rem;
+    width: 100%;
+    flex-direction: row;
+    justify-content: flex-start;
+    padding: 12px 0px 12px 0px;
+}
+
+.tel-prop {
+    display: flex;
+    align-items: center;
+    padding: 12px;
+    width: 50%;
+    padding-left: 0px;
+}
+
+/* .tel-prop > img {
+    height: 48px;
+    width: 48px;
+    padding-right: 16px;
+} */
+
+.tel-prop > div {
+    display: flex;
+    flex-direction: column;
+}
+
+.tel-prop > div > p {
+    margin: 0px;
+    line-height: 1.5;
+}
+
+.content-wrapper {
+    display: flex;
+    flex-direction: column-reverse;
+}
+
+/* ===================================== MAIN ======================================= */
+
+.main {
+    display: block;
+    flex-grow: 1;
+    padding: 0.75rem;
+}
+
+/* ===================================== TITLE ======================================= */
+
+.title {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    flex-direction: column;
+    border-bottom: 1px solid #707070;
+    border-radius: 0px;
+    margin-bottom: 16px;
+}
+
+.title-status {
+    color: white;
+    margin-bottom: 0px;
+}
+.title-hostname {
+    margin-left: inherit;
+    margin-bottom: 0px;
+}
+
+/* ===================================== MAIN-WRAPPER ======================================= */
+
+.main-wrapper {
+    display: flex;
+    flex-grow: 1;
+    margin: 0.75rem 0px 0.75rem 0px;
+    flex-direction: column;
+    justify-content: space-between;
+    
+}
+
+.center{
+    align-items: center;
+}
+
+/* .main-wrapper .row {
+    flex-direction: column;
+} */
+
+/* ===================================== HOME ======================================= */
+
+.component {
+    display: flex;
+    flex-grow: 1;
+    flex-wrap: wrap;
+    width: 100%;
+}
+
+.home-comp {
+    padding: 0px 0px 16px 0px;
+}
+
+.component > p {
+    width: 100%;
+    display: flex;
+    margin: 0px;
+    border-bottom: 1px solid #707070;
+    border-radius: 0px;
+}
+
+.line {
+    border-bottom: 1px solid #707070;
+    border-radius: 0px;
+}
+
+/* ===================================== UPLOAD ======================================= */
+
+.proj-upload {
+    width: 90%;
+}
+
+.upload {
+    border-style: dashed;
+    border-color: #f8651b;
+    margin-top: 12px;
+    display: flex;
+    width: 100%;
+    align-items: center;
+    flex-flow: column nowrap;
+    padding-top: 20px;
+    padding-bottom: 20px;
+}
+
+.upload img {
+    padding-bottom: 20px;
+}
+
+.upload p {
+    text-align: center;
+}
+
+.upload:hover {
+    background-color: #313131;
+    cursor: pointer;
+}
+
+/* ===================================== TEMPERATURE ======================================= */
+.temp {
+    display: contents;
+}
+
+.temp-svg {
+    pointer-events: all;
+    width: 100%;
+    height: auto;
+}
+
+.temp-g-label {
+    max-width: 100%;
+    height: 100%;
+    width: 100%;
+    user-select: none;
+}
+
+.temp-legend-led {
+    fill: rgb(248, 101, 27);
+}
+.temp-legend-amb {
+    fill: rgb(27, 115, 248);
+}
+
+.temp-legend-cpu {
+    fill: rgb(243, 241, 44);
+}
+
+.temp-line-led {
+    fill: transparent;
+    stroke-width: 1%;
+    opacity: 1;
+    stroke: rgb(248, 101, 27);
+}
+
+.temp-line-amb {
+    fill: transparent;
+    stroke-width: 1%;
+    opacity: 1;
+    stroke: rgb(27, 115, 248);
+}
+
+.temp-line-cpu {
+    fill: transparent;
+    stroke-width: 1%;
+    opacity: 1;
+    stroke: rgb(243, 241, 44);
+}
+
+.temp-text {
+    /* font-family: "Atlas Grotesk Regular Web"; */
+    fill: white;
+    font-size: 11px;
+    letter-spacing: normal;
+    padding: 8px;
+    stroke: transparent;
+    stroke-width: 0px;
+}
+
+.temp-label-line {
+    stroke: white;
+    fill: transparent;
+    stroke-width: 2px;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.temp-label-x {
+    /* font-family: "Atlas Grotesk Regular Web"; */
+    font-size: 11px;
+    fill: white;
+    text-anchor: middle;
+    letter-spacing: normal;
+    stroke: transparent;
+    stroke-width: 0px;
+    padding: 30px;
+}
+
+.temp-label-y {
+    /* font-family: "Atlas Grotesk Regular Web"; */
+    font-size: 11px;
+    fill: white;
+    text-anchor: middle;
+    letter-spacing: normal;
+    stroke: transparent;
+    stroke-width: 0px;
+    padding: 35px;
+}
+
+.temp-h-line {
+    stroke: gray;
+    stroke-dasharray: none;
+    fill: none;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    pointer-events: painted;
+}
+
+.temp-connect-text {
+    stroke: white;
+    size: 5px;
+    fill: transparent;
+    stroke-width: 1px;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.temp-line-text {
+    font-size: 15px;
+    padding: 5px;
+    fill: white;
+    letter-spacing: normal;
+    stroke: transparent;
+    stroke-width: 0px;
+}
+
+/* ===================================== PROJECTS ======================================= */
+
+.projects {
+    width: 100%;
+    margin-top: 16px;
+}
+
+.node {
+    display: flex;
+    align-items: center;
+}
+
+.node:hover {
+    background-color: #313131;
+    cursor: pointer;
+}
+
+.node-icon {
+    height: 48px;
+    width: 48px;
+    margin: 12px;
+}
+
+.node-img {
+    max-width: 112px;
+    max-height: 67px;
+    width: 100%;
+    height: auto;
+    display: flex;
+    margin: 12px;
+}
+
+.node-wrapper {
+    display: flex;
+    margin: 12px;
+    width: 100%;
+    flex-direction: column;
+}
+
+.node-wrapper > p {
+    -ms-word-break: break-all;
+    word-break: break-all;
+    margin: 12px;
+}
+
+.node-details {
+    display: flex;
+    flex-wrap: wrap;
+    width: 100%;
+    justify-content: space-between;
+}
+
+.details {
+    display: flex;
+    flex-grow: 1;
+    align-items: center;
+}
+
+.details > img {
+    margin: 12px;
+}
+
+/* ===================================== PREVIEW ======================================= */
+
+.preview {
+    display: flex;
+    width: 100%;
+    flex-direction: column;
+}
+
+.preview > p {
+    -ms-word-break: break-all;
+    word-break: break-all;
+}
+
+/* .icon {
+    width: 48px;
+    height: 48px;
+    display: flex;
+    margin: 16px;
+} */
+
+.preview-wrapper {
+    display: flex;
+    flex-grow: 1;
+    flex-wrap: wrap;
+}
+
+.preview-img {
+    width: 100%;
+    margin-bottom: 16px;
+}
+
+.preview-img > img {
+    height: auto;
+    max-width: 100%;
+}
+
+.preview-details {
+    display: flex;
+    width: 100%;
+    flex-direction: column;
+}
+
+.preview-prop {
+    display: flex;
+    align-items: center;
+}
+
+.preview-prop > div {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    /* min-width: 50%; */
+}
+
+.preview-prop > img {
+    margin: 6px;
+}
+
+.preview-prop div:first-of-type {
+    min-width: 50%;
+}
+
+.preview-buttons {
+    display: flex;
+    margin-top: 16px;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+}
+
+.preview-buttons-first {
+    display: flex;
+    flex-grow: 1;
+    justify-content: flex-end;
+    margin-bottom: 12px;
+    width: 100%;
+}
+
+.preview-buttons-first > button {
+    flex-grow: unset;
+}
+
+.buttons-wrapper {
+    display: flex;
+    justify-content: flex-end;
+    flex-grow: 1;
+}
+
+.buttons-wrapper button:not(:first-child) {
+    margin-left: 12px;
+}
+
+/* ===================================== BUTTONS ======================================= */
+
+/* .button-action img {
+    margin: 5px;
+    width: 48px;
+    height: 48px;
+    min-width: 48px;
+}
+
+.button-yes img {
+    margin: 5px;
+    width: 48px;
+    height: 48px;
+}
+
+.button-no img {
+    margin: 5px;
+    width: 48px;
+    height: 48px;
+} */
+
+button > p {
+    width: 100%;
+    margin: 6px;
+}
+
+button {
+    display: flex;
+    align-items: center;
+    color: white;
+    border-radius: 6px;
+    border-color: transparent;
+}
+
+button:hover {
+    cursor: pointer;
+}
+
+button:disabled {
+    cursor: default;
+    pointer-events: none;
+    box-shadow: none;
+    opacity: 0.5;
+}
+
+.action {
+    background-color: #5b5b5b;
+}
+
+.action:hover {
+    background-color: #6b6868;
+}
+
+.action:disabled {
+    background-color: #5b5b5b;
+    border-color: #dbdbdb;
+}
+
+.yes {
+    background-color: #35a913;
+}
+
+.yes:hover {
+    background-color: #6ba959;
+}
+
+.yes:disabled {
+    background-color: #35a913;
+    border-color: #dbdbdb;
+}
+
+.no {
+    background-color: #be0000;
+}
+
+.no:hover {
+    background-color: #b34a4a;
+}
+
+.no:disabled {
+    background-color: #be0000;
+    border-color: #dbdbdb;
+}
+
+/* ===================================== Exposure ======================================= */
+
+.exposure-wrapper {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    margin-bottom: 5%;
+    margin-top: unset;
+    margin-left: unset;
+}
+
+.exposure-item {
+    display: flex;
+    margin-bottom: 12px;
+    align-items: center;
+}
+
+.exposure-item p:first-child {
+    flex-grow: 1;
+}
+
+.exposure-range {
+    display: flex;
+    flex-grow: 1;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 35%;
+}
+
+/* ===================================== DELETE ======================================= */
+.message {
+    display: flex;
+    justify-content: center;
+    margin-top: 15%;
+    margin-bottom: 15%;
+}
+
+/* ===================================== JOB ======================================= */
+
+.job {
+    width: 100%;
+}
+
+.job-stats {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 16px;
+}
+
+.progress {
+    min-width: 50%;
+    margin-bottom: 16px;
+}
+
+progress[value] {
+    /* Reset the default appearance */
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+
+    /* Get rid of default border in Firefox. */
+    border: none;
+
+    /* Dimensions */
+    width: 250px;
+    height: 20px;
+}
+
+progress::-webkit-progress-value {
+    background: #f8651b;
+}
+
+progress::-webkit-progress-bar {
+    background: 707070;
+}
+
+progress::-moz-progress-bar {
+    background: #f8651b;
+}
+
+.progress > progress {
+    width: 100%;
+    border: none;
+    border-radius: 0;
+    height: 20px;
+    color: #f8651b;
+}
+
+.progress > p {
+    text-align: center;
+}
+
+.stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    row-gap: 8px;
+    flex-grow: 1;
+}
+.job-buttons {
+    display: flex;
+}
+
+/* ===================================== REFILL ======================================= */
+
+.refill {
+    display: flex;
+    margin-top: 16px;
+    margin-bottom: 16px;
+}
+
+.refill div:first-child {
+    padding-right: 6px;
+}
+
+.refill div:last-child {
+    padding-left: 6px;
+}
+
+.refill-images {
+    display: block;
+    flex-basis: 0;
+    flex-grow: 1;
+    flex-shrink: 1;
+}
+
+/* Extra small devices (phones, 600px and down) */
+/* @media only screen and (max-width: 600px) {...} */
+
+/* Small devices (portrait tablets and large phones, 600px and up) */
+/* @media only screen and (min-width: 600px) {...}
+
+/* Medium devices (landscape tablets, 768px and up) */
+/* @media only screen and (min-width: 768px) {...} */
+
+/* Large devices (laptops/desktops, 992px and up) */
+@media only screen and (min-width: 992px) {
+    .header {
+        padding-bottom: 0px;
+    }
+    .content {
+        width: 75%;
+    }
+    nav ul {
+        flex-wrap: nowrap;
+        flex-direction: row;
+        width: inherit;
+    }
+
+    .burger-menu {
+        display: flex;
+    }
+
+    nav {
+        flex-direction: inherit;
+    }
+
+    nav .brand-logo {
+        max-width: 300px;
+        min-height: auto;
+    }
+
+    nav .navbar-burger {
+        display: none;
+    }
+
+    .telemetry {
+        flex-direction: column;
+        width: 20%;
+    }
+    .tel-prop {
+        width: 100%;
+    }
+
+    .content-wrapper {
+        flex-direction: row;
+    }
+
+    .title {
+        flex-direction: row;
+    }
+
+    .title-hostname {
+        margin-left: auto;
+    }
+
+    .main-wrapper .row {
+        flex-direction: row;
+    }
+
+    /* .home-comp {
+        padding: 0px 16px 0px 16px;
+    } */
+
+    .project-icon {
+        height: 28px;
+        width: 28px;
+    }
+
+    .icon {
+        width: 24px;
+        height: 24px;
+        min-width: 24px;
+    }
+
+    .node-icon {
+        height: 32px;
+        width: 32px;
+    }
+
+    button {
+        border-radius: 4px;
+    }
+
+    button > img {
+        width: 24px;
+        height: 24px;
+        min-width: 24px;
+    }
+
+    .preview-wrapper {
+        flex-wrap: nowrap;
+    }
+
+    .preview-img {
+        width: 65%;
+        margin-bottom: 0;
+    }
+
+    .button-action,
+    .button-yes,
+    .button-no {
+        border-radius: 5px;
+    }
+
+    .preview-buttons-first {
+        margin-right: auto;
+        justify-content: flex-start;
+        margin-bottom: unset;
+        width: unset;
+    }
+
+    .exposure-wrapper {
+        margin-left: 25%;
+        margin-top: 15%;
+        margin-bottom: 15%;
+        width: 50%;
+    }
+
+    .job-stats {
+        display: flex;
+        flex-direction: row;
+    }
+
+    .progress > progress {
+        width: 96%;
+    }
+}
+
+/* Extra large devices (large laptops and desktops, 1200px and up) */
+/* @media only screen and (min-width: 1200px) {...} */
