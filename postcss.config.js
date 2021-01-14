@@ -1,7 +1,13 @@
+const purgecss = require("@fullhuman/postcss-purgecss");
+
 module.exports = {
-    plugins: {
-        'autoprefixer': {},
-        'postcss-preset-env': {},
-        'cssnano': {}
-    }
-}
+  plugins: [
+    require("precss"),
+    require("postcss-nested"),
+    require("autoprefixer"),
+    purgecss({
+      content: ["./src/**/*.html", "./src/**/*.js"],
+    }),
+    require("postcss-csso"),
+  ],
+};

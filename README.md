@@ -10,33 +10,26 @@ npm install
 
 ## UI
 
-### Run ui sla
+`npm run {build_type}:{printer_type}`
+
+build type:
+
+- dev -> build mode developer
+- build -> build mode production
+- start -> run a dev server (Should run dev/build first for generate preprocessing code)
+- start [http-*] -> run a dev server with authentication
+
+printer types:
+
+- sl1
+- mini
+
+Example:
 
 ```bash
-npm run ui:start
-```
-
-### Run ui fdm
-
-```bash
-npm run ui:start-mini
-```
-
-### Build dev
-
-```bash
-npm run ui:dev
-```
-
-### Build ui
-
-```bash
-rm -fr ./dist
-npm run ui:build
-```
-
-### update translations ui
-
-```bash
-npm run ui:translations
+npm run dev:mini
+npm run build:mini
+npm run start:mini
+npm run start:mini http-basic
+npm run start:mini http-apikey
 ```

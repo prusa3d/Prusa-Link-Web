@@ -1,0 +1,66 @@
+<!-- prettier-ignore -->
+{#
+ # This file is part of the Prusa Connect Local
+ # Copyright (C) 2021 Prusa Research a.s. - www.prusa3d.com
+ # SPDX-License-Identifier: GPL-3.0-or-later
+#}
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="theme-color" content="#fff" />
+    {% if env.type == "sl1" %}
+    <title>Original Prusa SL1 - Prusa Connect Local</title>
+    {% elif env.type == "mini" %}
+    <title>Original Prusa Mini - Prusa Connect Local</title>
+    {% else %}
+    <title>Prusa Connect Local</title>
+    {% endif %}
+  </head>
+
+  <body>
+    <div class="header">
+      <div class="content">
+        <nav>
+          <a href="#!" class="brand-logo">
+            <img
+              src="{{ pre.countOrRenderAssets('prusa_connect_local_logo_black.svg') | safe }}"
+            />
+          </a>
+          <a class="navbar-burger" id="menu">
+            <div></div>
+            <div></div>
+            <div></div>
+          </a>
+          {% include "components/menu.html" %}
+        </nav>
+      </div>
+    </div>
+
+    <div class="content">
+      <div class="content-wrapper">
+        {% include "components/telemetry.html" %}
+        <div class="main" id="root"></div>
+      </div>
+    </div>
+
+    <div class="modal">
+      <div class="modal-box"></div>
+    </div>
+
+    <!-- prettier-ignore -->
+    {% include "components/dropdown.html" %}
+    {% include "components/modal/welcome.html" %}
+    {% include "components/modal/apiKey.html" %}
+    {% include "components/toast.html" %}
+
+    <!-- prettier-ignore -->
+    {% if env.printerFamily == "sla" %}
+      {% include "components/temperature_graph_sla.html" %}
+      {% include "components/exposure.html" %}
+    {% else %}
+      {% include "components/temperature_graph_fdm.html" %}
+    {% endif %}
+  </body>
+</html>

@@ -1,0 +1,30 @@
+<!-- prettier-ignore -->
+{#
+    # This file is part of the Prusa Connect Local
+    # Copyright (C) 2021 Prusa Research a.s. - www.prusa3d.com
+    # SPDX-License-Identifier: GPL-3.0-or-later
+#}
+
+<!-- prettier-ignore -->
+{% include "components/title_default.html" %}
+
+<div class="main-wrapper center">
+  <div class="component proj-upload">
+    <p class="txt-bold txt-grey txt-size-2">upload project</p>
+    <div class="upload">
+      <img
+        class="icon"
+        src="{{ pre.countOrRenderAssets('download.svg') | safe }}"
+      />
+      <p>Choose a *.sl1 or drop it here.</p>
+    </div>
+  </div>
+
+  <div id="projects"></div>
+</div>
+
+<!-- prettier-ignore -->
+{% include "components/node_folder.html" %}
+
+<!-- prettier-ignore -->
+{% include "components/node_project.html" %}
