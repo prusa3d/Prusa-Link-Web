@@ -1,169 +1,75 @@
-// This file is part of Prusa-Connect-Local
-// Copyright (C) 2018-2019 Prusa Research s.r.o. - www.prusa3d.com
-// SPDX-License-Identifier: GPL-3.0-or-later
-
 const path = require("path");
-const glob = require("glob-all");
 const webpack = require("webpack");
-const MiniCssExtractPlugin = require("mini-css-extract-plugin");
-const PurgecssPlugin = require("purgecss-webpack-plugin");
-const HtmlWebpackPlugin = require("html-webpack-plugin");
-const ForkTsCheckerWebpackPlugin = require("fork-ts-checker-webpack-plugin");
 const TerserPlugin = require("terser-webpack-plugin");
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const HtmlWebpackPlugin = require("html-webpack-plugin");
+// const HTMLInlineCSSWebpackPlugin = require("html-inline-css-webpack-plugin")
+  // .default;
 const { CleanWebpackPlugin } = require("clean-webpack-plugin");
-const CopyPlugin = require("copy-webpack-plugin");
-
-const printers = {
-  sl1: "Original Prusa SL1",
-  mini: "Original Prusa Mini"
-};
 
 module.exports = (env, args) => {
-  let devMode = false;
-  // Global variables
-  let apiKey = "developer";
-  let printer = printers["sl1"];
-  const update_timer = 5000;
 
-  if (args && args.mode === "production") {
-    console.log("== Production mode");
-
-    apiKey = typeof env.apiKey !== "undefined" ? env.apiKey : apiKey;
-    printer =
-      typeof env.printer !== "undefined" ? printers[env.printer] : printer;
-  } else {
-    devMode = true;
-    printer =
-      typeof env.printer !== "undefined" ? printers[env.printer] : printer;
-    console.log("== Development mode");
-  }
-  const update_printer =
-    typeof env.update_printer !== "undefined" ? env.update_printer : 1000;
-  const update_progress =
-    typeof env.update_progress !== "undefined"
-      ? env.update_progress
-      : update_timer;
-  const update_files =
-    typeof env.update_files !== "undefined" ? env.update_files : update_timer;
-  console.log(`* printer: ${printer}`);
-  console.log(`* update printer: ${update_printer}`);
-  console.log(`* update progress: ${update_progress}`);
-  console.log(`* update files: ${update_files}`);
-
-  const PATHS = {
-    src: path.join(__dirname, "ui/src")
+  const printer_conf = {
+    mode: env.dev ? "development" : "production",
+    type: env.PRINTER,
+    title: `Original Prusa ${env.PRINTER}`,
+    apiKey: "developer",
+    updateInterval: 1000,
   };
 
+  console.log(`===== ${printer_conf.title} =====`);
+  console.log(printer_conf);
+  console.log(`=============================`);
+
   return {
-    entry: "./ui/src/index.tsx",
+    mode: printer_conf.mode,
+    entry: "./src/index.js",
+
     output: {
-      path: __dirname + "/dist/",
-      filename: "main.[hash].js",
-      publicPath: "/"
+      filename: '[name].[contenthash].js',
+       path: path.resolve(__dirname, 'dist'),
     },
-    target: "web",
-    devtool: devMode ? "source-map" : false,
-    resolve: {
-      extensions: [".ts", ".tsx", ".js", ".html"],
-      alias: {
-        react: "preact/compat",
-        "react-dom/test-utils": "preact/test-utils",
-        "react-dom": "preact/compat"
-      }
-    },
+
+    plugins: [
+      new webpack.ProgressPlugin(),
+      new webpack.DefinePlugin({
+        "process.env.MODE": JSON.stringify(printer_conf.mode),
+        "process.env.TYPE": JSON.stringify(printer_conf.type),
+        "process.env.APIKEY": JSON.stringify(printer_conf.apiKey),
+        "process.env.UPDATE_INTERVAL": JSON.stringify(printer_conf.updateInterval),
+      }),
+      new CleanWebpackPlugin(),
+      new MiniCssExtractPlugin({
+        filename: "[name].[contenthash].css"
+      }),
+      new HtmlWebpackPlugin({
+        title: `${printer_conf.title} - Prusa Connect Local`,
+        // template: "./src/index.html",
+        minify: !env.dev,
+      }),
+      // new HTMLInlineCSSWebpackPlugin(),
+    ],
+
     module: {
       rules: [
         {
-          test: /\.tsx?$/,
-          exclude: /node_modules/,
+          test: /.css$/,
           use: [
+            MiniCssExtractPlugin.loader,
             {
-              loader: "ts-loader",
+              loader: "css-loader",
               options: {
-                transpileOnly: true
-              }
-            }
-          ]
-        },
-        {
-          test: /\.scss$/,
-          use: [
-            {
-              loader: MiniCssExtractPlugin.loader,
-              options: {
-                hmr: devMode
-              }
+                importLoaders: 1,
+              },
             },
-            "css-loader",
             "postcss-loader",
-            "sass-loader"
-          ]
+          ],
         },
-        {
-          test: /\.svg$/,
-          use: {
-            loader: "svg-url-loader",
-            options: {}
-          }
-        },
-        {
-          test: /\.(png|jpe?g|gif|ico|eot|woff2?)$/i,
-          use: [
-            {
-              loader: "file-loader",
-              options: {
-                outputPath: "assets"
-              }
-            }
-          ]
-        }
-      ]
+      ],
     },
-    devServer: {
-      headers: {
-        "Access-Control-Allow-Origin": "*"
-      },
-      contentBase: "./dist",
-      compress: true,
-      port: 1234,
-      proxy: {
-        "/api": "http://localhost:8080"
-      },
-      historyApiFallback: true
-    },
-    plugins: [
-      new CleanWebpackPlugin(),
-      new webpack.DefinePlugin({
-        "process.env.APIKEY": JSON.stringify(apiKey),
-        "process.env.PRINTER": JSON.stringify(printer),
-        "process.env.UPDATE_PRINTER": JSON.stringify(update_printer),
-        "process.env.UPDATE_PROGRESS": JSON.stringify(update_progress),
-        "process.env.UPDATE_FILES": JSON.stringify(update_files),
-        "process.env.DEVELOPMENT": JSON.stringify(devMode),
-        "process.env.IS_SL1": JSON.stringify(printer === printers["sl1"])
-      }),
-      new ForkTsCheckerWebpackPlugin(),
-      new MiniCssExtractPlugin({
-        filename: devMode ? "[name].css" : "[name].[hash].css",
-        chunkFilename: devMode ? "[id].css" : "[id].[hash].css"
-      }),
-      new HtmlWebpackPlugin({
-        title: `${printer} - PrusaConnect`,
-        template: "./ui/src/index.html"
-      }),
-      new PurgecssPlugin({
-        paths: glob.sync(`${PATHS.src}/**/*`, { nodir: true })
-      }),
-      new CopyPlugin({
-        patterns: [
-          { from: "./ui/src/locales", to: "./locales" },
-          { from: "./ui/src/assets/icons", to: "./assets" }
-        ]
-      })
-    ],
+
     optimization: {
-      minimize: true,
-      minimizer: [new TerserPlugin()]
-    }
+      minimizer: [new TerserPlugin()],
+    },
   };
 };
