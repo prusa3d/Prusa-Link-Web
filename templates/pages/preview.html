@@ -1,0 +1,131 @@
+<!-- prettier-ignore -->
+{#
+    # This file is part of the Prusa Connect Local
+    # Copyright (C) 2021 Prusa Research a.s. - www.prusa3d.com
+    # SPDX-License-Identifier: GPL-3.0-or-later
+#}
+
+<!-- prettier-ignore -->
+{% if env.printerFamily == "sla" %}
+  {%
+    set preview_props = [
+      {
+        'icon': 'time_color.svg',
+        "data": [
+          { "label": "prop.time-est", "format": "time", "location": "job.estimatedPrintTime", "type":"preview" },
+          { "label": "prop.est-end", "location": "job.estimatedPrintTime", "format": "timeEst", "type":"preview" }
+        ]
+     },
+      {
+        'icon': 'quality_medium.svg',
+        "data": [
+          { "label": "prop.layers", "format": "int","location": "job.file.layers", "type":"preview" },
+          { "label": "prop.layer-ht", "format": "layer", "location": "job.file.layerHeight", "type":"preview" }
+        ]
+      },
+      {
+        'icon': 'exposure_times_color.svg',
+        "data": [
+          { "label": "prop.exp-times", "format": "expo", "location": "job.file", "type":"preview" }
+        ]
+      },
+      {
+        'icon': 'calendar.svg',
+        "data": [
+          { "label": "prop.last-mod", "format": "date", "location": "job.file.date", "type":"preview" }
+        ]
+      }
+    ]
+  %}
+{% else %}
+  {%
+      set preview_props = [
+        {
+          'icon': 'time_color.svg',
+          "data": [
+          { "label": "prop.time-est", "format": "time", "location": "job.estimatedPrintTime", "type":"preview" },
+          { "label": "prop.est-end", "location": "job.estimatedPrintTime", "format": "timeEst", "type":"preview" }
+        ]
+        },
+        {
+          'icon': 'calendar.svg',
+          "data": [
+            { "label": "prop.last-mod", "format": "date", "location": "job.file.date", "type":"preview" }
+        ]
+        }
+    ]
+  %}
+{% endif %}
+
+<!-- prettier-ignore -->
+{% include "components/title_default.html" %}
+
+<div class="main-wrapper row">
+  <div class="preview">
+    <p
+      data-type="preview"
+      data-where="job.file.name"
+      class="txt-bold txt-size-2"
+    ></p>
+    <div class="preview-wrapper">
+      <div class="preview-img">
+        <img id="preview-img" src="../assets/thumbnail.png" />
+      </div>
+      <div class="preview-details">
+        {% for prop in preview_props %}
+        <div class="preview-prop">
+          <img
+            class="icon"
+            src="{{ pre.countOrRenderAssets(prop.icon) | safe }}"
+          />
+          {% for values in prop.data %}
+          <div>
+            <p data-label="{{ values.label }}" class="txt-size-2 txt-grey"></p>
+            <p
+              data-format="{{ values.format }}"
+              data-type="{{ values.type }}"
+              data-where="{{ values.location }}"
+              class="txt-bold txt-size-2"
+            >
+              NA
+            </p>
+          </div>
+          {% endfor %}
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+
+    <div class="preview-buttons">
+      <div class="preview-buttons-first">
+        <button class="no" id="delete">
+          <img
+            src="{{ pre.countOrRenderAssets('delete_small_white.svg') | safe }}"
+          />
+          <p>delete</p>
+        </button>
+      </div>
+      <div class="buttons-wrapper">
+        {% if env.printerFamily == "sla" %}
+        <button id="exposure" class="action">
+          <img
+            src="{{ pre.countOrRenderAssets('exposure_times_color.svg') | safe }}"
+          />
+          <p>change exposure times</p>
+        </button>
+        {% endif %}
+        <button class="yes" id="start">
+          <img src="{{ pre.countOrRenderAssets('yes_color.svg') | safe }}" />
+          <p>start print</p>
+        </button>
+        <button class="no" id="cancel">
+          <img src="{{ pre.countOrRenderAssets('cancel.svg') | safe }}" />
+          <p>cancel print</p>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- prettier-ignore -->
+{% include "components/modal/confirmPrint.html" %}
