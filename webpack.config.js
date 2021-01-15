@@ -44,7 +44,7 @@ module.exports = (env, args) => {
       }),
       new HtmlWebpackPlugin({
         title: `${printer_conf.title} - Prusa Connect Local`,
-        // template: "./src/index.html",
+        template: "./templates/index.html",
         minify: !env.dev,
       }),
       // new HTMLInlineCSSWebpackPlugin(),
@@ -65,11 +65,27 @@ module.exports = (env, args) => {
             "postcss-loader",
           ],
         },
+        {
+          test: /\.html$/i,
+          loader: 'html-loader',
+          options: {
+            // Disables attributes processing
+            attributes: false,
+          },
+        },
       ],
     },
 
     optimization: {
       minimizer: [new TerserPlugin()],
     },
+
+    //...
+    devServer: {
+      contentBase: path.join(__dirname, 'dist'),
+      compress: true,
+      port: 9000
+    }
+  
   };
 };

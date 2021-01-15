@@ -6,11 +6,14 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev:sl1": "webpack --env dev --env PRINTER=SL1 --progress",
-    "build:sl1": "webpack dev --env PRINTER=SL1 --progress",
+    "start:sl1": "webpack serve --env PRINTER=SL1 --progress",
+    "build:sl1": "webpack --env PRINTER=SL1 --progress",
     "dev:mk3": "webpack --env dev --env PRINTER=MK3 --progress",
-    "build:mk3": "webpack dev --env PRINTER=MK3 --progress",
+    "start:mk3": "webpack serve --env PRINTER=MK3 --progress",
+    "build:mk3": "webpack --env PRINTER=MK3 --progress",
     "dev:mini": "webpack --env dev --env PRINTER=Mini --progress",
-    "build:mini": "webpack dev --env PRINTER=Mini --progress"
+    "start:mini": "webpack serve --env PRINTER=Mini --progress",
+    "build:mini": "webpack --env PRINTER=Mini --progress"
   },
   "repository": {
     "type": "git",
@@ -29,6 +32,7 @@
     "clean-webpack-plugin": "^3.0.0",
     "css-loader": "^5.0.0",
     "html-inline-css-webpack-plugin": "^1.9.0",
+    "html-loader": "^1.3.2",
     "html-webpack-plugin": "^5.0.0-alpha.7",
     "mini-css-extract-plugin": "^1.2.1",
     "postcss": "^8.1.4",
@@ -39,6 +43,7 @@
     "precss": "^4.0.0",
     "terser-webpack-plugin": "^5.0.2",
     "webpack": "^5.3.0",
-    "webpack-cli": "^4.1.0"
+    "webpack-cli": "^4.1.0",
+    "webpack-dev-server": "^3.11.2"
   }
 }
