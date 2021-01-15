@@ -17,6 +17,101 @@ tags:
   - name: octoprint
     description: Octoprint compatible
 paths:
+  /api:
+    get:
+      summary: Retrieve a mock for current connection settings.
+      security:
+        - ApiKeyAuth: []
+      responses:
+        200:
+          description: OK
+          content:
+            text/plain:
+                schema:
+                  type: string
+                  example: SL1 Octoprint-like API
+  /api/version:
+    get:
+      security:
+        - ApiKeyAuth: []
+      summary: version informations
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  api:
+                    type: string
+                    example: "0.1"
+                  server:
+                    type: string
+                    example: "1.1.0"
+                  text:
+                    type: string
+                    example: Prusa SLA SL1 1.0.5
+  /api/hostname:
+    get:
+      summary: Retrieve a mock for current connection settings.
+      security:
+        - ApiKeyAuth: []
+      responses:
+        200:
+          description: OK
+          content:
+            text/plain:
+                schema:
+                  type: string
+                  example: prusa64-sl1
+  /api/files/preview:
+    get:
+      summary: Retrieve the current project opened in the printer.
+      security:
+        - ApiKeyAuth: []
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OctoFileOrFolderInfo"
+        403:
+          $ref: "#/components/responses/Unauthorized"
+        404:
+          description: Not Found
+  /api/before-confirm:
+    get:
+      summary: Retrieve some metadata of the current project opened in the printer.
+      security:
+        - ApiKeyAuth: []
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  exposure_times:
+                    type: string
+                    example: "25/13/1 s"
+                  last_modified:
+                    type: number
+                    description: Unix Timestamep
+                    example: 1574175255
+                    nullable: true
+                  total_layers:
+                    type: number
+                    example: 250
+                  time_zone:
+                    type: string
+                    example: "+0000"
+        403:
+          $ref: "#/components/responses/Unauthorized"
+        404:
+          description: Not Found
   /api/connection:
     get:
       tags:
