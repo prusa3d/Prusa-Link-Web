@@ -1,5 +1,5 @@
 const load = () => {
-    console.log("Dashboard Logic");
+    console.log("Dashboard Logic - mini");
 }
 
 export default { load };
