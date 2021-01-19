@@ -1,6 +1,6 @@
 const load = () => {
     const telemetry = document.getElementById("telemetry");
-    console.log("Temperature Logic", telemetry);
+    console.log("Temperature Logic - sl1", telemetry);
 
 }
 

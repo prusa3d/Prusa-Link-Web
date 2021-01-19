@@ -1,0 +1,26 @@
+{% extends "index.html" %}
+
+{% 
+    set menu_dict = { 
+        'link-home': {'text': 'Dashboard', path: '#dashboard' },
+        'link-proj': {'text': 'Projects', path: '#projects' },
+        'link-temp': {'text': 'Temperatures', path: '#temperature' }
+    }
+%}
+
+{% 
+    set telemetry_dict = { 
+        'temp-cpu': {'text': 'CPU temperature', 'icon': 'temperature_color.svg' },
+        'temp-led': {'text': 'UV LED temperature', 'icon': 'temperature_color.svg' },
+        'temp-amb': {'text': 'ambient temperature', 'icon': 'temperature_color.svg' },
+        'fan-led': {'text': 'UV LED fan', 'icon': 'fan_color.svg' },
+        'fan-blower': {'text': 'blower fan', 'icon': 'fan_color.svg' },
+        'fan-rear': {'text': 'rear fan', 'icon': 'fan_color.svg' },
+        'cover': {'text': 'cover state', 'icon': 'cover_color.svg' }
+    }
+%}
+
+{% block header %}
+    <title>Original Prusa Sl1 - Prusa Connect Local</title>
+{% endblock %}
+

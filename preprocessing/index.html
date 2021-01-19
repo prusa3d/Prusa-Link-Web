@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="theme-color" content="#fff" />
+    {% block header %} {% endblock %}
+  </head>
+
+  <body>
+    <div class="header">
+      <div class="content">
+        <nav>
+          <a href="#!" class="brand-logo">
+            {% if assets %}
+            <img src="{{ assets['prusa_connect_local_logo_black.svg'] }}" />
+            {% endif %}
+          </a>
+          <a class="navbar-burger" onClick="onClickBurger(this)">
+            <div></div>
+            <div></div>
+            <div></div>
+          </a>
+          <ul class="burger-menu" id="navbar">
+            {% for key, values in menu_dict %}
+            <li>
+              <a href="{{ values.path }}">{{ values.text }}</a>
+            </li>
+            {% endfor %}
+          </ul>
+        </nav>
+      </div>
+    </div>
+
+    <div class="content">
+      <div class="content-wrapper">
+        <div class="telemetry">
+          {% for key, values in telemetry_dict %}
+          <div class="tel-prop">
+            <img class="icon" src="{{ assets[values.icon] }}" />
+            <div class="value">
+              <p class="txt-normal txt-size-2 txt-grey">{{ values.text }}</p>
+              <p class="txt-bold txt-size-2">NA</p>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+<h1>asdfasdfasdfasdf</h1>
+        <div class="main" id="root"></div>
+
+      </div>
+    </div>
+
+    <script>
+      function onClickBurger(e) {
+        if (e.className == "navbar-burger") {
+          e.className = "navbar-burger burger-open";
+          document.getElementById("navbar").className = "";
+        } else {
+          e.className = "navbar-burger";
+          document.getElementById("navbar").className = "burger-menu";
+        }
+      }
+    </script>
+  </body>
+</html>
