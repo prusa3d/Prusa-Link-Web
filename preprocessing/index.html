@@ -15,7 +15,7 @@
             <img src="{{ assets['prusa_connect_local_logo_black.svg'] }}" />
             {% endif %}
           </a>
-          <a class="navbar-burger" onClick="onClickBurger(this)">
+          <a class="navbar-burger" id="menu">
             <div></div>
             <div></div>
             <div></div>
@@ -49,17 +49,5 @@
 
       </div>
     </div>
-
-    <script>
-      function onClickBurger(e) {
-        if (e.className == "navbar-burger") {
-          e.className = "navbar-burger burger-open";
-          document.getElementById("navbar").className = "";
-        } else {
-          e.className = "navbar-burger";
-          document.getElementById("navbar").className = "burger-menu";
-        }
-      }
-    </script>
   </body>
 </html>
