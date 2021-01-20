@@ -31,7 +31,7 @@ module.exports = async (env, args) => {
     plugins: [
       new PrusaPreprocessingPlugin({
         printer: printer_conf.type.toLowerCase(),
-        templates: ["router.js", "index.html"],
+        templates: ["index.html"],
         templates_dir: "preprocessing",
         output: "src",
       }),

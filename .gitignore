@@ -2,4 +2,3 @@
 node_modules/
 dist/
 src/index.html
-src/router.js

@@ -2,6 +2,15 @@ import "./styles.css";
 import { navigate } from "./router.js";
 
 window.onload = () => {
+    document.getElementById("menu").addEventListener("click", e => {
+        if (e.className == "navbar-burger") {
+          e.className = "navbar-burger burger-open";
+          document.getElementById("navbar").className = "";
+        } else {
+          e.className = "navbar-burger";
+          document.getElementById("navbar").className = "burger-menu";
+        }
+    });
     document.querySelectorAll('a').forEach(link => {
         link.addEventListener("click", e => {
             if (navigate(link.href)) {
@@ -11,6 +20,6 @@ window.onload = () => {
             }
         });
     });
-    window.onpopstate = e => navigate(e.location);
+    window.onpopstate = e => e && navigate(e.location);
     navigate(window.location.hash || "#dashboard");
 };
