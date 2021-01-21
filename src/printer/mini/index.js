@@ -1,7 +1,7 @@
 import Dashboard from "./dashboard.js";
 import Temperature from "./temperature.js";
-import dashboard from "../../views/mini/dashboard.html";
-import temperature from "../../views/mini/temperature.html";
+import dashboard from "../../views/dashboard.html";
+import temperature from "../../views/temperature.html";
 
 const mini = {
     routes: [

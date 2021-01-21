@@ -1,4 +1,4 @@
-{% extends "index.html" %}
+{% extends "pages/index.html" %}
 
 {% 
     set menu_dict = { 
@@ -24,3 +24,6 @@
     <title>Original Prusa Sl1 - Prusa Connect Local</title>
 {% endblock %}
 
+{% block templates %} 
+    {% include "components/temperature_graph_sla.html" %}
+{% endblock %}

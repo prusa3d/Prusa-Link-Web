@@ -1,0 +1,24 @@
+{% extends "pages/index.html" %}
+
+{% 
+    set menu_dict = { 
+        'link-home': {'text': 'Dashboard', path: '#dashboard' },
+        'link-temp': {'text': 'Temperatures', path: '#temperature' }
+    }
+%}
+
+{% 
+    set telemetry_dict = { 
+        'temp-nozzle': {'text': 'Nozzle Temperature', 'icon': 'status_nozzle.svg' },
+        'temp-bed': {'text': 'Heatbed', 'icon': 'status_heatbed.svg' },
+        'material': {'text': 'Material', 'icon': 'status_filament.svg' }
+    }
+%}
+
+{% block header %}
+    <title>Original Prusa Mini - Prusa Connect Local</title>
+{% endblock %}
+
+{% block templates %} 
+    {% include "components/temperature_graph_fdm.html" %}
+{% endblock %}

@@ -33,26 +33,41 @@ async function getAssets() {
   return assets;
 }
 
-// pre-process the html/js
-const preprocessing = async ({ printer, templates, templates_dir, output }) => {
+// pre-process the html
+const preprocessing = async ({ printer, templates_dir, output }) => {
   const parse = [];
   nunjucks.configure(templates_dir, { autoescape: true });
 
-  for (filename of templates) {
+  // input/output: parse = [('input_path', 'output_path'), ]
+  const path_to_printer_templates = path.resolve(
+    __dirname,
+    `${templates_dir}/printer/${printer}`
+  );
+  fs.readdirSync(path_to_printer_templates).forEach((filename) => {
     parse.push([
-      `${printer}/${filename}`,
+      `printer/${printer}/${filename}`,
       path.resolve(__dirname, `${output}/${filename}`),
     ]);
+  });
+
+  // Clean views
+  if (fs.existsSync(output)) {
+    fs.readdirSync(output).forEach((filename) => {
+      fs.unlinkSync(`${output}/${filename}`);
+    });
+  } else {
+    fs.mkdirSync(path.resolve(__dirname, output));
   }
 
+  // generate source by template
   const promises = [];
   await getAssets().then((assets) => {
     for (locations of parse) {
+      console.log(`- ${locations[0]} -> ${locations[1]}`);
       var data = nunjucks.render(locations[0], { assets: assets });
       promises.push(
         fs.writeFile(locations[1], data, "utf8", (err) => {
           if (err) throw err;
-          console.log(`- ${locations[0]} -> ${locations[1]}`);
         })
       );
     }
@@ -64,6 +79,11 @@ const preprocessing = async ({ printer, templates, templates_dir, output }) => {
 };
 
 class PrusaPreprocessingPlugin {
+  // options = {
+  //    printer: "sl1",
+  //    templates_dir: "preprocessing",
+  //    output: "src/views",
+  // }
   constructor(options) {
     this.options = options;
   }

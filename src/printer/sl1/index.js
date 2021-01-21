@@ -1,9 +1,9 @@
 import Temperature from "./temperature.js";
-import temperature from "../../views/sl1/temperature.html";
+import temperature from "../../views/temperature.html";
 import Dashboard from "./dashboard.js";
-import dashboard from "../../views/sl1/dashboard.html";
+import dashboard from "../../views/dashboard.html";
 import Projects from "./projects.js";
-import projects from "../../views/sl1/projects.html";
+import projects from "../../views/projects.html";
 
 const sl1 = {
     routes: [
