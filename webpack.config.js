@@ -31,9 +31,8 @@ module.exports = async (env, args) => {
     plugins: [
       new PrusaPreprocessingPlugin({
         printer: printer_conf.type.toLowerCase(),
-        templates: ["index.html"],
         templates_dir: "preprocessing",
-        output: "src",
+        output: "src/views",
       }),
       new webpack.ProgressPlugin(),
       new webpack.DefinePlugin({
@@ -50,7 +49,7 @@ module.exports = async (env, args) => {
       }),
       new HtmlWebpackPlugin({
         title: `${printer_conf.title} - Prusa Connect Local`,
-        template: "./src/index.html",
+        template: "./src/views/index.html",
         minify: !env.dev,
       })
     ],
@@ -73,10 +72,14 @@ module.exports = async (env, args) => {
         {
           test: /\.html$/i,
           loader: "html-loader",
-          options: {
-            // Disables attributes processing
-            attributes: false,
-          },
+        },
+        {
+          test: /\.(png|jpe?g|gif)$/i,
+          use: [
+            {
+              loader: 'file-loader',
+            },
+          ],
         },
       ],
     },

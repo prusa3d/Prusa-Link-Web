@@ -1,8 +1,9 @@
-{% extends "index.html" %}
+{% extends "pages/index.html" %}
 
 {% 
     set menu_dict = { 
         'link-home': {'text': 'Dashboard', path: '#dashboard' },
+        'link-proj': {'text': 'Projects', path: '#projects' },
         'link-temp': {'text': 'Temperatures', path: '#temperature' }
     }
 %}
@@ -15,6 +16,10 @@
     }
 %}
 
-{% block header %}
-    <title>Original Prusa Mini - Prusa Connect Local</title>
+{% block header %} 
+    <title>Original Prusa MK3 - Prusa Connect Local</title>
+{% endblock %}
+
+{% block templates %} 
+    {% include "components/temperature_graph_fdm.html" %}
 {% endblock %}

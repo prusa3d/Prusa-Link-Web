@@ -1,9 +1,9 @@
 import Temperature from "../mini/temperature.js";
-import temperature from "../../views/mini/temperature.html";
+import temperature from "../../views/temperature.html";
 import Dashboard from "./dashboard.js";
-import dashboard from "../../views/mk3/dashboard.html";
+import dashboard from "../../views/dashboard.html";
 import Projects from "./projects.js";
-import projects from "../../views/mk3/projects.html";
+import projects from "../../views/projects.html";
 
 const mk3 = {
     routes: [
