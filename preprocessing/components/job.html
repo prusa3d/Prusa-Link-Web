@@ -1,0 +1,64 @@
+{% if printer == "sl1" %}
+  {%
+    set job_dict = {
+        'remaining-time': {'text': 'remaining time', value: 'NA' },
+        'estimated-end': {'text': 'estimated end', value: '00:00' },
+        'printing-time': {'text': 'printing time', value: 'NA' },
+        'layers': {'text': 'layers', value: '0/0' },
+        'remaining resin': {'text': 'remaining resin', value: 'NA' },
+        'consumed resin': {'text': 'consumed resin', value: 'NA' }
+    }
+  %}
+  
+  {%
+    set job_buttons = {
+        'exposure': {'text': 'change exposure times', icon: 'exposure_times_color.svg', class: 'action' },
+        'refill': {'text': 'refill resin', icon: 'refill_color.svg', class: 'action' },
+        'no': {'text': 'cancel print', icon: 'cancel.svg', class: 'no' }
+    }
+  %}  
+{% else %}
+{%
+    set job_dict = {
+        'pos_z_mm': {'text': 'Z-Height', value: 'NA' },
+        'printing_speed': {'text': 'Printing Speed', value: 'NA' },
+        'flow_factor': {'text': 'Printing Flow', value: 'NA' },
+        'time_est': {'text': 'Estimated end', value: '00:00' },
+        'print_dur': {'text': 'Printing time', value: 'NA' }
+    }
+%}
+{% endif %}
+
+{% if printer == "mini" %}
+  {% set to_hidden = "" %}
+{% else %}
+  {% set to_hidden = "hidden" %}
+{% endif %}
+
+
+<div class="job" id="job" {{ to_hidden }}>
+  <div class="job-stats">
+      <div class="progress">
+          <progress value="0" max="100">0%</progress>
+          <p>0%</p>
+      </div>
+      <div class="stats">
+        {% for key, values in job_dict %}
+          <div>
+              <p>{{ values.text }}</p>
+              <p>{{ values.value }}</p>
+          </div>
+          {% endfor %}
+      </div>
+  </div>
+  {% if job_buttons %}
+    <div class="buttons-wrapper">
+      {% for key, values in job_buttons %}
+        <button name="{{ key }}" class="{{ values.class }}">
+            <img src="{{ assets[values.icon] }}" ></img>
+            <p>{{ values.text }}</p>
+        </button>
+        {% endfor %}
+    </div>
+  {% endif %}
+</div>

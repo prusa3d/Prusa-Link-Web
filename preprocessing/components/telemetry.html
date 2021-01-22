@@ -1,0 +1,33 @@
+{% if printer == "sl1" %}
+    {% 
+        set telemetry_dict = { 
+            'temp-cpu': {'text': 'CPU temperature', 'icon': 'temperature_color.svg' },
+            'temp-led': {'text': 'UV LED temperature', 'icon': 'temperature_color.svg' },
+            'temp-amb': {'text': 'ambient temperature', 'icon': 'temperature_color.svg' },
+            'fan-led': {'text': 'UV LED fan', 'icon': 'fan_color.svg' },
+            'fan-blower': {'text': 'blower fan', 'icon': 'fan_color.svg' },
+            'fan-rear': {'text': 'rear fan', 'icon': 'fan_color.svg' },
+            'cover': {'text': 'cover state', 'icon': 'cover_color.svg' }
+        }
+    %}
+{% else %}
+    {% 
+        set telemetry_dict = { 
+            'temp-nozzle': {'text': 'Nozzle Temperature', 'icon': 'status_nozzle.svg' },
+            'temp-bed': {'text': 'Heatbed', 'icon': 'status_heatbed.svg' },
+            'material': {'text': 'Material', 'icon': 'status_filament.svg' }
+        }
+    %}
+{% endif %}
+
+<div class="telemetry">
+    {% for key, values in telemetry_dict %}
+    <div class="tel-prop">
+      <img class="icon" src="{{ assets[values.icon] }}" />
+      <div class="value">
+        <p class="txt-normal txt-size-2 txt-grey">{{ values.text }}</p>
+        <p class="txt-bold txt-size-2">NA</p>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
