@@ -64,7 +64,7 @@ const preprocessing = async ({ printer, templates_dir, output }) => {
   await getAssets().then((assets) => {
     for (locations of parse) {
       console.log(`- ${locations[0]} -> ${locations[1]}`);
-      var data = nunjucks.render(locations[0], { assets: assets });
+      var data = nunjucks.render(locations[0], { assets: assets, printer: printer });
       promises.push(
         fs.writeFile(locations[1], data, "utf8", (err) => {
           if (err) throw err;

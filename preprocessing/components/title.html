@@ -1,4 +1,11 @@
+{% if printer == "mini" %}
+<div class="title">
+  <p class="title-status">Printer status: <span>Idle</span></p>
+  <p class="title-hostname">Original Prusa Mini</span></p>
+</div>
+{% else %}
 <div class="title">
   <p class="title-status">Printer status: <span>Idle</span></p>
   <p class="title-hostname">Hostname: <span>prusa64-sl1</span></p>
 </div>
+{% endif %}
