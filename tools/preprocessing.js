@@ -1,3 +1,7 @@
+// This file is part of the Prusa Connect Local
+// Copyright (C) 2021 Prusa Research a.s. - www.prusa3d.com
+// SPDX-License-Identifier: GPL-3.0-or-later
+
 const fs = require("fs");
 const path = require("path");
 const SVGO = require("svgo");
@@ -17,14 +21,13 @@ async function optimizeSVG(filepath) {
 }
 
 // Get and optimize assets
-async function getAssets() {
-  var assetsPath = path.resolve(__dirname, "src/assets");
+async function getAssets(assets_dir) {
   var asyncAssets = {};
   var assets = {};
-  var files = fs.readdirSync(assetsPath);
+  var files = fs.readdirSync(assets_dir);
   files.forEach((file) => {
     if (file.endsWith(".svg")) {
-      asyncAssets[file] = optimizeSVG(path.resolve(assetsPath, file));
+      asyncAssets[file] = optimizeSVG(path.resolve(assets_dir, file));
     }
   });
   for (var key in asyncAssets) {
@@ -34,7 +37,7 @@ async function getAssets() {
 }
 
 // pre-process the html
-const preprocessing = async ({ printer, templates_dir, output }) => {
+const preprocessing = async ({ printer, templates_dir, assets_dir, output }) => {
   const parse = [];
   nunjucks.configure(templates_dir, { autoescape: true });
 
@@ -61,7 +64,7 @@ const preprocessing = async ({ printer, templates_dir, output }) => {
 
   // generate source by template
   const promises = [];
-  await getAssets().then((assets) => {
+  await getAssets(assets_dir).then((assets) => {
     for (locations of parse) {
       console.log(`- ${locations[0]} -> ${locations[1]}`);
       var data = nunjucks.render(locations[0], { assets: assets, printer: printer });
@@ -82,6 +85,7 @@ class PrusaPreprocessingPlugin {
   // options = {
   //    printer: "sl1",
   //    templates_dir: "preprocessing",
+  //    assets_dir: "src/assets",
   //    output: "src/views",
   // }
   constructor(options) {

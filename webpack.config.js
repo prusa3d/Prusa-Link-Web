@@ -1,12 +1,17 @@
+// This file is part of the Prusa Connect Local
+// Copyright (C) 2021 Prusa Research a.s. - www.prusa3d.com
+// SPDX-License-Identifier: GPL-3.0-or-later
+
 const path = require("path");
 const webpack = require("webpack");
 const TerserPlugin = require("terser-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const { CleanWebpackPlugin } = require("clean-webpack-plugin");
-const PrusaPreprocessingPlugin  = require("./preprocessing");
+const PrusaPreprocessingPlugin = require("./tools/preprocessing");
+const devServer = require("./tools/server");
 
-module.exports = async (env, args) => {
+module.exports = (env, args) => {
   const printer_conf = {
     mode: env.dev ? "development" : "production",
     type: env.PRINTER,
@@ -27,12 +32,13 @@ module.exports = async (env, args) => {
       filename: "[name].[contenthash].js",
       path: path.resolve(__dirname, "dist"),
     },
-
+    devtool: env.dev ? "source-map" : false,
     plugins: [
       new PrusaPreprocessingPlugin({
         printer: printer_conf.type.toLowerCase(),
-        templates_dir: "preprocessing",
-        output: "src/views",
+        templates_dir: path.resolve(__dirname, "preprocessing"),
+        assets_dir: path.resolve(__dirname, "src/assets"),
+        output: path.resolve(__dirname, "src/views"),
       }),
       new webpack.ProgressPlugin(),
       new webpack.DefinePlugin({
@@ -51,7 +57,7 @@ module.exports = async (env, args) => {
         title: `${printer_conf.title} - Prusa Connect Local`,
         template: "./src/views/index.html",
         minify: !env.dev,
-      })
+      }),
     ],
 
     module: {
@@ -77,7 +83,7 @@ module.exports = async (env, args) => {
           test: /\.(png|jpe?g|gif)$/i,
           use: [
             {
-              loader: 'file-loader',
+              loader: "file-loader",
             },
           ],
         },
@@ -92,8 +98,10 @@ module.exports = async (env, args) => {
     devServer: {
       contentBase: path.join(__dirname, "dist"),
       compress: true,
-      port: 9000
-    }
-  
+      port: 9000,
+      after: function(app, server, compiler) {
+        devServer(app);
+      }
+    },
   };
 };
