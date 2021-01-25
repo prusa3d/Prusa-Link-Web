@@ -61,7 +61,7 @@
     <div class="buttons-wrapper">
       {% for key, values in job_buttons %}
         <button name="{{ key }}" class="{{ values.class }}">
-            <img src="{{ assets[values.icon] }}" ></img>
+            <img src="{{ assets[values.icon] }}" />
             <p>{{ values.text }}</p>
         </button>
         {% endfor %}

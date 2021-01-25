@@ -8,6 +8,7 @@ import Dashboard from "./dashboard.js";
 import dashboard from "../../views/dashboard.html";
 import Projects from "./projects.js";
 import projects from "../../views/projects.html";
+import Modal from "../../modal.js"
 
 const sl1 = {
     routes: [
@@ -17,6 +18,12 @@ const sl1 = {
     ],
     init: () => {
         console.log("Init Printer API");
+        const showWelcome = window.localStorage.getItem("showWelcome");
+        if (showWelcome == null) {
+            Modal.load("welcome", {cb: ()=>{
+                window.localStorage.setItem("showWelcome", true);
+            } });
+        }
     },
     update: () => {
         console.log("Update Printer API")
