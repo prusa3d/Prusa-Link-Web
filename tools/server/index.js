@@ -10,7 +10,7 @@ const devServer = (app, printer) => {
       api: "0.1",
       server: "1.1.0",
       text: "Prusa SLA SL1 1.0.5",
-      hostname: "prusa-sl1",
+      hostname: `prusa-${printer}`,
     });
   });
 
