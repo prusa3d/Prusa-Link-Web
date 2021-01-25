@@ -99,9 +99,9 @@ module.exports = (env, args) => {
       contentBase: path.join(__dirname, "dist"),
       compress: true,
       port: 9000,
-      after: function(app, server, compiler) {
+      after: function (app, server, compiler) {
         devServer(app);
-      }
+      },
     },
   };
 };

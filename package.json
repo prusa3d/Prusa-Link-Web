@@ -5,6 +5,7 @@
   "private": false,
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
+    "postinstall": "husky install",
     "dev:sl1": "webpack --env dev --env PRINTER=SL1 --progress",
     "start:sl1": "webpack serve --env dev --env PRINTER=SL1 --progress",
     "build:sl1": "webpack --env PRINTER=SL1 --progress",

@@ -9,7 +9,6 @@ import printer from "./printer";
 const UPDATE_INTERVAL = 5000;
 
 window.onload = () => {
-
   document.getElementById("menu").addEventListener("click", (e) => {
     const menu = document.getElementById("menu");
     if (menu.className == "navbar-burger") {

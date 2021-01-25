@@ -1,9 +1,11 @@
+<!-- prettier-ignore -->
 {#
   # This file is part of the Prusa Connect Local
   # Copyright (C) 2021 Prusa Research a.s. - www.prusa3d.com
   # SPDX-License-Identifier: GPL-3.0-or-later
-  #}
+#}
 
+<!-- prettier-ignore -->
 {% if printer == "sl1" %}
   {%
     set job_dict = {
@@ -35,36 +37,36 @@
 %}
 {% endif %}
 
+<!-- prettier-ignore -->
 {% if printer == "mini" %}
   {% set to_hidden = "" %}
 {% else %}
   {% set to_hidden = "hidden" %}
 {% endif %}
 
-
 <div class="job" id="job" {{ to_hidden }}>
   <div class="job-stats">
-      <div class="progress">
-          <progress value="0" max="100">0%</progress>
-          <p>0%</p>
+    <div class="progress">
+      <progress value="0" max="100">0%</progress>
+      <p>0%</p>
+    </div>
+    <div class="stats">
+      {% for key, values in job_dict %}
+      <div>
+        <p>{{ values.text }}</p>
+        <p>{{ values.value }}</p>
       </div>
-      <div class="stats">
-        {% for key, values in job_dict %}
-          <div>
-              <p>{{ values.text }}</p>
-              <p>{{ values.value }}</p>
-          </div>
-          {% endfor %}
-      </div>
+      {% endfor %}
+    </div>
   </div>
   {% if job_buttons %}
-    <div class="buttons-wrapper">
-      {% for key, values in job_buttons %}
-        <button name="{{ key }}" class="{{ values.class }}">
-            <img src="{{ assets[values.icon] }}" />
-            <p>{{ values.text }}</p>
-        </button>
-        {% endfor %}
-    </div>
+  <div class="buttons-wrapper">
+    {% for key, values in job_buttons %}
+    <button name="{{ key }}" class="{{ values.class }}">
+      <img src="{{ assets[values.icon] }}" />
+      <p>{{ values.text }}</p>
+    </button>
+    {% endfor %}
+  </div>
   {% endif %}
 </div>

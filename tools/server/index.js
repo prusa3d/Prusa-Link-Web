@@ -15,7 +15,6 @@ const devServer = (app, printer) => {
   });
 
   telemetry(app, printer);
-
 };
 
 module.exports = devServer;

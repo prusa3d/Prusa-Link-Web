@@ -1,4 +1,5 @@
 .cache/
 node_modules/
 dist/
-src/views/*
+src/views/
+.husky/
