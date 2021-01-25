@@ -12,6 +12,12 @@ const mini = {
         { path: 'dashboard', html: dashboard, module: Dashboard },
         { path: 'temperature', html: temperature, module: Temperature },
     ],
+    init: () => {
+        console.log("Init Printer API");
+    },
+    update: () => {
+        console.log("Update Printer API")
+    }
 }
 
 export default mini;

@@ -4,6 +4,9 @@
 
 import "./styles.css";
 import { navigate } from "./router.js";
+import printer from "./printer";
+
+const UPDATE_INTERVAL = 5000;
 
 window.onload = () => {
 
@@ -28,4 +31,6 @@ window.onload = () => {
   });
   window.onpopstate = (e) => e && navigate(e.location);
   navigate(window.location.hash || "#dashboard");
+  printer.init();
+  setInterval(printer.update, UPDATE_INTERVAL);
 };

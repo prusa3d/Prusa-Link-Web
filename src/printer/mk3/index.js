@@ -15,6 +15,12 @@ const mk3 = {
         { path: 'projects', html: projects, module: Projects },
         { path: 'temperature', html: temperature, module: Temperature },
     ],
+    init: () => {
+        console.log("Init Printer API");
+    },
+    update: () => {
+        console.log("Update Printer API")
+    }
 }
 
 export default mk3;
