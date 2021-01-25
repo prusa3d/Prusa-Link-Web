@@ -13,16 +13,19 @@ npm install
 `npm run {build_type}:{printer_type}`
 
 build type:
+
 - dev -> build mode developer
 - build -> build mode production
 - start -> run a dev server (Should run dev/build first for generate preprocessing code)
 
 printer types:
+
 - sl1
 - mk3
 - mini
 
 Example:
+
 ```bash
 npm run dev:mini
 npm run build:mini

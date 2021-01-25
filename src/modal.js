@@ -20,7 +20,7 @@ const load = (templateId, options = {}) => {
   const removeModal = () => {
     modalElement.parentElement.classList.remove("show-modal");
     if (config.cb) {
-        config.cb();
+      config.cb();
     }
   };
 

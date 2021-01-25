@@ -37,7 +37,12 @@ async function getAssets(assets_dir) {
 }
 
 // pre-process the html
-const preprocessing = async ({ printer, templates_dir, assets_dir, output }) => {
+const preprocessing = async ({
+  printer,
+  templates_dir,
+  assets_dir,
+  output,
+}) => {
   const parse = [];
   nunjucks.configure(templates_dir, { autoescape: true });
 
@@ -67,7 +72,10 @@ const preprocessing = async ({ printer, templates_dir, assets_dir, output }) => 
   await getAssets(assets_dir).then((assets) => {
     for (locations of parse) {
       console.log(`- ${locations[0]} -> ${locations[1]}`);
-      var data = nunjucks.render(locations[0], { assets: assets, printer: printer });
+      var data = nunjucks.render(locations[0], {
+        assets: assets,
+        printer: printer,
+      });
       promises.push(
         fs.writeFile(locations[1], data, "utf8", (err) => {
           if (err) throw err;

@@ -1,62 +1,57 @@
+<!-- prettier-ignore -->
 {#
     # This file is part of the Prusa Connect Local
     # Copyright (C) 2021 Prusa Research a.s. - www.prusa3d.com
     # SPDX-License-Identifier: GPL-3.0-or-later
-    #}
+#}
 
+<!-- prettier-ignore -->
 {% include "components/title.html" %}
 
 <div class="main-wrapper center">
-    <div class="component proj-upload">
-        <p>upload project</p>
-        <div class="upload">
-            <img class="icon" src="{{ assets['download.svg'] }}" />
-            <p>Choose a *.sl1 or drop it here.</p>
-        </div>
+  <div class="component proj-upload">
+    <p>upload project</p>
+    <div class="upload">
+      <img class="icon" src="{{ assets['download.svg'] }}" />
+      <p>Choose a *.sl1 or drop it here.</p>
+    </div>
+  </div>
+
+  <div class="projects">
+    <div class="node">
+      <img class="icon" src="{{ assets['up_folder.svg'] }}" />
+      <p>Main</p>
     </div>
 
-    <div class="projects">
-        <div class="node">
-            <img class="icon" src="{{ assets['up_folder.svg'] }}" />
-            <p>Main</p>
+    <div class="node line">
+      <img class="node-img" src="../assets/thumbnail.png" />
+      <div class="node-wrapper">
+        <p>Petrin_Tower_10H_50um_Prusa_Orange.sl1</p>
+
+        <div class="node-details">
+          <div class="details">
+            <img class="icon" src="{{ assets['time_color.svg'] }}" />
+            <p>
+              Printing time
+              <span> 10 h 21 min </span>
+            </p>
+          </div>
+          <div class="details">
+            <img class="icon" src="{{ assets['status_filament.svg'] }}" />
+            <p>
+              Material
+              <span> 3DM-ABS </span>
+            </p>
+          </div>
+          <div class="details">
+            <img class="icon" src="{{ assets['quality_medium.svg'] }}" />
+            <p>
+              Layer Height
+              <span> 0.05 mm </span>
+            </p>
+          </div>
         </div>
-
-        <div class="node line">
-            <img class="node-img" src="../assets/thumbnail.png" />
-            <div class="node-wrapper">
-
-                <p>Petrin_Tower_10H_50um_Prusa_Orange.sl1</p>
-
-                <div class="node-details">
-                    <div class="details">
-                        <img class="icon" src="{{ assets['time_color.svg'] }}" />
-                        <p> Printing time
-                            <span>
-                                10 h 21 min
-                            </span>
-                        </p>
-                    </div>
-                    <div class="details">
-                        <img class="icon" src="{{ assets['status_filament.svg'] }}" />
-                        <p> Material
-                            <span>
-                                3DM-ABS
-                            </span>
-                        </p>
-                    </div>
-                    <div class="details">
-                        <img class="icon" src="{{ assets['quality_medium.svg'] }}" />
-                        <p> Layer Height
-                            <span>
-                                0.05 mm
-                            </span>
-                        </p>
-                    </div>
-
-                </div>
-            </div>
-        </div>
-
+      </div>
     </div>
-
+  </div>
 </div>

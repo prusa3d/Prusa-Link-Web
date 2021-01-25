@@ -3,9 +3,9 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 const load = () => {
-    const template = document.getElementById("graph-template");
-    const node = document.importNode(template.content, true);
-    document.getElementById("graph").appendChild(node);
-}
+  const template = document.getElementById("graph-template");
+  const node = document.importNode(template.content, true);
+  document.getElementById("graph").appendChild(node);
+};
 
 export default { load };

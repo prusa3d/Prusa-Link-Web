@@ -3,10 +3,10 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 const load = () => {
-    console.log("Dashboard Logic - mini");
-    const template = document.getElementById("graph-template");
-    const node = document.importNode(template.content, true);
-    document.getElementById("graph").appendChild(node);
-}
+  console.log("Dashboard Logic - mini");
+  const template = document.getElementById("graph-template");
+  const node = document.importNode(template.content, true);
+  document.getElementById("graph").appendChild(node);
+};
 
 export default { load };

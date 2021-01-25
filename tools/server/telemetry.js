@@ -18,7 +18,7 @@ const telemetry = (app, printer) => {
       actual: 25.3,
       target: null,
       offset: 0,
-    }
+    },
   };
 
   const sd = { ready: true };

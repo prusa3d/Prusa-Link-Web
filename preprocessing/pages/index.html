@@ -1,8 +1,9 @@
+<!-- prettier-ignore -->
 {#
  # This file is part of the Prusa Connect Local
  # Copyright (C) 2021 Prusa Research a.s. - www.prusa3d.com
  # SPDX-License-Identifier: GPL-3.0-or-later
- #}
+#}
 
 <!DOCTYPE html>
 <html>
@@ -26,7 +27,7 @@
             <div></div>
             <div></div>
           </a>
-          {% include "components/menu.html" %}  
+          {% include "components/menu.html" %}
         </nav>
       </div>
     </div>
@@ -35,15 +36,13 @@
       <div class="content-wrapper">
         {% include "components/telemetry.html" %}
         <div class="main" id="root"></div>
-
       </div>
     </div>
 
     <div class="modal">
       <div class="modal-box"></div>
     </div>
-    {% include "components/modal/welcome.html" %}
-
-    {% block templates %} {% endblock %}
+    {% include "components/modal/welcome.html" %} {% block templates %} {%
+    endblock %}
   </body>
 </html>

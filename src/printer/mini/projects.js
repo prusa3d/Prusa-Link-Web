@@ -3,7 +3,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 const load = () => {
-    console.log("Projects Logic - mini");
-}
+  console.log("Projects Logic - mini");
+};
 
 export default { load };
