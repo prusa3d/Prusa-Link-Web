@@ -36,7 +36,7 @@
     "del-proj": "Wollen Sie wirklich {{file_name}} löschen?",
     "e-401-1": "Der Drucker verwendet HTTP-Digest-Sicherheit.",
     "e-401-2": "Bitte geben Sie die korrekten Anmeldedaten ein.",
-    "e-401-3": "Sie finden Sie in Einstellungen -> Netzwerk -> Anmeldedaten.",
+    "e-401-3": "Sie finden sie in Einstellungen -> Netzwerk -> Anmeldedaten.",
     "modal-p1": "Willkommen zur Weboberfläche Ihres",
     "modal-p2": "Bitte beachten Sie, dass die Werte nur angezeigt werden, wenn der Drucker gerade druckt.",
     "sla-fill": "Bitte füllen Sie den Harzbehälter und schließen Sie den Deckel.",

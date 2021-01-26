@@ -17,7 +17,7 @@
     "401-title": "Échec de la connexion"
   },
   "exp-times": {
-    "exp-time": "Exposition [s] ",
+    "exp-time": "Exposition [s]",
     "inc": "Incr. du temps d'exposition [s]",
     "layer-1st": "Première couche Expo. [s]",
     "title": "Modifier les temps d'exposition"
@@ -51,7 +51,7 @@
     "upld-exists": "Le projet {{file_name}} existe déjà.",
     "upld-not-sup": "Le projet {{file_name}} n'est pas pris en charge.",
     "upld-suc": "Le projet {{file_name}} a été téléchargé correctement.",
-    "upld-unsuc": " Le téléchargement du projet {{file_name}} a échoué."
+    "upld-unsuc": "Le téléchargement du projet {{file_name}} a échoué."
   },
   "proj": {
     "del": "Supprimer le Fichier",
