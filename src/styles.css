@@ -704,6 +704,8 @@ progress::-moz-progress-bar {
   transform: scale(1);
 }
 
+/* ===================================== MODAL WELCOME ======================================= */
+
 .modal-welcome {
 }
 
@@ -715,6 +717,23 @@ progress::-moz-progress-bar {
 .modal-welcome p {
   padding-bottom: 20px;
   text-align: center;
+}
+
+/* ===================================== MODAL API KEY ======================================= */
+
+.modal-apiKey > p {
+  padding-top: 20px;
+  padding-bottom: 5px;
+}
+
+.modal-apiKey > input {
+  width: 100%;
+  box-sizing: border-box;
+  margin-bottom: 5px;
+}
+
+.modal-apiKey > button {
+  float: right;
 }
 
 @media only screen and (min-width: 992px) {

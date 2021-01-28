@@ -14,7 +14,10 @@
   <div class="component">
     <p>upload project</p>
     <div class="upload">
-      <img class="icon" src="{{ assets['download.svg'] }}" />
+      <img
+        class="icon"
+        src="{{ pre.countOrRenderAssets('download.svg') | safe }}"
+      />
       <p>Choose a *.sl1 or drop it here.</p>
     </div>
   </div>

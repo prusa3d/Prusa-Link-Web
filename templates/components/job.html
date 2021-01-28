@@ -63,7 +63,7 @@
   <div class="buttons-wrapper">
     {% for key, values in job_buttons %}
     <button name="{{ key }}" class="{{ values.class }}">
-      <img src="{{ assets[values.icon] }}" />
+      <img src="{{ pre.countOrRenderAssets(values.icon) | safe }}" />
       <p>{{ values.text }}</p>
     </button>
     {% endfor %}

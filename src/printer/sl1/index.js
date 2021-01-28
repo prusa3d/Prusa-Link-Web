@@ -8,7 +8,9 @@ import Dashboard from "./dashboard.js";
 import dashboard from "../../views/dashboard.html";
 import Projects from "./projects.js";
 import projects from "../../views/projects.html";
-import Modal from "../../modal.js";
+import modal from "../../modal.js";
+
+window.apiKey = "developer";
 
 const sl1 = {
   routes: [
@@ -20,8 +22,8 @@ const sl1 = {
     console.log("Init Printer API");
     const showWelcome = window.localStorage.getItem("showWelcome");
     if (showWelcome == null) {
-      Modal.load("welcome", {
-        cb: () => {
+      modal.load("welcome", {
+        closeCallback: () => {
           window.localStorage.setItem("showWelcome", true);
         },
       });

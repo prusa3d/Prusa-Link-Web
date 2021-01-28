@@ -10,7 +10,13 @@
   <head>
     <meta charset="utf-8" />
     <meta name="theme-color" content="#fff" />
-    {% block header %} {% endblock %}
+    {% if printer == "sl1" %}
+    <title>Original Prusa SL1 - Prusa Connect Local</title>
+    {% elif printer == "mini" %}
+    <title>Original Prusa Mini - Prusa Connect Local</title>
+    {% else %}
+    <title>Original Prusa MK3 - Prusa Connect Local</title>
+    {% endif %}
   </head>
 
   <body>
@@ -18,9 +24,9 @@
       <div class="content">
         <nav>
           <a href="#!" class="brand-logo">
-            {% if assets %}
-            <img src="{{ assets['prusa_connect_local_logo_black.svg'] }}" />
-            {% endif %}
+            <img
+              src="{{ pre.countOrRenderAssets('prusa_connect_local_logo_black.svg') | safe }}"
+            />
           </a>
           <a class="navbar-burger" id="menu">
             <div></div>
@@ -42,7 +48,15 @@
     <div class="modal">
       <div class="modal-box"></div>
     </div>
-    {% include "components/modal/welcome.html" %} {% block templates %} {%
-    endblock %}
+    <!-- prettier-ignore -->
+    {% include "components/modal/welcome.html" %}
+    {% include "components/modal/apiKey.html" %}
+
+    <!-- prettier-ignore -->
+    {% if printer == "sl1" %}
+      {% include "components/temperature_graph_sla.html" %}
+    {% else %}
+      {% include "components/temperature_graph_fdm.html" %}
+    {% endif %}
   </body>
 </html>

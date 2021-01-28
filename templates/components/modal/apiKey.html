@@ -1,0 +1,26 @@
+<!-- prettier-ignore -->
+{#
+    # This file is part of the Prusa Connect Local
+    # Copyright (C) 2021 Prusa Research a.s. - www.prusa3d.com
+    # SPDX-License-Identifier: GPL-3.0-or-later
+#}
+
+<template id="modal-apiKey">
+  <div class="modal-apiKey">
+    <p>Welcome to the Prusa Connect Local web interface.</p>
+    <p>
+      Please insert the API key.<br />
+      You can find it in Settings -> Network -> Login credentials.
+    </p>
+    <input
+      id="apiKey"
+      class="txt-normal txt-size-2 txt-grey"
+      type="text"
+      autofocus
+    />
+    <button class="yes" id="login">
+      <img src="{{ pre.countOrRenderAssets('yes_color.svg') | safe }}" />
+      <p>Login</p>
+    </button>
+  </div>
+</template>
