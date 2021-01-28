@@ -12,14 +12,20 @@
   <div class="component proj-upload">
     <p>upload project</p>
     <div class="upload">
-      <img class="icon" src="{{ assets['download.svg'] }}" />
+      <img
+        class="icon"
+        src="{{ pre.countOrRenderAssets('download.svg') | safe }}"
+      />
       <p>Choose a *.sl1 or drop it here.</p>
     </div>
   </div>
 
   <div class="projects">
     <div class="node">
-      <img class="icon" src="{{ assets['up_folder.svg'] }}" />
+      <img
+        class="icon"
+        src="{{ pre.countOrRenderAssets('up_folder.svg') | safe }}"
+      />
       <p>Main</p>
     </div>
 
@@ -30,21 +36,30 @@
 
         <div class="node-details">
           <div class="details">
-            <img class="icon" src="{{ assets['time_color.svg'] }}" />
+            <img
+              class="icon"
+              src="{{ pre.countOrRenderAssets('time_color.svg') | safe }}"
+            />
             <p>
               Printing time
               <span> 10 h 21 min </span>
             </p>
           </div>
           <div class="details">
-            <img class="icon" src="{{ assets['status_filament.svg'] }}" />
+            <img
+              class="icon"
+              src="{{ pre.countOrRenderAssets('status_filament.svg') | safe }}"
+            />
             <p>
               Material
               <span> 3DM-ABS </span>
             </p>
           </div>
           <div class="details">
-            <img class="icon" src="{{ assets['quality_medium.svg'] }}" />
+            <img
+              class="icon"
+              src="{{ pre.countOrRenderAssets('quality_medium.svg') | safe }}"
+            />
             <p>
               Layer Height
               <span> 0.05 mm </span>

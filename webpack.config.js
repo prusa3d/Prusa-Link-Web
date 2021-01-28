@@ -8,7 +8,7 @@ const TerserPlugin = require("terser-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const { CleanWebpackPlugin } = require("clean-webpack-plugin");
-const PrusaPreprocessingPlugin = require("./tools/preprocessing");
+const PreprocessingPlugin = require("./tools/preprocessing");
 const devServer = require("./tools/server");
 
 module.exports = (env, args) => {
@@ -24,6 +24,13 @@ module.exports = (env, args) => {
   console.log(printer_conf);
   console.log(`=============================`);
 
+  const preprocessing = new PreprocessingPlugin({
+    printer: printer_conf.type.toLowerCase(),
+    templates_dir: path.resolve(__dirname, "templates"),
+    assets_dir: path.resolve(__dirname, "src/assets"),
+    output_dir: path.resolve(__dirname, "src/views"),
+  });
+
   return {
     mode: printer_conf.mode,
     entry: "./src/index.js",
@@ -34,12 +41,7 @@ module.exports = (env, args) => {
     },
     devtool: env.dev ? "source-map" : false,
     plugins: [
-      new PrusaPreprocessingPlugin({
-        printer: printer_conf.type.toLowerCase(),
-        templates_dir: path.resolve(__dirname, "preprocessing"),
-        assets_dir: path.resolve(__dirname, "src/assets"),
-        output: path.resolve(__dirname, "src/views"),
-      }),
+      preprocessing,
       new webpack.ProgressPlugin(),
       new webpack.DefinePlugin({
         "process.env.MODE": JSON.stringify(printer_conf.mode),
@@ -80,7 +82,7 @@ module.exports = (env, args) => {
           loader: "html-loader",
         },
         {
-          test: /\.(png|jpe?g|gif)$/i,
+          test: /\.(png|jpe?g|gif|svg)$/i,
           use: [
             {
               loader: "file-loader",
@@ -101,6 +103,7 @@ module.exports = (env, args) => {
       port: 9000,
       after: function (app, server, compiler) {
         devServer(app);
+        preprocessing.startWatcher(server);
       },
     },
   };

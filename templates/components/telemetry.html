@@ -31,7 +31,7 @@
 <div class="telemetry">
   {% for key, values in telemetry_dict %}
   <div class="tel-prop">
-    <img class="icon" src="{{ assets[values.icon] }}" />
+    <img class="icon" src="{{ pre.countOrRenderAssets(values.icon) | safe }}" />
     <div class="value">
       <p class="txt-normal txt-size-2 txt-grey">{{ values.text }}</p>
       <p class="txt-bold txt-size-2">NA</p>
