@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta name="theme-color" content="#fff" />
+    <title>Original Prusa Mini - PrusaConnect</title>
+    <link href="style.css" rel="stylesheet">
+    <style>
+.btn{
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: green;
+  font-size: 20px;
+  color: white;
+  padding: 10px 30px;
+  cursor: pointer;
+}
+
+
+.modal {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(10,10,10,.86);
+  opacity: 0;
+  visibility: hidden;
+}
+.modal-box {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: #4a4a4a;
+  padding: 1rem 1.5rem;
+  /* width: 24rem; */
+  border-radius: 0.5rem;
+}
+.close-button {
+  float: right;
+  text-align: center;
+  border-radius: 0.25rem;
+  flex-grow: 0;
+  background-color: rgba(10,10,10,.2);
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+    pointer-events: auto;
+    display: inline-block;
+    flex-grow: 0;
+    flex-shrink: 0;
+    font-size: 0;
+    height: 20px;
+    max-height: 20px;
+    max-width: 20px;
+    min-height: 20px;
+    min-width: 20px;
+    outline: none;
+    position: relative;
+    vertical-align: top;
+    width: 20px;
+}
+
+.close-button:after {
+    height: 50%;
+    width: 2px;
+}
+
+.close-button:before {
+    height: 2px;
+    width: 50%;
+}
+.close-button:after, .close-button:before {
+    background-color: #fff;
+    content: "";
+    display: block;
+    left: 50%;
+    position: absolute;
+    top: 50%;
+    transform: translateX(-50%) translateY(-50%) rotate(45deg);
+    transform-origin: center center;
+}
+
+.show-modal {
+  opacity: 1;
+  visibility: visible;
+  transform: scale(1.0);
+}
+
+.modal-welcome{
+
+}
+
+.modal-welcome img{
+    width: 75%;
+    padding-bottom: 20px;
+}
+
+.modal-welcome p {
+    padding-bottom: 20px;
+    text-align: center;
+}
+
+
+
+      </style>
+</head>
+
+<body>
+  <button class="show btn">Click To See Modal </button>
+  <div class="modal">
+    <div class="modal-box">
+        <div class="modal-welcome">
+            <img src="img/prusa_connect_local_logo_black.svg"/>
+            <span class="close-button"></span>
+            <div>
+                <p >Welcome to the web interface of your <br/> Original Prusa SL1</p>
+                <p>Please note that values are shown only when the printer is printing.</p>
+            </div>
+        </div>
+        
+        
+    </div>
+</div>
+
+<script>
+
+let modal = document.querySelector(".modal");
+let show = document.querySelector(".show");
+let closeButton = document.querySelector(".close-button");
+
+function toggleModal() {
+    modal.classList.toggle("show-modal");
+}
+
+function windowOnClick(event) {
+    if (event.target === modal) {
+        toggleModal();
+    }
+}
+
+show.addEventListener("click", toggleModal);
+closeButton.addEventListener("click", toggleModal);
+window.addEventListener("click", windowOnClick);
+</script>
+
+    <div class="header">
+        <div class="content">
+            <nav>
+                <a href="#!" class="brand-logo">
+                    <img src="img/prusa_connect_local_logo_black.svg"/>
+                </a>
+                <a class="navbar-burger" onClick="onClickBurger(this)">
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                </a>
+                <ul class="burger-menu" id="navbar">
+                    <li>
+                        <a href="index.html">Dashboard</a>
+                    </li>
+                    <li>
+                        <a href="projects.html">Projects</a>
+                    </li>
+                    <li>
+                        <a href="temperature.html">Temperatures</a>
+                    </li>
+                </ul>
+            </nav>
+
+        </div>
+    </div>
+
+    <div class="content">
+        <div class="content-wrapper">
+
+            <div class="telemetry">
+                <div class="tel-prop">
+                    <img class="icon"
+                        src="data:image/svg+xml,%3C?xml version='1.0' encoding='UTF-8'?%3E %3C!DOCTYPE svg PUBLIC '-//W3C//DTD SVG 1.1//EN' 'http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd'%3E %3C!-- Creator: CorelDRAW 2017 --%3E %3Csvg xmlns='http://www.w3.org/2000/svg' xml:space='preserve' width='3.4368mm' height='6.346mm' version='1.1' style='shape-rendering:geometricPrecision; text-rendering:geometricPrecision; image-rendering:optimizeQuality; fill-rule:evenodd; clip-rule:evenodd' viewBox='0 0 14.61 26.97' xmlns:xlink='http://www.w3.org/1999/xlink'%3E %3Cdefs%3E %3Cstyle type='text/css'%3E %3C!%5BCDATA%5B .fil0 %7Bfill:%23EF7F1A%7D .fil1 %7Bfill:white%7D %5D%5D%3E %3C/style%3E %3C/defs%3E %3Cg id='Layer_x0020_1'%3E %3Cmetadata id='CorelCorpID_0Corel-Layer'/%3E %3Cpath id='temperature.svg' class='fil0' d='M11.24 19.67c0,2.17 -1.76,3.93 -3.93,3.93 -2.17,0 -3.93,-1.76 -3.93,-3.93 0,-1.29 0.68,-2.35 1.57,-3.13 1.13,-0.99 1.81,-1.95 1.81,-3.62l0 -0.56 1.13 0 0 0.56c0,1.67 0.66,2.63 1.81,3.62 0.89,0.78 1.57,1.84 1.57,3.13l-0.02 0z'/%3E %3Cpath id='temperature.svg_0' class='fil1' d='M11.24 3.93l0 8.45c0,0.66 0.3,1.29 0.8,1.72 1.58,1.34 2.57,3.34 2.57,5.57 0,4.03 -3.27,7.3 -7.3,7.3 -4.03,0 -7.3,-3.27 -7.3,-7.3 0,-2.23 1.01,-4.23 2.57,-5.57 0.5,-0.43 0.8,-1.06 0.8,-1.72l0 -8.45c0,-2.17 1.76,-3.93 3.93,-3.93 2.17,0 3.93,1.76 3.93,3.93l0 0zm-5.62 0l0 8.45c0,1.76 -0.57,2.57 -1.58,3.43 -1.13,0.97 -1.79,2.37 -1.79,3.84 0,2.78 2.28,5.06 5.06,5.06 2.78,0 5.06,-2.28 5.06,-5.06 0,-1.48 -0.64,-2.89 -1.79,-3.84 -1.01,-0.85 -1.58,-1.67 -1.58,-3.43l0 -8.45c0,-0.92 -0.77,-1.69 -1.69,-1.69 -0.92,0 -1.69,0.77 -1.69,1.69l0 0z'/%3E %3C/g%3E %3C/svg%3E">
+                    <div class="value">
+                        <p class="txt-normal txt-size-2 txt-grey">CPU temperature</p>
+                        <p class="txt-bold txt-size-2">53.7 °C</p>
+                    </div>
+                </div>
+                <div class="tel-prop">
+                    <img class="icon"
+                        src="data:image/svg+xml,%3C?xml version='1.0' encoding='UTF-8'?%3E %3C!DOCTYPE svg PUBLIC '-//W3C//DTD SVG 1.1//EN' 'http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd'%3E %3C!-- Creator: CorelDRAW 2017 --%3E %3Csvg xmlns='http://www.w3.org/2000/svg' xml:space='preserve' width='3.4368mm' height='6.346mm' version='1.1' style='shape-rendering:geometricPrecision; text-rendering:geometricPrecision; image-rendering:optimizeQuality; fill-rule:evenodd; clip-rule:evenodd' viewBox='0 0 14.61 26.97' xmlns:xlink='http://www.w3.org/1999/xlink'%3E %3Cdefs%3E %3Cstyle type='text/css'%3E %3C!%5BCDATA%5B .fil0 %7Bfill:%23EF7F1A%7D .fil1 %7Bfill:white%7D %5D%5D%3E %3C/style%3E %3C/defs%3E %3Cg id='Layer_x0020_1'%3E %3Cmetadata id='CorelCorpID_0Corel-Layer'/%3E %3Cpath id='temperature.svg' class='fil0' d='M11.24 19.67c0,2.17 -1.76,3.93 -3.93,3.93 -2.17,0 -3.93,-1.76 -3.93,-3.93 0,-1.29 0.68,-2.35 1.57,-3.13 1.13,-0.99 1.81,-1.95 1.81,-3.62l0 -0.56 1.13 0 0 0.56c0,1.67 0.66,2.63 1.81,3.62 0.89,0.78 1.57,1.84 1.57,3.13l-0.02 0z'/%3E %3Cpath id='temperature.svg_0' class='fil1' d='M11.24 3.93l0 8.45c0,0.66 0.3,1.29 0.8,1.72 1.58,1.34 2.57,3.34 2.57,5.57 0,4.03 -3.27,7.3 -7.3,7.3 -4.03,0 -7.3,-3.27 -7.3,-7.3 0,-2.23 1.01,-4.23 2.57,-5.57 0.5,-0.43 0.8,-1.06 0.8,-1.72l0 -8.45c0,-2.17 1.76,-3.93 3.93,-3.93 2.17,0 3.93,1.76 3.93,3.93l0 0zm-5.62 0l0 8.45c0,1.76 -0.57,2.57 -1.58,3.43 -1.13,0.97 -1.79,2.37 -1.79,3.84 0,2.78 2.28,5.06 5.06,5.06 2.78,0 5.06,-2.28 5.06,-5.06 0,-1.48 -0.64,-2.89 -1.79,-3.84 -1.01,-0.85 -1.58,-1.67 -1.58,-3.43l0 -8.45c0,-0.92 -0.77,-1.69 -1.69,-1.69 -0.92,0 -1.69,0.77 -1.69,1.69l0 0z'/%3E %3C/g%3E %3C/svg%3E">
+                    <div class="value">
+                        <p class="txt-normal txt-size-2 txt-grey">CPU temperature</p>
+                        <p class="txt-bold txt-size-2">53.7 °C</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="main">
+                <div class="title">
+                    <p class="title-status">local > examples</p>
+                    <p class="title-hostname">Hostname: <span>prusa64-sl1</span></p>
+                </div>
+                <div class="main-wrapper row">
+                    <div class="preview">
+                        <p>Petrin_Tower_10H_50um_Prusa_Orange.sl1</p>
+                        <div class="preview-wrapper">
+                            <div class="preview-img">
+                                <img src="img/bf6c5509-084f-4e3d-b0cb-6d8fddf661f2.png"/>
+                            </div>
+                            <div class="preview-details">
+                                <div class="preview-prop">
+                                    <img class="icon" src="img/printer_time.svg"/>
+                                    <div>
+                                        <p>Print Time Estimate</p>
+                                        <p>NA</p>
+                                    </div>
+                                    <div>
+                                        <p>Estimated end</p>
+                                        <p>NA</p>
+                                    </div>
+                                </div>
+
+                                <div class="preview-prop">
+                                    <img class="icon" src="img/layer.svg"/>
+                                    <div>
+                                        <p>Layers</p>
+                                        <p>2869</p>
+                                    </div>
+                                    <div>
+                                        <p>Layer Height</p>
+                                        <p>0.05 mm</p>
+                                    </div>
+                                </div>
+
+                                <div class="preview-prop">
+                                    <img class="icon" src="img/exposure_times_color.svg"/>
+                                    <div>
+                                        <p>Exposure times</p>
+                                        <p>35/7.5/1 s</p>
+                                    </div>
+                                </div>
+
+                                <div class="preview-prop">
+                                    <img class="icon" src="img/calendar.svg"/>
+                                    <div>
+                                        <p>Last Modified</p>
+                                        <p>Mon Oct 05 2020 16:32:14</p>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                        </div>
+                        <div class="preview-buttons">
+                            <div class="preview-buttons-first">
+                                <button class="no">
+                                    <img src="img/delete_small_white.svg"/>
+                                    <p>delete</p>
+                                </button>
+                            </div>
+                            <div class="buttons-wrapper">
+                                <button class="action">
+                                    <img src="img/exposure_times_color.svg"/>
+                                    <p>change exposure times</p>
+                                </button>
+                                <button class="yes">
+                                    <img src="img/yes_color.svg"/>
+                                    <p>start print</p>
+                                </button>
+                                <button class="no">
+                                    <img src="img/cancel.svg"/>
+                                    <p>cancel print</p>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            function onClickBurger(e) {
+                if (e.className == "navbar-burger") {
+                    e.className = "navbar-burger burger-open";
+                    document.getElementById("navbar").className = "";
+                } else {
+                    e.className = "navbar-burger";
+                    document.getElementById("navbar").className = "burger-menu";
+                }
+            }
+        </script>
+</body>
+
+</html>

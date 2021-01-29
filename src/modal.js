@@ -7,7 +7,7 @@
  * @param {string} templateId modal id template to show
  * @param {dict} options { timeout: number, closeOutside: bool, closeCallback: func, actions: {event: {id:func}}}
  */
-const load = (templateId, options = {}) => {
+const modal = (templateId, options = {}) => {
   const config = Object.assign(
     { timeout: 5500, closeOutside: true, events: {} },
     options
@@ -15,15 +15,15 @@ const load = (templateId, options = {}) => {
   const template = document.getElementById(`modal-${templateId}`);
   const node = document.importNode(template.content, true);
   const modalBox = document.querySelector(".modal-box");
-  const modal = modalBox.parentElement;
+  const modalWrapper = modalBox.parentElement;
 
   while (modalBox.firstChild) {
     modalBox.removeChild(modalBox.firstChild);
   }
 
   const removeModal = () => {
-    if (modal.classList.contains("show-modal")) {
-      modal.classList.remove("show-modal");
+    if (modalWrapper.classList.contains("show-modal")) {
+      modalWrapper.classList.remove("show-modal");
       if (config.closeCallback) {
         config.closeCallback();
       }
@@ -31,7 +31,7 @@ const load = (templateId, options = {}) => {
   };
 
   const windowOnClick = (event) => {
-    if (event.target === modal) {
+    if (event.target === modalWrapper) {
       removeModal();
     }
   };
@@ -52,18 +52,19 @@ const load = (templateId, options = {}) => {
     let actions = config.events[eventName];
     for (var actionId in actions) {
       let actionButton = node.getElementById(actionId);
+      const action = actions[actionId];
       actionButton.addEventListener(eventName, (event) =>
-        actions[actionId](event, removeModal)
+        action(event, removeModal)
       );
     }
   }
 
   modalBox.appendChild(node);
-  modal.classList.add("show-modal");
+  modalWrapper.classList.add("show-modal");
   // for default all modal there is a timeout
   if (config.timeout > 0) {
     setTimeout(removeModal, config.timeout);
   }
 };
 
-export default { load };
+export { modal };

@@ -14,10 +14,9 @@ const devServer = require("./tools/server");
 module.exports = (env, args) => {
   const printer_conf = {
     mode: env.dev ? "development" : "production",
-    type: env.PRINTER,
-    title: `Original Prusa ${env.PRINTER}`,
-    apiKey: "developer",
-    updateInterval: 1000,
+    type: env.PRINTER.toLowerCase(),
+    "http-basic": env["http-basic"],
+    "http-apikey": env["http-apikey"],
   };
 
   console.log(`===== ${printer_conf.title} =====`);
@@ -25,7 +24,7 @@ module.exports = (env, args) => {
   console.log(`=============================`);
 
   const preprocessing = new PreprocessingPlugin({
-    printer: printer_conf.type.toLowerCase(),
+    printer: printer_conf.type,
     templates_dir: path.resolve(__dirname, "templates"),
     assets_dir: path.resolve(__dirname, "src/assets"),
     output_dir: path.resolve(__dirname, "src/views"),
@@ -56,7 +55,6 @@ module.exports = (env, args) => {
         filename: "[name].[contenthash].css",
       }),
       new HtmlWebpackPlugin({
-        title: `${printer_conf.title} - Prusa Connect Local`,
         template: "./src/views/index.html",
         minify: !env.dev,
       }),
@@ -102,7 +100,7 @@ module.exports = (env, args) => {
       compress: true,
       port: 9000,
       after: function (app, server, compiler) {
-        devServer(app);
+        devServer(app, printer_conf);
         preprocessing.startWatcher(server);
       },
     },
