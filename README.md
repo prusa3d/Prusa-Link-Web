@@ -17,6 +17,7 @@ build type:
 - dev -> build mode developer
 - build -> build mode production
 - start -> run a dev server (Should run dev/build first for generate preprocessing code)
+- start [http-*] -> run a dev server with authentication
 
 printer types:
 
@@ -30,4 +31,6 @@ Example:
 npm run dev:mini
 npm run build:mini
 npm run start:mini
+npm run start:mini http-basic
+npm run start:mini http-apikey
 ```

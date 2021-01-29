@@ -8,9 +8,8 @@ import Dashboard from "./dashboard.js";
 import dashboard from "../../views/dashboard.html";
 import Projects from "./projects.js";
 import projects from "../../views/projects.html";
-import modal from "../../modal.js";
-
-window.apiKey = "developer";
+import { modal } from "../../modal.js";
+import { setUpAuth } from "../../auth.js";
 
 const sl1 = {
   routes: [
@@ -22,11 +21,14 @@ const sl1 = {
     console.log("Init Printer API");
     const showWelcome = window.localStorage.getItem("showWelcome");
     if (showWelcome == null) {
-      modal.load("welcome", {
+      modal("welcome", {
         closeCallback: () => {
           window.localStorage.setItem("showWelcome", true);
+          setUpAuth();
         },
       });
+    } else {
+      setUpAuth();
     }
   },
   update: () => {
