@@ -1,6 +1,6 @@
 openapi: 3.0.1
 info:
-  title: Connect
+  title: Prusa Connect Local
   description:
     This is a printer connect webservice. It is compatible with another 3D printer services, so many applications
     which use this service
@@ -9,31 +9,15 @@ info:
   license:
     name: Apache 2.0
     url: http://www.apache.org/licenses/LICENSE-2.0.html
-  version: 1.0.0
+  version: 2.0.0
 externalDocs:
   description: Find out more about API
   url: http://connect.prusa3d.cz
-tags:
-  - name: octoprint
-    description: Octoprint compatible
+security:
+  - ApiKeyAuth: [developer]
 paths:
-  /api:
-    get:
-      summary: Retrieve a mock for current connection settings.
-      security:
-        - ApiKeyAuth: []
-      responses:
-        200:
-          description: OK
-          content:
-            text/plain:
-                schema:
-                  type: string
-                  example: SL1 Octoprint-like API
   /api/version:
     get:
-      security:
-        - ApiKeyAuth: []
       summary: version informations
       responses:
         200:
@@ -51,74 +35,14 @@ paths:
                     example: "1.1.0"
                   text:
                     type: string
-                    example: Prusa SLA SL1 1.0.5
-  /api/hostname:
-    get:
-      summary: Retrieve a mock for current connection settings.
-      security:
-        - ApiKeyAuth: []
-      responses:
-        200:
-          description: OK
-          content:
-            text/plain:
-                schema:
-                  type: string
-                  example: prusa64-sl1
-  /api/files/preview:
-    get:
-      summary: Retrieve the current project opened in the printer.
-      security:
-        - ApiKeyAuth: []
-      responses:
-        200:
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/OctoFileOrFolderInfo"
-        403:
-          $ref: "#/components/responses/Unauthorized"
-        404:
-          description: Not Found
-  /api/before-confirm:
-    get:
-      summary: Retrieve some metadata of the current project opened in the printer.
-      security:
-        - ApiKeyAuth: []
-      responses:
-        200:
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  exposure_times:
+                    example: "Prusa SLA SL1 1.0.5"
+                  hostname:
                     type: string
-                    example: "25/13/1 s"
-                  last_modified:
-                    type: number
-                    description: Unix Timestamep
-                    example: 1574175255
-                    nullable: true
-                  total_layers:
-                    type: number
-                    example: 250
-                  time_zone:
-                    type: string
-                    example: "+0000"
-        403:
-          $ref: "#/components/responses/Unauthorized"
-        404:
-          description: Not Found
+                    example: "prusa-sl1"
+
   /api/connection:
     get:
-      tags:
-        - octoprint
       summary: Retrieve a mock for current connection settings.
-      security:
-        - ApiKeyAuth: []
       responses:
         200:
           description: OK
@@ -128,64 +52,40 @@ paths:
                 type: object
                 properties:
                   current:
-                    $ref: "#/components/schemas/OctoConnCurrent"
+                    $ref: "#/components/schemas/ConnCurrent"
                   options:
-                    $ref: "#/components/schemas/OctoConnOptions"
+                    $ref: "#/components/schemas/ConnOptions"
         403:
           $ref: "#/components/responses/Unauthorized"
     post:
-      tags:
-        - octoprint
-      summary: Mock for issue a connection command. Do not do anything.
-      security:
-        - ApiKeyAuth: []
+      summary: Issue a connection command
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                command:
+                  type: string
+                  default: connect
+                baudrate:
+                  type: integer
+                  default: 115200
+                port:
+                  type: string
+                  default: VIRTUAL
+                printerProfile:
+                  type: string
+                  default: _default
       responses:
         204:
           description: No Content
         403:
           $ref: "#/components/responses/Unauthorized"
-  /api/timelapse:
-    get:
-      tags:
-        - octoprint
-      security:
-        - ApiKeyAuth: []
-      summary: Retrieves a moked list of timelapses and the current config.
-      responses:
-        200:
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  config:
-                    type: object
-                    properties:
-                      type:
-                        type: string
-                  enabled:
-                    type: boolean
-                    example: false
-                  files:
-                    type: array
-                    items:
-                      type: string
-                      nullable: true
-                example:
-                  config:
-                    type: off
-                  enabled: false
-                  files: []
-        403:
-          $ref: "#/components/responses/Unauthorized"
+
   /api/printerprofiles:
     get:
-      tags:
-        - octoprint
       summary: Retrive a mock of octoprinter printer profile
-      security:
-        - ApiKeyAuth: []
       responses:
         200:
           description: OK
@@ -195,16 +95,13 @@ paths:
                 type: object
                 properties:
                   profiles:
-                    $ref: "#/components/schemas/OctoProfiles"
+                    $ref: "#/components/schemas/Profiles"
         403:
           $ref: "#/components/responses/Unauthorized"
+
   /api/printer:
     get:
-      tags:
-        - octoprint
       summary: Retrive the current printer state
-      security:
-        - ApiKeyAuth: []
       parameters:
         - in: query
           name: exclude
@@ -222,37 +119,62 @@ paths:
                 type: object
                 properties:
                   temperature:
-                    $ref: "#/components/schemas/OctoTemperatureState"
+                    $ref: "#/components/schemas/TemperatureState"
                   sd:
-                    $ref: "#/components/schemas/OctoSDState"
+                    $ref: "#/components/schemas/SDState"
                   state:
-                    $ref: "#/components/schemas/OctoPrinterState"
+                    $ref: "#/components/schemas/PrinterState"
+                  telemetry:
+                    oneOf:
+                      - $ref: "#/components/schemas/TelemetryMini"
+                      - $ref: "#/components/schemas/TelemetrySL1"
         403:
           $ref: "#/components/responses/Unauthorized"
+
   /api/printer/sd:
     get:
-      tags:
-        - octoprint
       summary: Retrieves the current state of the printer’s SD card.
-      security:
-        - ApiKeyAuth: []
       responses:
         200:
           description: OK
           content:
             application/json:
               schema:
-                type: object
-                $ref: "#/components/schemas/OctoSDState"
+                $ref: "#/components/schemas/SDState"
         403:
           $ref: "#/components/responses/Unauthorized"
-  /api/job:
+
+  # MINI
+  # - will probably not support this endpoint.
+  # - On error sends plaintext error description in response body
+  # - On error possibly sends Content-Location header with URL to help.prusa3d.com.
+  # - PCL page /error will be ommited
+
+  # SL1
+  # - supports this endpoint
+  # - Response is dependent on Accept header in request
+  # - If no Accept header is present:
+  #   - sends plaintext error description in response body (compatibility with older slicer)
+  #   - sends Content-Location header with URL to <PCL IP>/error (in the future it may send URL to hlep.prusa3d.com)
+  # - if Accept header is present (currently supports only Accept: application/json):
+  #   - sends JSON with same content as this /api/printer/error endpoint (code, title, text, url) 
+  #    sends Content-Location header with URL to <PCL IP>/error (in the future it may send URL to hlep.prusa3d.com)
+  /api/printer/error:
     get:
-      tags:
-        - octoprint
+      summary: Retrive the error number and text. Not compatible with OctoPrint.
+      responses:
+        200:
+          description: Custom endpoint to get error details. Client can see if printer is in error state by polling /api/printer
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        403:
+          $ref: "#/components/responses/Unauthorized"
+
+  /api/job:   # this should be used instead of /files/preview to determine if project was selected. If "file" object is not null, project was previously selected
+    get:
       summary: Retrieve information about the current job (if there is one).
-      security:
-        - ApiKeyAuth: []
       responses:
         200:
           description: OK
@@ -262,30 +184,18 @@ paths:
                 type: object
                 properties:
                   job:
-                    $ref: "#/components/schemas/OctoJob"
+                    $ref: "#/components/schemas/Job"
                   progress:
-                    $ref: "#/components/schemas/OctoProgress"
+                    $ref: "#/components/schemas/Progress"
                   state:
-                    enum:
-                      [
-                        "Operational",
-                        "Printing",
-                        "Pausing",
-                        "Paused",
-                        "Cancelling",
-                        "Error",
-                        "Offline",
-                      ]
+                    $ref: "#/components/schemas/State"
         403:
           $ref: "#/components/responses/Unauthorized"
         409:
+          $ref: "#/components/responses/Conflict"
           description: File not found or wrong format.
     post:
-      tags:
-        - octoprint
       summary: Issue a job command.
-      security:
-        - ApiKeyAuth: []
       requestBody:
         content:
           application/json:
@@ -295,39 +205,39 @@ paths:
                 command:
                   type: string
                   enum: ["start", "restart", "pause", "cancel"]
-                  example: start
+                  default: start
+                action:
+                  type: string
+                  enum: [pause, resume]
+                  default: resume
       responses:
         204:
           description: No error
         403:
           $ref: "#/components/responses/Unauthorized"
         409:
+          $ref: "#/components/responses/Conflict"
           description: If not is project, file not found or printer is printing.
         501:
+          $ref: "#/components/responses/NotImplemented"
           description: Unsupported command.
+
   /api/system/commands:
     get:
-      tags:
-        - octoprint
       summary: Retrieves all configured system commands. Currently just a mock.
-      security:
-        - ApiKeyAuth: []
       responses:
         200:
           description: OK
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/OctoCommands"
+                $ref: "#/components/schemas/Commands"
         403:
           $ref: "#/components/responses/Unauthorized"
-  /api/users:
+
+  /api/access/users:
     get:
-      tags:
-        - octoprint
       summary: Retrieves a list of all registered users in OctoPrint. Currently just a mock.
-      security:
-        - ApiKeyAuth: []
       responses:
         200:
           description: OK
@@ -339,9 +249,10 @@ paths:
                   users:
                     type: array
                     items:
-                      $ref: "#/components/schemas/OctoUsers"
+                      $ref: "#/components/schemas/Users"
         403:
           $ref: "#/components/responses/Unauthorized"
+
   /api/downloads/{target}/{filename}:
     parameters:
       - in: path
@@ -361,11 +272,7 @@ paths:
         schema:
           type: string
     get:
-      tags:
-        - octoprint
       summary: Download a file.
-      security:
-        - ApiKeyAuth: []
       responses:
         200:
           description: OK
@@ -377,75 +284,40 @@ paths:
         403:
           $ref: "#/components/responses/Unauthorized"
         404:
-          description: File not found.
+          $ref: "#/components/responses/NotFound"
         415:
-          description: Unsupported Media Type.
-  /api/files/preview/{target}/{filename}:
-    parameters:
-      - in: path
-        name: target
-        required: true
-        description: The target project location.
-        schema:
-          type: string
-          default: local
-          enum:
-            - local
-            - sdcard
-      - in: path
-        name: filename
-        required: true
-        description: File name.
-        schema:
-          type: string
-    get:
-      summary: Download a preview image.
-      security:
-        - ApiKeyAuth: []
-      responses:
-        200:
-          description: OK
-          content:
-            application/octet-stream:
-              schema:
-                type: string
-                format: binary
-        403:
-          $ref: "#/components/responses/Unauthorized"
-        404:
-          description: File not found.
+          $ref: "#/components/responses/UnsupportedMediaType"
+
   /api/files:
     get:
-      tags:
-        - octoprint
       summary: Retrieve all files’ and folders’ information.
-      security:
-        - ApiKeyAuth: []
       parameters:
         - in: header
           name: If-None-Match
           description: ETag
           schema:
             type: string
-          required: false
+            default: none
         - in: query
           name: recursive
           schema:
             type: boolean
-          required: false
+            default: false
+          
       responses:
         200:
           description: OK
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/OctoAllFilesInfo"
+                $ref: "#/components/schemas/AllFilesInfo"
           headers:
             ETag:
               schema:
                 type: string
         403:
           $ref: "#/components/responses/Unauthorized"
+
   /api/files/{target}:
     parameters:
       - in: path
@@ -459,22 +331,20 @@ paths:
             - local
             - sdcard
     get:
-      tags:
-        - octoprint
       summary: Retrieve all files’ and folders’ information for the target location.
-      security:
-        - ApiKeyAuth: []
       parameters:
         - in: header
           name: If-None-Match
           description: ETag
           schema:
             type: string
+            default: none
           required: false
         - in: query
           name: recursive
           schema:
             type: boolean
+            default: false
           required: false
       responses:
         200:
@@ -482,7 +352,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/OctoAllFilesInfo"
+                $ref: "#/components/schemas/AllFilesInfo"
           headers:
             ETag:
               schema:
@@ -490,21 +360,16 @@ paths:
         403:
           $ref: "#/components/responses/Unauthorized"
         404:
-          description: Not Found
+          $ref: "#/components/responses/NotFound"
     post:
-      tags:
-        - octoprint
       summary: Upload file or create folder.
-      security:
-        - ApiKeyAuth: []
       requestBody:
         content:
           multipart/form-data:
             schema:
-              $ref: "#/components/schemas/OctoUploadFile"
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: "#/components/schemas/OctoCreateFolder"
+              oneOf:
+                - $ref: "#/components/schemas/UploadFile"
+                - $ref: "#/components/schemas/CreateFolder"
       responses:
         201:
           description: No error
@@ -512,18 +377,22 @@ paths:
             application/json:
               schema:
                 oneOf:
-                  - $ref: "#/components/schemas/OctoFileUploaded"
-                  - $ref: "#/components/schemas/OctoFolderCreated"
+                  - $ref: "#/components/schemas/FileUploaded"
+                  - $ref: "#/components/schemas/FolderCreated"
         400:
+          $ref: "#/components/responses/BadRequest"
           description: Could not create folder or file not found.
         403:
           $ref: "#/components/responses/Unauthorized"
         409:
+          $ref: "#/components/responses/Conflict"
           description: File already exist.
         415:
-          description: Unsupported Media Type.
+          $ref: "#/components/responses/UnsupportedMediaType"
         500:
+          $ref: "#/components/responses/InternalServerError"
           description: File is too big.
+
   /api/files/{target}/{filename}:
     parameters:
       - in: path
@@ -542,23 +411,22 @@ paths:
         description: The path within the location to the file or folder.
         schema:
           type: string
+          default: example.sl1
     get:
-      tags:
-        - octoprint
       summary: Retrieve a specific file’s or folder’s information.
-      security:
-        - ApiKeyAuth: []
       parameters:
         - in: header
           name: If-None-Match
           description: ETag
           schema:
             type: string
+            default: none
           required: false
         - in: query
           name: recursive
           schema:
             type: boolean
+            default: false
           required: false
       responses:
         200:
@@ -566,207 +434,88 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/OctoFileOrFolderInfo"
+                $ref: "#/components/schemas/FileOrFolderInfo"
           headers:
             ETag:
               schema:
                 type: string
         304:
-          description: Not Modified.
+          $ref: "#/components/responses/NotModified"
         403:
           $ref: "#/components/responses/Unauthorized"
         404:
-          description: Not Found
+          $ref: "#/components/responses/NotFound"
     post:
-      tags:
-        - octoprint
       summary: Issue a file command to an existing file.
-      security:
-        - ApiKeyAuth: []
       requestBody:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/OctoFileCommand"
+              $ref: "#/components/schemas/FileCommand"
       responses:
         204:
           description: No error.
         400:
+          $ref: "#/components/responses/BadRequest"
           description: Mandatory parameter is missing.
         403:
           $ref: "#/components/responses/Unauthorized"
         404:
-          description: Not Found.
+          $ref: "#/components/responses/NotFound"
         409:
+          $ref: "#/components/responses/Conflict"
           description: If the file is currently being printed.
         415:
-          description: Unsupported Media Type.
+          $ref: "#/components/responses/UnsupportedMediaType"
         501:
+          $ref: "#/components/responses/NotImplemented"
           description: Unsupported command.
     delete:
-      tags:
-        - octoprint
       summary: Delete a file or folder.
-      security:
-        - ApiKeyAuth: []
       responses:
         204:
           description: No error
         403:
           $ref: "#/components/responses/Unauthorized"
         404:
+          $ref: "#/components/responses/NotFound"
           description: If location is neither local nor sdcard or the requested file was not found
         409:
+          $ref: "#/components/responses/Conflict"
           description: If the file to be deleted is currently being printed
-  /api/telemetry:
-    get:
-      summary: Retrieve all printer telemetry.
-      security:
-        - ApiKeyAuth: []
-      responses:
-        200:
-          description: OK
-          content:
-            application/json:
-              schema:
-                oneOf:
-                  - $ref: "#/components/schemas/TelemetryMini"
-                  - $ref: "#/components/schemas/TelemetrySL1"
-        403:
-          $ref: "#/components/responses/Unauthorized"
-  /api/progress:
-    get:
-      summary: Retrieve all progress measure.
-      security:
-        - ApiKeyAuth: []
-      responses:
-        200:
-          description: OK
-          content:
-            application/json:
-              schema:
-                oneOf:
-                  - $ref: "#/components/schemas/ProgressMini"
-                  - $ref: "#/components/schemas/ProgressSL1"
-        403:
-          $ref: "#/components/responses/Unauthorized"
-  /api/properties:
-    get:
-      summary: Retrieve a specific property information.
-      security:
-        - ApiKeyAuth: []
-      parameters:
-        - in: query
-          name: values
-          schema:
-            type: array
-            items:
-              type: string
-          required: true
-      responses:
-        200:
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Properties"
-        403:
-          $ref: "#/components/responses/Unauthorized"
-        404:
-          description: Not Found
-    post:
-      summary: Set a property.
-      security:
-        - ApiKeyAuth: []
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/Properties"
-      responses:
-        200:
-          description: Ok.
-        403:
-          $ref: "#/components/responses/Unauthorized"
-        404:
-          description: Not Found.
-  /api/job/material:
-    get:
-      summary: Feed the SL1 resin.
-      security:
-        - ApiKeyAuth: []
-      parameters:
-        - in: query
-          name: value
-          schema:
-            enum: ["start", "continue", "back"]
-      responses:
-        200:
-          description: OK
-        403:
-          $ref: "#/components/responses/Unauthorized"
-        400:
-          $ref: "#/components/responses/BadRequest"
-  /api/project-name:
-    get:
-      summary: Retrieve all progress measure.
-      security:
-        - ApiKeyAuth: []
-      responses:
-        200:
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  project_name:
-                    type: string
-        403:
-          $ref: "#/components/responses/Unauthorized"
+
 components:
   schemas:
-    OctoConnCurrent:
+    ConnCurrent:
       type: object
       properties:
         baudrate:
           type: integer
+          example: 115200
           nullable: true
-          example: null
         port:
           type: string
+          example: VIRTUAL
           nullable: true
-          example: null
         printerProfile:
           type: string
           example: _default
         state:
-          type: string
-          example: Operational
-    OctoConnOptions:
+          $ref: "#/components/schemas/State"
+
+    ConnOptions:
       type: object
       properties:
-        baudratePreference:
-          type: string
-          nullable: true
-          example: null
-        baudrates:
-          type: array
-          items:
-            type: integer
-          example: []
-        portPreference:
-          type: string
-          nullable: true
-          example: null
         ports:
           type: array
           items:
             type: string
-          example: []
-        printerProfilePreference:
-          type: string
-          example: _default
+          example: ["VIRTUAL"]
+        baudrates:
+          type: array
+          items:
+            type: integer
+          example: [115200]
         printerProfiles:
           type: array
           items:
@@ -778,22 +527,58 @@ components:
               name:
                 type: string
                 example: Prusa SL1
-    OctoCommands:
+
+    Commands:
       type: object
       properties:
         core:
           type: array
-          default: []
+          example: []
           items:
             type: object
             nullable: true
         custom:
-          type: array
-          default: []
-          items:
-            type: object
-            nullable: true
-    OctoProfiles:
+          oneOf:
+            #- $ref: "#/components/schemas/CommandsFDM"
+            - $ref: "#/components/schemas/CommandsSLA"
+
+    #CommandsFDM:
+
+    CommandsSLA:
+      type: array
+      items:
+        $ref: "#/components/schemas/SystemCommand"
+
+    SystemCommand:
+      type: object
+      properties:
+        action:
+          type: string
+        name:
+          type: string
+        confirm:
+          type: string
+          nullable: true
+        source:
+          type: string
+        resource:
+          type: string
+      default: [
+        {
+          "action": "resinrefill",  # after sending this command, printer should change its state to "busy" (PCL will show "wait until layer finishes"). After printer is ready to refill, state should change to "paused"
+          "name": "ResinRefill",
+          "source": "custom",
+          "resource": "http://localhost/api/system/commands/core/resinrefill"
+        },
+        {
+          "action": "resinrefilled",  # after sending this command, printer should update the resin volume in tank. PCL will then send /api/job with command: pause, action: resume
+          "name": "ResinRefilled",
+          "source": "custom",
+          "resource": "http://localhost/api/system/commands/core/resinrefilled"
+        },
+      ]
+
+    Profiles:
       type: object
       properties:
         _default:
@@ -804,7 +589,7 @@ components:
               example: _default
             name:
               type: string
-              example: Prusa SL1
+              example: Original Prusa SL1
             model:
               type: string
               example: Original Prusa SL1
@@ -817,19 +602,31 @@ components:
             default:
               type: boolean
               example: true
-            heatedBed:
+            heatedBed:      # Original Prusa SL1 uses for CPU temperature
               type: boolean
-              example: false
-            heatedChamber:
+              example:  true
+            heatedChamber:  # Original Prusa SL1 uses for ambient temp
               type: boolean
-              example: false
+              example: true
+            extruder:       # Original Prusa SL1 uses for UV LED temp
+              type: object
+              properties:
+                count:
+                  type: integer
+                  description: Number of print heads
+                  example: 1
+                offsets:
+                  type: array
+                  items:
+                    type: array
+                    items:
+                        type: number
+                    example: [0.0, 0.0]
             resource:
               type: string
-              example: http://localhost/octoprint/api/printerprofiles/_default
-    timestamp:
-      type: number
-      description: Unix Timestamep
-    OctoTemperatureData:
+              example: http://localhost/api/printerprofiles/_default
+
+    TemperatureData:
       type: object
       properties:
         actual:
@@ -847,31 +644,29 @@ components:
         actual: 22.5
         target: 50.0
         offset: 1.0
-    OctoTemperatureState:
+
+    TemperatureState:
       type: object
       properties:
         tool0:
-          $ref: "#/components/schemas/OctoTemperatureData"
-        tool1:
-          $ref: "#/components/schemas/OctoTemperatureData"
-        tool2:
-          $ref: "#/components/schemas/OctoTemperatureData"
-        tool3:
-          $ref: "#/components/schemas/OctoTemperatureData"
+          $ref: "#/components/schemas/TemperatureData"
         bed:
-          $ref: "#/components/schemas/OctoTemperatureData"
-    OctoSDState:
+          $ref: "#/components/schemas/TemperatureData"
+        chamber:
+          $ref: "#/components/schemas/TemperatureData"
+
+    SDState:
       type: object
       properties:
         ready:
           type: boolean
           example: false
-    OctoPrinterState:
+
+    PrinterState:
       type: object
       properties:
         text:
-          type: string
-          example: Printing
+          $ref: "#/components/schemas/State"
         flags:
           type: object
           properties:
@@ -893,7 +688,7 @@ components:
             sdReady:
               type: boolean
               example: false
-            error:
+            error:  # this will indicate printer has an error to show in /api/priner/error
               type: boolean
               example: false
             ready:
@@ -902,10 +697,21 @@ components:
             closedOrError:
               type: boolean
               example: false
-    OctoJob:
+
+    Job:
+      oneOf:
+        - $ref: "#/components/schemas/JobFDM"
+        - $ref: "#/components/schemas/JobSLA"
       type: object
       properties:
+        estimatedPrintTime:
+          type: integer
+          description: Estimated print time for the file in seconds.
+          nullable: true
         file:
+          oneOf:
+            #$ref: "#/components/schemas/JobFileFDM"
+            - $ref: "#/components/schemas/JobFileSLA"
           type: object
           properties:
             name:
@@ -915,11 +721,6 @@ components:
               nullable: true
             origin:
               enum: ["local", "sdcard"]
-              nullable: true
-            path:
-              type: string
-              description: The path to the file within the location.
-              example: "internal/harry_potter_hogwarts_anthony_mohimont.sl1"
               nullable: true
             date:
               type: integer
@@ -931,45 +732,56 @@ components:
               description: The size of the file in bytes.
               example: 873151
               nullable: true
-        estimatedPrintTime:
-          type: number
-          description: Estimated print time for the file in seconds.
-          nullable: true
-        lastPrintTime:
-          type: integer
-          description: Last print time for the file in seconds.
-          nullable: true
-        filament:
-          type: object
-          properties:
-            length:
-              type: number
-              description: Length of filament used in mm.
-              nullable: true
-            volume:
-              type: number
-              description: Volume in filament used in cm3.
-              nullable: true
-          nullable: true
-    OctoProgress:
+
+    Progress:
+      oneOf:
+        - $ref: "#/components/schemas/ProgressMini"
+        - $ref: "#/components/schemas/ProgressSL1"
       type: object
       properties:
         completion:
           type: number
           description: Percentage of completion of the current job.
           nullable: true
+          example: 55.6349010
         filepos:
           type: integer
+          description: Current position in the file being printed, in bytes from the beginning. Not being used for SL1.
           nullable: true
+          example: 12345
         printTime:
           type: integer
           description: Time already spent printing in seconds.
           nullable: true
+          example: 601
         printTimeLeft:
           type: integer
           description: Estimate of time left to print in seconds.
           nullable: true
-    OctoUsers:
+          example: 30495
+
+    ProgressMini:
+      type: object
+      properties:
+        pos_z_mm:
+          type: number
+        printSpeed:
+          type: number
+        flow_factor:
+          type: number
+        filament_status:  # shouldn't it be filamentSensor?
+          type: string
+
+    ProgressSL1:
+      type: object
+      properties:
+        currentLayer:
+          type: integer
+          description: Number of current layer being printed.
+          nullable: true
+          example: 42
+
+    Users:
       type: object
       properties:
         active:
@@ -990,7 +802,8 @@ components:
         user:
           type: boolean
           example: true
-    OctoCommonFileInfo:
+
+    CommonFileInfo:
       type: object
       properties:
         origin:
@@ -1011,9 +824,10 @@ components:
           type: array
           items:
             type: string
-    OctoFileInfo:
+
+    FileInfo:
       allOf:
-        - $ref: "#/components/schemas/OctoCommonFileInfo"
+        - $ref: "#/components/schemas/CommonFileInfo"
         - type: object
       properties:
         refs:
@@ -1023,25 +837,32 @@ components:
               type: string
             download:
               type: string
+            thumbnailSmall:     # do not send if metadata not ready
+              type: string
+              nullable: true
+            thumbnailBig:      # do not send if metadata not ready
+              type: string
+              nullable: true
         gcodeAnalysis:
           type: object
           properties:
-            estimatedPrintTime:
-              type: number
-            dimensions:
-              type: object
-              properties:
-                height:
-                  type: number
-            material:
+            estimatedPrintTime: # do not send if metadata not ready
+              type: integer # [s]
+              description: estimated print time in [s].
+              nullable: true
+            material: # do not send if metadata not ready
               type: string
-              description: It is not compatible with latest OctoPrint.
+              description: String with used material. It is not compatible with OctoPrint.
+              nullable: true
+            layerHeight: # do not send if metadata not ready
+              type: number # [mm]
+              description: Layer height of the file in [mm]. It is not compatible with OctoPrint.
         hash:
           type: string
         date:
           type: integer
-          example: 1574156567
-      example:
+          description: Unix timestamp of last modified date [s]. It is not compatible with OctoPrint.
+      default:
         origin: local
         path: internal/examples/harry_potter_hogwarts_a_mohimont.sl1
         display: harry_potter_hogwarts_a_mohimont.sl1
@@ -1052,16 +873,18 @@ components:
         typePath: [machinecode, gcode]
         hash: 5f972cc1cfb91f91f7c70d0dff6a0462a9de1d41
         refs:
-          resource: http://localhost/octoprint/api/files/local/internal/examples/harry_potter_hogwarts_a_mohimont.sl1
-          download: http://localhost/octoprint/api/downloads/local/internal/examples/harry_potter_hogwarts_a_mohimont.sl1
+          resource: http://localhost/api/files/local/internal/examples/harry_potter_hogwarts_a_mohimont.sl1
+          download: http://localhost/api/downloads/local/internal/examples/harry_potter_hogwarts_a_mohimont.sl1
+          thumbnailSmall: http://localhost/api/thumbnails/tmpy36n51rt/thumbnail/thumbnail400x400.png
+          thumbnailBig: http://localhost/api/thumbnails/tmpy36n51rt/thumbnail/thumbnail800x480.png
         gcodeAnalysis:
-          estimatedPrintTime: 2445.0
-          dimensions:
-            height: 0.15
-          material: Prusa Orange Tough 0.05
-    OctoFolderInfo:
+          estimatedPrintTime: 2445
+          material: "Prusa Orange Tough"
+          layerHeight: 0.025
+
+    FolderInfo:
       allOf:
-        - $ref: "#/components/schemas/OctoCommonFileInfo"
+        - $ref: "#/components/schemas/CommonFileInfo"
         - type: object
       properties:
         refs:
@@ -1079,52 +902,53 @@ components:
         display: examples
         name: examples
         size: 873151
-        type": folder
-        typePath": [folder]
+        type: folder
+        typePath: [folder]
         refs:
-          resource: http://localhost/octoprint/api/files/local/internal/examples
-    OctoFullFolderInfo:
+          resource: http://localhost/api/files/local/internal/examples
+
+    FullFolderInfo:
       allOf:
-        - $ref: "#/components/schemas/OctoFolderInfo"
+        - $ref: "#/components/schemas/FolderInfo"
         - type: object
       properties:
         children:
           type: array
           items:
             oneOf:
-              - $ref: "#/components/schemas/OctoFileInfo"
-              - $ref: "#/components/schemas/OctoFolderInfo"
+              - $ref: "#/components/schemas/FileInfo"
+              - $ref: "#/components/schemas/FolderInfo"
             discriminator:
               propertyName: type
-    OctoFileOrFolderInfo:
+
+    FileOrFolderInfo:
       oneOf:
-        - $ref: "#/components/schemas/OctoFileInfo"
-        - $ref: "#/components/schemas/OctoFullFolderInfo"
-    OctoAllFilesInfo:
+        - $ref: "#/components/schemas/FileInfo"
+        - $ref: "#/components/schemas/FullFolderInfo"
+
+    AllFilesInfo:
       type: object
       properties:
         files:
           type: array
           items:
             oneOf:
-              - $ref: "#/components/schemas/OctoFileInfo"
-              - $ref: "#/components/schemas/OctoFullFolderInfo"
+              - $ref: "#/components/schemas/FileInfo"
+              - $ref: "#/components/schemas/FullFolderInfo"
         free:
           type: integer
         total:
           type: integer
-    OctoFileCommand:
+
+    FileCommand:
       type: object
       properties:
         command:
           type: string
-          example: select
-        print:
-          oneOf:
-            - type: string
-            - type: boolean
-          example: true
-    OctoCreateFolder:
+          enum: [select, copy, move]
+          default: select
+
+    CreateFolder:
       properties:
         path:
           type: string
@@ -1135,25 +959,27 @@ components:
       required:
         - path
         - foldername
-    OctoUploadFile:
+
+    UploadFile:
       properties:
         path:
           type: string
+          default: subfolder
           description: The path within the location to upload the file to or create the folder.
         file:
-          type: array
-          items:
-            type: string
-            format: binary
+          type: string
+          format: binary
+          default: test.gcode
           description: The file to upload, including a valid filename.
         select:
           type: string
-          default: "true"
+          default: true
           description: Whether to select the file directly after upload (true) or not (false). Defaults to true.
       required:
         - path
         - file
-    OctoFileUploaded:
+
+    FileUploaded:
       type: object
       properties:
         done:
@@ -1178,11 +1004,12 @@ components:
                   properties:
                     resource:
                       type: string
-                      example: http://localhost/octoprint/api/files/local/internal/examples/harry_potter_hogwarts_a_mohimont.sl1
+                      example: http://localhost/api/files/local/internal/examples/harry_potter_hogwarts_a_mohimont.sl1
                     download:
                       type: string
-                      example: http://localhost/octoprint/api/downloads/local/internal/examples/harry_potter_hogwarts_a_mohimont.sl1
-    OctoFolderCreated:
+                      example: http://localhost/api/downloads/local/internal/examples/harry_potter_hogwarts_a_mohimont.sl1
+
+    FolderCreated:
       type: object
       properties:
         done:
@@ -1201,13 +1028,20 @@ components:
               properties:
                 resource:
                   type: string
-    Properties:
-      type: object
-      properties:
-        exposure_time_ms:
-          type: number
-        exposure_time_first_ms:
-          type: number
+
+    State:
+      type: string
+      enum: [
+        "Operational",
+        "Printing",
+        "Pausing",
+        "Paused",
+        "Cancelling",
+        "Error",
+        "Offline",
+      ]
+      example: "Operational"
+
     TelemetryMini:
       type: object
       properties:
@@ -1217,76 +1051,244 @@ components:
           type: number
         material:
           type: string
+
     TelemetrySL1:
       type: object
       properties:
-        blower_fan:
+        fanUvLed:
           type: integer
-        cover_closed:
+          example: 2000
+        fanBlower:
+          type: integer
+          example: 3333
+        fanRear:
+          type: integer
+          example: 1000
+        coverClosed:
           type: boolean
-        temp_amb:
+          example: true
+        tempAmbient:
           type: number
-        temp_cpu:
+          example: 23.4
+        tempCpu:
           type: number
-        temp_led:
+          example: 46.9
+        tempUvLed:
           type: number
-        uv_led_fan:
-          type: integer
-        rear_fan:
-          type: integer
-    ProgressMini:
+          example: 52.6
+
+    #JobFileFDM:
+
+    JobFileSLA:
       type: object
       properties:
-        progress:
+        layers:
+          type: integer
+          description: Total number of layers
+          example: 12345
+          nullable: true
+        exposureTime:       # [ms]
+          type: integer
+          example: 6000
+          nullable: true
+        exposureTimeFirst:  # [ms]
           type: number
-        pos_z_mm:
-          type: number
-        printing_speed:
-          type: number
-        flow_factor:
-          type: number
-        print_dur:
-          type: string
-        time_est:
-          type: string
-        filament_status:
-          type: string
-    ProgressSL1:
+          example: 30000
+          nullable: true
+
+    JobFDM:
       type: object
       properties:
-        total_layers:
-          type: integer
-        current_layer:
-          type: integer
-        remaining_material:
-          type: number
-        consumed_material:
-          type: number
-        progress:
-          type: number
-        time_elapsed:
-          type: number
-        remaining_time:
-          type: number
+        filament:
+          type: object
+          properties:
+            length:
+              type: number
+              description: Length of filament used in mm.
+              nullable: true
+            volume:
+              type: number
+              description: Volume in filament used in cm3.
+              nullable: true
+          nullable: true
+
+    JobSLA:
+      type: object
+      properties:
+        resin:
+          type: object
+          properties:
+            remaining:
+              type: number
+              description: Volume of remaining resin in the tank [ml].
+              nullable: true
+              example: 134.5
+            consumed:
+              type: number
+              description: Volume of already consumed resin in the tank [ml].
+              nullable: true
+              example: 22.4
+          nullable: true
+
+    Error:
+      type: object
+      properties:
+        code:
+          type: string
+          description: Prusa error code. Mus be string if we will have printer with code for example 04
+          default: "10108"
+        title:
+          type: string
+          description: Prusa error text string with prefiled variable macros.
+          default: "RESIN TOO LOW"
+        text:
+          type: string
+          description: Prusa error text string with prefiled variable macros.
+          default: "Measured resin volume 22.4 ml is lower than required for this print. Refill the tank and restart the print."
+        url:
+          type: string
+          description: Link to the Prusa help page
+          default: "https://help.prusa3d.com/en/10108/LHE3Q0I1"
+
+    ResponsePlaintext:
+      type: string
+      default: "Project with same name has been already uploaded."
+      description: Prusa error message (raw_message)
+
+  headers:
+    Accept: # Slicer doesn't have to use this. If the header is not present, it defaults to: text/plain
+      required: false
+      schema:
+        type: string
+        default: application/json
+      description: Parameter specifying supported data format from client. PCL has to support it
+    Content-Location:
+      required: true
+      schema:
+        type: string
+        default: "http://<PCL IP>/error"
+      description: URI path to nice error page. We can send URI to help.prusa3d.com in the future.
+
   securitySchemes:
     ApiKeyAuth:
       type: apiKey
       in: header
       name: X-API-Key
+
   responses:
-    Unauthorized:
-      description: Unauthorized
-    NotModified:
+    NotModified: # 304
       description: Not Modified
-    BadRequest:
+      headers:
+        Content-Location:
+          $ref: "#/components/headers/Content-Location"
+      content:
+        text/plain:
+          schema:
+            $ref: "#/components/schemas/ResponsePlaintext"
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+
+    BadRequest: # 400
       description: Bad Request
-    NotFound:
+      headers:
+        Content-Location:
+          $ref: "#/components/headers/Content-Location"
+      content:
+        text/plain:
+          schema:
+            $ref: "#/components/schemas/ResponsePlaintext"
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+
+    Unauthorized: # 401
+      description: Unauthorized
+      headers:
+        Content-Location:
+          $ref: "#/components/headers/Content-Location"
+      content:
+        text/plain:
+          schema:
+            $ref: "#/components/schemas/ResponsePlaintext"
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+
+    Forbidden: # 403
+      description: Forbidden
+      headers:
+        Content-Location:
+          $ref: "#/components/headers/Content-Location"
+      content:
+        text/plain:
+          schema:
+            $ref: "#/components/schemas/ResponsePlaintext"
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+
+    NotFound: # 404
       description: Not Found
-    Conflict:
+      headers:
+        Content-Location:
+          $ref: "#/components/headers/Content-Location"
+      content:
+        text/plain:
+          schema:
+            $ref: "#/components/schemas/ResponsePlaintext"
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+
+    Conflict: # 409
       description: Conflict
-    UnsupportedMediaType:
+      headers:
+        Content-Location:
+          $ref: "#/components/headers/Content-Location"
+      content:
+        text/plain:
+          schema:
+            $ref: "#/components/schemas/ResponsePlaintext"
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+
+    UnsupportedMediaType: # 415
       description: Unsupported Media Type
-    InternalServerError:
+      headers:
+        Content-Location:
+          $ref: "#/components/headers/Content-Location"
+      content:
+        text/plain:
+          schema:
+            $ref: "#/components/schemas/ResponsePlaintext"
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+
+    InternalServerError: # 500
       description: Internal Server Error
-    NotImplemented:
+      headers:
+        Content-Location:
+          $ref: "#/components/headers/Content-Location"
+      content:
+        text/plain:
+          schema:
+            $ref: "#/components/schemas/ResponsePlaintext"
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+
+    NotImplemented: # 501
       description: Not Implemented
+      headers:
+        Content-Location:
+          $ref: "#/components/headers/Content-Location"
+      content:
+        text/plain:
+          schema:
+            $ref: "#/components/schemas/ResponsePlaintext"
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
