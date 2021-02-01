@@ -9,16 +9,20 @@ const router = new express.Router();
  * Retrieve all files’ and folders’ information.
  */
 router.get("/", async (req, res, next) => {
-  const options = {
-    "If-None-Match": req.header["If-None-Match"],
-    recursive: req.query["recursive"],
-  };
-  console.log(
-    `${req.app.get("printerConf").type} - ${req.method} ${req.originalUrl} - ${
-      req.params
-    } => 501`
-  );
-  res.status(501).json({ error: "Not Implemented" });
+  printerConf = req.app.get("printerConf");
+  const eTag = req.header("If-None-Match");
+
+  if (eTag == printerConf.eTag) {
+    res.status(304).send("Not Modified");
+  } else {
+    if (req.query["recursive"]) {
+      res.set("ETag", printerConf.eTag).json(printerConf.allFiles);
+    } else {
+      let origin = JSON.parse(JSON.stringify(printerConf.allFiles["files"][0]));
+      origin["children"] = [];
+      res.set("ETag", printerConf.eTag).json({ files: [origin] });
+    }
+  }
 });
 
 /**
