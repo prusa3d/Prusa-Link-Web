@@ -296,32 +296,30 @@ nav .burger-icon.burger-open {
   width: 100%;
   user-select: none;
 }
-.temp-legend-led {
+.temp-legend-blue {
+    fill: #1b73f8;
+}
+.temp-legend-orange {
   fill: #f8651b;
 }
-.temp-legend-amb {
-  fill: #1b73f8;
+.temp-legend-yellow {
+    fill: #f3f12c;
 }
-.temp-legend-cpu {
-  fill: #f3f12c;
+#temp-line-blue,
+#temp-line-orange,
+#temp-line-yellow {
+    fill: transparent;
+    opacity: 1;
+    stroke-width: 1%;
 }
-.temp-line-amb,
-.temp-line-cpu,
-.temp-line-led {
-  fill: transparent;
-  opacity: 1;
+#temp-line-blue {
+    stroke: #1b73f8;
 }
-.temp-line-led {
-  stroke-width: 1%;
-  stroke: #f8651b;
+#temp-line-orange {
+    stroke: #f8651b;
 }
-.temp-line-amb {
-  stroke-width: 1%;
-  stroke: #1b73f8;
-}
-.temp-line-cpu {
-  stroke-width: 1%;
-  stroke: #f3f12c;
+#temp-line-yellow {
+    stroke: #f3f12c;
 }
 .temp-text {
   fill: #fff;

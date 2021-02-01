@@ -15,6 +15,7 @@ module.exports = (env, args) => {
   const printer_conf = {
     mode: env.dev ? "development" : "production",
     type: env.PRINTER.toLowerCase(),
+    updateInterval: 1000,
     "http-basic": env["http-basic"],
     "http-apikey": env["http-apikey"],
   };
