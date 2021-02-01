@@ -208,12 +208,13 @@ nav .burger-icon.burger-open {
   flex-direction: row;
   justify-content: flex-start;
   padding: 0;
+  flex-wrap: wrap;
 }
 .tel-prop {
   display: flex;
   align-items: center;
   padding: 12px 12px 12px 0;
-  width: 50%;
+  width: 45%;
 }
 .tel-prop > div {
   display: flex;
