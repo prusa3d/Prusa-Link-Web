@@ -6,7 +6,7 @@ import "./styles.css";
 import { navigate } from "./router.js";
 import printer from "./printer";
 
-const UPDATE_INTERVAL = 5000;
+const UPDATE_INTERVAL = process.env.UPDATE_INTERVAL;
 
 window.onload = () => {
   document.getElementById("menu").addEventListener("click", (e) => {
