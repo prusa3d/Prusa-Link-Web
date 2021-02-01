@@ -2,11 +2,12 @@
 // Copyright (C) 2021 Prusa Research a.s. - www.prusa3d.com
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-const telemetry = require("./telemetry");
 const basicAuth = require("express-basic-auth");
 
 const devServer = (app, conf) => {
-  // api key middleware
+  /*
+   * api key middleware
+   */
   if (conf["http-apikey"]) {
     app.use("/api/", (req, res, next) => {
       if (req.header("X-Api-Key") == "developer") {
@@ -18,7 +19,9 @@ const devServer = (app, conf) => {
     });
   }
 
-  // http basic middleware
+  /*
+   * http basic middleware
+   */
   if (conf["http-basic"]) {
     app.use(
       "/api/",
@@ -29,16 +32,34 @@ const devServer = (app, conf) => {
     );
   }
 
-  app.get("/api/version", function (req, res) {
-    res.json({
-      api: "0.1",
-      server: "1.1.0",
-      text: "Prusa SLA SL1 1.0.5",
-      hostname: `prusa-${conf.type}`,
-    });
-  });
+  /*
+   * Global context
+   */
+  const sd = { ready: true }; // Whether the SD card has been initialized (true) or not (false).
+  const state = {
+    text: "Operational",
+    flags: {
+      operational: true, // true if the printer is operational, false otherwise
+      paused: false, // true if the printer is currently paused, false otherwise
+      printing: false, // true if the printer is currently printing, false otherwise
+      cancelling: false, // true if the printer is currently printing and in the process of pausing, false otherwise
+      pausing: false, // true if the printer is currently printing and in the process of pausing, false otherwise
+      sdReady: true, // true if the printer’s SD card is available and initialized, false otherwise. This is redundant information to the SD State.
+      error: false, // true if an unrecoverable error occurred, false otherwise
+      ready: true, // true if the printer is operational and no data is currently being streamed to SD, so ready to receive instructions
+      closedOrError: false, // always false
+    },
+  };
+  const printerProfile = { id: "_default", name: "Original Prusa SL1" };
+  app.set("printerConf", { type: conf.type, sd, state, printerProfile });
 
-  telemetry(app, conf.type);
+  /*
+   * Routes
+   */
+  app.use("/api/files", require("./files"));
+  app.use("/api/printer", require("./printer"));
+  app.use("/api/job", require("./job"));
+  app.use("/api/", require("./miscellaneous"));
 };
 
 module.exports = devServer;
