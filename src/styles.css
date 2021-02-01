@@ -298,29 +298,29 @@ nav .burger-icon.burger-open {
   user-select: none;
 }
 .temp-legend-blue {
-    fill: #1b73f8;
+  fill: #1b73f8;
 }
 .temp-legend-orange {
   fill: #f8651b;
 }
 .temp-legend-yellow {
-    fill: #f3f12c;
+  fill: #f3f12c;
 }
 #temp-line-blue,
 #temp-line-orange,
 #temp-line-yellow {
-    fill: transparent;
-    opacity: 1;
-    stroke-width: 1%;
+  fill: transparent;
+  opacity: 1;
+  stroke-width: 1%;
 }
 #temp-line-blue {
-    stroke: #1b73f8;
+  stroke: #1b73f8;
 }
 #temp-line-orange {
-    stroke: #f8651b;
+  stroke: #f8651b;
 }
 #temp-line-yellow {
-    stroke: #f3f12c;
+  stroke: #f3f12c;
 }
 .temp-text {
   fill: #fff;
