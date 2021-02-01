@@ -6,27 +6,34 @@ const express = require("express");
 const router = new express.Router();
 
 /**
- * Retrieve information about the current job (if there is 
+ * Retrieve information about the current job (if there is
  * one).
  */
-router.get('/', async (req, res, next) => {
-  const options = {
-  };
+router.get("/", async (req, res, next) => {
+  const options = {};
 
-  console.log(`${req.app.get('printerConf').type} - ${req.method} ${req.originalUrl} - ${req.params} => 501`);
-  res.status(501).json({ error: 'Not Implemented' })
+  console.log(
+    `${req.app.get("printerConf").type} - ${req.method} ${req.originalUrl} - ${
+      req.params
+    } => 501`
+  );
+  res.status(501).json({ error: "Not Implemented" });
 });
 
 /**
  * Issue a job command.
  */
-router.post('/', async (req, res, next) => {
+router.post("/", async (req, res, next) => {
   const options = {
-    body: req.body
+    body: req.body,
   };
 
-  console.log(`${req.app.get('printerConf').type} - ${req.method} ${req.originalUrl} - ${req.params} => 501`);
-  res.status(501).json({ error: 'Not Implemented' })
+  console.log(
+    `${req.app.get("printerConf").type} - ${req.method} ${req.originalUrl} - ${
+      req.params
+    } => 501`
+  );
+  res.status(501).json({ error: "Not Implemented" });
 });
 
 module.exports = router;

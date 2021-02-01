@@ -13,8 +13,12 @@ router.get("/", async (req, res, next) => {
     "If-None-Match": req.header["If-None-Match"],
     recursive: req.query["recursive"],
   };
-  console.log(`${req.app.get('printerConf').type} - ${req.method} ${req.originalUrl} - ${req.params} => 501`);
-  res.status(501).json({ error: 'Not Implemented' })
+  console.log(
+    `${req.app.get("printerConf").type} - ${req.method} ${req.originalUrl} - ${
+      req.params
+    } => 501`
+  );
+  res.status(501).json({ error: "Not Implemented" });
 });
 
 /**
@@ -26,8 +30,12 @@ router.get("/:target", async (req, res, next) => {
     "If-None-Match": req.header["If-None-Match"],
     recursive: req.query["recursive"],
   };
-  console.log(`${req.app.get('printerConf').type} - ${req.method} ${req.originalUrl} - ${req.params} => 501`);
-  res.status(501).json({ error: 'Not Implemented' })
+  console.log(
+    `${req.app.get("printerConf").type} - ${req.method} ${req.originalUrl} - ${
+      req.params
+    } => 501`
+  );
+  res.status(501).json({ error: "Not Implemented" });
 });
 
 /**
@@ -37,8 +45,12 @@ router.post("/:target", async (req, res, next) => {
   const options = {
     body: req.body,
   };
-  console.log(`${req.app.get('printerConf').type} - ${req.method} ${req.originalUrl} - ${req.params} => 501`);
-  res.status(501).json({ error: 'Not Implemented' })
+  console.log(
+    `${req.app.get("printerConf").type} - ${req.method} ${req.originalUrl} - ${
+      req.params
+    } => 501`
+  );
+  res.status(501).json({ error: "Not Implemented" });
 });
 
 /**
@@ -49,8 +61,12 @@ router.get("/:target/:filename(*)", async (req, res, next) => {
     "If-None-Match": req.header["If-None-Match"],
     recursive: req.query["recursive"],
   };
-  console.log(`${req.app.get('printerConf').type} - ${req.method} ${req.originalUrl} - ${req.params} => 501`);
-  res.status(501).json({ error: 'Not Implemented' })
+  console.log(
+    `${req.app.get("printerConf").type} - ${req.method} ${req.originalUrl} - ${
+      req.params
+    } => 501`
+  );
+  res.status(501).json({ error: "Not Implemented" });
 });
 
 /**
@@ -60,8 +76,12 @@ router.post("/:target/:filename(*)", async (req, res, next) => {
   const options = {
     body: req.body,
   };
-  console.log(`${req.app.get('printerConf').type} - ${req.method} ${req.originalUrl} - ${req.params} => 501`);
-  res.status(501).json({ error: 'Not Implemented' })
+  console.log(
+    `${req.app.get("printerConf").type} - ${req.method} ${req.originalUrl} - ${
+      req.params
+    } => 501`
+  );
+  res.status(501).json({ error: "Not Implemented" });
 });
 
 /**
@@ -69,8 +89,12 @@ router.post("/:target/:filename(*)", async (req, res, next) => {
  */
 router.delete("/:target/:filename(*)", async (req, res, next) => {
   const options = {};
-  console.log(`${req.app.get('printerConf').type} - ${req.method} ${req.originalUrl} - ${req.params} => 501`);
-  res.status(501).json({ error: 'Not Implemented' })
+  console.log(
+    `${req.app.get("printerConf").type} - ${req.method} ${req.originalUrl} - ${
+      req.params
+    } => 501`
+  );
+  res.status(501).json({ error: "Not Implemented" });
 });
 
 module.exports = router;
