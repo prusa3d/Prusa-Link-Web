@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 const basicAuth = require("express-basic-auth");
+const bodyParser = require("body-parser");
 
 const devServer = (app, conf) => {
   /*
@@ -35,6 +36,8 @@ const devServer = (app, conf) => {
   /*
    * Global context
    */
+  app.use(bodyParser.urlencoded({ extended: false }));
+  app.use(bodyParser.json());
   app.set("printerConf", require("./config")(conf));
 
   /*

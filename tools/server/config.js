@@ -17,6 +17,15 @@ module.exports = (conf) => {
   const printerProfile = { id: "_default", name: "Original Prusa SL1" };
 
   const eTag = `W/"${new Date().getTime()}"`;
+  const printing = {
+    file: null,
+    printing: false,
+    selected: false,
+    estimatedPrintTime: 0,
+    completion: 0,
+    printTime: 0,
+    printTimeLeft: 0,
+  };
   const allFiles = {
     files: [
       {
@@ -205,10 +214,97 @@ module.exports = (conf) => {
         refs: { resource: "http://localhost:9000/api/files/sdcard/examples" },
         size: 61397266,
       },
+      {
+        origin: "local",
+        path: "examples",
+        display: "examples",
+        name: "examples",
+        type: "folder",
+        typePath: ["folder"],
+        children: [
+          {
+            origin: "local",
+            path:
+              "examples/Prusa_SL1_Calibration_test_2H_40M_50um_Prusa_Orange.sl1",
+            display: "Prusa_SL1_Calibration_test_2H_40M_50um_Prusa_Orange.sl1",
+            name: "Prusa_SL1_Calibration_test_2H_40M_50um_Prusa_Orange.sl1",
+            size: 3636012,
+            date: 1597667691,
+            type: "machinecode",
+            typePath: ["machinecode", "gcode"],
+            hash: "03d25853d6fcbc3b221111743b11aa84d0580298",
+            refs: {
+              resource:
+                "http://localhost:9000/api/files/local/examples/Prusa_SL1_Calibration_test_2H_40M_50um_Prusa_Orange.sl1",
+              download:
+                "http://localhost:9000/api/downloads/local/examples/Prusa_SL1_Calibration_test_2H_40M_50um_Prusa_Orange.sl1",
+            },
+            gcodeAnalysis: {
+              estimatedPrintTime: 0,
+              dimensions: { height: 0.05 },
+              material: "",
+            },
+          },
+          {
+            origin: "local",
+            path: "examples/Petrin_Tower_10H_50um_Prusa_Orange.sl1",
+            display: "Petrin_Tower_10H_50um_Prusa_Orange.sl1",
+            name: "Petrin_Tower_10H_50um_Prusa_Orange.sl1",
+            size: 21008282,
+            date: 1597667806,
+            type: "machinecode",
+            typePath: ["machinecode", "gcode"],
+            hash: "c49fa4b9fb5cc7a623df2a211c241355ca1a1db7",
+            refs: {
+              resource:
+                "http://localhost:9000/api/files/local/examples/Petrin_Tower_10H_50um_Prusa_Orange.sl1",
+              download:
+                "http://localhost:9000/api/downloads/local/examples/Petrin_Tower_10H_50um_Prusa_Orange.sl1",
+            },
+            gcodeAnalysis: {
+              estimatedPrintTime: 0,
+              dimensions: { height: 0.05 },
+              material: "",
+            },
+          },
+          {
+            origin: "local",
+            path: "examples/Prusacek_Clay_Army_1H_50um_Prusa_Orange.sl1",
+            display: "Prusacek_Clay_Army_1H_50um_Prusa_Orange.sl1",
+            name: "Prusacek_Clay_Army_1H_50um_Prusa_Orange.sl1",
+            size: 22627184,
+            date: 1597667620,
+            type: "machinecode",
+            typePath: ["machinecode", "gcode"],
+            hash: "9fc1a59b9b8cd59460e00682d48abbb8b5df6fce",
+            refs: {
+              resource:
+                "http://localhost:9000/api/files/local/examples/Prusacek_Clay_Army_1H_50um_Prusa_Orange.sl1",
+              download:
+                "http://localhost:9000/api/downloads/local/examples/Prusacek_Clay_Army_1H_50um_Prusa_Orange.sl1",
+            },
+            gcodeAnalysis: {
+              estimatedPrintTime: 3705000.0,
+              dimensions: { height: 0.05 },
+              material: "Prusa Orange Tough 0.05",
+            },
+          },
+        ],
+        refs: { resource: "http://localhost:9000/api/files/local/examples" },
+        size: 61397266,
+      },
     ],
     free: 88398225408,
     total: 237645131776,
   };
 
-  return { type: conf.type, sd, state, printerProfile, allFiles, eTag };
+  return {
+    type: conf.type,
+    sd,
+    state,
+    printerProfile,
+    allFiles,
+    eTag,
+    printing,
+  };
 };

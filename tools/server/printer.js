@@ -25,9 +25,8 @@ router.get("/", async (req, res, next) => {
 
   const result = {};
   if (include.temperature) {
-    let temperature = {};
     if (printerConf.type == "sl1") {
-      temperature = {
+      result["temperature"] = {
         tool0: {
           // Original Prusa SL1 uses for UV LED temp
           actual: Math.random() * 100,
@@ -41,8 +40,15 @@ router.get("/", async (req, res, next) => {
           actual: Math.random() * 45,
         },
       };
+
+      result["telemetry"] = {
+        fanUvLed: Math.random() * 1000,
+        fanBlower: Math.random() * 1000,
+        fanRear: Math.random() * 1000,
+        coverClosed: true,
+      };
     } else {
-      temperature = {
+      result["temperature"] = {
         tool0: {
           actual: Math.random() * 300, // Current temperature
           target: 220.0, // Target temperature, may be null if no target temperature is set.
@@ -59,9 +65,11 @@ router.get("/", async (req, res, next) => {
           offset: 0,
         },
       };
-    }
 
-    result["temperature"] = temperature;
+      result["telemetry"] = {
+        material: "PETG Black",
+      };
+    }
   }
 
   if (include.sd) {
