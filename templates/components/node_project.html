@@ -1,0 +1,38 @@
+<!-- prettier-ignore -->
+{#
+    # This file is part of the Prusa Connect Local
+    # Copyright (C) 2021 Prusa Research a.s. - www.prusa3d.com
+    # SPDX-License-Identifier: GPL-3.0-or-later
+#}
+
+<template id="node-project">
+  <div class="node line">
+    <img class="node-img" src="../assets/thumbnail.png" />
+    <div class="node-wrapper">
+      <p id="name"></p>
+      <div class="node-details">
+        <div id="printTime" class="details">
+          <img
+            class="icon"
+            src="{{ pre.countOrRenderAssets('time_color.svg') | safe }}"
+          />
+          <p>Printing time</p>
+        </div>
+        <div id="material" class="details">
+          <img
+            class="icon"
+            src="{{ pre.countOrRenderAssets('status_filament.svg') | safe }}"
+          />
+          <p>Material</p>
+        </div>
+        <div id="layerHeight" class="details">
+          <img
+            class="icon"
+            src="{{ pre.countOrRenderAssets('quality_medium.svg') | safe }}"
+          />
+          <p>Layer Height</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>

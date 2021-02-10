@@ -4,6 +4,10 @@
 
 import { modal } from "./modal.js";
 
+/**
+ * Show modal and ask the api key
+ * @param {function} cb
+ */
 const askApiKey = (cb) => {
   modal("apiKey", {
     timeout: 0,
@@ -33,30 +37,43 @@ const askApiKey = (cb) => {
   });
 };
 
+/**
+ * Create the readers with apiKey if exist and Accept keys
+ */
 const getHeaders = () => {
   let authType = sessionStorage.getItem("authType");
   if (authType == "ApiKey") {
     let apiKey = sessionStorage.getItem("apiKey");
     if (apiKey) {
-      return { headers: { "X-Api-Key": apiKey } };
+      return {
+        headers: { "X-Api-Key": apiKey, Accept: "application/json" },
+      };
     }
     throw Error("Missing ApiKey");
   }
   return {};
 };
 
+/**
+ * Check if the browser is authenticated
+ * @param {Response} response
+ */
 const validate_auth = (response) => {
   if (response.status == 401) {
     const auth_type = response.headers.get("WWW-Authenticate").split(" ")[0];
-    sessionStorage.setItem("auth", false);
+    sessionStorage.setItem("auth", "false");
     sessionStorage.setItem("authType", auth_type);
     sessionStorage.removeItem("apiKey");
     throw Error(auth_type);
   }
 };
 
+/**
+ * Authenticate the browser
+ */
 const setUpAuth = async () => {
   try {
+    sessionStorage.setItem("auth", "pending");
     const options = getHeaders();
     await fetch("/api/version", options)
       .then((response) => {
@@ -64,7 +81,7 @@ const setUpAuth = async () => {
         return response.json();
       })
       .then((data) => {
-        sessionStorage.setItem("auth", true);
+        sessionStorage.setItem("auth", "true");
       })
       .catch((e) => {
         // change page error
@@ -72,7 +89,7 @@ const setUpAuth = async () => {
         if (e.message == "ApiKey") {
           askApiKey(setUpAuth);
         } else {
-          setTimeout(() => setUpAuth(), 1000);
+          setUpAuth();
         }
       });
   } catch (err) {
@@ -80,4 +97,49 @@ const setUpAuth = async () => {
   }
 };
 
-export { getHeaders, validate_auth, setUpAuth };
+/**
+ * Async function for fetch url then call the callback with the data
+ * @param {string} url
+ * @param {function} cb (data) => { }
+ * @param {headers} opts
+ */
+const getJson = async (url, cb, opts = {}) => {
+  let auth = sessionStorage.getItem("auth");
+  if (auth == "true") {
+    try {
+      const options = Object.assign(opts, getHeaders());
+      await fetch(url, options)
+        .then((response) => {
+          validate_auth(response);
+          return response.json().then((data) => cb(response.status, data));
+        })
+        .catch((e) => {
+          throw e;
+        });
+    } catch (err) {
+      // TODO ERROR HANDLING
+      console.log(err);
+    }
+  } else if (auth == "false") {
+    const showedWelcome = localStorage.getItem("showWelcome");
+    if (showedWelcome) {
+      setUpAuth();
+    }
+  }
+};
+
+const initAuth = () => {
+  const showWelcome = localStorage.getItem("showWelcome");
+  if (showWelcome == null) {
+    modal("welcome", {
+      closeCallback: () => {
+        localStorage.setItem("showWelcome", true);
+        setUpAuth();
+      },
+    });
+  } else {
+    setUpAuth();
+  }
+};
+
+export { getHeaders, validate_auth, setUpAuth, getJson, initAuth };
