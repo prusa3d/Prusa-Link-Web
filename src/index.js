@@ -5,6 +5,7 @@
 import "./styles.css";
 import { navigate } from "./router.js";
 import printer from "./printer";
+import { getJson, initAuth } from "./auth.js";
 
 const UPDATE_INTERVAL = process.env.UPDATE_INTERVAL;
 
@@ -30,6 +31,7 @@ window.onload = () => {
   });
   window.onpopstate = (e) => e && navigate(e.location);
   navigate(window.location.hash || "#dashboard");
+  initAuth();
   printer.init();
-  setInterval(printer.update, UPDATE_INTERVAL);
+  setInterval(() => getJson("/api/printer", printer.update), UPDATE_INTERVAL);
 };

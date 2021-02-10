@@ -42,20 +42,25 @@ router.get("/", async (req, res, next) => {
       };
 
       result["telemetry"] = {
+        tempCpu: Math.random() * 300,
+        tempUvLed: Math.random() * 200,
+        tempAmbient: Math.random() * 150,
         fanUvLed: Math.random() * 1000,
         fanBlower: Math.random() * 1000,
         fanRear: Math.random() * 1000,
         coverClosed: true,
       };
     } else {
+      const temp1 = Math.random() * 200;
+      const temp2 = Math.random() * 200;
       result["temperature"] = {
         tool0: {
-          actual: Math.random() * 300, // Current temperature
+          actual: temp1, // Current temperature
           target: 220.0, // Target temperature, may be null if no target temperature is set.
           offset: 0, // Currently configured temperature offset to apply, will be left out for historic temperature information.
         },
         bed: {
-          actual: Math.random() * 200,
+          actual: temp2,
           target: 70.0,
           offset: 5,
         },
@@ -67,6 +72,8 @@ router.get("/", async (req, res, next) => {
       };
 
       result["telemetry"] = {
+        temp_nozzle: temp1,
+        temp_bed: temp2,
         material: "PETG Black",
       };
     }

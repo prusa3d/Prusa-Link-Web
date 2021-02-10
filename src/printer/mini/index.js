@@ -7,6 +7,7 @@ import Dashboard from "./dashboard.js";
 import Temperature from "./temperature.js";
 import dashboard from "../../views/dashboard.html";
 import temperature from "../../views/temperature.html";
+import telemetry from "../components/telemetry";
 
 const mini = {
   routes: [
@@ -19,7 +20,13 @@ const mini = {
   },
   update: () => {
     console.log("Update Printer API");
-    updateTemperatureGraph();
+    if (statusCode > 299) {
+      updateTemperatureGraph();
+      telemetry(data);
+    } else {
+      console.log("Error");
+      console.log(data);
+    }
   },
 };
 

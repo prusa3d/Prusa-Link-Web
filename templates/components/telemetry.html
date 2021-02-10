@@ -9,21 +9,21 @@
 {% if printer == "sl1" %}
     {% 
         set telemetry_dict = { 
-            'temp-cpu': {'text': 'CPU temperature', 'icon': 'temperature_color.svg' },
-            'temp-led': {'text': 'UV LED temperature', 'icon': 'temperature_color.svg' },
-            'temp-amb': {'text': 'ambient temperature', 'icon': 'temperature_color.svg' },
-            'fan-led': {'text': 'UV LED fan', 'icon': 'fan_color.svg' },
-            'fan-blower': {'text': 'blower fan', 'icon': 'fan_color.svg' },
-            'fan-rear': {'text': 'rear fan', 'icon': 'fan_color.svg' },
-            'cover': {'text': 'cover state', 'icon': 'cover_color.svg' }
+            'tempCpu': {'text': 'CPU temperature', 'icon': 'temperature_color.svg', 'format': 'temp' },
+            'tempUvLed': {'text': 'UV LED temperature', 'icon': 'temperature_color.svg', 'format': 'temp' },
+            'tempAmbient': {'text': 'ambient temperature', 'icon': 'temperature_color.svg', 'format': 'temp' },
+            'fanUvLed': {'text': 'UV LED fan', 'icon': 'fan_color.svg', 'format': 'fan' },
+            'fanBlower': {'text': 'blower fan', 'icon': 'fan_color.svg', 'format': 'fan' },
+            'fanRear': {'text': 'rear fan', 'icon': 'fan_color.svg', 'format': 'fan' },
+            'coverClosed': {'text': 'cover state', 'icon': 'cover_color.svg', 'format': 'cover' }
         }
     %}
 {% else %}
     {% 
         set telemetry_dict = { 
-            'temp-nozzle': {'text': 'Nozzle Temperature', 'icon': 'status_nozzle.svg' },
-            'temp-bed': {'text': 'Heatbed', 'icon': 'status_heatbed.svg' },
-            'material': {'text': 'Material', 'icon': 'status_filament.svg' }
+            'temp_nozzle': {'text': 'Nozzle Temperature', 'icon': 'status_nozzle.svg', 'format': 'temp' },
+            'temp_bed': {'text': 'Heatbed', 'icon': 'status_heatbed.svg', 'format': 'temp' },
+            'material': {'text': 'Material', 'icon': 'status_filament.svg', 'format': 'mat' }
         }
     %}
 {% endif %}
@@ -34,7 +34,13 @@
     <img class="icon" src="{{ pre.countOrRenderAssets(values.icon) | safe }}" />
     <div class="value">
       <p class="txt-normal txt-size-2 txt-grey">{{ values.text }}</p>
-      <p class="txt-bold txt-size-2">NA</p>
+      <p
+        class="txt-bold txt-size-2"
+        id="{{ key }}"
+        data-format="{{ values.format }}"
+      >
+        NA
+      </p>
     </div>
   </div>
   {% endfor %}

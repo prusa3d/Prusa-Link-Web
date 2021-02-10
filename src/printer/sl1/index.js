@@ -9,8 +9,8 @@ import Dashboard from "./dashboard.js";
 import dashboard from "../../views/dashboard.html";
 import Projects from "./projects.js";
 import projects from "../../views/projects.html";
-import { modal } from "../../modal.js";
-import { setUpAuth } from "../../auth.js";
+import updateState from "./updateState.js";
+import telemetry from "../components/telemetry";
 
 const sl1 = {
   routes: [
@@ -20,22 +20,17 @@ const sl1 = {
   ],
   init: () => {
     console.log("Init Printer API");
-    const showWelcome = window.localStorage.getItem("showWelcome");
-    if (showWelcome == null) {
-      modal("welcome", {
-        closeCallback: () => {
-          window.localStorage.setItem("showWelcome", true);
-          setUpAuth();
-        },
-      });
-    } else {
-      setUpAuth();
-    }
     initTemperatureGraph();
   },
-  update: () => {
-    console.log("Update Printer API");
-    updateTemperatureGraph();
+  update: (statusCode, data) => {
+    if (statusCode > 299) {
+      updateState(data);
+      updateTemperatureGraph();
+      telemetry(data);
+    } else {
+      console.log("Error");
+      console.log(data);
+    }
   },
 };
 
