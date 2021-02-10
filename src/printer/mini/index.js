@@ -20,7 +20,7 @@ const mini = {
   },
   update: () => {
     console.log("Update Printer API");
-    if (statusCode > 299) {
+    if (statusCode < 299) {
       updateTemperatureGraph();
       telemetry(data);
     } else {

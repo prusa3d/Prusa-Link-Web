@@ -23,7 +23,7 @@ const sl1 = {
     initTemperatureGraph();
   },
   update: (statusCode, data) => {
-    if (statusCode > 299) {
+    if (statusCode < 299) {
       updateState(data);
       updateTemperatureGraph();
       telemetry(data);
