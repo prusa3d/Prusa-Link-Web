@@ -5,8 +5,11 @@
 import * as projectsTree from "../components/projects";
 
 const load = () => {
-  console.log("Project Logic - sl1");
-  projectsTree.update();
+  console.log("Preview Logic - sl1");
+  document.getElementById("cancel").addEventListener("click", (e) => {
+    projectsTree.back();
+    e.preventDefault();
+  });
 };
 
 export default { load };

@@ -17,6 +17,8 @@ const noRecursive = (result) => {
       }
       return newNode;
     }),
+    free: result.free,
+    total: result.total,
   };
 };
 
@@ -28,6 +30,8 @@ const _getFiles = (printerConf, target, pathname) => {
   if (pathname == undefined) {
     return {
       files: printerConf.allFiles.files.filter((node) => node.origin == target),
+      free: printerConf.allFiles.free,
+      total: printerConf.allFiles.total,
     };
   }
 

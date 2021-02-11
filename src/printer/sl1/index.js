@@ -9,6 +9,8 @@ import Dashboard from "./dashboard.js";
 import dashboard from "../../views/dashboard.html";
 import Projects from "./projects.js";
 import projects from "../../views/projects.html";
+import Preview from "./preview.js";
+import preview from "../../views/preview.html";
 import updateState from "./updateState.js";
 import telemetry from "../components/telemetry";
 
@@ -17,14 +19,15 @@ const sl1 = {
     { path: "dashboard", html: dashboard, module: Dashboard },
     { path: "projects", html: projects, module: Projects },
     { path: "temperature", html: temperature, module: Temperature },
+    { path: "preview", html: preview, module: Preview },
   ],
   init: () => {
     console.log("Init Printer API");
     initTemperatureGraph();
   },
   update: (statusCode, data) => {
-    if (statusCode < 299) {
-      updateState(data);
+    if (statusCode === 200) {
+      // updateState(data);
       updateTemperatureGraph();
       telemetry(data);
     } else {

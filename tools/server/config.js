@@ -55,7 +55,7 @@ module.exports = (conf) => {
             },
             gcodeAnalysis: {
               estimatedPrintTime: 0,
-              dimensions: { height: 0.05 },
+              layerHeight: 0.05,
               material: "",
             },
           },
@@ -77,7 +77,7 @@ module.exports = (conf) => {
             },
             gcodeAnalysis: {
               estimatedPrintTime: 0,
-              dimensions: { height: 0.05 },
+              layerHeight: 0.05,
               material: "",
             },
           },
@@ -108,7 +108,7 @@ module.exports = (conf) => {
                 },
                 gcodeAnalysis: {
                   estimatedPrintTime: 7292000.0,
-                  dimensions: { height: 0.025 },
+                  layerHeight: 0.025,
                   material: "Prusa Orange Tough @0.025",
                 },
               },
@@ -131,7 +131,7 @@ module.exports = (conf) => {
                 },
                 gcodeAnalysis: {
                   estimatedPrintTime: 3559000.0,
-                  dimensions: { height: 0.1 },
+                  layerHeight: 0.1,
                   material: "Prusa Orange Tough @0.1",
                 },
               },
@@ -154,7 +154,7 @@ module.exports = (conf) => {
                 },
                 gcodeAnalysis: {
                   estimatedPrintTime: 5992000.0,
-                  dimensions: { height: 0.035 },
+                  layerHeight: 0.035,
                   material: "Prusa Orange Tough @0.035",
                 },
               },
@@ -177,7 +177,7 @@ module.exports = (conf) => {
                 },
                 gcodeAnalysis: {
                   estimatedPrintTime: 5257272.727,
-                  dimensions: { height: 0.05 },
+                  layerHeight: 0.05,
                   material: "Prusa Orange Tough 0.05",
                 },
               },
@@ -206,13 +206,35 @@ module.exports = (conf) => {
             },
             gcodeAnalysis: {
               estimatedPrintTime: 3705000.0,
-              dimensions: { height: 0.05 },
+              layerHeight: 0.05,
               material: "Prusa Orange Tough 0.05",
             },
           },
         ],
         refs: { resource: "http://localhost:9000/api/files/sdcard/examples" },
         size: 61397266,
+      },
+      {
+        origin: "local",
+        path: "Petrin_Tower_10H_50um_Prusa_Orange.sl1",
+        display: "Petrin_Tower_10H_50um_Prusa_Orange.sl1",
+        name: "Petrin_Tower_10H_50um_Prusa_Orange.sl1",
+        size: 21008282,
+        date: 1597667806,
+        type: "machinecode",
+        typePath: ["machinecode", "gcode"],
+        hash: "c49fa4b9fb5cc7a623df2a211c241355ca1a1db7",
+        refs: {
+          resource:
+            "http://localhost:9000/api/files/local/Petrin_Tower_10H_50um_Prusa_Orange.sl1",
+          download:
+            "http://localhost:9000/api/downloads/local/Petrin_Tower_10H_50um_Prusa_Orange.sl1",
+        },
+        gcodeAnalysis: {
+          estimatedPrintTime: 0,
+          layerHeight: 0.05,
+          material: "",
+        },
       },
       {
         origin: "local",
@@ -241,7 +263,7 @@ module.exports = (conf) => {
             },
             gcodeAnalysis: {
               estimatedPrintTime: 0,
-              dimensions: { height: 0.05 },
+              layerHeight: 0.05,
               material: "",
             },
           },
@@ -263,7 +285,7 @@ module.exports = (conf) => {
             },
             gcodeAnalysis: {
               estimatedPrintTime: 0,
-              dimensions: { height: 0.05 },
+              layerHeight: 0.05,
               material: "",
             },
           },
@@ -285,7 +307,7 @@ module.exports = (conf) => {
             },
             gcodeAnalysis: {
               estimatedPrintTime: 3705000.0,
-              dimensions: { height: 0.05 },
+              layerHeight: 0.05,
               material: "Prusa Orange Tough 0.05",
             },
           },
