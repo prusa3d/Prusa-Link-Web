@@ -1,0 +1,99 @@
+<!-- prettier-ignore -->
+{#
+    # This file is part of the Prusa Connect Local
+    # Copyright (C) 2021 Prusa Research a.s. - www.prusa3d.com
+    # SPDX-License-Identifier: GPL-3.0-or-later
+#}
+
+<!-- prettier-ignore -->
+{% include "components/title.html" %}
+
+<div class="main-wrapper row">
+  <div class="preview">
+    <p>Petrin_Tower_10H_50um_Prusa_Orange.sl1</p>
+    <div class="preview-wrapper">
+      <div class="preview-img">
+        <img src="../assets/thumbnail.png" />
+      </div>
+      <div class="preview-details">
+        <div class="preview-prop">
+          <img
+            class="icon"
+            src="{{ pre.countOrRenderAssets('time_color.svg') | safe }}"
+          />
+          <div>
+            <p>Print Time Estimate</p>
+            <p>NA</p>
+          </div>
+          <div>
+            <p>Estimated end</p>
+            <p>NA</p>
+          </div>
+        </div>
+
+        <div class="preview-prop">
+          <img
+            class="icon"
+            src="{{ pre.countOrRenderAssets('quality_medium.svg') | safe }}"
+          />
+          <div>
+            <p>Layers</p>
+            <p>2869</p>
+          </div>
+          <div>
+            <p>Layer Height</p>
+            <p>0.05 mm</p>
+          </div>
+        </div>
+
+        <div class="preview-prop">
+          <img
+            class="icon"
+            src="{{ pre.countOrRenderAssets('exposure_times_color.svg') | safe }}"
+          />
+          <div>
+            <p>Exposure times</p>
+            <p>35/7.5/1 s</p>
+          </div>
+        </div>
+
+        <div class="preview-prop">
+          <img
+            class="icon"
+            src="{{ pre.countOrRenderAssets('calendar.svg') | safe }}"
+          />
+          <div>
+            <p>Last Modified</p>
+            <p>Mon Oct 05 2020 16:32:14</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="preview-buttons">
+      <div class="preview-buttons-first">
+        <button class="no" id="delete">
+          <img
+            src="{{ pre.countOrRenderAssets('delete_small_white.svg') | safe }}"
+          />
+          <p>delete</p>
+        </button>
+      </div>
+      <div class="buttons-wrapper">
+        <button class="action">
+          <img
+            src="{{ pre.countOrRenderAssets('exposure_times_color.svg') | safe }}"
+          />
+          <p>change exposure times</p>
+        </button>
+        <button class="yes">
+          <img src="{{ pre.countOrRenderAssets('yes_color.svg') | safe }}" />
+          <p>start print</p>
+        </button>
+        <button class="no" id="cancel">
+          <img src="{{ pre.countOrRenderAssets('cancel.svg') | safe }}" />
+          <p>cancel print</p>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
