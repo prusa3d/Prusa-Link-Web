@@ -6,6 +6,7 @@ import "./styles.css";
 import { navigate } from "./router.js";
 import printer from "./printer";
 import { getJson, initAuth } from "./auth.js";
+import testLocale from "./locale_test";
 
 const UPDATE_INTERVAL = process.env.UPDATE_INTERVAL;
 
@@ -34,4 +35,5 @@ window.onload = () => {
   initAuth();
   printer.init();
   setInterval(() => getJson("/api/printer", printer.update), UPDATE_INTERVAL);
+  testLocale();
 };

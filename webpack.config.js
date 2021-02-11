@@ -88,6 +88,11 @@ module.exports = (env, args) => {
             },
           ],
         },
+        {
+          test: /\.js/,
+          loader: path.resolve(__dirname, "tools/loaders/locale_loader"),
+          // Directory settings are in locale_loader script
+        },
       ],
     },
 
