@@ -13,6 +13,11 @@ import Preview from "./preview.js";
 import preview from "../../views/preview.html";
 import telemetry from "../components/telemetry";
 
+const context = {
+  version: undefined,
+  printer: undefined,
+};
+
 let currentModule = Dashboard;
 const sl1 = {
   routes: [
@@ -21,14 +26,19 @@ const sl1 = {
     { path: "temperature", html: temperature, module: Temperature },
     { path: "preview", html: preview, module: Preview },
   ],
-  init: () => {
+  init: (version, printerData) => {
     console.log("Init Printer API");
+    context.version = version;
+    context.printer = printerData;
     initTemperatureGraph();
   },
   update: (status, data) => {
+    console.log("Update Printer API");
     if (status.ok) {
+      context.printer = data;
       telemetry(data);
       updateTemperatureGraph(data);
+      updateModule();
     } else {
       console.log("Error");
       console.log(data);
@@ -60,14 +70,26 @@ const updateTemperatureGraph = (data) => {
   ]);
   graph.update("temp-line-orange", [
     now,
-    data.temperature.tool0.actual, /* TODO: API collision - Original Prusa SL1 uses
-    Extruderfor UV LED temp - current API provides only tool0 */
+    data.temperature.tool0
+      .actual /* TODO: API collision - Original Prusa SL1 uses
+    Extruderfor UV LED temp - current API provides only tool0 */,
   ]);
   graph.update("temp-line-yellow", [
     now,
     data.temperature.bed.actual, // Original Prusa SL1 uses Bed for CPU temperature
   ]);
   graph.render();
+};
+
+const updateModule = () => {
+  if (currentModule && currentModule.update) currentModule.update(context);
+};
+
+export const updateTitles = () => {
+  document.getElementById("title-hostname").innerHTML =
+    context.version.hostname;
+  document.getElementById("title-status").innerText =
+    context.printer.state.text;
 };
 
 export default sl1;

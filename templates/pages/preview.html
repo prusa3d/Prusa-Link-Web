@@ -6,69 +6,47 @@
 #}
 
 <!-- prettier-ignore -->
-{% include "components/title.html" %}
+{% if env.printerFamily == "sla" %}
+  {%
+    set preview_props = [
+      { 'id': 'preview-times', 'icon': 'time_color.svg' },
+      { 'id': 'preview-layers','icon': 'quality_medium.svg' },
+      { 'id': 'preview-expos', 'icon': 'exposure_times_color.svg' },
+      { 'id': 'preview-dates', 'icon': 'calendar.svg' }
+    ]
+  %}
+{% else %}
+  {%
+      set preview_props = [
+        { 'id': 'preview-times', 'icon': 'time_color.svg' },
+        { 'id': 'preview-layers','icon': 'quality_medium.svg' },
+        { 'id': 'preview-expos', 'icon': 'exposure_times_color.svg' },
+        { 'id': 'preview-dates', 'icon': 'calendar.svg' }
+    ]
+  %}
+{% endif %}
+
+<div id="title">Project files</div>
 
 <div class="main-wrapper row">
   <div class="preview">
-    <p>Petrin_Tower_10H_50um_Prusa_Orange.sl1</p>
+    <p id="preview-name"></p>
     <div class="preview-wrapper">
       <div class="preview-img">
         <img src="../assets/thumbnail.png" />
       </div>
       <div class="preview-details">
-        <div class="preview-prop">
+        {% for prop in preview_props %}
+        <div class="preview-prop" id="{{ prop.id }}">
           <img
             class="icon"
-            src="{{ pre.countOrRenderAssets('time_color.svg') | safe }}"
+            src="{{ pre.countOrRenderAssets(prop.icon) | safe }}"
           />
-          <div>
-            <p>Print Time Estimate</p>
-            <p>NA</p>
-          </div>
-          <div>
-            <p>Estimated end</p>
-            <p>NA</p>
-          </div>
         </div>
-
-        <div class="preview-prop">
-          <img
-            class="icon"
-            src="{{ pre.countOrRenderAssets('quality_medium.svg') | safe }}"
-          />
-          <div>
-            <p>Layers</p>
-            <p>2869</p>
-          </div>
-          <div>
-            <p>Layer Height</p>
-            <p>0.05 mm</p>
-          </div>
-        </div>
-
-        <div class="preview-prop">
-          <img
-            class="icon"
-            src="{{ pre.countOrRenderAssets('exposure_times_color.svg') | safe }}"
-          />
-          <div>
-            <p>Exposure times</p>
-            <p>35/7.5/1 s</p>
-          </div>
-        </div>
-
-        <div class="preview-prop">
-          <img
-            class="icon"
-            src="{{ pre.countOrRenderAssets('calendar.svg') | safe }}"
-          />
-          <div>
-            <p>Last Modified</p>
-            <p>Mon Oct 05 2020 16:32:14</p>
-          </div>
-        </div>
+        {% endfor %}
       </div>
     </div>
+
     <div class="preview-buttons">
       <div class="preview-buttons-first">
         <button class="no" id="delete">
@@ -79,12 +57,14 @@
         </button>
       </div>
       <div class="buttons-wrapper">
+        {% if env.printerFamily == "sla" %}
         <button class="action">
           <img
             src="{{ pre.countOrRenderAssets('exposure_times_color.svg') | safe }}"
           />
           <p>change exposure times</p>
         </button>
+        {% endif %}
         <button class="yes">
           <img src="{{ pre.countOrRenderAssets('yes_color.svg') | safe }}" />
           <p>start print</p>

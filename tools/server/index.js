@@ -4,7 +4,7 @@
 
 const basicAuth = require("express-basic-auth");
 const bodyParser = require("body-parser");
-
+const { PrinterSL1, PrinterMK3 } = require("./mock");
 const devServer = (app, conf) => {
   /*
    * api key middleware
@@ -38,7 +38,11 @@ const devServer = (app, conf) => {
    */
   app.use(bodyParser.urlencoded({ extended: false }));
   app.use(bodyParser.json());
-  app.set("printerConf", require("./config")(conf));
+  if (conf.type == "sl1") {
+    app.set("printer", new PrinterSL1());
+  } else {
+    app.set("printer", new PrinterMK3());
+  }
 
   /*
    * Routes

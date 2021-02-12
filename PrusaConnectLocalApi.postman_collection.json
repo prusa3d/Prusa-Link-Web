@@ -1,0 +1,231 @@
+{
+  "info": {
+    "_postman_id": "48ed31bd-f11d-4821-a828-0f032fdf3308",
+    "name": "PrusaConnectLocalApi",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "files",
+      "item": [
+        {
+          "name": "/api/files",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/files?recursive=true",
+              "host": ["{{base_url}}"],
+              "path": ["files"],
+              "query": [
+                {
+                  "key": "recursive",
+                  "value": "true"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "/api/files/local",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/files/local",
+              "host": ["{{base_url}}"],
+              "path": ["files", "local"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "upload",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "path",
+                  "value": "examples",
+                  "type": "text"
+                },
+                {
+                  "key": "",
+                  "type": "file",
+                  "src": []
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/files/local",
+              "host": ["{{base_url}}"],
+              "path": ["files", "local"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "/api/files/local/{file}",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/files/local/Petrin_Tower_10H_50um_Prusa_Orange.sl1",
+              "host": ["{{base_url}}"],
+              "path": [
+                "files",
+                "local",
+                "Petrin_Tower_10H_50um_Prusa_Orange.sl1"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "/api/files/local/{file}",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/files/local/Petrin_Tower_10H_50um_Prusa_Orange.sl1",
+              "host": ["{{base_url}}"],
+              "path": [
+                "files",
+                "local",
+                "Petrin_Tower_10H_50um_Prusa_Orange.sl1"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "/api/files/local/{file} (select)",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"command\": \"select\",\n    \"print\": false\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/files/local/Petrin_Tower_10H_50um_Prusa_Orange.sl1",
+              "host": ["{{base_url}}"],
+              "path": [
+                "files",
+                "local",
+                "Petrin_Tower_10H_50um_Prusa_Orange.sl1"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "job",
+      "item": [
+        {
+          "name": "/api/job (progress)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/job",
+              "host": ["{{base_url}}"],
+              "path": ["job"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "/api/job (start print)",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"command\": \"start\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/job",
+              "host": ["{{base_url}}"],
+              "path": ["job"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "printer",
+      "item": [
+        {
+          "name": "/api/printer (telemetry)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/printer",
+              "host": ["{{base_url}}"],
+              "path": ["printer"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "version",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/version",
+          "host": ["{{base_url}}"],
+          "path": ["version"]
+        }
+      },
+      "response": []
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [""]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [""]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:9000/api"
+    },
+    {
+      "key": "auth-password",
+      "value": "developer"
+    }
+  ]
+}

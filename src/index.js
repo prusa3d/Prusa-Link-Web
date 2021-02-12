@@ -31,11 +31,14 @@ window.onload = () => {
     });
   });
 
-  initAuth().then(version => {
+  initAuth().then((version) => {
     getJson("/api/printer", (status, printerData) => {
       if (status.ok) {
         printer.init(version, printerData);
-        setInterval(() => getJson("/api/printer", printer.update), UPDATE_INTERVAL);
+        setInterval(
+          () => getJson("/api/printer", printer.update),
+          UPDATE_INTERVAL
+        );
       } else {
         console.error(`Cant get printer API! Error ${status.code}`);
         console.error(printerData);
@@ -44,5 +47,5 @@ window.onload = () => {
       navigate(window.location.hash || "#dashboard");
       testLocale();
     });
-  })
+  });
 };

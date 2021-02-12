@@ -10,6 +10,8 @@ import dashboard from "../../views/dashboard.html";
 import Projects from "./projects.js";
 import projects from "../../views/projects.html";
 import telemetry from "../components/telemetry";
+import Preview from "./preview.js";
+import preview from "../../views/preview.html";
 
 const context = {
   version: undefined,
@@ -22,6 +24,7 @@ const mk3 = {
     { path: "dashboard", html: dashboard, module: Dashboard },
     { path: "projects", html: projects, module: Projects },
     { path: "temperature", html: temperature, module: Temperature },
+    { path: "preview", html: preview, module: Preview },
   ],
   init: (version, printerData) => {
     console.log("Init Printer API");
@@ -66,15 +69,14 @@ const updateTemperatureGraph = (data) => {
 };
 
 const updateModule = () => {
-  if (currentModule && currentModule.update)
-    currentModule.update(context);
+  if (currentModule && currentModule.update) currentModule.update(context);
 };
 
 export const updateTitles = () => {
-  document.getElementById("title-hostname")
-    .innerHTML = context.version.hostname;
-  document.getElementById("title-status")
-    .innerText = context.printer.state.text;
-}
+  document.getElementById("title-hostname").innerHTML =
+    context.version.hostname;
+  document.getElementById("title-status").innerText =
+    context.printer.state.text;
+};
 
 export default mk3;

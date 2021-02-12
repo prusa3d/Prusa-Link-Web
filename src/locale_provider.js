@@ -19,8 +19,8 @@ console.log(texts);
 
 /** Set current language */
 export function setLanguage(language) {
-    lang = language;
-    langIndex = languages.indexOf(lang);
+  lang = language;
+  langIndex = languages.indexOf(lang);
 }
 
 /** Translate text into the current language. If you need to pass some parameters,
@@ -31,63 +31,69 @@ export function setLanguage(language) {
  * @param {{query?:any}|undefined} parameters Object that contains parameters.
  * query = where to insert the translation; Other parameters will be passed to given string
  * @return {string}
-*/
+ */
 export function translate(text, parameters) {
-    let word = null;
+  let word = null;
 
-    if (languages.includes(lang) && text in texts) {
-        word = texts[text][langIndex];
+  if (languages.includes(lang) && text in texts) {
+    word = texts[text][langIndex];
+  }
+
+  if (word === null) {
+    if (lang !== DEFAULT_LANGUAGE) {
+      console.warn(
+        `[${lang}] missing translation for "${text.split("\n").join("\\n")}"`
+      );
     }
+    word = text;
+  }
 
-    if (word === null) {
-        if (lang !== DEFAULT_LANGUAGE) {
-            console.warn(`[${lang}] missing translation for "${text.split("\n").join("\\n")}"`);
+  // Check for parameters, ignore query
+  const haveParams =
+    typeof parameters === "object" &&
+    (Object.keys(parameters).length > 1 || !("query" in parameters));
+
+  if (haveParams) {
+    let editedWord = word;
+    let regex = /%\((.*?)\)/g; // search for %()
+    let match;
+    while ((match = regex.exec(word))) {
+      // %(parameter) => parameter
+      let paramName = word.substr(match.index + 2, match[0].length - 3);
+      if (paramName === "query") continue;
+      if (paramName in parameters) {
+        let param = parameters[paramName];
+        // Checks for float digis suffix
+        const suffix = word.substr(regex.lastIndex, 3); // .1f
+        if (/.[0-9]f/g.test(suffix)) {
+          // .1f
+          let digis = parseInt(suffix[1]);
+          editedWord = editedWord
+            .split(match[0] + suffix)
+            .join(param.toFixed(digis));
+        } else {
+          editedWord = editedWord.replace(match[0], param);
         }
-        word = text;
+      } else {
+        console.warn(
+          `missing parameter [${paramName}] in translation for ${text}.`
+        );
+      }
     }
+    word = editedWord;
+  }
 
-    // Check for parameters, ignore query
-    const haveParams = typeof parameters === "object" && (
-        Object.keys(parameters).length > 1 || !("query" in parameters)
-    );
+  if (parameters && parameters["query"]) setText(parameters.query, word);
 
-    if (haveParams) {
-        let editedWord = word;
-        let regex = /%\((.*?)\)/g; // search for %()
-        let match;
-        while (match = regex.exec(word)) {
-            // %(parameter) => parameter
-            let paramName = word.substr(match.index + 2, match[0].length - 3);
-            if (paramName === "query") continue;
-            if (paramName in parameters) {
-                let param = parameters[paramName];
-                // Checks for float digis suffix
-                const suffix = word.substr(regex.lastIndex, 3); // .1f
-                if (/.[0-9]f/g.test(suffix)) { // .1f
-                    let digis = parseInt(suffix[1]);
-                    editedWord = editedWord.split(match[0] + suffix).join(param.toFixed(digis));
-                } else {
-                    editedWord = editedWord.replace(match[0], param);
-                }
-            } else {
-                console.warn(`missing parameter [${paramName}] in translation for ${text}.`);
-            }
-        }
-        word = editedWord;
-    }
-
-    if (parameters && parameters["query"])
-        setText(parameters.query, word);
-
-    return word;
+  return word;
 }
 
 function setText(query, text) {
-    let element = document.querySelector(query);
-    if (element) {
-        element.innerHTML = text;
-        console.log(element);
-    } else {
-        console.warn(`cannot find element with "${query}" query`);
-    }
+  let element = document.querySelector(query);
+  if (element) {
+    element.innerHTML = text;
+    console.log(element);
+  } else {
+    console.warn(`cannot find element with "${query}" query`);
+  }
 }

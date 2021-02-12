@@ -2,11 +2,19 @@
 // Copyright (C) 2021 Prusa Research a.s. - www.prusa3d.com
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-import * as projectsTree from "../components/projects";
+import { show, update as updateFiles } from "../components/projects";
+import { navigate } from "../../router.js";
 
 const load = () => {
-  console.log("Project Logic - sl1");
-  projectsTree.update();
+  show();
 };
 
-export default { load };
+const update = (context) => {
+  if (context.printer.state.flags.printing) {
+    navigate("#preview");
+  } else {
+    updateFiles();
+  }
+};
+
+export default { load, update };
