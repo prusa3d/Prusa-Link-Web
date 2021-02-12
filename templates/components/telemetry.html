@@ -7,8 +7,8 @@
 
 <!-- prettier-ignore -->
 {% if printer == "sl1" %}
-    {% 
-        set telemetry_dict = { 
+    {%
+        set telemetry_dict = {
             'tempCpu': {'text': 'CPU temperature', 'icon': 'temperature_color.svg', 'format': 'temp' },
             'tempUvLed': {'text': 'UV LED temperature', 'icon': 'temperature_color.svg', 'format': 'temp' },
             'tempAmbient': {'text': 'ambient temperature', 'icon': 'temperature_color.svg', 'format': 'temp' },
@@ -19,11 +19,13 @@
         }
     %}
 {% else %}
-    {% 
-        set telemetry_dict = { 
-            'temp_nozzle': {'text': 'Nozzle Temperature', 'icon': 'status_nozzle.svg', 'format': 'temp' },
-            'temp_bed': {'text': 'Heatbed', 'icon': 'status_heatbed.svg', 'format': 'temp' },
-            'material': {'text': 'Material', 'icon': 'status_filament.svg', 'format': 'mat' }
+    {%
+        set telemetry_dict = {
+            'temp-nozzle': {'text': 'Nozzle Temperature', 'icon': 'status_nozzle.svg', 'format': 'temp' },
+            'temp-bed': {'text': 'Heatbed', 'icon': 'status_heatbed.svg', 'format': 'temp' },
+            'print-speed': {'text': 'Printing Speed', 'icon': 'status_prnspeed.svg', 'format': 'print' },
+            'z-axis': {'text': 'Z - Height', 'icon': 'status_z_axis.svg' },
+            'material': {'text': 'Material', 'icon': 'status_filament.svg' }
         }
     %}
 {% endif %}

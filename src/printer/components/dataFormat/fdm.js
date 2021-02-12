@@ -8,12 +8,12 @@ const formatData = (format, value) => {
   if (value === undefined) {
     return "NA";
   }
-  if (format === "temp") {
-    return numberFormat(value) + " °C";
-  } else if (format === "fan") {
-    return numberFormat(value) + " RPM";
-  } else {
-    return value;
+
+  switch(format) {
+    case "temp": return numberFormat(value) + " °C";
+    case "fan": return numberFormat(value) + " RPM";
+    case "print": return numberFormat(value) + " mm/s";
+    default: return value;
   }
 };
 
