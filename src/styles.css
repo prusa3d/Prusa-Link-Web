@@ -378,7 +378,7 @@ nav .burger-icon.burger-open {
   stroke: transparent;
   stroke-width: 0;
 }
-.projects {
+#projects {
   width: 100%;
   margin-top: 16px;
 }

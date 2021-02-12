@@ -9,6 +9,7 @@ import dashboard from "../../views/dashboard.html";
 import temperature from "../../views/temperature.html";
 import telemetry from "../components/telemetry";
 
+let currentModule = Dashboard;
 const mini = {
   routes: [
     { path: "dashboard", html: dashboard, module: Dashboard },
@@ -18,42 +19,37 @@ const mini = {
     console.log("Init Printer API");
     initTemperatureGraph();
   },
-  update: () => {
+  update: (status, data) => {
     console.log("Update Printer API");
-    if (statusCode === 200) {
-      updateTemperatureGraph();
+    if (status.ok) {
       telemetry(data);
+      updateTemperatureGraph(data);
     } else {
       console.log("Error");
       console.log(data);
     }
   },
+  setModule: (module) => {
+    currentModule = module;
+  },
 };
 
 const initTemperatureGraph = () => {
-  const maxStep = 15;
   const maxTemp = 300;
-  const now = new Date().getTime();
 
   let map = new Map([
-    ["temp-line-blue", graph.generateRandomGraph(now, 0, maxTemp, maxStep)],
-    ["temp-line-orange", graph.generateRandomGraph(now, 0, maxTemp, maxStep)],
+    ["temp-line-blue", []],
+    ["temp-line-orange", []],
   ]);
 
-  graph.init(map, maxTemp, maxStep);
+  graph.init(map, maxTemp);
   graph.render();
 };
 
-const updateTemperatureGraph = () => {
+const updateTemperatureGraph = (data) => {
   const now = new Date().getTime();
-  graph.update("temp-line-blue", [
-    now,
-    graph.generateNextTemp("temp-line-blue"),
-  ]);
-  graph.update("temp-line-orange", [
-    now,
-    graph.generateNextTemp("temp-line-orange"),
-  ]);
+  graph.update("temp-line-blue", [now, data.temperature.bed.actual]);
+  graph.update("temp-line-orange", [now, data.temperature.chamber.actual]);
   graph.render();
 };
 

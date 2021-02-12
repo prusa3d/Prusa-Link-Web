@@ -6,13 +6,8 @@ import * as graph from "../components/temperature_graph";
 import { updateTitles } from './index';
 
 const load = () => {
-  console.log("Dashboard Logic - mk3");
-  updateTitles();
   graph.render();
+  updateTitles();
 };
 
-const update = (context) => {
-  console.log(context);
-}
-
-export default { load, update };
+export default { load };
