@@ -15,6 +15,7 @@ const navigate = (url) => {
     .parseFromString(route.html, "text/html")
     .body.childNodes.forEach((n) => root.appendChild(n));
   route.module.load();
+  printer.setModule(route.module);
   return true;
 };
 

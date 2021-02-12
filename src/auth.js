@@ -75,13 +75,14 @@ const setUpAuth = async () => {
   try {
     sessionStorage.setItem("auth", "pending");
     const options = getHeaders();
-    await fetch("/api/version", options)
+    return await fetch("/api/version", options)
       .then((response) => {
         validate_auth(response);
         return response.json();
       })
       .then((data) => {
         sessionStorage.setItem("auth", "true");
+        return data;
       })
       .catch((e) => {
         // change page error
@@ -98,9 +99,16 @@ const setUpAuth = async () => {
 };
 
 /**
+* Response status
+* @typedef Status
+* @property {number} code
+* @property {boolean} ok
+*/
+
+/**
  * Async function for fetch url then call the callback with the data
  * @param {string} url
- * @param {function} cb (data) => { }
+ * @param {(status: Status, data) => void} cb
  * @param {headers} opts
  */
 const getJson = async (url, cb, opts = {}) => {
@@ -111,7 +119,7 @@ const getJson = async (url, cb, opts = {}) => {
       await fetch(url, options)
         .then((response) => {
           validate_auth(response);
-          return response.json().then((data) => cb(response.status, data));
+          return response.json().then((data) => cb({code: response.status, ok: response.ok}, data));
         })
         .catch((e) => {
           throw e;
@@ -134,11 +142,11 @@ const initAuth = () => {
     modal("welcome", {
       closeCallback: () => {
         localStorage.setItem("showWelcome", true);
-        setUpAuth();
+        return setUpAuth();
       },
     });
   } else {
-    setUpAuth();
+    return setUpAuth();
   }
 };
 

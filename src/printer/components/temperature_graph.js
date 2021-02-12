@@ -9,24 +9,20 @@ const MIN_X = -10;
 /** Maximum temperature */
 let MAX_TEMP = 100;
 
-/** Maximum step when generating new values in graph */
-let MAX_STEP = 15; // For mockup
-
-/** Main map that holds all lines and temperatures. Key = line id, Value = Array with temperature data
+/** Main map that holds all lines and temperatures.Key = line id, Value = Array
+ * with temperature data
  * @type Map<String, Array<Array<number>>
  */
 let map = new Map();
 
 /**
- * @param {Map<String, Array<Array<number>>} mp Main map that holds all lines and temperatures. Key = line id, Value = Array with temperature data
+ * @param {Map<String, Array<Array<number>>} mp Main map that holds all lines and
+ * temperatures. Key = line id, Value = Array with temperature data
  * @param {number} maxTemp Maximum temperature
- * @param {number} maxStep Maximum step when generating new values in graph
  */
-export const init = (mp, maxTemp, maxStep) => {
+export const init = (mp, maxTemp) => {
   map = mp;
-
   MAX_TEMP = maxTemp;
-  MAX_STEP = maxStep;
 };
 
 function mount() {
@@ -89,62 +85,4 @@ export function updateTemperatures(temps, data) {
   // Remove old values - keep one value outside to have smoother end
   const now = new Date().getTime();
   while (temps.length > 1 && temps[1][0] < now - 180 * 1000) temps.shift();
-}
-
-// Mockup
-export function generateNextTemp(lineId) {
-  const temperatures = map.get(lineId);
-  const lastTemp = temperatures[temperatures.length - 1][1];
-  const nextTemp = generateRandomTemp(lastTemp, 0, MAX_TEMP, MAX_STEP);
-  return nextTemp;
-}
-
-// Mockup
-export function generateRandomTemp(last, min, max, maxStep) {
-  if (last === null || last === undefined) last = randomInt(min, max);
-
-  let val = randomInt(-maxStep, maxStep);
-
-  // Have higher chance to move toward center
-  if (last > (max - min) * 0.75) {
-    val = randomInt(1, 3) == 1 ? Math.abs(val) : -Math.abs(val);
-  } else if (last < (max - min) * 0.25) {
-    val = randomInt(1, 3) == 1 ? -Math.abs(val) : +Math.abs(val);
-  }
-
-  val += last;
-
-  // Clamp
-  if (val > max) return max;
-  if (val < min) return min;
-  return val;
-}
-
-// Mockup
-export function generateRandomGraph(now, minTemp, maxTemp, maxStep) {
-  let graph = [];
-
-  for (let i = 180 * 1000; i > 0; i -= process.env.UPDATE_INTERVAL) {
-    graph.push([
-      now - i,
-      generateRandomTemp(
-        graph.length === 0 ? undefined : graph[graph.length - 1][1],
-        minTemp,
-        maxTemp,
-        maxStep
-      ),
-    ]);
-  }
-
-  return graph;
-}
-
-// Used for mockup
-/**
- * Returns a random integer between min (inclusive) and max (inclusive).
- */
-function randomInt(min, max) {
-  min = Math.ceil(min);
-  max = Math.floor(max);
-  return Math.floor(Math.random() * (max - min + 1)) + min;
 }

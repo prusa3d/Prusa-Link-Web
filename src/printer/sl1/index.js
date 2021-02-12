@@ -11,9 +11,9 @@ import Projects from "./projects.js";
 import projects from "../../views/projects.html";
 import Preview from "./preview.js";
 import preview from "../../views/preview.html";
-import updateState from "./updateState.js";
 import telemetry from "../components/telemetry";
 
+let currentModule = Dashboard;
 const sl1 = {
   routes: [
     { path: "dashboard", html: dashboard, module: Dashboard },
@@ -25,46 +25,47 @@ const sl1 = {
     console.log("Init Printer API");
     initTemperatureGraph();
   },
-  update: (statusCode, data) => {
-    if (statusCode === 200) {
-      // updateState(data);
-      updateTemperatureGraph();
+  update: (status, data) => {
+    if (status.ok) {
       telemetry(data);
+      updateTemperatureGraph(data);
     } else {
       console.log("Error");
       console.log(data);
     }
   },
+  setModule: (module) => {
+    currentModule = module;
+  },
 };
 
 const initTemperatureGraph = () => {
-  const maxStep = 5;
   const maxTemp = 100;
-  const now = new Date().getTime();
 
   let map = new Map([
-    ["temp-line-blue", graph.generateRandomGraph(now, 0, maxTemp, maxStep)],
-    ["temp-line-orange", graph.generateRandomGraph(now, 0, maxTemp, maxStep)],
-    ["temp-line-yellow", graph.generateRandomGraph(now, 0, maxTemp, maxStep)],
+    ["temp-line-blue", []],
+    ["temp-line-orange", []],
+    ["temp-line-yellow", []],
   ]);
 
-  graph.init(map, maxTemp, maxStep);
+  graph.init(map, maxTemp);
   graph.render();
 };
 
-const updateTemperatureGraph = () => {
+const updateTemperatureGraph = (data) => {
   const now = new Date().getTime();
   graph.update("temp-line-blue", [
     now,
-    graph.generateNextTemp("temp-line-blue"),
+    data.temperature.chamber.actual, // Original Prusa SL1 uses Chamber for ambient temp
   ]);
   graph.update("temp-line-orange", [
     now,
-    graph.generateNextTemp("temp-line-orange"),
+    data.temperature.tool0.actual, /* TODO: API collision - Original Prusa SL1 uses
+    Extruderfor UV LED temp - current API provides only tool0 */
   ]);
   graph.update("temp-line-yellow", [
     now,
-    graph.generateNextTemp("temp-line-yellow"),
+    data.temperature.bed.actual, // Original Prusa SL1 uses Bed for CPU temperature
   ]);
   graph.render();
 };

@@ -1,0 +1,41 @@
+<template id="projects-file-template">
+  <div class="node line">
+    <img class="node-img" src="../assets/thumbnail.png" />
+    <div class="node-wrapper">
+      <p class="file-name">Template</p>
+
+      <div class="node-details">
+        <div class="details">
+          <img
+            class="icon"
+            src="{{ pre.countOrRenderAssets('time_color.svg') | safe }}"
+          />
+          <p>
+            Printing time
+            <span class="file-print-time"> 10 h 21 min </span>
+          </p>
+        </div>
+        <div class="details">
+          <img
+            class="icon"
+            src="{{ pre.countOrRenderAssets('status_filament.svg') | safe }}"
+          />
+          <p>
+            Material 
+            <span class="file-material">3DM-ABS </span>
+          </p>
+        </div>
+        <div class="details">
+          <img
+            class="icon"
+            src="{{ pre.countOrRenderAssets('quality_medium.svg') | safe }}"
+          />
+          <p>
+            Layer Height
+            <span class="file-layer-height"> 0.05 mm </span>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
