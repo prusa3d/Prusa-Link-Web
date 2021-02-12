@@ -2,16 +2,15 @@
 // Copyright (C) 2021 Prusa Research a.s. - www.prusa3d.com
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-import { getHeaders } from "../../auth.js";
-import { navigate } from "../../router.js";
+import { getJson } from "../../auth.js";
 
 const metadata = {
-  current_view: null,
-  container: null,
-  files: [],
+  current_path: [],
+  files: {},
   eTag: null,
   free: 0,
   total: 0,
+  pending: false,
 };
 
 const sortByType = (a, b) => {
@@ -23,152 +22,135 @@ const sortByType = (a, b) => {
   return 1;
 };
 
-const newContainer = () => {
-  const allFiles = {
-    display: "Main",
-    type: "folder",
-    children: [],
-  };
-  const local = {
-    path: ["local"],
-    display: "local",
-    type: "folder",
-    parent: allFiles,
-  };
-  const sdcard = {
-    path: ["sdcard"],
-    display: "usb",
-    type: "folder",
-    parent: allFiles,
-  };
-  allFiles.children.push(local);
-  allFiles.children.push(sdcard);
-  return { allFiles, local, sdcard };
+const updateData = (status, data) => {
+  if (status.code != 304) {
+    if (status.ok) {
+      metadata.files = {
+        local: data.files.filter((elm) => elm.origin == "local"),
+        usb: data.files.filter((elm) => elm.origin == "sdcard"),
+      };
+      metadata.free = data.free;
+      metadata.total = data.total;
+      metadata.eTag = status.eTag;
+    } else {
+      console.error(`Cant get printer API! Error ${status.code}`);
+      console.error(data);
+    }
+  }
 };
 
-const parse = (parent, node) => {
-  let newNode = {};
-  // parent["*" + node.name] = newNode;
-  newNode.path = [...parent.path, node.name];
-  newNode.display = node.display;
-  newNode.parent = parent;
-  parent.children = parent.children || [];
-  parent.children.push(newNode);
-  if (node.type == "folder") {
-    newNode.type = "folder";
-    for (let child of node.children.sort(sortByType)) {
-      parse(newNode, child);
+export function update() {
+  return getJson("/api/files?recursive=true", updateData, {
+    headers: { "If-None-Match": metadata.eTag },
+  }).then(() => {
+    if (window.location.hash == "#projects") {
+      show();
     }
-  } else {
-    newNode.type = "file";
-    for (let property of ["gcodeAnalysis", "refs"]) {
-      if (node[property]) {
-        newNode = Object.assign(newNode, node[property]);
+  });
+}
+
+export function show() {
+  const projects = document.getElementById("projects");
+  while (projects.firstChild) {
+    projects.removeChild(projects.firstChild);
+  }
+
+  if (metadata.pending) {
+    const templatePending = document.getElementById("pending").content;
+    const elm = document.importNode(templatePending, true);
+    projects.appendChild(elm);
+    return;
+  }
+
+  if (metadata.current_path.length > 0) {
+    let view = metadata.files[metadata.current_path[0]];
+    for (let i = 1; i < metadata.current_path.length; i++) {
+      let path = metadata.current_path[i];
+      view = view.find((elm) => elm.name == path).children;
+    }
+
+    document.getElementById("title").innerHTML = metadata.current_path.join(
+      " > "
+    );
+    projects.appendChild(createUp());
+    for (let node of view.sort(sortByType)) {
+      if (node.type == "folder") {
+        projects.appendChild(createFolder(node.display));
+      } else {
+        projects.appendChild(createFile(node));
       }
     }
+  } else {
+    for (let name in metadata.files) {
+      document.getElementById("title").innerHTML = "Project files";
+      projects.appendChild(createFolder(name));
+    }
+  }
+}
+
+function createElement(templateName, name, cb) {
+  const templateFolder = document.getElementById(templateName).content;
+  const elm = document.importNode(templateFolder, true);
+  elm.querySelector(".node").addEventListener("click", (e) => {
+    cb(e);
+    e.preventDefault();
+  });
+  elm.querySelector("p").appendChild(document.createTextNode(name));
+  return elm;
+}
+
+function createFolder(name) {
+  return createElement("node-folder", name, () => {
+    metadata.current_path.push(name);
+    show();
+  });
+}
+
+function createUp() {
+  return createElement("node-up", "Main", () => {
+    metadata.current_path.pop();
+    show();
+  });
+}
+
+const selectError = (status, data) => {
+  if (!status.ok) {
+    console.error(`Cant get printer API! Error ${status.code}`);
+    console.error(data);
   }
 };
 
-export async function update() {
-  try {
-    const options = Object.assign(
-      { "If-None-Match": metadata.eTag },
-      getHeaders()
-    );
-    await fetch("/api/files?recursive=true", options)
-      .then((response) => {
-        metadata.eTag = response.headers.get("etag");
-        return response.json();
-      })
-      .then((data) => {
-        const context = newContainer();
-        for (let node of data.files.sort(sortByType)) {
-          parse(context[node.origin], node);
-        }
-        metadata.container = context.allFiles;
-        show();
-      })
-      .catch((e) => {
-        throw e;
-      });
-  } catch (err) {
-    // TODO ERROR HANDLING
-    console.log(err);
+const onClickFile = (node) => {
+  if (!metadata.pending) {
+    metadata.pending = true;
+    show();
+    getJson(node.refs.resource, selectError, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ command: "select" }),
+    }).finally(() => {
+      metadata.pending = false;
+    });
   }
-}
-function showFile(elm, node) {
-  elm.querySelector(".node").addEventListener("click", (e) => {
-    metadata.current_view = node;
-    navigate("#preview");
-    e.preventDefault();
-  });
-  elm.querySelector("p").appendChild(document.createTextNode(node.display));
+};
+
+function createFile(node) {
+  const elm = createElement("node-project", node.display, (e) =>
+    onClickFile(node)
+  );
   const nodeDetails = elm.querySelector(".node-details");
-  for (let property of ["printTime", "material", "layerHeight"]) {
+  const properties = node["gcodeAnalysis"];
+  for (let property of ["estimatedPrintTime", "material", "layerHeight"]) {
     let element = elm.getElementById(property);
-    if (node[property] != undefined) {
+    if (properties[property]) {
       let span = document.createElement("span");
-      span.innerHTML = node[property];
+      span.innerHTML = properties[property];
       element.querySelector("p").appendChild(span);
     } else {
       nodeDetails.removeChild(element);
     }
   }
-}
-
-function showFolder(elm, node) {
-  elm.querySelector(".node").addEventListener("click", (e) => {
-    metadata.current_view = node;
-    show();
-    e.preventDefault();
-  });
-  elm.querySelector("p").appendChild(document.createTextNode(node.display));
-}
-
-function showUp(elm, node) {
-  elm.querySelector(".node").addEventListener("click", (e) => {
-    metadata.current_view = node;
-    show();
-    e.preventDefault();
-  });
-  elm.querySelector("p").appendChild(document.createTextNode(node.display));
-}
-
-export function show() {
-  const view = metadata.current_view || metadata.container;
-  const projects = document.querySelector(".projects");
-
-  while (projects.firstChild) {
-    projects.removeChild(projects.firstChild);
-  }
-
-  if (view.type == "folder") {
-    const templateFolder = document.getElementById("node-folder").content;
-    const templateProject = document.getElementById("node-project").content;
-
-    if (view.parent) {
-      const templateUp = document.getElementById("node-up").content;
-      const elm = document.importNode(templateUp, true);
-      showUp(elm, view.parent);
-      projects.appendChild(elm);
-    }
-    for (let node of view.children) {
-      if (node.type == "folder") {
-        const elm = document.importNode(templateFolder, true);
-        showFolder(elm, node, view);
-        projects.appendChild(elm);
-      } else {
-        const elm = document.importNode(templateProject, true);
-        showFile(elm, node);
-        projects.appendChild(elm);
-      }
-    }
-  } else {
-    navigate("#preview");
-  }
-}
-
-export function back() {
-  metadata.current_view = metadata.current_view.parent;
-  navigate("#projects");
+  return elm;
 }

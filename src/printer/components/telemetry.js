@@ -17,23 +17,29 @@ const slaTelemetry = (data) => {
   document.querySelectorAll(".tel-prop .value p[id]").forEach((elm) => {
     elm.innerHTML = formatData(elm.dataset.format, rawData[elm.id]);
   });
-}
+};
 
 const fdmTelemetry = (data) => {
   function getValue(id, data) {
     switch (id) {
-      case "temp-nozzle": return data.temperature.chamber.actual;
-      case "temp-bed": return data.temperature.bed.actual;
-      case "print-speed": return undefined;
-      case "z-height": return undefined;
-      case "material": return data.telemetry.material;
-      default: return undefined;
+      case "temp-nozzle":
+        return data.temperature.chamber.actual;
+      case "temp-bed":
+        return data.temperature.bed.actual;
+      case "print-speed":
+        return undefined;
+      case "z-height":
+        return undefined;
+      case "material":
+        return data.telemetry.material;
+      default:
+        return undefined;
     }
-  };
+  }
 
   document.querySelectorAll(".tel-prop .value p[id]").forEach((elm) => {
     elm.innerHTML = formatData(elm.dataset.format, getValue(elm.id, data));
   });
-}
+};
 
 export default telemetry;

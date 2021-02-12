@@ -45,9 +45,7 @@ const getHeaders = () => {
   if (authType == "ApiKey") {
     let apiKey = sessionStorage.getItem("apiKey");
     if (apiKey) {
-      return {
-        headers: { "X-Api-Key": apiKey, Accept: "application/json" },
-      };
+      return { "X-Api-Key": apiKey, Accept: "application/json" };
     }
     throw Error("Missing ApiKey");
   }
@@ -74,8 +72,7 @@ const validate_auth = (response) => {
 const setUpAuth = async () => {
   try {
     sessionStorage.setItem("auth", "pending");
-    const options = getHeaders();
-    return await fetch("/api/version", options)
+    return await fetch("/api/version", { headers: getHeaders() })
       .then((response) => {
         validate_auth(response);
         return response.json();
@@ -99,11 +96,11 @@ const setUpAuth = async () => {
 };
 
 /**
-* Response status
-* @typedef Status
-* @property {number} code
-* @property {boolean} ok
-*/
+ * Response status
+ * @typedef Status
+ * @property {number} code
+ * @property {boolean} ok
+ */
 
 /**
  * Async function for fetch url then call the callback with the data
@@ -115,11 +112,20 @@ const getJson = async (url, cb, opts = {}) => {
   let auth = sessionStorage.getItem("auth");
   if (auth == "true") {
     try {
-      const options = Object.assign(opts, getHeaders());
-      await fetch(url, options)
+      opts.headers = { ...opts.headers, ...getHeaders() };
+      await fetch(url, opts)
         .then((response) => {
           validate_auth(response);
-          return response.json().then((data) => cb({code: response.status, ok: response.ok}, data));
+          const res = {
+            code: response.status,
+            ok: response.ok,
+            eTag: response.headers.get("etag"),
+          };
+          if (response.status == 204 || response.status == 304) {
+            cb(res, null);
+          } else {
+            return response.json().then((data) => cb(res, data));
+          }
         })
         .catch((e) => {
           throw e;

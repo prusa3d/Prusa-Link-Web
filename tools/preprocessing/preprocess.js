@@ -9,8 +9,8 @@ const nunjucks = require("nunjucks");
 const svgToMiniDataURI = require("mini-svg-data-uri");
 
 class Preprocess {
-  constructor({ printer, templates_dir, output_dir, assets_dir }) {
-    this.printer = printer;
+  constructor({ printer_conf, templates_dir, output_dir, assets_dir }) {
+    this.printer_conf = printer_conf;
     this.templates_dir = templates_dir;
     this.assets_dir = assets_dir;
     this.output_dir = output_dir;
@@ -40,7 +40,7 @@ class Preprocess {
     const path_to_printer_templates = path.join(
       this.templates_dir,
       "printer",
-      this.printer
+      this.printer_conf.type
     );
     fs.readdirSync(path_to_printer_templates).forEach((filename) => {
       paths_to_parse.push({
@@ -96,7 +96,7 @@ class Preprocess {
       this.render_again = false;
       let data = nunjucks.render(metadata.template_path, {
         pre: this,
-        printer: this.printer,
+        env: this.printer_conf,
       });
       metadata.data = data;
       metadata.render_again = this.render_again;

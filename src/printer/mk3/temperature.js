@@ -3,11 +3,9 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import * as graph from "../components/temperature_graph";
-import { updateTitles } from './index';
 
 const load = () => {
   graph.render();
-  updateTitles();
 };
 
 export default { load };

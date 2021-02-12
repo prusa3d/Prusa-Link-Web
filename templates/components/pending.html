@@ -5,6 +5,11 @@
     # SPDX-License-Identifier: GPL-3.0-or-later
 #}
 
-<div id="title">Temperatures</div>
-
-<div class="main-wrapper row" id="graph"></div>
+<template id="pending">
+  <div class="pending">
+    <img
+      class="icon"
+      src="{{ pre.countOrRenderAssets('dual-ring-1s-200px.svg') | safe }}"
+    />
+  </div>
+</template>

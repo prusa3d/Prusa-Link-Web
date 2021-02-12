@@ -4,7 +4,7 @@
 
 import { getJson } from "../../auth";
 import formatData from "../components/dataFormat";
-import { loadProperty, handleError } from "../components/miscellaneous.js";
+import { loadProperty, handleError } from "../components/miscellaneous.js.js";
 import { navigate } from "../../router.js";
 
 const load = () => {
@@ -19,12 +19,6 @@ const load = () => {
       loadProperty("preview-times", "Print Time Estimate",formatData("time", data.job.estimatedPrintTime));
       // prettier-ignore
       loadProperty("preview-times", "Estimated end", formatData("dateOffset", { remaining_time: data.job.estimatedPrintTime, offset: "+0100",})  );
-      // prettier-ignore
-      loadProperty("preview-layers", "Layer", formatData("int", file.layers));
-      // prettier-ignore
-      loadProperty("preview-layers", "Layer Height", formatData("layer", file.layerHeight));
-      // prettier-ignore
-      loadProperty("preview-expos", "Exposure times", formatData("expo", file));
       // prettier-ignore
       loadProperty("preview-dates", "Last Modified",  formatData("date", file.date));
 
