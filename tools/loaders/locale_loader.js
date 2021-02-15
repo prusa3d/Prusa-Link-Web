@@ -7,19 +7,15 @@ const source_dir = path.resolve(__dirname, "../../src/locales/source");
 
 // init
 removeFile(output_file);
-const languages = fs.readdirSync(source_dir).map(fileName => fileName.replace('.json', '')); // => [ 'cs_CZ', 'de_DE', 'it_IT' ]
+const languages = fs.readdirSync(source_dir).map(fileName => fileName.replace('.json', '')); // => [ 'cs', 'de', 'it' ]
 
 /** @param {String} source js file content */
 module.exports = function (source) {
 
     let words = [];
 
-    if (/(import(.*?)translateById(.*?)from(.*?)locale_provider)/g.test(source)) {
-        words = getWordsFromTranslateById(source);
-    }
-
     if (/(import(.*?)translate(.*?)from(.*?)locale_provider)/g.test(source)) {
-        words = words.concat(getWordsFromTranslate(source));
+        words = getWords(source);
     }
 
     if (words.length > 0) {
@@ -58,27 +54,9 @@ module.exports = function (source) {
     return source;
 }
 
-function getWordsFromTranslateById(source) {
-    let regex = /translateById\(\s*(.*?)\)/g;
-    let result = source.match(regex);
-    let words = [];
-
-    for (let match of result) {
-        let word = match.replace('translateById', '').trim(); // remove translateById word
-        word = word.substr(1, word.length - 2).trim(); // remove ()
-        word = word.split(',')[1].trim(); // get second parameter
-        word = word.substr(1, word.length - 2); // remove quotes
-        word = word.replace(/(\\")/g, '"'); // replace /" with "
-        word = word.replace(/(\\n)/g, '\n'); // fix problems with \n characters
-        words.push(word);
-    }
-
-    return words;
-}
-
-function getWordsFromTranslate(source) {
+function getWords(source) {
     // search for: translate('Some word') | translate("Some word") | translate(`Some word`) | translate( 'Some_word ', {param: 32}) | ...
-    let regex = /translate\(\s*(?:'|"|`)(.*?)(?:'|"|`)(?:,|\s*\))/g
+    let regex = /translate\(\s*(?:'|"|`)\s*(.*?)\s*(?:'|"|`)\s*(?:,|\))/g
     let result = source.match(regex);
     let words = [];
 
