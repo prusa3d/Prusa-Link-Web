@@ -294,7 +294,14 @@ export class Tree extends Component<TreeProps, S> {
         headers: {
           "If-None-Match": this.state.eTag
         }
-      }
+      },
+      except: (e) => {
+        if (e.name == "304" && !this.state.current_view) {
+          this.setState({
+            ...this.createView(null, this.state.container),
+          });
+        }
+      },
     });
   };
 
