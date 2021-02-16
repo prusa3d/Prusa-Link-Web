@@ -20,12 +20,14 @@ module.exports = (env, args) => {
     "http-apikey": env["http-apikey"],
   };
 
+  printer_conf["printerFamily"] = printer_conf.type == "sl1" ? "sla" : "fdm";
+
   console.log(`===== ${printer_conf.title} =====`);
   console.log(printer_conf);
   console.log(`=============================`);
 
   const preprocessing = new PreprocessingPlugin({
-    printer: printer_conf.type,
+    printer_conf: printer_conf,
     templates_dir: path.resolve(__dirname, "templates"),
     assets_dir: path.resolve(__dirname, "src/assets"),
     output_dir: path.resolve(__dirname, "src/views"),
@@ -46,6 +48,9 @@ module.exports = (env, args) => {
       new webpack.DefinePlugin({
         "process.env.MODE": JSON.stringify(printer_conf.mode),
         "process.env.TYPE": JSON.stringify(printer_conf.type),
+        "process.env.PRINTER_FAMILY": JSON.stringify(
+          printer_conf.printerFamily
+        ),
         "process.env.APIKEY": JSON.stringify(printer_conf.apiKey),
         "process.env.UPDATE_INTERVAL": JSON.stringify(
           printer_conf.updateInterval

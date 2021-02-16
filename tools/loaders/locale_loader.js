@@ -1,82 +1,88 @@
 const fs = require("fs");
 const path = require("path");
-const colors = require('colors');
+const colors = require("colors");
 
 const output_file = path.resolve(__dirname, "../../src/locales/locales.json");
 const source_dir = path.resolve(__dirname, "../../src/locales/source");
 
 // init
 removeFile(output_file);
-const languages = fs.readdirSync(source_dir).map(fileName => fileName.replace('.json', '')); // => [ 'cs', 'de', 'it' ]
+const languages = fs
+  .readdirSync(source_dir)
+  .map((fileName) => fileName.replace(".json", "")); // => [ 'cs', 'de', 'it' ]
 
 /** @param {String} source js file content */
 module.exports = function (source) {
+  let words = [];
 
-    let words = [];
+  if (/(import(.*?)translate(.*?)from(.*?)locale_provider)/g.test(source)) {
+    words = getWords(source);
+  }
 
-    if (/(import(.*?)translate(.*?)from(.*?)locale_provider)/g.test(source)) {
-        words = getWords(source);
+  if (words.length > 0) {
+    let content = new Object();
+
+    if (fs.existsSync(output_file)) {
+      content = JSON.parse(fs.readFileSync(output_file).toString());
+    } else {
+      content = {
+        langs: languages,
+        texts: {},
+      };
     }
 
-    if (words.length > 0) {
-        let content = new Object();
+    words.forEach((word) => {
+      if (!(word in content["texts"])) {
+        content["texts"][word] = [];
 
-        if (fs.existsSync(output_file)) {
-            content = JSON.parse(fs.readFileSync(output_file).toString());
-        } else {
-            content = {
-                langs: languages,
-                texts: {},
-            }
-        }
+        languages.forEach((lang) => {
+          const file = require(path.resolve(source_dir, `${lang}.json`));
 
-        words.forEach(word => {
-            if (!(word in content['texts'])) {
-                content['texts'][word] = [];
+          if (word in file) {
+            content["texts"][word].push(file[word]);
+          } else {
+            content["texts"][word].push(null);
+            console.log(
+              colors.red.bold(
+                `[${lang}] missing translation for "${word
+                  .split("\n")
+                  .join("\\n")}"`
+              )
+            );
+          }
+        });
+      }
+    });
 
-                languages.forEach(lang => {
-                    const file = require(path.resolve(source_dir, `${lang}.json`));
+    // json is overriden
+    writeJson(output_file, JSON.stringify(content));
+  }
 
-                    if (word in file) {
-                        content['texts'][word].push(file[word]);
-                    } else {
-                        content['texts'][word].push(null);
-                        console.log(colors.red.bold(`[${lang}] missing translation for "${word.split('\n').join('\\n')}"`));
-                    }
-                });
-            }
-        })
-
-        // json is overriden
-        writeJson(output_file, JSON.stringify(content));
-    }
-
-    return source;
-}
+  return source;
+};
 
 function getWords(source) {
-    // search for: translate('Some word') | translate("Some word") | translate(`Some word`) | translate( 'Some_word ', {param: 32}) | ...
-    let regex = /translate\(\s*(?:'|"|`)\s*(.*?)\s*(?:'|"|`)\s*(?:,|\))/g
-    let result = source.match(regex);
-    let words = [];
+  // search for: translate('Some word') | translate("Some word") | translate(`Some word`) | translate( 'Some_word ', {param: 32}) | ...
+  let regex = /translate\(\s*(?:'|"|`)\s*(.*?)\s*(?:'|"|`)\s*(?:,|\))/g;
+  let result = source.match(regex);
+  let words = [];
 
-    for (let match of result) {
-        let word = match.replace('translate', '').trim(); // remove translate word
-        word = word.substr(1, word.length - 2).trim(); // remove ()
-        word = word.substr(1, word.length - 2); // remove quotes
-        word = word.replace(/(\\")/g, '"'); // replace /" with "
-        word = word.replace(/(\\n)/g, '\n'); // fix problems with \n characters
-        words.push(word);
-    }
+  for (let match of result) {
+    let word = match.replace("translate", "").trim(); // remove translate word
+    word = word.substr(1, word.length - 2).trim(); // remove ()
+    word = word.substr(1, word.length - 2); // remove quotes
+    word = word.replace(/(\\")/g, '"'); // replace /" with "
+    word = word.replace(/(\\n)/g, "\n"); // fix problems with \n characters
+    words.push(word);
+  }
 
-    return words;
+  return words;
 }
 
 function writeJson(path, data) {
-    fs.writeFileSync(path, data);
+  fs.writeFileSync(path, data);
 }
 
 function removeFile(path) {
-    if (fs.existsSync(path))
-        fs.unlinkSync(path);
+  if (fs.existsSync(path)) fs.unlinkSync(path);
 }

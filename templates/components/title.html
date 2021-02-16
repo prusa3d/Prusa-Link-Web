@@ -5,14 +5,20 @@
   # SPDX-License-Identifier: GPL-3.0-or-later
   #}
 
-{% if printer == "mini" %}
-<div class="title">
-  <p class="title-status">Printer status: <span id="title-status">Idle</span></p>
+{% if env.type == "mini" %}
+<div id="title">
+  <p class="title-status">
+    Printer status: <span id="title-status">Idle</span>
+  </p>
   <p class="title-hostname">Original Prusa Mini</p>
 </div>
 {% else %}
-<div class="title">
-  <p class="title-status">Printer status: <span id="title-status">Idle</span></p>
-  <p class="title-hostname">Hostname: <span id="title-hostname">prusa64-sl1</span></p>
+<div id="title">
+  <p class="title-status">
+    Printer status: <span id="title-status">Idle</span>
+  </p>
+  <p class="title-hostname">
+    Hostname: <span id="title-hostname">prusa64-sl1</span>
+  </p>
 </div>
 {% endif %}

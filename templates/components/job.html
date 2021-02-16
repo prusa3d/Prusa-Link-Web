@@ -6,7 +6,7 @@
 #}
 
 <!-- prettier-ignore -->
-{% if printer == "sl1" %}
+{% if env.printerFamily == "sla" %}
   {%
     set job_dict = {
         'remaining-time': {'text': 'remaining time', value: 'NA' },
@@ -38,7 +38,7 @@
 {% endif %}
 
 <!-- prettier-ignore -->
-{% if printer == "mini" %}
+{% if env.type == "mini" %}
   {% set to_hidden = "" %}
 {% else %}
   {% set to_hidden = "hidden" %}

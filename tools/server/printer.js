@@ -21,70 +21,27 @@ router.get("/", async (req, res, next) => {
     }
   }
 
-  printerConf = req.app.get("printerConf");
+  if (!(include.temperature || include.state || include.sd)) {
+    res.status(400).json({ error: "Bad request" });
+    return;
+  }
 
+  const data = req.app.get("printer").onUpdate();
   const result = {};
+  if (data.telemetry) {
+    result["telemetry"] = data.telemetry;
+  }
+
   if (include.temperature) {
-    if (printerConf.type == "sl1") {
-      result["temperature"] = {
-        tool0: {
-          // Original Prusa SL1 uses for UV LED temp
-          actual: Math.random() * 100,
-        },
-        bed: {
-          // Original Prusa SL1 uses for CPU temperature
-          actual: Math.random() * 50,
-        },
-        chamber: {
-          // Original Prusa SL1 uses for ambient temp
-          actual: Math.random() * 45,
-        },
-      };
-
-      result["telemetry"] = {
-        tempCpu: Math.random() * 300,
-        tempUvLed: Math.random() * 200,
-        tempAmbient: Math.random() * 150,
-        fanUvLed: Math.random() * 1000,
-        fanBlower: Math.random() * 1000,
-        fanRear: Math.random() * 1000,
-        coverClosed: true,
-      };
-    } else {
-      const temp1 = Math.random() * 200;
-      const temp2 = Math.random() * 200;
-      result["temperature"] = {
-        tool0: {
-          actual: temp1, // Current temperature
-          target: 220.0, // Target temperature, may be null if no target temperature is set.
-          offset: 0, // Currently configured temperature offset to apply, will be left out for historic temperature information.
-        },
-        bed: {
-          actual: temp2,
-          target: 70.0,
-          offset: 5,
-        },
-        chamber: {
-          actual: Math.random() * 150,
-          target: null,
-          offset: 0,
-        },
-      };
-
-      result["telemetry"] = {
-        temp_nozzle: temp1,
-        temp_bed: temp2,
-        material: "PETG Black",
-      };
-    }
+    result["temperature"] = data.temperature;
   }
 
   if (include.sd) {
-    result["sd"] = printerConf.sd;
+    result["sd"] = data.sd;
   }
 
   if (include.state) {
-    result["state"] = printerConf.state;
+    result["state"] = data.state;
   }
 
   res.json(result);
@@ -94,7 +51,7 @@ router.get("/", async (req, res, next) => {
  * Retrieves the current state of the printer’s SD card.
  */
 router.get("/sd", async (req, res, next) => {
-  res.json(req.app.get("printerConf").sd);
+  res.json(req.app.get("printer").getSD());
 });
 
 /**
@@ -118,13 +75,7 @@ router.get("/sd", async (req, res, next) => {
  *    sends Content-Location header with URL to <PCL IP>/error (in the future it may send URL to hlep.prusa3d.com)
  */
 router.get("/error", async (req, res, next) => {
-  const options = {};
-
-  console.log(
-    `${req.app.get("printerConf").type} - ${req.method} ${req.originalUrl} - ${
-      req.params
-    } => 501`
-  );
+  console.log(`- ${req.method} ${req.originalUrl} - ${req.params} => 501`);
   res.status(501).json({ error: "Not Implemented" });
 });
 

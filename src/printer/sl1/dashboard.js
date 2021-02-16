@@ -3,10 +3,16 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import temperature from "./temperature";
+import { updateTitles } from "./index";
 
 const load = () => {
   console.log("Dashboard Logic - sl1");
   temperature.load();
+  updateTitles();
 };
 
-export default { load };
+const update = (context) => {
+  console.log(context);
+};
+
+export default { load, update };

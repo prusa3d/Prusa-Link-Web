@@ -6,7 +6,7 @@
 #}
 
 <!-- prettier-ignore -->
-{% if printer == "mini" %}
+{% if env.type == "mini" %}
     {% 
         set menu_dict = { 
             'link-home': {'text': 'Dashboard', path: '#dashboard' },

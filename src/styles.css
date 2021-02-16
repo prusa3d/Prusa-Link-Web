@@ -73,7 +73,7 @@ button::-moz-focus-inner {
 .component > p,
 .header,
 .line,
-.title {
+#title {
   border-bottom: 1px solid #707070;
   border-radius: 0;
 }
@@ -233,7 +233,7 @@ nav .burger-icon.burger-open {
   flex-grow: 1;
   padding: 0.75rem;
 }
-.title {
+#title {
   display: flex;
   justify-content: space-between;
   width: 100%;
@@ -735,6 +735,181 @@ progress::-moz-progress-bar {
   float: right;
 }
 
+/* ===================================== TOAST ======================================= */
+
+#prusa-toast {
+  line-height: 1.5;
+  display: flex;
+  flex-direction: column;
+  z-index: 1;
+  position: absolute;
+  right: 0;
+  bottom: 0;
+}
+
+$toast-delay: 10s;
+$text-white: #ffffff;
+$color-grey: #707070;
+$toast-default-bg: $color-grey;
+$toast-default-color: $text-white;
+$toast-default-title-bg: #4a4a4a;
+$toast-default-title-color: $text-white;
+$toast-warning-bg: #fffbeb;
+$toast-warning-color: #947600;
+$toast-warning-title-bg: #ffdd57;
+$toast-warning-title-color: rgba(0, 0, 0, 0.7);
+$toast-error-bg: #feecf0;
+$toast-error-color: #cc0f35;
+$toast-error-title-bg: #f14668;
+$toast-error-title-color: $text-white;
+$toast-success-bg: #effaf3;
+$toast-success-color: #257942;
+$toast-success-title-bg: #48c774;
+$toast-success-title-color: $text-white;
+#prusa-toast > article {
+  display: block;
+  text-align: center;
+  margin: 7px;
+  -webkit-animation: slideInUp 0.5s, zoomOut 0.5s $toast-delay;
+  animation: slideInUp 0.5s, zoomOut 0.5s $toast-delay;
+}
+
+.toast-header {
+  text-align: center;
+  align-items: center;
+  border-radius: 10px 10px 0 0;
+  display: flex;
+  justify-content: space-between;
+  line-height: 1.25;
+  padding: 0.75em 1em;
+  position: relative;
+  color: $toast-default-title-color;
+  background-color: $toast-default-title-bg;
+}
+
+.toast-body {
+  word-break: break-all;
+  padding: 1.25em 1.5em;
+  border-radius: 0 0 10px 10px;
+  color: defines.$toast-default-color;
+  background-color: $toast-default-bg;
+}
+
+#prusa-toast > article.warning > div.toast-header {
+  color: $toast-warning-title-color;
+  background-color: $toast-warning-title-bg;
+}
+
+#prusa-toast > article.warning > div.toast-body {
+  color: $toast-warning-color;
+  background-color: $toast-warning-bg;
+}
+
+#prusa-toast > article.success > div.toast-header {
+  color: $toast-success-title-color;
+  background-color: $toast-success-title-bg;
+}
+
+#prusa-toast > article.success > div.toast-body {
+  color: $toast-success-color;
+  background-color: $toast-success-bg;
+}
+
+#prusa-toast > article.error > div.toast-header {
+  color: $toast-error-title-color;
+  background-color: $toast-error-title-bg;
+}
+
+#prusa-toast > article.error > div.toast-body {
+  color: $toast-error-color;
+  background-color: $toast-error-bg;
+}
+
+@-webkit-keyframes zoomOut {
+  from {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0;
+    -webkit-transform: scale3d(0.3, 0.3, 0.3);
+    transform: scale3d(0.3, 0.3, 0.3);
+  }
+
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes zoomOut {
+  from {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0;
+    -webkit-transform: scale3d(0.3, 0.3, 0.3);
+    transform: scale3d(0.3, 0.3, 0.3);
+  }
+
+  to {
+    opacity: 0;
+  }
+}
+
+@-webkit-keyframes slideInUp {
+  from {
+    -webkit-transform: translate3d(0, 100%, 0);
+    transform: translate3d(0, 100%, 0);
+    visibility: visible;
+  }
+
+  to {
+    -webkit-transform: translate3d(0, 0, 0);
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes slideInUp {
+  from {
+    -webkit-transform: translate3d(0, 100%, 0);
+    transform: translate3d(0, 100%, 0);
+    visibility: visible;
+  }
+
+  to {
+    -webkit-transform: translate3d(0, 0, 0);
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+/* ===================================== SELECT LANG ======================================= */
+
+.lang {
+  border: none;
+  outline: none;
+  background-color: hsl(0, 0%, 4%);
+  color: $text-white;
+}
+
+.lang:focus {
+  border: none;
+  outline: none;
+}
+
+/* ===================================== PENDING ======================================= */
+
+.pending {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+.pending > img {
+  width: 60px;
+  height: auto;
+}
+
 @media only screen and (min-width: 992px) {
   .header {
     padding-bottom: 0;
@@ -777,7 +952,7 @@ progress::-moz-progress-bar {
     padding: 0 8px 0 0;
   }
   .content-wrapper,
-  .title {
+  #title {
     flex-direction: row;
   }
   .title-hostname {

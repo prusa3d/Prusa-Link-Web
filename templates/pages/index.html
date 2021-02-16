@@ -10,9 +10,9 @@
   <head>
     <meta charset="utf-8" />
     <meta name="theme-color" content="#fff" />
-    {% if printer == "sl1" %}
+    {% if env.type == "sl1" %}
     <title>Original Prusa SL1 - Prusa Connect Local</title>
-    {% elif printer == "mini" %}
+    {% elif env.type == "mini" %}
     <title>Original Prusa Mini - Prusa Connect Local</title>
     {% else %}
     <title>Original Prusa MK3 - Prusa Connect Local</title>
@@ -34,6 +34,15 @@
             <div></div>
           </a>
           {% include "components/menu.html" %}
+          <select class="lang">
+            <option value="en">EN</option>
+            <option value="cs">CS</option>
+            <option value="de">DE</option>
+            <option value="es">ES</option>
+            <option value="fr">FR</option>
+            <option value="it">IT</option>
+            <option value="pl">PL</option>
+          </select>
         </nav>
       </div>
     </div>
@@ -51,9 +60,11 @@
     <!-- prettier-ignore -->
     {% include "components/modal/welcome.html" %}
     {% include "components/modal/apiKey.html" %}
+    {% include "components/toast.html" %}
+    {% include "components/pending.html" %}
 
     <!-- prettier-ignore -->
-    {% if printer == "sl1" %}
+    {% if env.printerFamily == "sla" %}
       {% include "components/temperature_graph_sla.html" %}
     {% else %}
       {% include "components/temperature_graph_fdm.html" %}

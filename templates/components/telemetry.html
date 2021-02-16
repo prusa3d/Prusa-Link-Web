@@ -6,9 +6,9 @@
 #}
 
 <!-- prettier-ignore -->
-{% if printer == "sl1" %}
-    {%
-        set telemetry_dict = {
+{% if env.printerFamily == "sla" %}
+    {% 
+        set telemetry_dict = { 
             'tempCpu': {'text': 'CPU temperature', 'icon': 'temperature_color.svg', 'format': 'temp' },
             'tempUvLed': {'text': 'UV LED temperature', 'icon': 'temperature_color.svg', 'format': 'temp' },
             'tempAmbient': {'text': 'ambient temperature', 'icon': 'temperature_color.svg', 'format': 'temp' },
