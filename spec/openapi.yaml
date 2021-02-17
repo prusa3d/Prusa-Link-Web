@@ -736,6 +736,14 @@ components:
               description: The size of the file in bytes.
               example: 873151
               nullable: true
+            refs:
+              type: object
+              properties:
+                resource:
+                  type: string
+                thumbnailBig:
+                  type: string
+                  nullable: true
 
     Progress:
       oneOf:
