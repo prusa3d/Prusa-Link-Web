@@ -708,6 +708,9 @@ components:
           type: integer
           description: Estimated print time for the file in seconds.
           nullable: true
+        timeZone:
+          type: string
+          example: "+0100"
         file:
           oneOf:
             #$ref: "#/components/schemas/JobFileFDM"
@@ -759,9 +762,6 @@ components:
           description: Estimate of time left to print in seconds.
           nullable: true
           example: 30495
-        timeZone:
-          type: string
-          example: "+0100"
 
     ProgressMini:
       type: object
