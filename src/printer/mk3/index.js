@@ -14,6 +14,7 @@ import preview from "../../views/preview.html";
 import Job from "./job.js";
 import job from "../../views/job.html";
 import { updateProperties } from "../components/updateProperties.js";
+import { errorFormat } from "../components/errors";
 
 const context = {
   version: undefined,
@@ -43,8 +44,7 @@ const mk3 = {
       updateTemperatureGraph(data);
       updateModule();
     } else {
-      console.log("Error");
-      console.log(data);
+      errorFormat(data);
     }
   },
   setModule: (module) => {

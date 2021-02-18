@@ -28,15 +28,12 @@ function formatEstimatedTime(time) {
   let estimated_end = "00:00";
   if (time) {
     let now = new Date();
-    let end = new Date(now.getTime() + time*1000);
+    let end = new Date(now.getTime() + time * 1000);
     let tomorrow = new Date(now);
     tomorrow.setDate(tomorrow.getDate() + 1);
 
     let plus_days = "";
-    if (
-      end.getDate() == now.getDate() &&
-      end.getMonth() == now.getMonth()
-    ) {
+    if (end.getDate() == now.getDate() && end.getMonth() == now.getMonth()) {
       plus_days = "today at ";
     } else if (
       end.getDate() == tomorrow.getDate() &&

@@ -329,6 +329,10 @@ class Printer {
           name: this.printingProject.name,
           origin: this.printingProject.origin,
           size: this.printingProject.size || 3636012,
+          refs: {
+            resource: this.printingProject.refs.resource,
+            thumbnailBig: this.printingProject.refs.thumbnailBig,
+          },
         },
       };
       const result = { job, state };
