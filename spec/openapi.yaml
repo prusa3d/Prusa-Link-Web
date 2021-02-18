@@ -732,6 +732,14 @@ components:
               description: The size of the file in bytes.
               example: 873151
               nullable: true
+            refs:
+              type: object
+              properties:
+                resource:
+                  type: string
+                thumbnailBig:
+                  type: string
+                  nullable: true
 
     Progress:
       oneOf:
@@ -1087,11 +1095,18 @@ components:
           description: Total number of layers
           example: 12345
           nullable: true
+        layerHeight: # [mm]
+          type: number
+          example: 0.025
         exposureTime:       # [ms]
           type: integer
           example: 6000
           nullable: true
         exposureTimeFirst:  # [ms]
+          type: number
+          example: 30000
+          nullable: true
+        exposureTimeCalibration:  # [ms]
           type: number
           example: 30000
           nullable: true
