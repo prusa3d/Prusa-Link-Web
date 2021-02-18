@@ -4,7 +4,7 @@
 
 import { getJson } from "../../auth.js";
 import { navigate } from "../../router.js";
-import handleError from "./errors.js";
+import { errorFormat, handleError } from "./errors";
 import { getValue } from "./updateProperties.js";
 import formatData from "./dataFormat.js";
 
@@ -40,7 +40,7 @@ const updateData = (status, data) => {
         load();
       }
     } else {
-      handleError(status, data);
+      errorFormat(data);
     }
   }
 };

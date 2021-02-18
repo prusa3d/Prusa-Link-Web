@@ -7,7 +7,7 @@ import {
   updateProperties,
   updateLayers,
 } from "../components/updateProperties.js";
-import handleError from "../components/errors.js";
+import { errorFormat } from "../components/errors";
 import { navigate } from "../../router.js";
 
 export const load = () => {
@@ -20,7 +20,7 @@ export const load = () => {
       updateProperties("job", data);
       updateLayers("job-layers", data);
     } else {
-      handleError(status, data);
+      errorFormat(data.title, data.message);
     }
   });
 };

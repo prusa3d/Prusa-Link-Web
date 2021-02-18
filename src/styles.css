@@ -829,6 +829,10 @@ $toast-success-title-color: $text-white;
   background-color: $toast-error-bg;
 }
 
+#prusa-toast > article.error {
+  animation: slideInUp 0.5s;
+}
+
 @-webkit-keyframes zoomOut {
   from {
     opacity: 1;

@@ -3,10 +3,10 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import { getJson } from "../../auth";
-import handleError from "./errors.js";
+import { errorFormat, handleError } from "./errors";
 import { updateProperties } from "./updateProperties.js";
 import { navigate } from "../../router.js";
-import { modal } from "../../modal.js";
+import { modal } from "./modal.js";
 import { confirmJob } from "./job.js";
 
 const load = () => {
@@ -59,7 +59,7 @@ const load = () => {
         e.preventDefault();
       });
     } else {
-      handleError(status, data);
+      errorFormat(data);
     }
   });
 };

@@ -3,10 +3,8 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import { getJson } from "../../auth";
-import {
-  updateProperties,
-} from "../components/updateProperties.js";
-import handleError from "../components/errors.js";
+import { updateProperties } from "../components/updateProperties.js";
+import { errorFormat } from "../components/errors";
 import { navigate } from "../../router.js";
 
 export const load = () => {
@@ -18,7 +16,7 @@ export const load = () => {
       }
       updateProperties("job", data);
     } else {
-      handleError(status, data);
+      errorFormat(data);
     }
   });
 };

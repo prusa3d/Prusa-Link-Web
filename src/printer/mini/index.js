@@ -8,7 +8,7 @@ import Temperature from "./temperature.js";
 import dashboard from "../../views/dashboard.html";
 import temperature from "../../views/temperature.html";
 import { updateProperties } from "../components/updateProperties.js";
-import handleError from "../components/errors.js";
+import { errorFormat } from "../components/errors.js";
 
 const context = {
   version: undefined,
@@ -35,7 +35,7 @@ const mini = {
       updateTemperatureGraph(data);
       updateModule();
     } else {
-      handleError(status, data);
+      errorFormat(data);
     }
   },
   setModule: (module) => {
