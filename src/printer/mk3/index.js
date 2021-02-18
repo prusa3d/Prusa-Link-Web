@@ -7,11 +7,13 @@ import Temperature from "./temperature.js";
 import temperature from "../../views/temperature.html";
 import Dashboard from "./dashboard.js";
 import dashboard from "../../views/dashboard.html";
-import Projects from "./projects.js";
+import Projects from "../components/projects.js";
 import projects from "../../views/projects.html";
-import telemetry from "../components/telemetry";
-import Preview from "./preview.js";
+import Preview from "../components/preview.js";
 import preview from "../../views/preview.html";
+import Job from "./job.js";
+import job from "../../views/job.html";
+import { updateProperties } from "../components/updateProperties.js";
 
 const context = {
   version: undefined,
@@ -25,6 +27,7 @@ const mk3 = {
     { path: "projects", html: projects, module: Projects },
     { path: "temperature", html: temperature, module: Temperature },
     { path: "preview", html: preview, module: Preview },
+    { path: "job", html: job, module: Job },
   ],
   init: (version, printerData) => {
     console.log("Init Printer API");
@@ -36,7 +39,7 @@ const mk3 = {
     console.log("Update Printer API");
     if (status.ok) {
       context.printer = data;
-      telemetry(data);
+      updateProperties("telemetry", data);
       updateTemperatureGraph(data);
       updateModule();
     } else {
@@ -75,8 +78,16 @@ const updateModule = () => {
 export const updateTitles = () => {
   document.getElementById("title-hostname").innerHTML =
     context.version.hostname;
-  document.getElementById("title-status").innerText =
-    context.printer.state.text;
+  if (
+    context.printer.state.flags.printing &&
+    !context.printer.state.flags.ready
+  ) {
+    document.getElementById("title-status").innerText = "Printing";
+    return true;
+  } else {
+    document.getElementById("title-status").innerText = "Idle";
+    return false;
+  }
 };
 
 export default mk3;

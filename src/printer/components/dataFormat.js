@@ -24,18 +24,12 @@ function dateFormat(value) {
   return dateFormatted.substring(0, 25);
 }
 
-function formatEstimatedTime({ remaining_time, offset }) {
+function formatEstimatedTime({ time, offset }) {
   let estimated_end = "00:00";
-  if (remaining_time && offset) {
-    var time_zone = 0;
-    if (offset) {
-      var time_zone =
-        parseInt(`${offset.substring(0, 1)}1`) *
-        (parseInt(offset.substring(1, 3)) * 3600000 +
-          parseInt(`0${offset.substring(3)}`) * 60000);
-    }
+  if (time) {
+    let time_zone = offset * 60000 || 0;
     let now = new Date(new Date().getTime() + time_zone);
-    let end = new Date(now.getTime() + remaining_time);
+    let end = new Date(now.getTime() + time);
     let tomorrow = new Date(now);
     tomorrow.setDate(tomorrow.getDate() + 1);
 
@@ -106,10 +100,14 @@ const slaFormatData = (format, value) => {
       return numberFormat(value) + " °C";
     case "fan":
       return numberFormat(value) + " RPM";
+    case "resin":
+      return numberFormat(value) + " ml";
     case "cover":
       return value ? "Opened" : "Closed";
     case "date":
       return dateFormat(value);
+    case "progress":
+      return numberFormat(value * 100) + "%";
     case "dateOffset":
       return formatEstimatedTime(value);
     case "time":
@@ -135,10 +133,16 @@ const fdmFormatData = (format, value) => {
       return numberFormat(value) + " RPM";
     case "print":
       return numberFormat(value) + " mm/s";
+    case "pos":
+      return numberFormat(value) + " mm";
     case "date":
       return dateFormat(value);
+    case "time":
+      return formatTime(value);
     case "dateOffset":
       return formatEstimatedTime(value);
+    case "progress":
+      return numberFormat(value * 100) + "%";
     default:
       return value;
   }

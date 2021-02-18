@@ -5,33 +5,46 @@
     # SPDX-License-Identifier: GPL-3.0-or-later
 #}
 
+<!-- prettier-ignore -->
+{% if env.printerFamily == "sla" %}
+    {%
+        set project_list = [
+          {"text": "Printing time", "format": "time", "location": "gcodeAnalysis.estimatedPrintTime", "icon": "time_color.svg" },
+          {"text": "Material", "format": "material", "location": "gcodeAnalysis.material", "icon": "status_filament.svg" },
+          {"text": "Layer Height", "format": "layer", "location": "gcodeAnalysis.layerHeight", "icon": "quality_medium.svg" }
+        ]
+    %}
+{% else %}
+    {%
+        set project_list = [
+          {"text": "Printing time", "format": "time", "location": "gcodeAnalysis.estimatedPrintTime", "icon": "time_color.svg" },
+          {"text": "Material", "format": "material", "location": "gcodeAnalysis.material", "icon": "status_filament.svg" }
+        ]
+    %}
+{% endif %}
+
 <template id="node-project">
   <div class="node line">
     <img class="node-img" src="../assets/thumbnail.png" />
     <div class="node-wrapper">
       <p id="name"></p>
       <div class="node-details">
-        <div id="estimatedPrintTime" class="details">
+        {% for values in project_list %}
+        <div
+          class="details"
+          data-format="{{ values.format }}"
+          data-where="{{ values.location }}"
+        >
           <img
             class="icon"
-            src="{{ pre.countOrRenderAssets('time_color.svg') | safe }}"
+            src="{{ pre.countOrRenderAssets(values.icon) | safe }}"
           />
-          <p>Printing time</p>
+          <p>
+            {{ values.text }}
+            <span></span>
+          </p>
         </div>
-        <div id="material" class="details">
-          <img
-            class="icon"
-            src="{{ pre.countOrRenderAssets('status_filament.svg') | safe }}"
-          />
-          <p>Material</p>
-        </div>
-        <div id="layerHeight" class="details">
-          <img
-            class="icon"
-            src="{{ pre.countOrRenderAssets('quality_medium.svg') | safe }}"
-          />
-          <p>Layer Height</p>
-        </div>
+        {% endfor %}
       </div>
     </div>
   </div>

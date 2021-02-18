@@ -7,7 +7,13 @@ import Dashboard from "./dashboard.js";
 import Temperature from "./temperature.js";
 import dashboard from "../../views/dashboard.html";
 import temperature from "../../views/temperature.html";
-import telemetry from "../components/telemetry";
+import { updateProperties } from "../components/updateProperties.js";
+import handleError from "../components/errors.js";
+
+const context = {
+  version: undefined,
+  printer: undefined,
+};
 
 let currentModule = Dashboard;
 const mini = {
@@ -15,18 +21,21 @@ const mini = {
     { path: "dashboard", html: dashboard, module: Dashboard },
     { path: "temperature", html: temperature, module: Temperature },
   ],
-  init: () => {
+  init: (version, printerData) => {
     console.log("Init Printer API");
+    context.version = version;
+    context.printer = printerData;
     initTemperatureGraph();
   },
   update: (status, data) => {
     console.log("Update Printer API");
     if (status.ok) {
-      telemetry(data);
+      context.printer = data;
+      updateProperties("telemetry", data);
       updateTemperatureGraph(data);
+      updateModule();
     } else {
-      console.log("Error");
-      console.log(data);
+      handleError(status, data);
     }
   },
   setModule: (module) => {
@@ -51,6 +60,23 @@ const updateTemperatureGraph = (data) => {
   graph.update("temp-line-blue", [now, data.temperature.bed.actual]);
   graph.update("temp-line-orange", [now, data.temperature.chamber.actual]);
   graph.render();
+};
+
+const updateModule = () => {
+  if (currentModule && currentModule.update) currentModule.update(context);
+};
+
+export const updateTitles = () => {
+  if (
+    context.printer.state.flags.printing &&
+    !context.printer.state.flags.ready
+  ) {
+    document.getElementById("title-status").innerText = "Printing";
+    return true;
+  } else {
+    document.getElementById("title-status").innerText = "Idle";
+    return false;
+  }
 };
 
 export default mini;

@@ -30,22 +30,25 @@ class PrinterSL1 extends Printer {
 
   job() {
     const jobSL1 = super.job();
+    const layers = 200;
+    const resin = 100;
 
     if (this.status.printing) {
       jobSL1.job.file = {
         ...jobSL1.job.file,
-        layers: 200,
+        layers: layers,
         layerHeight: 0.05,
         exposureTime: 1500,
         exposureTimeFirst: 2000,
         exposureTimeCalibration: 3000,
       };
       if (this.isPrinting) {
+        const completion = jobSL1.progress.completion;
         jobSL1["resin"] = {
-          remaining: 1,
-          consumed: 2,
+          remaining: (1 - completion) * resin,
+          consumed: completion * resin,
         };
-        jobSL1.progress["currentLayer"] = 2;
+        jobSL1.progress["currentLayer"] = parseInt(completion * layers);
       }
     }
 
