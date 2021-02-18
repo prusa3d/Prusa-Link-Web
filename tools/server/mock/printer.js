@@ -11,6 +11,7 @@ class Printer {
     this.maxTemperature = maxTemperature;
     this.free = 88398225408;
     this.total = 237645131776;
+    this.timezoneOffset = new Date().getTimezoneOffset();
     this.profile = { id: "_default", name };
     this.eTag = `W/"${new Date().getTime()}"`;
     this.printingProject = null;
@@ -324,6 +325,7 @@ class Printer {
     if (this.status.printing) {
       const job = {
         estimatedPrintTime: this.progress.estimatedPrintTime,
+        timezoneOffset: this.timezoneOffset,
         file: {
           date: this.printingProject.date,
           name: this.printingProject.name,

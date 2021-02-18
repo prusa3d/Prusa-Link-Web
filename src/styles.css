@@ -578,6 +578,9 @@ button:disabled {
   display: flex;
   flex-direction: column;
 }
+.force-column {
+  flex-direction: column !important;
+}
 progress[value] {
   -webkit-appearance: none;
   -moz-appearance: none;

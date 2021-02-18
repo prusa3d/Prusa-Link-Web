@@ -9,19 +9,50 @@
 {% if env.printerFamily == "sla" %}
   {%
     set preview_props = [
-      { 'id': 'preview-times', 'icon': 'time_color.svg' },
-      { 'id': 'preview-layers','icon': 'quality_medium.svg' },
-      { 'id': 'preview-expos', 'icon': 'exposure_times_color.svg' },
-      { 'id': 'preview-dates', 'icon': 'calendar.svg' }
+      {
+        'icon': 'time_color.svg',
+        "data": [
+          { "text": "Print Time Estimate", "format": "time", "location": "job.estimatedPrintTime", "type":"preview" },
+          { "text": "Estimated end", "id":"preview-dateOffset", "location": "job.estimatedPrintTime", "locationOffset": "job.timezoneOffset" }
+        ]
+     },
+      {
+        'icon': 'quality_medium.svg',
+        "data": [
+          { "text": "Layer", "format": "int","location": "job.file.layers", "type":"preview" },
+          { "text": "Layer Height", "format": "layer", "location": "job.file.layerHeight", "type":"preview" }
+        ]
+      },
+      {
+        'icon': 'exposure_times_color.svg',
+        "data": [
+          { "text": "Exposure times", "format": "expo", "location": "job.file", "type":"preview" }
+        ]
+      },
+      {
+        'icon': 'calendar.svg',
+        "data": [
+          { "text": "Last Modified", "format": "date", "location": "job.file.date", "type":"preview" }
+        ]
+      }
     ]
   %}
 {% else %}
   {%
       set preview_props = [
-        { 'id': 'preview-times', 'icon': 'time_color.svg' },
-        { 'id': 'preview-layers','icon': 'quality_medium.svg' },
-        { 'id': 'preview-expos', 'icon': 'exposure_times_color.svg' },
-        { 'id': 'preview-dates', 'icon': 'calendar.svg' }
+        {
+          'icon': 'time_color.svg',
+          "data": [
+          { "text": "Print Time Estimate", "format": "time", "location": "job.estimatedPrintTime", "type":"preview" },
+          { "text": "Estimated end", "id":"preview-dateOffset", "location": "job.estimatedPrintTime", "locationOffset": "job.timezoneOffset" }
+        ]
+        },
+        {
+          'icon': 'calendar.svg',
+          "data": [
+            { "text": "Last Modified", "format": "date", "location": "job.file.date", "type":"preview" }
+        ]
+        }
     ]
   %}
 {% endif %}
@@ -37,11 +68,33 @@
       </div>
       <div class="preview-details">
         {% for prop in preview_props %}
-        <div class="preview-prop" id="{{ prop.id }}">
+        <div class="preview-prop">
           <img
             class="icon"
             src="{{ pre.countOrRenderAssets(prop.icon) | safe }}"
           />
+          {% for values in prop.data %}
+          <div>
+            <p>{{ values.text }}</p>
+            {% if values.id %}
+            <p
+              id="{{ values.id }}"
+              data-where="{{ values.location }}"
+              data-where-Offset="{{ values.locationOffset }}"
+            >
+              NA
+            </p>
+            {% else %}
+            <p
+              data-format="{{ values.format }}"
+              data-type="{{ values.type }}"
+              data-where="{{ values.location }}"
+            >
+              NA
+            </p>
+            {% endif %}
+          </div>
+          {% endfor %}
         </div>
         {% endfor %}
       </div>

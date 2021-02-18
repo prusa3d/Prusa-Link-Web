@@ -9,15 +9,14 @@
 {% if env.printerFamily == "sla" %}
   {%
     set job_dict = {
-        'remaining-time': {'text': 'remaining time', value: 'NA' },
-        'estimated-end': {'text': 'estimated end', value: '00:00' },
-        'printing-time': {'text': 'printing time', value: 'NA' },
-        'layers': {'text': 'layers', value: '0/0' },
-        'remaining resin': {'text': 'remaining resin', value: 'NA' },
-        'consumed resin': {'text': 'consumed resin', value: 'NA' }
+        'remaining-time': {'text': 'remaining time', "format": "time", "location": "progress.printTimeLeft" },
+        'estimated-end': {'text': 'estimated end', "id":"job-dateOffset", "location": "progress.printTimeLeft", "locationOffset": "job.timezoneOffset" },
+        'printing-time': {'text': 'printing time', "format": "time", "location": "progress.printTime" },
+        'layers': {'text': 'layers', "id":"job-layers", "location": "progress.currentLayer", "locationTotal": "job.file.layers" },
+        'remaining resin': {'text': 'remaining resin', "format": "resin", "location": "resin.remaining" },
+        'consumed resin': {'text': 'consumed resin', "format": "resin", "location": "resin.consumed" }
     }
   %}
-  
   {%
     set job_buttons = {
         'exposure': {'text': 'change exposure times', icon: 'exposure_times_color.svg', class: 'action' },
@@ -26,35 +25,60 @@
     }
   %}  
 {% else %}
-{%
-    set job_dict = {
-        'pos_z_mm': {'text': 'Z-Height', value: 'NA' },
-        'printing_speed': {'text': 'Printing Speed', value: 'NA' },
-        'flow_factor': {'text': 'Printing Flow', value: 'NA' },
-        'time_est': {'text': 'Estimated end', value: '00:00' },
-        'print_dur': {'text': 'Printing time', value: 'NA' }
-    }
-%}
+  {%
+      set job_dict = {
+          'pos_z_mm': {'text': 'Z-Height', "location": "progress.pos_z_mm", 'format': 'pos' },
+          'printing_speed': {'text': 'Printing Speed', 'format': 'print', "location": "progress.printSpeed" },
+          'flow_factor': {'text': 'Printing Flow', "location": "progress.flow_factor", 'format': 'number' },
+          'estimated-end': {'text': 'Estimated end', "id":"job-dateOffset", "location": "progress.printTimeLeft", "locationOffset": "job.timezoneOffset" },
+          'print_dur': {'text': 'Printing time', "format": "time", "location": "progress.printTime" }
+      }
+  %}
+  {% if env.type == "mk3" %}
+    {%
+      set job_buttons = {
+          'no': {'text': 'cancel print', icon: 'cancel.svg', class: 'no' }
+      }
+    %}
+  {% endif %}
+
 {% endif %}
 
-<!-- prettier-ignore -->
-{% if env.type == "mini" %}
-  {% set to_hidden = "" %}
-{% else %}
-  {% set to_hidden = "hidden" %}
-{% endif %}
-
-<div class="job" id="job" {{ to_hidden }}>
-  <div class="job-stats">
+<div class="job" {{ to_hidden }}>
+  <div class="job-stats{{ add_classes }}">
     <div class="progress">
-      <progress value="0" max="100">0%</progress>
-      <p>0%</p>
+      <progress value="0" max="1"></progress>
+      <p
+        data-format="progress"
+        data-type="job"
+        data-where="progress.completion"
+      >
+        0%
+      </p>
     </div>
-    <div class="stats">
+    <div class="stats" id="job-stats">
       {% for key, values in job_dict %}
       <div>
         <p>{{ values.text }}</p>
-        <p>{{ values.value }}</p>
+        {% if key == 'estimated-end' %}
+        <p
+          id="{{ values.id }}"
+          data-where="{{ values.location }}"
+          data-where-Offset="{{ values.locationOffset }}"
+        ></p>
+        {% elif key == 'layers' %}
+        <p
+          id="{{ values.id }}"
+          data-where="{{ values.location }}"
+          data-where-Total="{{ values.locationTotal }}"
+        ></p>
+        {% else %}
+        <p
+          data-format="{{ values.format }}"
+          data-type="job"
+          data-where="{{ values.location }}"
+        ></p>
+        {% endif %}
       </div>
       {% endfor %}
     </div>

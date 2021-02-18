@@ -8,7 +8,14 @@
 <!-- prettier-ignore -->
 {% include "components/title.html" %}
 <!-- prettier-ignore -->
-{% include "components/job.html" %}
+{% set add_classes = "" %}
+{% if env.type == "mini" %}
+  {% set to_hidden = "" %}
+  {% include "components/job.html" %}
+{% else %}
+  {% set to_hidden = "hidden" %}
+  {% include "components/job.html" %}
+{% endif %}
 
 <div class="main-wrapper home-row">
   <div class="component">

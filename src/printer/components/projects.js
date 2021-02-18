@@ -3,6 +3,10 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import { getJson } from "../../auth.js";
+import { navigate } from "../../router.js";
+import handleError from "./errors.js";
+import { getValue } from "./updateProperties.js";
+import formatData from "./dataFormat.js";
 
 const metadata = {
   current_path: [],
@@ -32,30 +36,36 @@ const updateData = (status, data) => {
       metadata.free = data.free;
       metadata.total = data.total;
       metadata.eTag = status.eTag;
+      if (window.location.hash == "#projects") {
+        load();
+      }
     } else {
-      console.error(`Cant get printer API! Error ${status.code}`);
-      console.error(data);
+      handleError(status, data);
     }
   }
 };
 
-export function update() {
-  return getJson("/api/files?recursive=true", updateData, {
-    headers: { "If-None-Match": metadata.eTag },
-  }).then(() => {
-    if (window.location.hash == "#projects") {
-      show();
+export const update = (context) => {
+  if (context.printer.state.flags.printing) {
+    if (context.printer.state.flags.ready) {
+      navigate("#preview");
+    } else {
+      navigate("#job");
     }
-  });
-}
+  } else {
+    getJson("/api/files?recursive=true", updateData, {
+      headers: { "If-None-Match": metadata.eTag },
+    });
+  }
+};
 
-export function show() {
+export function load() {
   const projects = document.getElementById("projects");
   while (projects.firstChild) {
     projects.removeChild(projects.firstChild);
   }
 
-  if (metadata.pending) {
+  if (metadata.pending || !metadata.eTag) {
     const templatePending = document.getElementById("pending").content;
     const elm = document.importNode(templatePending, true);
     projects.appendChild(elm);
@@ -102,29 +112,22 @@ function createElement(templateName, name, cb) {
 function createFolder(name) {
   return createElement("node-folder", name, () => {
     metadata.current_path.push(name);
-    show();
+    load();
   });
 }
 
 function createUp() {
   return createElement("node-up", "Main", () => {
     metadata.current_path.pop();
-    show();
+    load();
   });
 }
-
-const selectError = (status, data) => {
-  if (!status.ok) {
-    console.error(`Cant get printer API! Error ${status.code}`);
-    console.error(data);
-  }
-};
 
 const onClickFile = (node) => {
   if (!metadata.pending) {
     metadata.pending = true;
-    show();
-    getJson(node.refs.resource, selectError, {
+    load();
+    getJson(node.refs.resource, handleError, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -141,16 +144,18 @@ function createFile(node) {
     onClickFile(node)
   );
   const nodeDetails = elm.querySelector(".node-details");
-  const properties = node["gcodeAnalysis"];
-  for (let property of ["estimatedPrintTime", "material", "layerHeight"]) {
-    let element = elm.getElementById(property);
-    if (properties[property]) {
-      let span = document.createElement("span");
-      span.innerHTML = properties[property];
-      element.querySelector("p").appendChild(span);
+  nodeDetails.querySelectorAll(".details").forEach((element) => {
+    const value = getValue(element.dataset.where, node);
+    if (value) {
+      element.querySelector("span").innerHTML = formatData(
+        element.dataset.format,
+        value
+      );
     } else {
       nodeDetails.removeChild(element);
     }
-  }
+  });
   return elm;
 }
+
+export default { load, update };

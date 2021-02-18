@@ -8,38 +8,39 @@
 <!-- prettier-ignore -->
 {% if env.printerFamily == "sla" %}
     {% 
-        set telemetry_dict = { 
-            'tempCpu': {'text': 'CPU temperature', 'icon': 'temperature_color.svg', 'format': 'temp' },
-            'tempUvLed': {'text': 'UV LED temperature', 'icon': 'temperature_color.svg', 'format': 'temp' },
-            'tempAmbient': {'text': 'ambient temperature', 'icon': 'temperature_color.svg', 'format': 'temp' },
-            'fanUvLed': {'text': 'UV LED fan', 'icon': 'fan_color.svg', 'format': 'fan' },
-            'fanBlower': {'text': 'blower fan', 'icon': 'fan_color.svg', 'format': 'fan' },
-            'fanRear': {'text': 'rear fan', 'icon': 'fan_color.svg', 'format': 'fan' },
-            'coverClosed': {'text': 'cover state', 'icon': 'cover_color.svg', 'format': 'cover' }
-        }
+        set telemetry_list = [
+            {'text': 'CPU temperature', 'icon': 'temperature_color.svg', 'format': 'temp',  "location": "telemetry.tempCpu" },
+            {'text': 'UV LED temperature', 'icon': 'temperature_color.svg', 'format': 'temp',  "location": "telemetry.tempUvLed" },
+            {'text': 'ambient temperature', 'icon': 'temperature_color.svg', 'format': 'temp',  "location": "telemetry.tempAmbient" },
+            {'text': 'UV LED fan', 'icon': 'fan_color.svg', 'format': 'fan',  "location": "telemetry.fanUvLed" },
+            {'text': 'blower fan', 'icon': 'fan_color.svg', 'format': 'fan',  "location": "telemetry.fanBlower" },
+            {'text': 'rear fan', 'icon': 'fan_color.svg', 'format': 'fan',  "location": "telemetry.fanRear" },
+            {'text': 'cover state', 'icon': 'cover_color.svg', 'format': 'cover',  "location": "telemetry.coverClosed" }
+        ]
     %}
 {% else %}
     {%
-        set telemetry_dict = {
-            'temp-nozzle': {'text': 'Nozzle Temperature', 'icon': 'status_nozzle.svg', 'format': 'temp' },
-            'temp-bed': {'text': 'Heatbed', 'icon': 'status_heatbed.svg', 'format': 'temp' },
-            'print-speed': {'text': 'Printing Speed', 'icon': 'status_prnspeed.svg', 'format': 'print' },
-            'z-axis': {'text': 'Z - Height', 'icon': 'status_z_axis.svg' },
-            'material': {'text': 'Material', 'icon': 'status_filament.svg' }
-        }
+        set telemetry_list = [
+            {'text': 'Nozzle Temperature', 'icon': 'status_nozzle.svg', 'format': 'temp', "location": "telemetry.temp-nozzle" },
+            {'text': 'Heatbed', 'icon': 'status_heatbed.svg', 'format': 'temp', "location": "telemetry.temp-bed" },
+            {'text': 'Printing Speed', 'icon': 'status_prnspeed.svg', 'format': 'print', "location": "telemetry.print-speed" },
+            {'text': 'Z - Height', 'icon': 'status_z_axis.svg', "location": "telemetry.z-height", 'format': 'pos'  },
+            {'text': 'Material', 'icon': 'status_filament.svg', "location": "telemetry.material" }
+        ]
     %}
 {% endif %}
 
 <div class="telemetry">
-  {% for key, values in telemetry_dict %}
+  {% for values in telemetry_list %}
   <div class="tel-prop">
     <img class="icon" src="{{ pre.countOrRenderAssets(values.icon) | safe }}" />
     <div class="value">
       <p class="txt-normal txt-size-2 txt-grey">{{ values.text }}</p>
       <p
         class="txt-bold txt-size-2"
-        id="{{ key }}"
+        data-type="telemetry"
         data-format="{{ values.format }}"
+        data-where="{{ values.location }}"
       >
         NA
       </p>
