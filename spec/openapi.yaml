@@ -708,10 +708,6 @@ components:
           type: integer
           description: Estimated print time for the file in seconds.
           nullable: true
-        timezoneOffset:
-          type: integer
-          example: -120
-          description: The printer timezone offset in minutes.
         file:
           oneOf:
             #$ref: "#/components/schemas/JobFileFDM"
