@@ -24,28 +24,27 @@ function dateFormat(value) {
   return dateFormatted.substring(0, 25);
 }
 
-function formatEstimatedTime({ time, offset }) {
+function formatEstimatedTime(time) {
   let estimated_end = "00:00";
   if (time) {
-    let time_zone = offset * 60000 || 0;
-    let now = new Date(new Date().getTime() + time_zone);
-    let end = new Date(now.getTime() + time);
+    let now = new Date();
+    let end = new Date(now.getTime() + time*1000);
     let tomorrow = new Date(now);
     tomorrow.setDate(tomorrow.getDate() + 1);
 
     let plus_days = "";
     if (
-      end.getUTCDate() == now.getUTCDate() &&
-      end.getUTCMonth() == now.getUTCMonth()
+      end.getDate() == now.getDate() &&
+      end.getMonth() == now.getMonth()
     ) {
       plus_days = "today at ";
     } else if (
-      end.getUTCDate() == tomorrow.getUTCDate() &&
-      end.getUTCMonth() == tomorrow.getUTCMonth()
+      end.getDate() == tomorrow.getDate() &&
+      end.getMonth() == tomorrow.getMonth()
     ) {
       plus_days = "tomorrow at ";
     } else {
-      let options = { month: "numeric", day: "numeric", timeZone: "UTC" };
+      let options = { month: "numeric", day: "numeric" };
       const final_date = end.toLocaleString(window.navigator.language, options);
       plus_days = `${final_date} at `;
     }
@@ -108,7 +107,7 @@ const slaFormatData = (format, value) => {
       return dateFormat(value);
     case "progress":
       return numberFormat(value * 100) + "%";
-    case "dateOffset":
+    case "timeEst":
       return formatEstimatedTime(value);
     case "time":
       return formatTime(value);
@@ -139,7 +138,7 @@ const fdmFormatData = (format, value) => {
       return dateFormat(value);
     case "time":
       return formatTime(value);
-    case "dateOffset":
+    case "timeEst":
       return formatEstimatedTime(value);
     case "progress":
       return numberFormat(value * 100) + "%";

@@ -5,13 +5,11 @@
 import { getJson } from "../../auth";
 import {
   updateProperties,
-  updateDateOffset,
 } from "../components/updateProperties.js";
 import handleError from "../components/errors.js";
 
 const update = (data) => {
   updateProperties("job", data);
-  updateDateOffset("job-dateOffset", data);
 };
 
 export const load = () => {

@@ -5,7 +5,6 @@
 import { getJson } from "../../auth";
 import {
   updateProperties,
-  updateDateOffset,
   updateLayers,
 } from "../components/updateProperties.js";
 import handleError from "../components/errors.js";
@@ -19,7 +18,6 @@ export const load = () => {
         document.querySelector("progress").value = completion;
       }
       updateProperties("job", data);
-      updateDateOffset("job-dateOffset", data);
       updateLayers("job-layers", data);
     } else {
       handleError(status, data);

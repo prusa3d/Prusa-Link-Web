@@ -4,7 +4,7 @@
 
 import { getJson } from "../../auth";
 import handleError from "./errors.js";
-import { updateProperties, updateDateOffset } from "./updateProperties.js";
+import { updateProperties } from "./updateProperties.js";
 import { navigate } from "../../router.js";
 import { modal } from "../../modal.js";
 import { confirmJob } from "./job.js";
@@ -15,7 +15,6 @@ const load = () => {
       const file = data.job.file;
       document.getElementById("preview-name").innerHTML = file.name;
       updateProperties("preview", data);
-      updateDateOffset("preview-dateOffset", data);
 
       document.getElementById("cancel").addEventListener("click", (e) => {
         getJson("/api/job", handleError, {

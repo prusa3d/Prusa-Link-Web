@@ -26,13 +26,6 @@ export const updateProperties = (type, data) => {
   });
 };
 
-export const updateDateOffset = (id, data) => {
-  const elm = document.getElementById(id);
-  const time = getValue(elm.dataset.where, data);
-  const offset = getValue(elm.dataset.whereOffset, data);
-  elm.innerHTML = formatData("dateOffset", { time, offset });
-};
-
 export const updateLayers = (id, data) => {
   const elm = document.getElementById(id);
   const current = getValue(elm.dataset.where, data) || 0;
