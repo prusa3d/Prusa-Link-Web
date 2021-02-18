@@ -13,7 +13,7 @@
         'icon': 'time_color.svg',
         "data": [
           { "text": "Print Time Estimate", "format": "time", "location": "job.estimatedPrintTime", "type":"preview" },
-          { "text": "Estimated end", "id":"preview-dateOffset", "location": "job.estimatedPrintTime", "locationOffset": "job.timezoneOffset" }
+          { "text": "Estimated end", "location": "job.estimatedPrintTime", "format": "timeEst", "type":"preview" }
         ]
      },
       {
@@ -44,7 +44,7 @@
           'icon': 'time_color.svg',
           "data": [
           { "text": "Print Time Estimate", "format": "time", "location": "job.estimatedPrintTime", "type":"preview" },
-          { "text": "Estimated end", "id":"preview-dateOffset", "location": "job.estimatedPrintTime", "locationOffset": "job.timezoneOffset" }
+          { "text": "Estimated end", "location": "job.estimatedPrintTime", "format": "timeEst", "type":"preview" }
         ]
         },
         {
@@ -76,15 +76,6 @@
           {% for values in prop.data %}
           <div>
             <p>{{ values.text }}</p>
-            {% if values.id %}
-            <p
-              id="{{ values.id }}"
-              data-where="{{ values.location }}"
-              data-where-Offset="{{ values.locationOffset }}"
-            >
-              NA
-            </p>
-            {% else %}
             <p
               data-format="{{ values.format }}"
               data-type="{{ values.type }}"
@@ -92,7 +83,6 @@
             >
               NA
             </p>
-            {% endif %}
           </div>
           {% endfor %}
         </div>

@@ -10,7 +10,7 @@
   {%
     set job_dict = {
         'remaining-time': {'text': 'remaining time', "format": "time", "location": "progress.printTimeLeft" },
-        'estimated-end': {'text': 'estimated end', "id":"job-dateOffset", "location": "progress.printTimeLeft", "locationOffset": "job.timezoneOffset" },
+        'estimated-end': {'text': 'estimated end', "location": "progress.printTimeLeft", "format": "timeEst" },
         'printing-time': {'text': 'printing time', "format": "time", "location": "progress.printTime" },
         'layers': {'text': 'layers', "id":"job-layers", "location": "progress.currentLayer", "locationTotal": "job.file.layers" },
         'remaining resin': {'text': 'remaining resin', "format": "resin", "location": "resin.remaining" },
@@ -30,7 +30,7 @@
           'pos_z_mm': {'text': 'Z-Height', "location": "progress.pos_z_mm", 'format': 'pos' },
           'printing_speed': {'text': 'Printing Speed', 'format': 'print', "location": "progress.printSpeed" },
           'flow_factor': {'text': 'Printing Flow', "location": "progress.flow_factor", 'format': 'number' },
-          'estimated-end': {'text': 'Estimated end', "id":"job-dateOffset", "location": "progress.printTimeLeft", "locationOffset": "job.timezoneOffset" },
+          'estimated-end': {'text': 'Estimated end', "location": "progress.printTimeLeft", "format": "timeEst" },
           'print_dur': {'text': 'Printing time', "format": "time", "location": "progress.printTime" }
       }
   %}
@@ -60,13 +60,7 @@
       {% for key, values in job_dict %}
       <div>
         <p>{{ values.text }}</p>
-        {% if key == 'estimated-end' %}
-        <p
-          id="{{ values.id }}"
-          data-where="{{ values.location }}"
-          data-where-Offset="{{ values.locationOffset }}"
-        ></p>
-        {% elif key == 'layers' %}
+        {% if key == 'layers' %}
         <p
           id="{{ values.id }}"
           data-where="{{ values.location }}"

@@ -5,7 +5,6 @@
 import { getJson } from "../../auth";
 import {
   updateProperties,
-  updateDateOffset,
 } from "../components/updateProperties.js";
 import handleError from "../components/errors.js";
 import { navigate } from "../../router.js";
@@ -18,7 +17,6 @@ export const load = () => {
         document.querySelector("progress").value = completion;
       }
       updateProperties("job", data);
-      updateDateOffset("job-dateOffset", data);
     } else {
       handleError(status, data);
     }
