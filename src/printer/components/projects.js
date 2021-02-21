@@ -155,6 +155,9 @@ function createFile(node) {
       nodeDetails.removeChild(element);
     }
   });
+  if (node.refs.thumbnailBig) {
+    elm.querySelector("img.node-img").src = node.refs.thumbnailBig;
+  }
   return elm;
 }
 

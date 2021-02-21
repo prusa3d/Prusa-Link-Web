@@ -98,7 +98,7 @@ router.post("/:target/:filename(*)", async (req, res, next) => {
   if (result instanceof errors.ApiError) {
     result.handleError(res);
   } else {
-    res.status(204).send();
+    res.sendStatus(204);
   }
 });
 
@@ -114,7 +114,7 @@ router.delete("/:target/:filename(*)", async (req, res, next) => {
   if (result instanceof errors.ApiError) {
     result.handleError(res);
   } else {
-    res.status(204).send();
+    res.sendStatus(204);
   }
 });
 

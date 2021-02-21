@@ -93,11 +93,6 @@ class Printer {
   }
 
   checkProject(target, pathname) {
-    if (this.status.printing) {
-      this.last_error = new errors.NotAvailableInState();
-      return this.last_error;
-    }
-
     const project = this.getFiles(target, pathname);
     if (
       project == null ||
@@ -105,6 +100,11 @@ class Printer {
       project.type == "folder"
     ) {
       this.last_error = new errors.FileNotFound();
+      return this.last_error;
+    }
+
+    if (this.isPrinting && this.printingProject == project) {
+      this.last_error = new errors.NotAvailableInState();
       return this.last_error;
     }
 
@@ -213,6 +213,9 @@ class Printer {
     if (pos > -1) {
       node.splice(pos, 1);
       this.eTag = `W/"${new Date().getTime()}"`;
+      if (this.printingProject == result) {
+        this.stopPrint();
+      }
       return true;
     }
     this.last_error = new errors.FileNotFound();

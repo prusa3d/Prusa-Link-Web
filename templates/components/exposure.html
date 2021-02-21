@@ -1,0 +1,21 @@
+<!-- prettier-ignore -->
+{#
+    # This file is part of the Prusa Connect Local
+    # Copyright (C) 2021 Prusa Research a.s. - www.prusa3d.com
+    # SPDX-License-Identifier: GPL-3.0-or-later
+#}
+
+<template id="exposure-item">
+  <p id="desc"></p>
+  <img
+    id="minus"
+    class="icon"
+    src="{{ pre.countOrRenderAssets('minus_color.svg') | safe }}"
+  />
+  <p id="value" class="align-center"></p>
+  <img
+    id="plus"
+    class="icon"
+    src="{{ pre.countOrRenderAssets('plus_color.svg') | safe }}"
+  />
+</template>

@@ -83,7 +83,7 @@ module.exports = {
                   "http://localhost:9000/api/downloads/sdcard/examples/Calibration objects/Resin_Calibration_Object_0.025.sl1",
               },
               gcodeAnalysis: {
-                estimatedPrintTime: 7292000.0,
+                estimatedPrintTime: 180,
                 layerHeight: 0.025,
                 material: "Prusa Orange Tough @0.025",
               },
@@ -207,6 +207,10 @@ module.exports = {
           "http://localhost:9000/api/files/local/Petrin_Tower_10H_50um_Prusa_Orange.sl1",
         download:
           "http://localhost:9000/api/downloads/local/Petrin_Tower_10H_50um_Prusa_Orange.sl1",
+        thumbnailSmall:
+          "http://localhost:9000/api/thumbnails/tmpy36n51rt/thumbnail/thumbnail400x400.png",
+        thumbnailBig:
+          "http://localhost:9000/api/thumbnails/tmpy36n51rt/thumbnail/thumbnail800x480.png",
       },
       gcodeAnalysis: {
         estimatedPrintTime: 0,

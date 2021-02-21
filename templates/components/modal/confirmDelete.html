@@ -1,0 +1,22 @@
+<!-- prettier-ignore -->
+{#
+    # This file is part of the Prusa Connect Local
+    # Copyright (C) 2021 Prusa Research a.s. - www.prusa3d.com
+    # SPDX-License-Identifier: GPL-3.0-or-later
+#}
+
+<template id="modal-delete">
+  <div class="modal-delete">
+    <p></p>
+    <div class="buttons-wrapper">
+      <button class="yes" id="yes">
+        <img src="{{ pre.countOrRenderAssets('yes_color.svg') | safe }}" />
+        <p>Confirm</p>
+      </button>
+      <button class="no" id="no">
+        <img src="{{ pre.countOrRenderAssets('cancel.svg') | safe }}" />
+        <p>Cancel</p>
+      </button>
+    </div>
+  </div>
+</template>
