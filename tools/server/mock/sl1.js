@@ -39,7 +39,7 @@ class PrinterSL1 extends Printer {
         layers: layers,
         layerHeight: 0.05,
         exposureTime: 1500,
-        exposureTimeFirst: 2000,
+        exposureTimeFirst: 15000,
         exposureTimeCalibration: 3000,
       };
       if (this.isPrinting) {

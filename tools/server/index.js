@@ -50,6 +50,8 @@ const devServer = (app, conf) => {
   app.use("/api/files", require("./files"));
   app.use("/api/printer", require("./printer"));
   app.use("/api/job", require("./job"));
+  app.use("/api/thumbnails", require("./thumbnails"));
+  app.use("/api/system", require("./system"));
   app.use("/api/", require("./miscellaneous"));
 };
 

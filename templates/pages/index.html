@@ -58,14 +58,15 @@
       <div class="modal-box"></div>
     </div>
     <!-- prettier-ignore -->
+    <template id="pending">
+      {% set to_hidden = "" %}
+      {% include "components/pending.html" %}
+    </template>
+
+    <!-- prettier-ignore -->
     {% include "components/modal/welcome.html" %}
     {% include "components/modal/apiKey.html" %}
     {% include "components/toast.html" %}
-    {% include "components/pending.html" %}
-
-    {% if env.type != "mini" %}
-      {% include "components/modal/confirmPrint.html" %}
-    {% endif %}
 
     <!-- prettier-ignore -->
     {% if env.printerFamily == "sla" %}

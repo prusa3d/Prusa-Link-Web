@@ -36,7 +36,7 @@ img {
   max-width: 100%;
 }
 [hidden] {
-  display: none;
+  display: none !important;
 }
 p {
   margin: 0;
@@ -538,29 +538,6 @@ button:disabled {
   background-color: #be0000;
   border-color: #dbdbdb;
 }
-.exposure-wrapper {
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  margin-bottom: 5%;
-  margin-top: unset;
-  margin-left: unset;
-}
-.exposure-item {
-  display: flex;
-  margin-bottom: 12px;
-  align-items: center;
-}
-.exposure-item p:first-child {
-  flex-grow: 1;
-}
-.exposure-range {
-  display: flex;
-  flex-grow: 1;
-  justify-content: space-between;
-  align-items: center;
-  max-width: 35%;
-}
 .message {
   display: flex;
   justify-content: center;
@@ -737,6 +714,51 @@ progress::-moz-progress-bar {
 
 .modal-apiKey > button {
   float: right;
+}
+
+/* ===================================== MODAL DELETE ======================================= */
+
+.modal-delete > p {
+  margin: 15px 5px 15px 5px;
+}
+
+/* ===================================== MODAL EXPOSURE ======================================= */
+
+.modal-exposure {
+  display: grid;
+  grid-template-columns: 7fr 1fr 2fr 1fr;
+  grid-template-rows: auto;
+  margin-bottom: 10px;
+  justify-items: center;
+}
+
+.modal-exposure > p {
+  width: 100%;
+  align-self: center;
+  white-space: nowrap;
+}
+
+.modal-exposure > p.align-center {
+  text-align: center;
+}
+
+.modal-exposure > img {
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+/* ===================================== QUESTION ======================================= */
+
+#question {
+  display: flex;
+  justify-content: center;
+  margin-top: 15%;
+  margin-bottom: 15%;
+}
+
+#question > strong:before {
+  content: " ";
+  white-space: pre;
 }
 
 /* ===================================== TOAST ======================================= */
@@ -1004,12 +1026,6 @@ $toast-success-title-color: $text-white;
     justify-content: flex-start;
     margin-bottom: unset;
     width: unset;
-  }
-  .exposure-wrapper {
-    margin-left: 25%;
-    margin-top: 15%;
-    margin-bottom: 15%;
-    width: 50%;
   }
   .job-stats {
     display: flex;

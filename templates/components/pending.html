@@ -5,11 +5,9 @@
     # SPDX-License-Identifier: GPL-3.0-or-later
 #}
 
-<template id="pending">
-  <div class="pending">
-    <img
-      class="icon"
-      src="{{ pre.countOrRenderAssets('dual-ring-1s-200px.svg') | safe }}"
-    />
-  </div>
-</template>
+<div class="pending" {{ to_hidden }}>
+  <img
+    class="icon"
+    src="{{ pre.countOrRenderAssets('dual-ring-1s-200px.svg') | safe }}"
+  />
+</div>

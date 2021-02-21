@@ -48,9 +48,9 @@ function formatEstimatedTime(time) {
 
     estimated_end =
       plus_days +
-      ("0" + end.getUTCHours()).substr(-2) +
+      ("0" + end.getHours()).substr(-2) +
       ":" +
-      ("0" + end.getUTCMinutes()).substr(-2);
+      ("0" + end.getMinutes()).substr(-2);
   }
   return estimated_end;
 }

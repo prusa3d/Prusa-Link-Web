@@ -8,16 +8,30 @@ import { updateProperties } from "./updateProperties.js";
 import { navigate } from "../../router.js";
 import { modal } from "./modal.js";
 import { confirmJob } from "./job.js";
+import { doQuestion } from "./question";
+
+const pending = () => {
+  document.querySelector(".preview").toggleAttribute("hidden");
+  document.querySelector(".pending").toggleAttribute("hidden");
+};
+
+const onRespond = (status, data) => {
+  pending();
+  handleError(status, data);
+};
 
 const load = () => {
   getJson("/api/job", (status, data) => {
     if (status.ok) {
       const file = data.job.file;
-      document.getElementById("preview-name").innerHTML = file.name;
       updateProperties("preview", data);
+      if (file.refs.thumbnailBig) {
+        document.getElementById("preview-img").src = file.refs.thumbnailBig;
+      }
 
       document.getElementById("cancel").addEventListener("click", (e) => {
-        getJson("/api/job", handleError, {
+        pending();
+        getJson("/api/job", onRespond, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -28,15 +42,23 @@ const load = () => {
       });
 
       document.getElementById("delete").addEventListener("click", (e) => {
-        console.log("delete");
+        doQuestion({
+          title: "Delete File",
+          questionChildren: `Do you really want to delete <strong>${file.name}</strong>?`,
+          yes: (close) => {
+            const resp = (status, data) => {
+              close();
+              handleError(status, data);
+            };
+            getJson(file.refs.resource, resp, { method: "DELETE" });
+          },
+          next: "#projects",
+        });
         e.preventDefault();
       });
 
       if (process.env.PRINTER_FAMILY == "sla") {
-        document.querySelector(".action").addEventListener("click", (e) => {
-          console.log("action");
-          e.preventDefault();
-        });
+        require("./exposure").default(file);
       }
 
       document.querySelector(".yes").addEventListener("click", (e) => {
@@ -47,7 +69,11 @@ const load = () => {
             click: {
               yes: (event, close) => {
                 event.preventDefault();
-                confirmJob().then(() => close());
+                pending();
+                confirmJob().then(() => {
+                  close();
+                  pending();
+                });
               },
               no: (event, close) => {
                 event.preventDefault();
