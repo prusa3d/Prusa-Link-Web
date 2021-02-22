@@ -612,6 +612,12 @@ components:
           "source": "custom",
           "resource": "http://localhost/api/system/commands/custom/resinrefilled"
         },
+        {
+          "action": "changeexposure",
+          "name": "Change exposure times",
+          "source": "custom",
+          "resource": "http://localhost/api/system/commands/custom/changeexposure"
+        },
       ]
 
     Profiles:
