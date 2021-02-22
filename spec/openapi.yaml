@@ -235,6 +235,45 @@ paths:
         403:
           $ref: "#/components/responses/Unauthorized"
 
+  /api/system/commands/custom/changeexposure:
+    post:
+      summary: Change the exposure times
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                exposureTime:       # [ms]
+                  type: integer
+                  example: 6000
+                  nullable: true
+                exposureTimeFirst:  # [ms]
+                  type: number
+                  example: 30000
+                  nullable: true
+                exposureTimeCalibration:  # [ms]
+                  type: number
+                  example: 30000
+                  nullable: true
+      responses:
+        204:
+          description: No error.
+
+  /api/system/commands/custom/resinrefill:
+    post:
+      summary:  After that printer is ready to refill, state should change to "paused".
+      responses:
+        204:
+          description: No error.
+
+  /api/system/commands/custom/resinrefilled:
+    post:
+      summary: Printer should update the resin volume in tank.
+      responses:
+        204:
+          description: No error.
+
   /api/access/users:
     get:
       summary: Retrieves a list of all registered users in OctoPrint. Currently just a mock.
@@ -483,42 +522,6 @@ paths:
         409:
           $ref: "#/components/responses/Conflict"
           description: If the file to be deleted is currently being printed
-  /api/system/commands/custom/changeexposure:
-    post:
-      summary: Change the exposure times
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                exposureTime:       # [ms]
-                  type: integer
-                  example: 6000
-                  nullable: true
-                exposureTimeFirst:  # [ms]
-                  type: number
-                  example: 30000
-                  nullable: true
-                exposureTimeCalibration:  # [ms]
-                  type: number
-                  example: 30000
-                  nullable: true
-      responses:
-        204:
-          description: No error.
-  /api/system/commands/custom/resinrefill:
-    post:
-      summary:  After that printer is ready to refill, state should change to "paused".
-      responses:
-        204:
-          description: No error.
-  /api/system/commands/custom/resinrefilled:
-    post:
-      summary: Printer should update the resin volume in tank.
-      responses:
-        204:
-          description: No error.
 
 components:
   schemas:
