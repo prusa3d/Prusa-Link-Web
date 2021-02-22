@@ -165,9 +165,9 @@ const onClickFile = (node) => {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({ command: "select" }),
-  }).finally(() => {
-    navigate("#projects");
-  });
+  })
+    .then(() => navigate("#preview"))
+    .catch(() => navigate("#projects"));
 };
 
 /**
