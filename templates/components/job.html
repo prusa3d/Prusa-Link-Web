@@ -12,7 +12,7 @@
         'remaining-time': {'text': 'remaining time', "format": "time", "location": "progress.printTimeLeft" },
         'estimated-end': {'text': 'estimated end', "location": "progress.printTimeLeft", "format": "timeEst" },
         'printing-time': {'text': 'printing time', "format": "time", "location": "progress.printTime" },
-        'layers': {'text': 'layers', "id":"job-layers", "location": "progress.currentLayer", "locationTotal": "job.file.layers" },
+        'layers': {'text': 'layers', "format": "totalLayer" },
         'remaining resin': {'text': 'remaining resin', "format": "resin", "location": "resin.remaining" },
         'consumed resin': {'text': 'consumed resin', "format": "resin", "location": "resin.consumed" }
     }
@@ -61,24 +61,23 @@
       {% for key, values in job_dict %}
       <div>
         <p>{{ values.text }}</p>
-        {% if key == 'layers' %}
-        <p
-          id="{{ values.id }}"
-          data-where="{{ values.location }}"
-          data-where-Total="{{ values.locationTotal }}"
-        ></p>
-        {% else %}
         <p
           data-format="{{ values.format }}"
           data-type="job"
+          {%
+          if
+          values.location
+          %}
           data-where="{{ values.location }}"
+          {%
+          endif
+          %}
         ></p>
-        {% endif %}
       </div>
       {% endfor %}
     </div>
   </div>
-  {% if job_buttons %}
+  {% if not to_hidden and env.type != "mini" %} {% if job_buttons %}
   <div class="buttons-wrapper">
     {% for key, values in job_buttons %}
     <button name="{{ key }}" class="{{ values.class }}">
@@ -87,5 +86,5 @@
     </button>
     {% endfor %}
   </div>
-  {% endif %}
+  {% endif %} {% endif %}
 </div>

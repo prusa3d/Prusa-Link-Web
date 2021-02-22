@@ -11,10 +11,11 @@ import Projects from "../components/projects.js";
 import projects from "../../views/projects.html";
 import Preview from "../components/preview.js";
 import preview from "../../views/preview.html";
-import Job from "./job.js";
+import Job from "../components/job.js";
 import job from "../../views/job.html";
 import Question from "../components/question.js";
 import question from "../../views/question.html";
+import loading from "../../views/loading.html";
 import { updateProperties } from "../components/updateProperties.js";
 import { errorFormat } from "../components/errors";
 
@@ -32,6 +33,7 @@ const sl1 = {
     { path: "preview", html: preview, module: Preview },
     { path: "job", html: job, module: Job },
     { path: "question", html: question, module: Question },
+    { path: "loading", html: loading, module: { load: () => {} } },
   ],
   init: (version, printerData) => {
     console.log("Init Printer API");

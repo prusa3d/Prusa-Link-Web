@@ -3,16 +3,24 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import { getJson } from "../../auth";
-import { modal } from "./modal.js";
-import { errorFormat, handleError } from "./errors";
+import { handleError } from "./errors";
 import { doQuestion } from "./question";
 
+/**
+ * id: translations, limits
+ */
 const translations = {
   exposureTime: { text: "Exposure [s]", limit: [1, 60] },
   exposureTimeFirst: { text: "First Layer Expo. [s]", limit: [10, 120] },
   exposureTimeCalibration: { text: "Exposure time incr. [s]", limit: [0.5, 5] },
 };
 
+/**
+ * Create HTMLDivElement to append in the question, return a dict of elements to set up buttons
+ * @param {object} file - job file information
+ * @param {object} elements - {id: HTMLElement}
+ * @param {HTMLDivElement} div html element to insert in modal
+ */
 const setUpElements = (file, elements, div) => {
   const template = document.getElementById("exposure-item").content;
   div.className = "modal-exposure";
@@ -43,6 +51,10 @@ const setUpElements = (file, elements, div) => {
   }
 };
 
+/**
+ * Create a question for set up the exposure times
+ * @param {object} file - job file information
+ */
 const changeExposureTimesQuestion = (file) => {
   document.querySelector(".action").addEventListener("click", (e) => {
     const elements = {};
@@ -71,7 +83,6 @@ const changeExposureTimesQuestion = (file) => {
       },
       yesText: "save changes",
       noText: "cancel",
-      next: "#projects",
     });
   });
 };

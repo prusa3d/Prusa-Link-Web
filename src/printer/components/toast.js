@@ -4,6 +4,12 @@
 
 const toast_context = document.getElementById("prusa-toast");
 
+/**
+ * Create a toast element
+ * @param {string} title
+ * @param {string} message
+ * @param {string} type
+ */
 export const createToast = (title, message, type) => {
   const template = document.getElementById("toast");
   const element = document.importNode(template.content, true);
@@ -14,6 +20,11 @@ export const createToast = (title, message, type) => {
   return article;
 };
 
+/**
+ * Create and show a info toast
+ * @param {string} title
+ * @param {string} message
+ */
 export function info(title, message, type = "") {
   const article = createToast(title, message, type);
   article.querySelector("span").addEventListener("click", (e) => {
@@ -27,14 +38,29 @@ export function info(title, message, type = "") {
   toast_context.appendChild(article);
 }
 
+/**
+ * Create and show a warning toast
+ * @param {string} title
+ * @param {string} message
+ */
 export function warning(title, message) {
   info(title, message, "warning");
 }
 
+/**
+ * Create and show a success toast
+ * @param {string} title
+ * @param {string} message
+ */
 export function success(title, message) {
   info(title, message, "success");
 }
 
+/**
+ * Create and show a error toast
+ * @param {string} title
+ * @param {string} message
+ */
 export function error(title, message) {
   const article = createToast(title, message, "error");
   article.querySelector("span").addEventListener("click", (e) => {

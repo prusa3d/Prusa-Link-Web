@@ -2,6 +2,11 @@
 // Copyright (C) 2021 Prusa Research a.s. - www.prusa3d.com
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+/**
+ * Format the value data with format specificated.
+ * @param {string} format - one of ["int", "number", "layer", "temp", "fan", "resin", "cover", "date", "progress", "timeEst", "time", "expo"]
+ * @param {any} value
+ */
 const formatData = (format, value) => {
   if (process.env.PRINTER_FAMILY == "sla") {
     return slaFormatData(format, value);
@@ -10,6 +15,11 @@ const formatData = (format, value) => {
   }
 };
 
+/**
+ * It formats a number using fixed-point notation with one digit after the decimal point.
+ * ex: 123.456 => 123.4
+ * @param {number} value
+ */
 function numberFormat(value) {
   if (value > 0) {
     return value.toFixed(1);
@@ -18,12 +28,20 @@ function numberFormat(value) {
   }
 }
 
+/**
+ * Return a string with date and time formatted
+ * @param {number} value
+ */
 function dateFormat(value) {
   const date = new Date(value);
   const dateFormatted = date.toDateString() + " " + date.toTimeString();
   return dateFormatted.substring(0, 25);
 }
 
+/**
+ * return the estimated time from current time + seconds (time)
+ * @param {number} time
+ */
 function formatEstimatedTime(time) {
   let estimated_end = "00:00";
   if (time) {
@@ -55,6 +73,10 @@ function formatEstimatedTime(time) {
   return estimated_end;
 }
 
+/**
+ * convert seconds in hh:mm
+ * @param {number} value
+ */
 function formatTime(value) {
   if (value < 60) {
     return "Less than a minute";
@@ -67,6 +89,10 @@ function formatTime(value) {
   return minutes + " minute" + (minutes > 1 ? "s" : "");
 }
 
+/**
+ * Return exposureTimeFirst/exposureTime/exposureTimeCalibration in milliseconds
+ * @param {object} expo
+ */
 function formatExposure(expo) {
   if (
     expo.exposureTimeFirst == undefined ||
@@ -80,6 +106,20 @@ function formatExposure(expo) {
   )}/${numberFormat(expo.exposureTimeCalibration / 1000)} s`;
 }
 
+function totalLayers(data) {
+  const currentLayer = data.progress.currentLayer;
+  const layers = data.job.file.layers;
+  if (currentLayer == undefined || layers == undefined) {
+    return "NA";
+  }
+  return `${currentLayer}/${layers}`;
+}
+
+/**
+ * Format the value data with format specificated for sla family.
+ * @param {string} format - one of ["int", "number", "layer", "temp", "fan", "resin", "cover", "date", "progress", "timeEst", "time", "expo"]
+ * @param {any} value
+ */
 const slaFormatData = (format, value) => {
   if (value === undefined) {
     return "NA";
@@ -110,11 +150,18 @@ const slaFormatData = (format, value) => {
       return formatTime(value);
     case "expo":
       return formatExposure(value);
+    case "totalLayer":
+      return totalLayers(value);
     default:
       return value;
   }
 };
 
+/**
+ * Format the value data with format specificated for fdm family.
+ * @param {string} format - one of ["number", "temp", "fan", "pos", "date", "progress", "timeEst", "time"]
+ * @param {any} value
+ */
 const fdmFormatData = (format, value) => {
   if (value === undefined) {
     return "NA";

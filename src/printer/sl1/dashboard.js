@@ -4,7 +4,7 @@
 
 import temperature from "./temperature";
 import { updateTitles } from "./index";
-import { load as job } from "./job.js";
+import { load as job } from "../components/job.js";
 
 const load = () => {
   console.log("Dashboard Logic - sl1");

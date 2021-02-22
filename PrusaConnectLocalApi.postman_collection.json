@@ -1,6 +1,6 @@
 {
   "info": {
-    "_postman_id": "48ed31bd-f11d-4821-a828-0f032fdf3308",
+    "_postman_id": "c2a8da03-01f9-4c9c-80e5-ead3084db2e7",
     "name": "PrusaConnectLocalApi",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
@@ -189,6 +189,73 @@
       ]
     },
     {
+      "name": "thumbnails",
+      "item": [
+        {
+          "name": "/api/thumbnails/{file}",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/thumbnails/tmpy36n51rt/thumbnail/thumbnail800x480.png",
+              "host": ["{{base_url}}"],
+              "path": [
+                "thumbnails",
+                "tmpy36n51rt",
+                "thumbnail",
+                "thumbnail800x480.png"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "system",
+      "item": [
+        {
+          "name": "../command/.../resinrefill",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/system/commands/custom/resinrefilled",
+              "host": ["{{base_url}}"],
+              "path": ["system", "commands", "custom", "resinrefilled"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "../command/.../resinrefilled",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/system/commands/custom/resinrefill",
+              "host": ["{{base_url}}"],
+              "path": ["system", "commands", "custom", "resinrefill"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "../command/.../changeexposure",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/system/commands/custom/changeexposure",
+              "host": ["{{base_url}}"],
+              "path": ["system", "commands", "custom", "changeexposure"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
       "name": "version",
       "request": {
         "method": "GET",
@@ -202,6 +269,21 @@
       "response": []
     }
   ],
+  "auth": {
+    "type": "basic",
+    "basic": [
+      {
+        "key": "password",
+        "value": "{{auth-password}}",
+        "type": "string"
+      },
+      {
+        "key": "username",
+        "value": "maker",
+        "type": "string"
+      }
+    ]
+  },
   "event": [
     {
       "listen": "prerequest",

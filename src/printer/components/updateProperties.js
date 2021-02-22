@@ -4,6 +4,11 @@
 
 import formatData from "./dataFormat.js";
 
+/**
+ * extract a value from the data object based in the location
+ * @param {string} location
+ * @param {object} data
+ */
 export const getValue = (location, data) => {
   try {
     const where = location.split(".");
@@ -17,20 +22,17 @@ export const getValue = (location, data) => {
   }
 };
 
+/**
+ * Search and update all properties with the same type from the object data.
+ * @param {string} type
+ * @param {object} data
+ */
 export const updateProperties = (type, data) => {
   document.querySelectorAll(`[data-type="${type}"]`).forEach((elm) => {
-    elm.innerHTML = formatData(
-      elm.dataset.format,
-      getValue(elm.dataset.where, data)
-    );
+    const where = elm.dataset.where;
+    const value = where ? getValue(where, data) : data;
+    elm.innerHTML = formatData(elm.dataset.format, value);
   });
-};
-
-export const updateLayers = (id, data) => {
-  const elm = document.getElementById(id);
-  const current = getValue(elm.dataset.where, data) || 0;
-  const total = getValue(elm.dataset.whereTotal, data) || 0;
-  elm.innerHTML = `${current}/${total}`;
 };
 
 export default updateProperties;

@@ -927,15 +927,17 @@ $toast-success-title-color: $text-white;
   outline: none;
 }
 
-/* ===================================== PENDING ======================================= */
+/* ===================================== LOADING ======================================= */
 
-.pending {
+.loading {
   display: flex;
   justify-content: center;
   width: 100%;
+  margin-top: 15%;
+  margin-bottom: 15%;
 }
 
-.pending > img {
+.loading > img {
   width: 60px;
   height: auto;
 }
