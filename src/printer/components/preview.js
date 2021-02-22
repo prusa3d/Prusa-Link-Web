@@ -10,16 +10,19 @@ import { modal } from "./modal.js";
 import { confirmJob } from "./job.js";
 import { doQuestion } from "./question";
 
-const pending = () => {
-  document.querySelector(".preview").toggleAttribute("hidden");
-  document.querySelector(".pending").toggleAttribute("hidden");
-};
-
+/**
+ * Show error if happens and disable loading page
+ * @param {object} status
+ * @param {object} data
+ */
 const onRespond = (status, data) => {
-  pending();
+  navigate("#projects");
   handleError(status, data);
 };
 
+/**
+ * load preview
+ */
 const load = () => {
   getJson("/api/job", (status, data) => {
     if (status.ok) {
@@ -29,8 +32,11 @@ const load = () => {
         document.getElementById("preview-img").src = file.refs.thumbnailBig;
       }
 
+      /**
+       * set up cancel button
+       */
       document.getElementById("cancel").addEventListener("click", (e) => {
-        pending();
+        navigate("#loading");
         getJson("/api/job", onRespond, {
           method: "POST",
           headers: {
@@ -41,6 +47,9 @@ const load = () => {
         e.preventDefault();
       });
 
+      /**
+       * set up delete button
+       */
       document.getElementById("delete").addEventListener("click", (e) => {
         doQuestion({
           title: "Delete File",
@@ -57,10 +66,16 @@ const load = () => {
         e.preventDefault();
       });
 
+      /**
+       * set up change exposure times button (sla)
+       */
       if (process.env.PRINTER_FAMILY == "sla") {
         require("./exposure").default(file);
       }
 
+      /**
+       * set up confirm button
+       */
       document.querySelector(".yes").addEventListener("click", (e) => {
         modal("confirm", {
           timeout: 10000,
@@ -69,10 +84,10 @@ const load = () => {
             click: {
               yes: (event, close) => {
                 event.preventDefault();
-                pending();
+                navigate("#loading");
                 confirmJob().then(() => {
                   close();
-                  pending();
+                  navigate("#projects");
                 });
               },
               no: (event, close) => {
@@ -90,6 +105,10 @@ const load = () => {
   });
 };
 
+/**
+ * update preview
+ * @param {object} context
+ */
 const update = (context) => {
   if (context.printer.state.flags.printing) {
     if (!context.printer.state.flags.ready) {

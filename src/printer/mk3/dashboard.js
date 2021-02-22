@@ -4,7 +4,7 @@
 
 import * as graph from "../components/temperature_graph";
 import { updateTitles } from "./index";
-import { load as job } from "./job.js";
+import { load as job } from "../components/job.js";
 
 const load = () => {
   console.log("Dashboard Logic - mk3");

@@ -6,6 +6,9 @@ import { navigate } from "../../router.js";
 
 const question = {};
 
+/**
+ * clean and leave a question page
+ */
 const cleanQuestion = () => {
   question.title = null;
   question.questionChildren = null;
@@ -14,16 +17,10 @@ const cleanQuestion = () => {
   navigate(question.next);
 };
 
-const pending = () => {
-  const templatePending = document.getElementById("pending").content;
-  const elm = document.importNode(templatePending, true);
-  const main = document.querySelector(".main-wrapper");
-  while (main.firstChild) {
-    main.removeChild(main.firstChild);
-  }
-  main.appendChild(elm);
-};
-
+/**
+ * Create and show a page with a question / warning
+ * @param {object} data
+ */
 export const doQuestion = (data) => {
   const newQuestion = Object.assign(
     {
@@ -33,7 +30,7 @@ export const doQuestion = (data) => {
       no: (cb) => cb(),
       yesText: "yes",
       noText: "no",
-      next: "#dashboard",
+      next: "#projects",
     },
     data
   );
@@ -43,6 +40,9 @@ export const doQuestion = (data) => {
   navigate("#question");
 };
 
+/**
+ * load the page
+ */
 export const load = () => {
   if (!question.title) {
     navigate("#dashboard");
@@ -65,10 +65,10 @@ export const load = () => {
     action.querySelector("p").innerHTML = question[actionName + "Text"];
     action.addEventListener("click", (e) => {
       e.stopPropagation();
-      pending();
+      navigate("#loading");
       func(cleanQuestion);
     });
   }
 };
 
-export default { load, question };
+export default { load };

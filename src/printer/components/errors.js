@@ -4,6 +4,10 @@
 
 import { error } from "./toast";
 
+/**
+ * Pop up an error message.
+ * @param {object} data
+ */
 export const errorFormat = (data) => {
   const title = `${data.title} - ${data.code}`;
   const message =
@@ -14,6 +18,11 @@ export const errorFormat = (data) => {
   error(title, message);
 };
 
+/**
+ * common interface for handling errors from requests
+ * @param {object} status
+ * @param {object} data
+ */
 export function handleError(status, data) {
   if (!status.ok) {
     errorFormat(data);

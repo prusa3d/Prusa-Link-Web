@@ -8,15 +8,23 @@ import { errorFormat, handleError } from "./errors";
 import { getValue } from "./updateProperties.js";
 import formatData from "./dataFormat.js";
 
+/**
+ * project context
+ */
 const metadata = {
   current_path: [],
   files: {},
   eTag: null,
   free: 0,
   total: 0,
-  pending: false,
+  firstTime: true,
 };
 
+/**
+ * Sort projects by type and name
+ * @param {object} a
+ * @param {object} b
+ */
 const sortByType = (a, b) => {
   if (a.type == b.type) {
     return a.display.localeCompare(b.display);
@@ -26,6 +34,11 @@ const sortByType = (a, b) => {
   return 1;
 };
 
+/**
+ * callback for update the project context
+ * @param {object} status
+ * @param {object} data
+ */
 const updateData = (status, data) => {
   if (status.code != 304) {
     if (status.ok) {
@@ -36,8 +49,9 @@ const updateData = (status, data) => {
       metadata.free = data.free;
       metadata.total = data.total;
       metadata.eTag = status.eTag;
+      metadata.firstTime = false;
       if (window.location.hash == "#projects") {
-        load();
+        navigate("#projects");
       }
     } else {
       errorFormat(data);
@@ -45,6 +59,10 @@ const updateData = (status, data) => {
   }
 };
 
+/**
+ * update project page
+ * @param {object} context
+ */
 export const update = (context) => {
   if (context.printer.state.flags.printing) {
     if (context.printer.state.flags.ready) {
@@ -56,20 +74,19 @@ export const update = (context) => {
     getJson("/api/files?recursive=true", updateData, {
       headers: { "If-None-Match": metadata.eTag },
     });
+    if (metadata.firstTime) {
+      navigate("#loading");
+    }
   }
 };
 
+/**
+ * load projects page
+ */
 export function load() {
   const projects = document.getElementById("projects");
   while (projects.firstChild) {
     projects.removeChild(projects.firstChild);
-  }
-
-  if (metadata.pending || !metadata.eTag) {
-    const templatePending = document.getElementById("pending").content;
-    const elm = document.importNode(templatePending, true);
-    projects.appendChild(elm);
-    return;
   }
 
   if (metadata.current_path.length > 0) {
@@ -98,6 +115,12 @@ export function load() {
   }
 }
 
+/**
+ * Create a element folder / file / up buttons
+ * @param {string} templateName - type
+ * @param {string} name - title
+ * @param {function} cb - callback when click
+ */
 function createElement(templateName, name, cb) {
   const templateFolder = document.getElementById(templateName).content;
   const elm = document.importNode(templateFolder, true);
@@ -109,6 +132,10 @@ function createElement(templateName, name, cb) {
   return elm;
 }
 
+/**
+ * Create a folder element
+ * @param {string} name
+ */
 function createFolder(name) {
   return createElement("node-folder", name, () => {
     metadata.current_path.push(name);
@@ -116,6 +143,9 @@ function createFolder(name) {
   });
 }
 
+/**
+ * create a up button element
+ */
 function createUp() {
   return createElement("node-up", "Main", () => {
     metadata.current_path.pop();
@@ -123,22 +153,27 @@ function createUp() {
   });
 }
 
+/**
+ * callback when click on file element
+ * @param {object} node
+ */
 const onClickFile = (node) => {
-  if (!metadata.pending) {
-    metadata.pending = true;
-    load();
-    getJson(node.refs.resource, handleError, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ command: "select" }),
-    }).finally(() => {
-      metadata.pending = false;
-    });
-  }
+  navigate("#loading");
+  getJson(node.refs.resource, handleError, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ command: "select" }),
+  }).finally(() => {
+    navigate("#projects");
+  });
 };
 
+/**
+ * Create a file element
+ * @param {object} node
+ */
 function createFile(node) {
   const elm = createElement("node-project", node.display, (e) =>
     onClickFile(node)

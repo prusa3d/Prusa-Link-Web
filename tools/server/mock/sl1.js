@@ -15,6 +15,7 @@ class PrinterSL1 extends Printer {
       {
         action: "resinrefill", // after sending this command, printer should change its state to "busy" (PCL will show "wait until layer finishes"). After printer is ready to refill, state should change to "paused"
         name: "ResinRefill",
+        confirm: "Are you sure?",
         source: "custom",
         resource: url + "/custom/resinrefill",
       },
