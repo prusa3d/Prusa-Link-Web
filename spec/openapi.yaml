@@ -483,6 +483,42 @@ paths:
         409:
           $ref: "#/components/responses/Conflict"
           description: If the file to be deleted is currently being printed
+  /api/system/commands/core/changeexposure:
+    post:
+      summary: Change the exposure times
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                exposureTime:       # [ms]
+                  type: integer
+                  example: 6000
+                  nullable: true
+                exposureTimeFirst:  # [ms]
+                  type: number
+                  example: 30000
+                  nullable: true
+                exposureTimeCalibration:  # [ms]
+                  type: number
+                  example: 30000
+                  nullable: true
+      responses:
+        204:
+          description: No error.
+  /api/system/commands/core/resinrefill:
+    post:
+      summary:  After that printer is ready to refill, state should change to "paused".
+      responses:
+        204:
+          description: No error.
+  /api/system/commands/core/resinrefilled:
+    post:
+      summary: Printer should update the resin volume in tank.
+      responses:
+        204:
+          description: No error.
 
 components:
   schemas:
@@ -566,13 +602,13 @@ components:
       default: [
         {
           "action": "resinrefill",  # after sending this command, printer should change its state to "busy" (PCL will show "wait until layer finishes"). After printer is ready to refill, state should change to "paused"
-          "name": "ResinRefill",
+          "name": "Refill resin",
           "source": "custom",
           "resource": "http://localhost/api/system/commands/core/resinrefill"
         },
         {
           "action": "resinrefilled",  # after sending this command, printer should update the resin volume in tank. PCL will then send /api/job with command: pause, action: resume
-          "name": "ResinRefilled",
+          "name": "Resin fully refilled",
           "source": "custom",
           "resource": "http://localhost/api/system/commands/core/resinrefilled"
         },
