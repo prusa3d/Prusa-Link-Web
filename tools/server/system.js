@@ -4,6 +4,7 @@
 
 const express = require("express");
 const router = new express.Router();
+const errors = require("./mock/errors.js");
 
 /**
  * after sending this command, printer should change its state to "busy" (PCL will show "wait until layer finishes").
@@ -11,7 +12,13 @@ const router = new express.Router();
  * only for sla printers
  */
 router.post("/commands/custom/resinrefill", async (req, res, next) => {
-  res.sendStatus(204);
+  const printer = req.app.get("printer");
+  const result = printer.pause();
+  if (result instanceof errors.ApiError) {
+    result.handleError(res);
+  } else {
+    res.sendStatus(204);
+  }
 });
 
 /**
@@ -20,7 +27,13 @@ router.post("/commands/custom/resinrefill", async (req, res, next) => {
  * only for sla printers
  */
 router.post("/commands/custom/resinrefilled", async (req, res, next) => {
-  res.sendStatus(204);
+  const printer = req.app.get("printer");
+  const result = printer.pauseResume();
+  if (result instanceof errors.ApiError) {
+    result.handleError(res);
+  } else {
+    res.sendStatus(204);
+  }
 });
 
 /**
@@ -28,7 +41,14 @@ router.post("/commands/custom/resinrefilled", async (req, res, next) => {
  * only for sla printers
  */
 router.post("/commands/custom/changeexposure", async (req, res, next) => {
-  res.sendStatus(204);
+  const printer = req.app.get("printer");
+
+  const result = printer.changeExposureTimes(req.body);
+  if (result instanceof errors.ApiError) {
+    result.handleError(res);
+  } else {
+    res.sendStatus(204);
+  }
 });
 
 module.exports = router;

@@ -32,17 +32,24 @@ window.onload = () => {
   });
 
   initAuth().then((version) => {
-    getJson("/api/printer", (status, printerData) => {
-      if (status.ok) {
-        printer.init(version, printerData);
-        setInterval(
-          () => getJson("/api/printer", printer.update),
-          UPDATE_INTERVAL
-        );
-      } else {
-        console.error(`Cant get printer API! Error ${status.code}`);
-        console.error(printerData);
-      }
+    getJson("/api/printer").then((printerData) => {
+      printer.init(version, printerData.data);
+      setInterval(
+        () =>
+          getJson("/api/printer")
+            .then((data) => {
+              printer.update(data.data);
+            })
+            .catch((data) => {
+              if (data.code == 401) {
+                const auth = sessionStorage.getItem("auth") || "false";
+                if (auth == "false") {
+                  initAuth();
+                }
+              }
+            }),
+        UPDATE_INTERVAL
+      );
       window.onpopstate = (e) => e && navigate(e.location);
       navigate(window.location.hash || "#dashboard");
       testLocale();

@@ -3,8 +3,9 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import { getJson } from "../../auth";
-import { handleError } from "./errors";
-import { doQuestion } from "./question";
+import { handleError } from "../components/errors";
+import { doQuestion } from "../components/question";
+import { navigate } from "../../router.js";
 
 /**
  * id: translations, limits
@@ -55,8 +56,8 @@ const setUpElements = (file, elements, div) => {
  * Create a question for set up the exposure times
  * @param {object} file - job file information
  */
-const changeExposureTimesQuestion = (file) => {
-  document.querySelector(".action").addEventListener("click", (e) => {
+const changeExposureTimesQuestion = (file, next = "#preview") => {
+  document.getElementById("exposure").addEventListener("click", (e) => {
     const elements = {};
     const div = document.createElement("div");
     setUpElements(file, elements, div);
@@ -64,25 +65,25 @@ const changeExposureTimesQuestion = (file) => {
       title: "Change exposure times",
       questionChildren: [div],
       yes: (close) => {
+        navigate("#loading");
         const result = {};
         for (let expo in elements) {
           result[expo] = parseFloat(elements[expo].innerHTML) * 1000;
         }
-        const onRespond = (status, data) => {
-          close();
-          handleError(status, data);
-        };
 
-        getJson("/api/job", onRespond, {
+        getJson("/api/system/commands/custom/changeexposure", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
           body: JSON.stringify(result),
-        });
+        })
+          .catch((result) => handleError(result))
+          .finally((result) => close());
       },
       yesText: "save changes",
       noText: "cancel",
+      next,
     });
   });
 };

@@ -4,24 +4,23 @@
 
 import { getJson } from "../../auth";
 import { updateProperties } from "../components/updateProperties.js";
-import { errorFormat } from "../components/errors.js";
+import { handleError } from "../components/errors.js";
 
 const update = (data) => {
   updateProperties("job", data);
 };
 
 export const load = () => {
-  getJson("/api/job", (status, data) => {
-    if (status.ok) {
+  getJson("/api/job")
+    .then((result) => {
+      const data = result.data;
       const completion = data.progress.completion;
       if (completion) {
         document.querySelector("progress").value = completion;
       }
       update(data);
-    } else {
-      errorFormat(status, data);
-    }
-  });
+    })
+    .catch((result) => handleError(result));
 };
 
 export default { load, update };

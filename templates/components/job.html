@@ -80,7 +80,7 @@
   {% if not to_hidden and env.type != "mini" %} {% if job_buttons %}
   <div class="buttons-wrapper">
     {% for key, values in job_buttons %}
-    <button name="{{ key }}" class="{{ values.class }}">
+    <button id="{{ key }}" class="{{ values.class }}">
       <img src="{{ pre.countOrRenderAssets(values.icon) | safe }}" />
       <p>{{ values.text }}</p>
     </button>

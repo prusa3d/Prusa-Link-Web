@@ -66,6 +66,7 @@
     <!-- prettier-ignore -->
     {% if env.printerFamily == "sla" %}
       {% include "components/temperature_graph_sla.html" %}
+      {% include "components/exposure.html" %}
     {% else %}
       {% include "components/temperature_graph_fdm.html" %}
     {% endif %}

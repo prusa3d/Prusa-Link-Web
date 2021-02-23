@@ -61,7 +61,7 @@ router.get("/access/users", async (req, res, next) => {
       {
         active: true, // Whether the user’s account is active (true) or not (false)
         apikey: null, // The user’s personal API key
-        name: "prusa", // The user’s name
+        name: "maker", // The user’s name
         settings: {}, // The user’s personal settings, might be an empty object.
         user: true, // Whether the user has user rights. Should always be true. Deprecated as of 1.4.0, use the users group instead.
         admin: true, // Whether the user has admin rights (true) or not (false). Deprecated as of 1.4.0, use the admins group instead.

@@ -3,157 +3,157 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import { modal } from "./printer/components/modal";
+import { handleError } from "./printer/components/errors";
 
 /**
  * Show modal and ask the api key
  * @param {function} cb
  */
-const askApiKey = (cb) => {
-  modal("apiKey", {
-    timeout: 0,
-    closeOutside: false,
-    events: {
-      click: {
-        login: (event, close) => {
-          event.preventDefault();
-          let apiKey = document
-            .querySelector(".modal-box")
-            .querySelector("#apiKey").value;
-          sessionStorage.setItem("apiKey", apiKey);
-          close();
-          cb();
-        },
-      },
-      keydown: {
-        apiKey: (event, close) => {
-          if (event.key == "Enter") {
-            sessionStorage.setItem("apiKey", event.target.value);
+export const askApiKey = () =>
+  new Promise((resolve, reject) => {
+    modal("apiKey", {
+      timeout: 0,
+      closeOutside: false,
+      events: {
+        click: {
+          login: (event, close) => {
+            event.preventDefault();
+            let apiKey = document.getElementById("apiKey").value;
             close();
-            cb();
-          }
+            resolve(apiKey);
+          },
+        },
+        keydown: {
+          apiKey: (event, close) => {
+            if (event.key == "Enter") {
+              close();
+              resolve(event.target.value);
+            }
+          },
         },
       },
-    },
-  });
-};
+    });
+  }).then((apiKey) => sessionStorage.setItem("apiKey", apiKey));
 
 /**
  * Create the readers with apiKey if exist and Accept keys
  */
 const getHeaders = () => {
-  let authType = sessionStorage.getItem("authType");
-  if (authType == "ApiKey") {
-    let apiKey = sessionStorage.getItem("apiKey");
-    if (apiKey) {
-      return { "X-Api-Key": apiKey, Accept: "application/json" };
-    }
-    throw Error("Missing ApiKey");
+  if (sessionStorage.getItem("authType") == "ApiKey") {
+    return {
+      "X-Api-Key": sessionStorage.getItem("apiKey"),
+      Accept: "application/json",
+    };
   }
-  return {};
-};
-
-/**
- * Check if the browser is authenticated
- * @param {Response} response
- */
-const validate_auth = (response) => {
-  if (response.status == 401) {
-    const auth_type = response.headers.get("WWW-Authenticate").split(" ")[0];
-    sessionStorage.setItem("auth", "false");
-    sessionStorage.setItem("authType", auth_type);
-    sessionStorage.removeItem("apiKey");
-    throw Error(auth_type);
-  }
+  return { Accept: "application/json" };
 };
 
 /**
  * Authenticate the browser
  */
-const setUpAuth = async () => {
-  try {
+const setUpAuth = () =>
+  new Promise((resolve, reject) => {
     sessionStorage.setItem("auth", "pending");
-    return await fetch("/api/version", { headers: getHeaders() })
+    return fetch("/api/version", { headers: getHeaders() })
       .then((response) => {
-        validate_auth(response);
-        return response.json();
+        if (response.status == 401) {
+          response.json().then((data) => handleError({ data }));
+          const auth_type = response.headers
+            .get("WWW-Authenticate")
+            .split(" ")[0];
+          sessionStorage.setItem("authType", auth_type);
+          sessionStorage.removeItem("apiKey");
+          if (auth_type == "ApiKey") {
+            return askApiKey().then(() =>
+              setUpAuth().then((data) => resolve(data))
+            ); // ApiKey
+          }
+          return setUpAuth().then((data) => resolve(data)); // http-digest
+        } else {
+          return response.json(); // done
+        }
       })
       .then((data) => {
         sessionStorage.setItem("auth", "true");
-        return data;
-      })
-      .catch((e) => {
-        // change page error
-        console.log("change page error");
-        if (e.message == "ApiKey") {
-          askApiKey(setUpAuth);
-        } else {
-          setUpAuth();
-        }
+        resolve(data);
       });
-  } catch (err) {
-    askApiKey(setUpAuth);
-  }
-};
-
-/**
- * Response status
- * @typedef Status
- * @property {number} code
- * @property {boolean} ok
- */
+  });
 
 /**
  * Async function for fetch url then call the callback with the data
  * @param {string} url
- * @param {(status: Status, data) => void} cb
- * @param {headers} opts
+ * @param {object} opts
  */
-const getJson = async (url, cb, opts = {}) => {
-  let auth = sessionStorage.getItem("auth");
-  if (auth == "true") {
-    try {
+const getJson = (url, opts = {}) =>
+  new Promise((resolve, reject) => {
+    const auth = sessionStorage.getItem("auth");
+    if (auth == "true") {
       opts.headers = { ...opts.headers, ...getHeaders() };
-      await fetch(url, opts)
-        .then((response) => {
-          validate_auth(response);
-          const res = {
-            code: response.status,
-            ok: response.ok,
-            eTag: response.headers.get("etag"),
-          };
-          if (response.status == 204 || response.status == 304) {
-            cb(res, null);
-          } else {
-            return response.json().then((data) => cb(res, data));
-          }
-        })
-        .catch((e) => {
-          throw e;
-        });
-    } catch (err) {
-      // TODO ERROR HANDLING
-      console.log(err);
+      fetch(url, opts).then((response) => {
+        const status = response.status;
+        const result = {
+          code: status,
+          eTag: response.headers.get("etag"),
+        };
+        if (status == 401) {
+          sessionStorage.setItem("auth", "false");
+          reject(result);
+        } else if (status == 204 || status == 304) {
+          resolve(result);
+        } else {
+          response.json().then((data) => {
+            result["data"] = data;
+            if (response.ok) {
+              resolve(result);
+            } else {
+              reject(result);
+            }
+          });
+        }
+      });
+    } else {
+      reject({ code: 401 });
     }
-  } else if (auth == "false") {
-    const showedWelcome = localStorage.getItem("showWelcome");
-    if (showedWelcome) {
-      setUpAuth();
+  });
+
+/**
+ * Async function for fetch image
+ * @param {string} url
+ * @param {object} opts
+ */
+const getImage = (url) =>
+  new Promise((resolve, reject) => {
+    const auth = sessionStorage.getItem("auth");
+    if (auth == "true") {
+      const opts = {
+        headers: { "Content-Type": "image/png", ...getHeaders() },
+      };
+      fetch(url, opts).then((response) => {
+        if (response.status == 401) {
+          sessionStorage.setItem("auth", "false");
+          reject();
+        }
+        response.blob().then((blob) => resolve(URL.createObjectURL(blob)));
+      });
+    } else {
+      reject();
     }
-  }
-};
+  });
 
 const initAuth = () => {
   const showWelcome = localStorage.getItem("showWelcome");
   if (showWelcome == null) {
-    modal("welcome", {
-      closeCallback: () => {
-        localStorage.setItem("showWelcome", true);
-        return setUpAuth();
-      },
-    });
+    return new Promise((resolve, reject) => {
+      modal("welcome", {
+        closeCallback: () => {
+          localStorage.setItem("showWelcome", true);
+          resolve();
+        },
+      });
+    }).then(() => setUpAuth());
   } else {
     return setUpAuth();
   }
 };
 
-export { getHeaders, validate_auth, setUpAuth, getJson, initAuth };
+export { getJson, initAuth, getImage };

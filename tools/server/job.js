@@ -26,7 +26,9 @@ router.post("/", async (req, res, next) => {
   if (command == "start") {
     result = printer.print();
   } else if (command == "cancel") {
-    result = printer.stopPrint();
+    result = printer.stop();
+  } else if (command == "pause" && action == "resume") {
+    result = printer.pauseResume();
   }
 
   if (result) {

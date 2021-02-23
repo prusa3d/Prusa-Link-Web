@@ -4,7 +4,7 @@
 
 import temperature from "./temperature";
 import { updateTitles } from "./index";
-import { load as job } from "../components/job.js";
+import { load as job } from "./job.js";
 
 const load = () => {
   console.log("Dashboard Logic - sl1");
@@ -14,7 +14,8 @@ const load = () => {
 
 const update = (context) => {
   const jobElm = document.querySelector(".job");
-  if (updateTitles()) {
+  const flags = context.printer.state.flags;
+  if (updateTitles() && !(flags.pausing || flags.paused)) {
     if (jobElm.hasAttribute("hidden")) {
       jobElm.removeAttribute("hidden");
     }

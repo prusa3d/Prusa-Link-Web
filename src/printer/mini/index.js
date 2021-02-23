@@ -8,7 +8,6 @@ import Temperature from "./temperature.js";
 import dashboard from "../../views/dashboard.html";
 import temperature from "../../views/temperature.html";
 import { updateProperties } from "../components/updateProperties.js";
-import { errorFormat } from "../components/errors.js";
 
 const context = {
   version: undefined,
@@ -27,16 +26,12 @@ const mini = {
     context.printer = printerData;
     initTemperatureGraph();
   },
-  update: (status, data) => {
+  update: (data) => {
     console.log("Update Printer API");
-    if (status.ok) {
-      context.printer = data;
-      updateProperties("telemetry", data);
-      updateTemperatureGraph(data);
-      updateModule();
-    } else {
-      errorFormat(data);
-    }
+    context.printer = data;
+    updateProperties("telemetry", data);
+    updateTemperatureGraph(data);
+    updateModule();
   },
   setModule: (module) => {
     currentModule = module;

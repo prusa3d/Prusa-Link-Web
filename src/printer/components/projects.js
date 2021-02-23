@@ -2,9 +2,9 @@
 // Copyright (C) 2021 Prusa Research a.s. - www.prusa3d.com
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-import { getJson } from "../../auth.js";
+import { getJson, getImage } from "../../auth.js";
 import { navigate } from "../../router.js";
-import { errorFormat, handleError } from "./errors";
+import { handleError } from "./errors";
 import { getValue } from "./updateProperties.js";
 import formatData from "./dataFormat.js";
 
@@ -39,24 +39,27 @@ const sortByType = (a, b) => {
  * @param {object} status
  * @param {object} data
  */
-const updateData = (status, data) => {
-  if (status.code != 304) {
-    if (status.ok) {
-      metadata.files = {
-        local: data.files.filter((elm) => elm.origin == "local"),
-        usb: data.files.filter((elm) => elm.origin == "sdcard"),
-      };
-      metadata.free = data.free;
-      metadata.total = data.total;
-      metadata.eTag = status.eTag;
-      metadata.firstTime = false;
-      if (window.location.hash == "#projects") {
-        navigate("#projects");
+const updateData = () => {
+  getJson("/api/files?recursive=true", {
+    headers: { "If-None-Match": metadata.eTag },
+  })
+    .then((result) => {
+      const data = result.data;
+      if (data) {
+        metadata.files = {
+          local: data.files.filter((elm) => elm.origin == "local"),
+          usb: data.files.filter((elm) => elm.origin == "sdcard"),
+        };
+        metadata.free = data.free;
+        metadata.total = data.total;
+        metadata.eTag = result.eTag;
+        metadata.firstTime = false;
+        if (window.location.hash == "#projects") {
+          navigate("#projects");
+        }
       }
-    } else {
-      errorFormat(data);
-    }
-  }
+    })
+    .catch((result) => handleError(result));
 };
 
 /**
@@ -64,19 +67,26 @@ const updateData = (status, data) => {
  * @param {object} context
  */
 export const update = (context) => {
-  if (context.printer.state.flags.printing) {
-    if (context.printer.state.flags.ready) {
+  const flags = context.printer.state.flags;
+  if (flags.printing) {
+    if (flags.ready) {
       navigate("#preview");
     } else {
-      navigate("#job");
+      if (process.env.PRINTER_FAMILY == "sla") {
+        if (flags.pausing || flags.paused) {
+          navigate("#refill");
+        } else {
+          navigate("#job");
+        }
+      } else {
+        navigate("#job");
+      }
     }
   } else {
-    getJson("/api/files?recursive=true", updateData, {
-      headers: { "If-None-Match": metadata.eTag },
-    });
     if (metadata.firstTime) {
       navigate("#loading");
     }
+    updateData();
   }
 };
 
@@ -159,15 +169,18 @@ function createUp() {
  */
 const onClickFile = (node) => {
   navigate("#loading");
-  getJson(node.refs.resource, handleError, {
+  getJson(node.refs.resource, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({ command: "select" }),
   })
-    .then(() => navigate("#preview"))
-    .catch(() => navigate("#projects"));
+    .then((result) => navigate("#preview"))
+    .catch((result) => {
+      navigate("#projects");
+      handleError(result);
+    });
 };
 
 /**
@@ -191,7 +204,10 @@ function createFile(node) {
     }
   });
   if (node.refs.thumbnailBig) {
-    elm.querySelector("img.node-img").src = node.refs.thumbnailBig;
+    const img = elm.querySelector("img.node-img");
+    getImage(node.refs.thumbnailBig).then((url) => {
+      img.src = url;
+    });
   }
   return elm;
 }
