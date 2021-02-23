@@ -5,6 +5,8 @@
 const basicAuth = require("express-basic-auth");
 const bodyParser = require("body-parser");
 const { PrinterSL1, PrinterMK3 } = require("./mock");
+const { Unauthorized, ApiKeyMissing } = require("./mock/errors");
+
 const devServer = (app, conf) => {
   /*
    * api key middleware
@@ -14,8 +16,9 @@ const devServer = (app, conf) => {
       if (req.header("X-Api-Key") == "developer") {
         next();
       } else {
+        const unauthorizedResponse = new ApiKeyMissing().error;
         res.set("WWW-Authenticate", 'ApiKey realm="401"');
-        res.status(401).send("Authentication required.");
+        res.status(401).json(unauthorizedResponse);
       }
     });
   }
@@ -24,11 +27,13 @@ const devServer = (app, conf) => {
    * http basic middleware
    */
   if (conf["http-basic"]) {
+    const unauthorizedResponse = new Unauthorized().error;
     app.use(
       "/api/",
       basicAuth({
         users: { maker: "developer" },
         challenge: true,
+        unauthorizedResponse,
       })
     );
   }

@@ -11,13 +11,14 @@ import Projects from "../components/projects.js";
 import projects from "../../views/projects.html";
 import Preview from "../components/preview.js";
 import preview from "../../views/preview.html";
-import Job from "../components/job.js";
+import Job from "./job.js";
 import job from "../../views/job.html";
+import Refill from "./refill.js";
+import refill from "../../views/refill.html";
 import Question from "../components/question.js";
 import question from "../../views/question.html";
 import loading from "../../views/loading.html";
 import { updateProperties } from "../components/updateProperties.js";
-import { errorFormat } from "../components/errors";
 
 const context = {
   version: undefined,
@@ -34,6 +35,7 @@ const sl1 = {
     { path: "job", html: job, module: Job },
     { path: "question", html: question, module: Question },
     { path: "loading", html: loading, module: { load: () => {} } },
+    { path: "refill", html: refill, module: Refill },
   ],
   init: (version, printerData) => {
     console.log("Init Printer API");
@@ -41,16 +43,12 @@ const sl1 = {
     context.printer = printerData;
     initTemperatureGraph();
   },
-  update: (status, data) => {
+  update: (data) => {
     console.log("Update Printer API");
-    if (status.ok) {
-      context.printer = data;
-      updateProperties("telemetry", data);
-      updateTemperatureGraph(data);
-      updateModule();
-    } else {
-      errorFormat(data);
-    }
+    context.printer = data;
+    updateProperties("telemetry", data);
+    updateTemperatureGraph(data);
+    updateModule();
   },
   setModule: (module) => {
     currentModule = module;

@@ -101,7 +101,7 @@
       </div>
       <div class="buttons-wrapper">
         {% if env.printerFamily == "sla" %}
-        <button class="action">
+        <button id="exposure" class="action">
           <img
             src="{{ pre.countOrRenderAssets('exposure_times_color.svg') | safe }}"
           />
@@ -125,7 +125,3 @@
 {% include "components/modal/confirmPrint.html" %}
 <!-- prettier-ignore -->
 {% include "components/modal/confirmDelete.html" %}
-<!-- prettier-ignore -->
-{% if env.printerFamily == "sla" %}
-  {% include "components/exposure.html" %}
-{% endif %}

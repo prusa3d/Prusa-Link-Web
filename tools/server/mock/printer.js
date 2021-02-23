@@ -103,6 +103,11 @@ class Printer {
       return this.last_error;
     }
 
+    if (this.status.cancelling) {
+      this.last_error = new errors.NotAvailableInState();
+      return this.last_error;
+    }
+
     if (this.isPrinting && this.printingProject == project) {
       this.last_error = new errors.NotAvailableInState();
       return this.last_error;
@@ -283,7 +288,7 @@ class Printer {
   }
 
   print() {
-    if (!this.status.printing || this.isPrinting) {
+    if (!this.status.printing || this.isPrinting || this.status.cancelling) {
       this.last_error = new errors.NotAvailableInState();
       return this.last_error;
     }
@@ -310,12 +315,29 @@ class Printer {
   }
 
   stopPrint() {
+    this.printingProject = null;
+    this.isPrinting = false; // doesn't print
+    this.status.printing = false; // close project
+    this.status.ready = true;
+    this.status.cancelling = false;
+    this.statusText = "Operational";
+  }
+
+  stop() {
     if (this.status.printing) {
-      this.printingProject = null;
-      this.isPrinting = false; // don't print
-      this.status.printing = false; // close project
-      this.status.ready = true;
-      this.statusText = "Operational";
+      if (this.isPrinting) {
+        this.printingProject = null;
+        this.isPrinting = false; // doesn't print
+        this.status.printing = false; // close project
+        this.status.ready = false;
+        this.status.cancelling = true;
+        this.statusText = "Cancelling";
+
+        setTimeout(() => this.stopPrint(), 5000);
+      } else {
+        this.stopPrint();
+      }
+
       return true;
     }
     this.last_error = new errors.NotAvailableInState();
@@ -399,6 +421,34 @@ class Printer {
       sd: this.getSD(),
       state: this.getStatus(),
     };
+  }
+
+  pause() {
+    if (!this.isPrinting) {
+      this.last_error = new errors.NotAvailableInState();
+      return this.last_error;
+    }
+    this.isPrinting = false;
+    this.status.pausing = true;
+    this.statusText = "Pausing";
+
+    setTimeout(() => {
+      this.status.paused = true;
+      this.status.pausing = false;
+      this.statusText = "Paused";
+    }, 3000);
+    return true;
+  }
+
+  pauseResume() {
+    if (!this.status.paused) {
+      this.last_error = new errors.NotAvailableInState();
+      return this.last_error;
+    }
+    this.status.paused = false;
+    this.isPrinting = true;
+    this.statusText = "Printing";
+    return true;
   }
 }
 

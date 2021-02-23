@@ -167,6 +167,28 @@
             }
           },
           "response": []
+        },
+        {
+          "name": "/api/job (cancel)",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"command\": \"cancel\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/job",
+              "host": ["{{base_url}}"],
+              "path": ["job"]
+            }
+          },
+          "response": []
         }
       ]
     },
@@ -220,9 +242,9 @@
             "method": "POST",
             "header": [],
             "url": {
-              "raw": "{{base_url}}/system/commands/custom/resinrefilled",
+              "raw": "{{base_url}}/system/commands/custom/resinrefill",
               "host": ["{{base_url}}"],
-              "path": ["system", "commands", "custom", "resinrefilled"]
+              "path": ["system", "commands", "custom", "resinrefill"]
             }
           },
           "response": []
@@ -233,9 +255,9 @@
             "method": "POST",
             "header": [],
             "url": {
-              "raw": "{{base_url}}/system/commands/custom/resinrefill",
+              "raw": "{{base_url}}/system/commands/custom/resinrefilled",
               "host": ["{{base_url}}"],
-              "path": ["system", "commands", "custom", "resinrefill"]
+              "path": ["system", "commands", "custom", "resinrefilled"]
             }
           },
           "response": []
@@ -245,6 +267,15 @@
           "request": {
             "method": "POST",
             "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"exposureTime\": 2000,\n    \"exposureTimeFirst\": 12000,\n    \"exposureTimeCalibration\": 1500\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
             "url": {
               "raw": "{{base_url}}/system/commands/custom/changeexposure",
               "host": ["{{base_url}}"],

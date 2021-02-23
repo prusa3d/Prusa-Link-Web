@@ -3,10 +3,19 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 const Printer = require("./printer.js");
+const errors = require("./errors.js");
 
 class PrinterSL1 extends Printer {
   constructor() {
     super(require("./files_sl1"), "Original Prusa SL1", 100);
+    this.exposureTime = 1500;
+    this.exposureTimeFirst = 15000;
+    this.exposureTimeCalibration = 3000;
+    this.limits = {
+      exposureTime: { min: 1000, max: 60000 },
+      exposureTimeFirst: { min: 10000, max: 120000 },
+      exposureTimeCalibration: { min: 500, max: 5000 },
+    };
   }
 
   systemCommands(url) {
@@ -25,6 +34,12 @@ class PrinterSL1 extends Printer {
         source: "custom",
         resource: url + "/custom/resinrefilled",
       },
+      {
+        action: "changeexposure",
+        name: "Change exposure times",
+        source: "custom",
+        resource: "http://localhost/api/system/commands/custom/changeexposure",
+      },
     ];
     return commands;
   }
@@ -39,9 +54,9 @@ class PrinterSL1 extends Printer {
         ...jobSL1.job.file,
         layers: layers,
         layerHeight: 0.05,
-        exposureTime: 1500,
-        exposureTimeFirst: 15000,
-        exposureTimeCalibration: 3000,
+        exposureTime: this.exposureTime,
+        exposureTimeFirst: this.exposureTimeFirst,
+        exposureTimeCalibration: this.exposureTimeCalibration,
       };
       if (this.isPrinting) {
         const completion = jobSL1.progress.completion;
@@ -71,6 +86,25 @@ class PrinterSL1 extends Printer {
     };
 
     return printerStatus;
+  }
+
+  changeExposureTimes(exposureTimes) {
+    if (!this.status.printing) {
+      this.last_error = new errors.NotAvailableInState();
+      return this.last_error;
+    }
+
+    for (let id in this.limits) {
+      const lim = this.limits[id];
+      const newValue = exposureTimes[id];
+      if (newValue && lim.min <= newValue && newValue <= lim.max) {
+        this[id] = newValue;
+      } else {
+        this.last_error = new errors.RemoteApiError();
+        return this.last_error;
+      }
+    }
+    return true;
   }
 }
 
