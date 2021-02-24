@@ -1,73 +1,33 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!-- Creator: CorelDRAW 2017 -->
 
-<svg
-   xmlns:dc="http://purl.org/dc/elements/1.1/"
-   xmlns:cc="http://creativecommons.org/ns#"
-   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
-   xmlns:svg="http://www.w3.org/2000/svg"
-   xmlns="http://www.w3.org/2000/svg"
-   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
-   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   xml:space="preserve"
-   width="7.1836mm"
-   height="9.578mm"
-   version="1.1"
-   style="shape-rendering:geometricPrecision; text-rendering:geometricPrecision; image-rendering:optimizeQuality; fill-rule:evenodd; clip-rule:evenodd"
-   viewBox="0 0 56.2 74.94"
-   id="svg2"
-   inkscape:version="0.91 r13725"
-   sodipodi:docname="test_color-2.svg"><metadata
-     id="metadata19"><rdf:RDF><cc:Work
-         rdf:about=""><dc:format>image/svg+xml</dc:format><dc:type
-           rdf:resource="http://purl.org/dc/dcmitype/StillImage" /><dc:title></dc:title></cc:Work></rdf:RDF></metadata><sodipodi:namedview
-     pagecolor="#ffffff"
-     bordercolor="#666666"
-     borderopacity="1"
-     objecttolerance="10"
-     gridtolerance="10"
-     guidetolerance="10"
-     inkscape:pageopacity="0"
-     inkscape:pageshadow="2"
-     inkscape:window-width="1510"
-     inkscape:window-height="818"
-     id="namedview17"
-     showgrid="false"
-     inkscape:zoom="6.9538989"
-     inkscape:cx="5.6804436"
-     inkscape:cy="16.968898"
-     inkscape:window-x="0"
-     inkscape:window-y="0"
-     inkscape:window-maximized="0"
-     inkscape:current-layer="svg2" /><defs
-     id="defs4"><style
-       type="text/css"
-       id="style6"><![CDATA[
-    .fil0 {fill:black}
-    .fil2 {fill:#FF6600}
-    .fil1 {fill:white}
-   ]]></style></defs><rect
-     class="fil0"
-     x="-1180.69"
-     y="-1538.66"
-     width="1643.01"
-     height="2323.69"
-     id="rect8"
-     style="opacity:0" /><g
-     id="Layer_x0020_1"><metadata
-       id="CorelCorpID_0Corel-Layer" /><path
-       id="iconmonstr-flask-4.svg"
-       class="fil1"
-       d="M40.59 59.33c0,-1.72 -1.4,-3.12 -3.12,-3.12 -1.73,0 -3.12,1.4 -3.12,3.12 0,1.72 1.4,3.12 3.12,3.12 1.72,0 3.12,-1.4 3.12,-3.12z" /><path
-       id="iconmonstr-flask-4.svg_0"
-       class="fil1"
-       d="M31.22 49.96c0,-1.73 -1.4,-3.12 -3.12,-3.12 -1.73,0 -3.12,1.4 -3.12,3.12 0,1.73 1.4,3.12 3.12,3.12 1.72,0 3.12,-1.4 3.12,-3.12z" /><path
-       id="iconmonstr-flask-4.svg_1"
-       class="fil2"
-       d="M24.98 60.89c0,-2.59 -2.1,-4.68 -4.68,-4.68 -2.59,0 -4.68,2.09 -4.68,4.68 0,2.59 2.1,4.68 4.68,4.68 2.59,0 4.68,-2.09 4.68,-4.68z" /><path
-       id="iconmonstr-flask-4.svg_2"
-       class="fil1"
-       d="M55.45 64l-11.69 -24.53c-3.25,-6.83 -6.3,-14.3 -6.3,-21.88l0 -5.11 -6.25 0 0 6.25c0.28,8.46 3.63,16.56 6.9,23.42l11.69 24.52c0.45,0.94 -0.21,2.01 -1.18,2.01l-41.07 0c-0.94,0 -1.63,-1.06 -1.17,-2.01l11.68 -24.53c3.27,-6.86 6.6,-14.96 6.89,-23.42l0.02 -6.25 -6.25 0 0 5.11c0,7.58 -3.05,15.05 -6.3,21.88l-11.69 24.53c-0.52,1.09 -0.75,2.21 -0.75,3.3 0,4.01 3.19,7.63 7.57,7.63l41.07 0c4.37,0 7.57,-3.63 7.57,-7.64 0,-1.09 -0.24,-2.21 -0.75,-3.3z" /><path
-       id="iconmonstr-flask-4.svg_3"
-       class="fil1"
-       d="M40.59 3.12c0,1.72 -1.4,3.12 -3.12,3.12l-18.73 0c-1.73,0 -3.12,-1.4 -3.12,-3.12 0,-1.72 1.4,-3.12 3.12,-3.12l18.74 0c1.73,0 3.12,1.4 3.12,3.12l-0 0z" /></g></svg>
+<svg xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:svg="http://www.w3.org/2000/svg" xmlns="http://www.w3.org/2000/svg" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" xml:space="preserve" width="7.1836mm" height="9.578mm" version="1.1" style="shape-rendering:geometricPrecision; text-rendering:geometricPrecision; image-rendering:optimizeQuality; fill-rule:evenodd; clip-rule:evenodd" viewBox="0 0 56.2 74.94" inkscape:version="0.91 r13725" sodipodi:docname="test_color-2.svg">
+  <metadata>
+    <rdf:RDF>
+      <cc:Work rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <sodipodi:namedview pagecolor="#ffffff" bordercolor="#666666" borderopacity="1" objecttolerance="10" gridtolerance="10" guidetolerance="10" inkscape:pageopacity="0" inkscape:pageshadow="2" inkscape:window-width="1510" inkscape:window-height="818" showgrid="false" inkscape:zoom="6.9538989" inkscape:cx="5.6804436" inkscape:cy="16.968898" inkscape:window-x="0" inkscape:window-y="0" inkscape:window-maximized="0" inkscape:current-layer="svg2" />
+  <defs>
+    <style type="text/css">
+      <![CDATA[
+        .fil0 {fill:black}
+        .fil2 {fill:#FF6600}
+        .fil1 {fill:white}
+      ]]>
+    </style>
+  </defs>
+  <rect class="fil0" x="-1180.69" y="-1538.66" width="1643.01" height="2323.69" style="opacity:0" />
+  <g>
+    <metadata />
+    <path class="fil1" d="M40.59 59.33c0,-1.72 -1.4,-3.12 -3.12,-3.12 -1.73,0 -3.12,1.4 -3.12,3.12 0,1.72 1.4,3.12 3.12,3.12 1.72,0 3.12,-1.4 3.12,-3.12z" />
+    <path class="fil1" d="M31.22 49.96c0,-1.73 -1.4,-3.12 -3.12,-3.12 -1.73,0 -3.12,1.4 -3.12,3.12 0,1.73 1.4,3.12 3.12,3.12 1.72,0 3.12,-1.4 3.12,-3.12z" />
+    <path class="fil2" d="M24.98 60.89c0,-2.59 -2.1,-4.68 -4.68,-4.68 -2.59,0 -4.68,2.09 -4.68,4.68 0,2.59 2.1,4.68 4.68,4.68 2.59,0 4.68,-2.09 4.68,-4.68z" />
+    <path class="fil1" d="M55.45 64l-11.69 -24.53c-3.25,-6.83 -6.3,-14.3 -6.3,-21.88l0 -5.11 -6.25 0 0 6.25c0.28,8.46 3.63,16.56 6.9,23.42l11.69 24.52c0.45,0.94 -0.21,2.01 -1.18,2.01l-41.07 0c-0.94,0 -1.63,-1.06 -1.17,-2.01l11.68 -24.53c3.27,-6.86 6.6,-14.96 6.89,-23.42l0.02 -6.25 -6.25 0 0 5.11c0,7.58 -3.05,15.05 -6.3,21.88l-11.69 24.53c-0.52,1.09 -0.75,2.21 -0.75,3.3 0,4.01 3.19,7.63 7.57,7.63l41.07 0c4.37,0 7.57,-3.63 7.57,-7.64 0,-1.09 -0.24,-2.21 -0.75,-3.3z" />
+    <path class="fil1" d="M40.59 3.12c0,1.72 -1.4,3.12 -3.12,3.12l-18.73 0c-1.73,0 -3.12,-1.4 -3.12,-3.12 0,-1.72 1.4,-3.12 3.12,-3.12l18.74 0c1.73,0 3.12,1.4 3.12,3.12l-0 0z" />
+  </g>
+</svg>
