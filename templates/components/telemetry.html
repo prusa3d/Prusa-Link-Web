@@ -1,50 +1,53 @@
 <!-- prettier-ignore -->
 {#
-    # This file is part of the Prusa Connect Local
-    # Copyright (C) 2021 Prusa Research a.s. - www.prusa3d.com
-    # SPDX-License-Identifier: GPL-3.0-or-later
+  # This file is part of the Prusa Connect Local
+  # Copyright (C) 2021 Prusa Research a.s. - www.prusa3d.com
+  # SPDX-License-Identifier: GPL-3.0-or-later
 #}
 
 <!-- prettier-ignore -->
 {% if env.printerFamily == "sla" %}
-    {% 
-        set telemetry_list = [
-            {'text': 'CPU temperature', 'icon': 'temperature_color.svg', 'format': 'temp',  "location": "telemetry.tempCpu" },
-            {'text': 'UV LED temperature', 'icon': 'temperature_color.svg', 'format': 'temp',  "location": "telemetry.tempUvLed" },
-            {'text': 'ambient temperature', 'icon': 'temperature_color.svg', 'format': 'temp',  "location": "telemetry.tempAmbient" },
-            {'text': 'UV LED fan', 'icon': 'fan_color.svg', 'format': 'fan',  "location": "telemetry.fanUvLed" },
-            {'text': 'blower fan', 'icon': 'fan_color.svg', 'format': 'fan',  "location": "telemetry.fanBlower" },
-            {'text': 'rear fan', 'icon': 'fan_color.svg', 'format': 'fan',  "location": "telemetry.fanRear" },
-            {'text': 'cover state', 'icon': 'cover_color.svg', 'format': 'cover',  "location": "telemetry.coverClosed" }
-        ]
-    %}
+  {%
+      set telemetry_list = [
+          {'label': 'prop.temp-cpu', 'icon': 'temperature_color.svg', 'format': 'temp',  "location": "telemetry.tempCpu" },
+          {'label': 'prop.temp-led', 'icon': 'temperature_color.svg', 'format': 'temp',  "location": "telemetry.tempUvLed" },
+          {'label': 'prop.temp-amb', 'icon': 'temperature_color.svg', 'format': 'temp',  "location": "telemetry.tempAmbient" },
+          {'label': 'prop.fan-led', 'icon': 'fan_color.svg', 'format': 'fan',  "location": "telemetry.fanUvLed" },
+          {'label': 'prop.fan-blower', 'icon': 'fan_color.svg', 'format': 'fan',  "location": "telemetry.fanBlower" },
+          {'label': 'prop.fan-rear', 'icon': 'fan_color.svg', 'format': 'fan',  "location": "telemetry.fanRear" },
+          {'label': 'prop.cover', 'icon': 'cover_color.svg', 'format': 'cover',  "location": "telemetry.coverClosed" }
+      ]
+  %}
 {% else %}
-    {%
-        set telemetry_list = [
-            {'text': 'Nozzle Temperature', 'icon': 'status_nozzle.svg', 'format': 'temp', "location": "telemetry.temp-nozzle" },
-            {'text': 'Heatbed', 'icon': 'status_heatbed.svg', 'format': 'temp', "location": "telemetry.temp-bed" },
-            {'text': 'Printing Speed', 'icon': 'status_prnspeed.svg', 'format': 'print', "location": "telemetry.print-speed" },
-            {'text': 'Z - Height', 'icon': 'status_z_axis.svg', "location": "telemetry.z-height", 'format': 'pos'  },
-            {'text': 'Material', 'icon': 'status_filament.svg', "location": "telemetry.material" }
-        ]
-    %}
+  {%
+      set telemetry_list = [
+          {'label': 'prop.temp-nozzle', 'icon': 'status_nozzle.svg', 'format': 'temp', "location": "telemetry.temp-nozzle" },
+          {'label': 'prop.temp-bed', 'icon': 'status_heatbed.svg', 'format': 'temp', "location": "telemetry.temp-bed" },
+          {'label': 'prop.speed', 'icon': 'status_prnspeed.svg', 'format': 'print', "location": "telemetry.print-speed" },
+          {'label': 'prop.z-height', 'icon': 'status_z_axis.svg', "location": "telemetry.z-height", 'format': 'pos'  },
+          {'label': 'prop.material', 'icon': 'status_filament.svg', "location": "telemetry.material" }
+      ]
+  %}
 {% endif %}
 
 <div class="telemetry">
-  {% for values in telemetry_list %}
-  <div class="tel-prop">
-    <img class="icon" src="{{ pre.countOrRenderAssets(values.icon) | safe }}" />
-    <div class="value">
-      <p class="txt-normal txt-size-2 txt-grey">{{ values.text }}</p>
-      <p
-        class="txt-bold txt-size-2"
-        data-type="telemetry"
-        data-format="{{ values.format }}"
-        data-where="{{ values.location }}"
-      >
-        NA
-      </p>
-    </div>
+{% for values in telemetry_list %}
+<div class="tel-prop">
+  <img class="icon" src="{{ pre.countOrRenderAssets(values.icon) | safe }}" />
+  <div class="value">
+    <p
+      class="txt-normal txt-size-2 txt-grey"
+      data-label="{{ values.label }}"
+    ></p>
+    <p
+      class="txt-bold txt-size-2"
+      data-type="telemetry"
+      data-format="{{ values.format }}"
+      data-where="{{ values.location }}"
+    >
+      NA
+    </p>
   </div>
-  {% endfor %}
+</div>
+{% endfor %}
 </div>

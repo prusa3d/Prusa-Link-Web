@@ -6,14 +6,15 @@ import { getJson } from "../../auth";
 import { handleError } from "../components/errors";
 import { doQuestion } from "../components/question";
 import { navigate } from "../../router.js";
+import { translate } from "../../locale_provider";
 
 /**
  * id: translations, limits
  */
 const translations = {
-  exposureTime: { text: "Exposure [s]", limit: [1, 60] },
-  exposureTimeFirst: { text: "First Layer Expo. [s]", limit: [10, 120] },
-  exposureTimeCalibration: { text: "Exposure time incr. [s]", limit: [0.5, 5] },
+  exposureTime: { text: translate("exp-times.exp-time"), limit: [1, 60] },
+  exposureTimeFirst: { text: translate("exp-times.layer-1st"), limit: [10, 120] },
+  exposureTimeCalibration: { text: translate("exp-times.inc"), limit: [0.5, 5] },
 };
 
 /**
@@ -62,7 +63,7 @@ const changeExposureTimesQuestion = (file, next = "#preview") => {
     const div = document.createElement("div");
     setUpElements(file, elements, div);
     doQuestion({
-      title: "Change exposure times",
+      title: translate("exp-times.title"),
       questionChildren: [div],
       yes: (close) => {
         navigate("#loading");
@@ -81,8 +82,8 @@ const changeExposureTimesQuestion = (file, next = "#preview") => {
           .catch((result) => handleError(result))
           .finally((result) => close());
       },
-      yesText: "save changes",
-      noText: "cancel",
+      yesText: translate("btn.save-chgs"),
+      noText: translate("btn.cancel"),
       next,
     });
   });

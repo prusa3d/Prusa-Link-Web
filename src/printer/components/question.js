@@ -2,6 +2,7 @@
 // Copyright (C) 2021 Prusa Research a.s. - www.prusa3d.com
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+import { translate } from "../../locale_provider.js";
 import { navigate } from "../../router.js";
 
 const question = {};
@@ -28,8 +29,8 @@ export const doQuestion = (data) => {
       questionChildren: [],
       yes: (cb) => cb(),
       no: (cb) => cb(),
-      yesText: "yes",
-      noText: "no",
+      yesText: translate("btn.yes"),
+      noText: translate("btn.no"),
       next: "#projects",
     },
     data

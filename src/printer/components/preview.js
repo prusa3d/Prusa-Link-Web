@@ -9,11 +9,13 @@ import { navigate } from "../../router.js";
 import { modal } from "./modal.js";
 import { confirmJob } from "./job.js";
 import { doQuestion } from "./question";
+import { translate } from "../../locale_provider";
 
 /**
  * load preview
  */
 const load = () => {
+  translate("proj.title", { query: "#title" });
   getJson("/api/job").then((result) => {
     const data = result.data;
     console.log(data);
@@ -48,8 +50,9 @@ const load = () => {
      */
     document.getElementById("delete").addEventListener("click", (e) => {
       doQuestion({
-        title: "Delete File",
-        questionChildren: `Do you really want to delete <strong>${file.name}</strong>?`,
+        title: translate("proj.del"),
+        // TODO: add strong - Do you really want to delete <strong>${file.name}</strong>?
+        questionChildren: translate("msg.del-proj", { file_name: file.name }),
         yes: (close) => {
           getJson(file.refs.resource, { method: "DELETE" })
             .catch((result) => handleError(result))
@@ -94,6 +97,18 @@ const load = () => {
       e.preventDefault();
     });
   });
+
+  translate("prop.time-est", { query: `[data-label="prop.time-est"]`});
+  translate("prop.est-end", { query: `[data-label="prop.est-end"]`});
+  translate("prop.layers", { query: `[data-label="prop.layers"]`});
+  translate("prop.layer-ht", { query: `[data-label="prop.layer-ht"]`});
+  translate("prop.exp-times", { query: `[data-label="prop.exp-times"]`});
+  translate("prop.last-mod", { query: `[data-label="prop.last-mod"]`});
+
+  translate("btn.del", { query: "#delete p" });
+  translate("btn.start-pt", { query: "#start p" });
+  translate("btn.chg-exp", { query: "#exposure p" });
+  translate("btn.cancel", { query: "#cancel p" });
 };
 
 /**

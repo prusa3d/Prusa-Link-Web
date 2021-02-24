@@ -2,6 +2,8 @@
 // Copyright (C) 2021 Prusa Research a.s. - www.prusa3d.com
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+import { translate } from "../../locale_provider";
+
 /**
  * Format the value data with format specificated.
  * @param {string} format - one of ["int", "number", "layer", "temp", "fan", "resin", "cover", "date", "progress", "timeEst", "time", "expo"]
@@ -139,7 +141,7 @@ const slaFormatData = (format, value) => {
     case "resin":
       return numberFormat(value) + " ml";
     case "cover":
-      return value ? "Opened" : "Closed";
+      return value ? translate("prop.cover-opened") : translate("prop.cover-closed");
     case "date":
       return dateFormat(value);
     case "progress":

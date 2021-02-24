@@ -6,7 +6,7 @@ const Printer = require("./printer.js");
 
 class PrinterMK3 extends Printer {
   constructor() {
-    super(require("./files_sl1"), "Original Prusa Mini", 300);
+    super(require("./files_gcode"), "Original Prusa MK3", 300);
   }
 
   job() {
@@ -39,7 +39,7 @@ class PrinterMK3 extends Printer {
 
     printerStatus["telemetry"] = {
       "temp-bed": this.isPrinting ? temperatures.bed.actual : 0,
-      "temp-nozzle": this.isPrinting ? temperatures.chamber.actual : 0,
+      "temp-nozzle": this.isPrinting ? temperatures.tool0.actual : 0,
       "print-speed": 100,
       "z-height": 0.5,
       material: "Material",

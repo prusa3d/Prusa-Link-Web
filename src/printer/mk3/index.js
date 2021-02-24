@@ -17,6 +17,8 @@ import Question from "../components/question.js";
 import question from "../../views/question.html";
 import loading from "../../views/loading.html";
 import { updateProperties } from "../components/updateProperties.js";
+import { translate } from "../../locale_provider";
+import { translateTelemetry } from "./translate";
 
 const context = {
   version: undefined,
@@ -39,6 +41,7 @@ const mk3 = {
     context.version = version;
     context.printer = printerData;
     initTemperatureGraph();
+    translateTelemetry();
   },
   update: (data) => {
     console.log("Update Printer API");
@@ -67,7 +70,7 @@ const initTemperatureGraph = () => {
 const updateTemperatureGraph = (data) => {
   const now = new Date().getTime();
   graph.update("temp-line-blue", [now, data.temperature.bed.actual]);
-  graph.update("temp-line-orange", [now, data.temperature.chamber.actual]);
+  graph.update("temp-line-orange", [now, data.temperature.tool0.actual]);
   graph.render();
 };
 
@@ -82,10 +85,10 @@ export const updateTitles = () => {
     context.printer.state.flags.printing &&
     !context.printer.state.flags.ready
   ) {
-    document.getElementById("title-status").innerText = "Printing";
+    document.getElementById("title-status").innerText = translate("prop.st-printing");
     return true;
   } else {
-    document.getElementById("title-status").innerText = "Idle";
+    document.getElementById("title-status").innerText = translate("prop.st-idle");
     return false;
   }
 };

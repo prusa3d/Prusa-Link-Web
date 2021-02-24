@@ -5,9 +5,11 @@
 import * as graph from "../components/temperature_graph";
 import { updateTitles } from "./index";
 import Job from "./job.js";
+import upload from "../components/upload";
 
 const load = () => {
   console.log("Dashboard Logic - mini");
+  upload.init();
   graph.render();
 };
 

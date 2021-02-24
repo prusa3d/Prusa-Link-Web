@@ -8,6 +8,8 @@ import Temperature from "./temperature.js";
 import dashboard from "../../views/dashboard.html";
 import temperature from "../../views/temperature.html";
 import { updateProperties } from "../components/updateProperties.js";
+import { translateTelemetry } from "./translate";
+import { translate } from "../../locale_provider";
 
 const context = {
   version: undefined,
@@ -25,6 +27,7 @@ const mini = {
     context.version = version;
     context.printer = printerData;
     initTemperatureGraph();
+    translateTelemetry();
   },
   update: (data) => {
     console.log("Update Printer API");
@@ -53,7 +56,7 @@ const initTemperatureGraph = () => {
 const updateTemperatureGraph = (data) => {
   const now = new Date().getTime();
   graph.update("temp-line-blue", [now, data.temperature.bed.actual]);
-  graph.update("temp-line-orange", [now, data.temperature.chamber.actual]);
+  graph.update("temp-line-orange", [now, data.temperature.tool0.actual]);
   graph.render();
 };
 
@@ -66,10 +69,10 @@ export const updateTitles = () => {
     context.printer.state.flags.printing &&
     !context.printer.state.flags.ready
   ) {
-    document.getElementById("title-status").innerText = "Printing";
+    document.getElementById("title-status").innerText = translate("prop.st-printing");
     return true;
   } else {
-    document.getElementById("title-status").innerText = "Idle";
+    document.getElementById("title-status").innerText = translate("prop.st-idle");
     return false;
   }
 };
