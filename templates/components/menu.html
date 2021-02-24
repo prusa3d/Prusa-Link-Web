@@ -7,15 +7,15 @@
 
 <!-- prettier-ignore -->
 {% if env.type == "mini" %}
-    {% 
-        set menu_dict = { 
+    {%
+        set menu_dict = {
             'link-home': {'text': 'Dashboard', path: '#dashboard' },
             'link-temp': {'text': 'Temperatures', path: '#temperature' }
         }
     %}
 {% else %}
-    {% 
-        set menu_dict = { 
+    {%
+        set menu_dict = {
             'link-home': {'text': 'Dashboard', path: '#dashboard' },
             'link-proj': {'text': 'Projects', path: '#projects' },
             'link-temp': {'text': 'Temperatures', path: '#temperature' }
@@ -29,4 +29,5 @@
     <a href="{{ values.path }}">{{ values.text }}</a>
   </li>
   {% endfor %}
+  <select id="lang"></select>
 </ul>

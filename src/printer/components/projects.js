@@ -7,6 +7,8 @@ import { navigate } from "../../router.js";
 import { handleError } from "./errors";
 import { getValue } from "./updateProperties.js";
 import formatData from "./dataFormat.js";
+import upload from "../components/upload";
+import { translate } from "../../locale_provider.js";
 
 /**
  * project context
@@ -94,6 +96,8 @@ export const update = (context) => {
  * load projects page
  */
 export function load() {
+  translate("upld.title", { query: ".proj-upload p" });
+  upload.init();
   const projects = document.getElementById("projects");
   while (projects.firstChild) {
     projects.removeChild(projects.firstChild);
@@ -119,7 +123,7 @@ export function load() {
     }
   } else {
     for (let name in metadata.files) {
-      document.getElementById("title").innerHTML = "Project files";
+      document.getElementById("title").innerHTML = translate("proj.title");
       projects.appendChild(createFolder(name));
     }
   }
@@ -157,7 +161,7 @@ function createFolder(name) {
  * create a up button element
  */
 function createUp() {
-  return createElement("node-up", "Main", () => {
+  return createElement("node-up", translate("proj.main"), () => {
     metadata.current_path.pop();
     load();
   });
@@ -195,10 +199,7 @@ function createFile(node) {
   nodeDetails.querySelectorAll(".details").forEach((element) => {
     const value = getValue(element.dataset.where, node);
     if (value) {
-      element.querySelector("span").innerHTML = formatData(
-        element.dataset.format,
-        value
-      );
+      translateDetail(element, element.dataset.where, value);
     } else {
       nodeDetails.removeChild(element);
     }
@@ -210,6 +211,35 @@ function createFile(node) {
     });
   }
   return elm;
+}
+
+function translateDetail(element, where, value) {
+  function getLabel (where) {
+    switch(where) {
+      case "gcodeAnalysis.layerHeight":
+        return translate("prop.layer-ht");
+      case "gcodeAnalysis.estimatedPrintTime":
+        return translate("prop.pnt-time");
+      case "gcodeAnalysis.material":
+        return translate("prop.material");
+      case "gcodeAnalysis.layerHeight":
+        return translate("prop.layer-ht")
+      default:
+        return null;
+    }
+  }
+
+  const label = getLabel(where);
+  const data = formatData(
+    element.dataset.format,
+    value
+  );
+
+  if (label) {
+    element.querySelector("p").innerHTML = `${label} <span>${data}</span>`;
+  } else {
+    element.querySelector("span").innerHTML = data;
+  }
 }
 
 export default { load, update };

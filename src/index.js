@@ -6,21 +6,13 @@ import "./styles.css";
 import { navigate } from "./router.js";
 import printer from "./printer";
 import { getJson, initAuth } from "./auth.js";
-import testLocale from "./locale_test";
+import { initMenu } from "./printer/components/menu";
 
 const UPDATE_INTERVAL = process.env.UPDATE_INTERVAL;
 
 window.onload = () => {
-  document.getElementById("menu").addEventListener("click", (e) => {
-    const menu = document.getElementById("menu");
-    if (menu.className == "navbar-burger") {
-      menu.className = "navbar-burger burger-open";
-      document.getElementById("navbar").className = "";
-    } else {
-      menu.className = "navbar-burger";
-      document.getElementById("navbar").className = "burger-menu";
-    }
-  });
+  initMenu();
+
   document.querySelectorAll("a[href]").forEach((link) => {
     link.addEventListener("click", (e) => {
       if (navigate(link.href)) {
@@ -52,7 +44,6 @@ window.onload = () => {
       );
       window.onpopstate = (e) => e && navigate(e.location);
       navigate(window.location.hash || "#dashboard");
-      testLocale();
     });
   });
 };

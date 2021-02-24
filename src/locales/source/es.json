@@ -34,7 +34,7 @@
   "msg": {
     "cancel": "¿Realmente quieres cancelar la impresión?",
     "del-proj": "¿Realmente deseas borrar {{file_name}}?",
-    "e-401-1": "La impresora utiliza HTTP con seguridad mediante acceso con resumen.",
+    "e-401-1": "La impresora utiliza seguridad HTTP Digest.",
     "e-401-2": "Por favor introduce las credenciales correctas.",
     "e-401-3": "Puedes encontrarla en Ajustes > Red > Credenciales de acceso.",
     "modal-p1": "Bienvenido a la interfaz web de tu",
@@ -63,7 +63,7 @@
   "proj": {
     "del": "Borrar archivo",
     "link": "Projectos",
-    "main": "Principal ",
+    "main": "Principal",
     "title": "Archivos de proyecto"
   },
   "prop": {
@@ -101,7 +101,7 @@
     "temp-nozzle": "Temperatura del nozzle",
     "time-est": "Tiempo Estimado de Impresión",
     "tmw": "Mañana",
-    "tmw-at": "Mañana a las ",
+    "tmw-at": "Mañana a las",
     "today-at": "Hoy a las",
     "z-height": "Altura-Z"
   },

@@ -915,14 +915,14 @@ $toast-success-title-color: $text-white;
 
 /* ===================================== SELECT LANG ======================================= */
 
-.lang {
+#lang {
   border: none;
   outline: none;
   background-color: hsl(0, 0%, 4%);
   color: $text-white;
 }
 
-.lang:focus {
+#lang:focus {
   border: none;
   outline: none;
 }
