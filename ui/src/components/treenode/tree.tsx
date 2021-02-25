@@ -19,6 +19,7 @@ interface nodeInfo {
   path: string;
   display: string;
   isFolder: boolean;
+  date?: number;
 }
 
 interface nodeFolder extends nodeInfo {
@@ -50,12 +51,12 @@ interface S {
 }
 
 const sortByType = (a: nodeInfo, b: nodeInfo) => {
-  if (a.isFolder == b.isFolder) {
+  if (a.isFolder && b.isFolder) {
     return a.display.localeCompare(b.display);
   } else if (a.isFolder) {
     return -1;
   }
-  return 1;
+  return b.date - a.date;
 };
 
 let state = {
@@ -220,6 +221,7 @@ export class Tree extends Component<TreeProps, S> {
             .trim();
           obj["layer_height"] = gcodeAnalysis["dimensions"]["height"];
         }
+        obj["date"] = file_or_folder["date"] || Number.POSITIVE_INFINITY;
       }
       if (parent) {
         result[file_or_folder["path"].substring(parent.length + 1)] = obj;
