@@ -123,7 +123,7 @@ class Preprocess {
 
   async optimizeSVG(filepath) {
     var data = fs.readFileSync(filepath, "utf8");
-    return new SVGO()
+    return new SVGO({ multipass: true })
       .optimize(data, { path: filepath })
       .then(function (result) {
         return result.data;
