@@ -303,6 +303,24 @@ export class Tree extends Component<TreeProps, S> {
             ...this.createView(null, this.state.container),
           });
         }
+        if (this.props.showPreview && Array.isArray(this.state.current_view)) {
+          this.props.onFetch({
+            url: "/api/files/preview",
+            then: (response) => {
+              response.json().then((data) => {
+                if (data.origin) {
+                  const path = data.origin + data.path;
+                  this.onShow(path);
+                }
+              });
+            },
+          });
+        }
+        if (
+          !(this.props.showPreview || Array.isArray(this.state.current_view))
+        ) {
+          this.onUpFolder();
+        }
       },
     });
   };
