@@ -28,12 +28,12 @@ const metadata = {
  * @param {object} b
  */
 const sortByType = (a, b) => {
-  if (a.type == b.type) {
+  if (a.type == "folder" &&  b.type == "folder") {
     return a.display.localeCompare(b.display);
   } else if (a.type == "folder") {
     return -1;
   }
-  return 1;
+  return b.date - a.date;
 };
 
 /**
