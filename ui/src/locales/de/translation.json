@@ -46,6 +46,8 @@
     "actn-pending": "Aktion wird nach Beendigung der Schicht ausgeführt.",
     "e-307": "Harzmessung fehlgeschlagen!",
     "error": "Fehler",
+    "warn-resin": "NICHT GENUG HARZ",
+    "warn-resin-msg": "Die Harzmenge im Tank ist für das aktuelle Projekt nicht ausreichend. Das Hinzufügen von mehr Harz wird während des Drucks erforderlich sein.",
     "n-calibrated": "Der Drucker ist nicht kalibriert!",
     "not-idle": "Der Drucker arbeitet!",
     "start-print": "Der Drucker bereitet sich vor.",
