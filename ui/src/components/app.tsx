@@ -127,6 +127,7 @@ class App extends Component<{}, S> implements network, apiKey {
   };
 
   componentDidMount = () => {
+    useTranslation(null, { useSuspense: false });
     fetch("/api/version").then(response => {
       if (response.status == 401) {
         if (window.location.pathname != "/login-failed") {
