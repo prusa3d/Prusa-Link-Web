@@ -12,10 +12,10 @@ let lang;
 /** Index of current language in languages array. */
 let langIndex;
 
-setLanguage(localStorage.getItem("lang"))
-  || setLanguage(detectBrowserLang().toLowerCase())
-  || setLanguage(detectBrowserLang().toLowerCase().split("-")[0]) // en-GB as en
-  || setLanguage("en");
+setLanguage(localStorage.getItem("lang")) ||
+  setLanguage(detectBrowserLang().toLowerCase()) ||
+  setLanguage(detectBrowserLang().toLowerCase().split("-")[0]) || // en-GB as en
+  setLanguage("en");
 
 console.log(`known languages: ${languages}`);
 console.log(`known texts: `);
@@ -29,8 +29,7 @@ function detectBrowserLang() {
  * manually refresh page. */
 export function setLanguage(language) {
   const index = languages.indexOf(language);
-  if (index === -1)
-    return false;
+  if (index === -1) return false;
 
   langIndex = index;
   lang = language;
@@ -57,13 +56,15 @@ export function getLanguages() {
  * @param {{query?:any, ref?:any}|undefined} parameters Object that contains parameters.
  * query or ref = where to insert the translation; Other parameters will be passed to given string
  * @return {string}
-*/
+ */
 export function translate(textId, parameters) {
   let word = getNestedValue(texts, `${textId}.${langIndex}`);
 
   if (word === null || word === undefined) {
     word = textId;
-    console.warn(`[${lang}] missing translation for "${textId.split("\n").join("\\n")}"`);
+    console.warn(
+      `[${lang}] missing translation for "${textId.split("\n").join("\\n")}"`
+    );
     assign(word, parameters);
     return word;
   }
@@ -80,7 +81,7 @@ export function translate(textId, parameters) {
     let editedWord = word;
     let regex = /{{(.*?)}}/g; // search for {{}}
     let match;
-    while (match = regex.exec(word)) {
+    while ((match = regex.exec(word))) {
       // {{parameter}} => parameter
       let paramName = word.substr(match.index + 2, match[0].length - 4);
       if (paramName === "query" || paramName === "ref") continue;
@@ -88,7 +89,9 @@ export function translate(textId, parameters) {
         let param = parameters[paramName];
         editedWord = editedWord.replace(match[0], param);
       } else {
-        console.warn(`missing parameter [${paramName}] in translation for ${textId}.`);
+        console.warn(
+          `missing parameter [${paramName}] in translation for ${textId}.`
+        );
       }
     }
     word = editedWord;

@@ -15,7 +15,7 @@ import { translate } from "../../locale_provider";
  * load preview
  */
 const load = () => {
-  translate("proj.title", { query: "#title" });
+  translate("proj.title", { query: "#title-status-label" });
   getJson("/api/job").then((result) => {
     const data = result.data;
     console.log(data);
@@ -98,12 +98,12 @@ const load = () => {
     });
   });
 
-  translate("prop.time-est", { query: `[data-label="prop.time-est"]`});
-  translate("prop.est-end", { query: `[data-label="prop.est-end"]`});
-  translate("prop.layers", { query: `[data-label="prop.layers"]`});
-  translate("prop.layer-ht", { query: `[data-label="prop.layer-ht"]`});
-  translate("prop.exp-times", { query: `[data-label="prop.exp-times"]`});
-  translate("prop.last-mod", { query: `[data-label="prop.last-mod"]`});
+  translate("prop.time-est", { query: `[data-label="prop.time-est"]` });
+  translate("prop.est-end", { query: `[data-label="prop.est-end"]` });
+  translate("prop.layers", { query: `[data-label="prop.layers"]` });
+  translate("prop.layer-ht", { query: `[data-label="prop.layer-ht"]` });
+  translate("prop.exp-times", { query: `[data-label="prop.exp-times"]` });
+  translate("prop.last-mod", { query: `[data-label="prop.last-mod"]` });
 
   translate("btn.del", { query: "#delete p" });
   translate("btn.start-pt", { query: "#start p" });

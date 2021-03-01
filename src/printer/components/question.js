@@ -49,7 +49,7 @@ export const load = () => {
     navigate("#dashboard");
   }
 
-  document.getElementById("title").innerHTML = question.title;
+  document.getElementById("title-status-label").innerHTML = question.title;
 
   // add innerHTML
   const node = document.getElementById("question");

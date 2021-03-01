@@ -7,11 +7,13 @@ import { navigate } from "../../router.js";
 import { updateProperties } from "../components/updateProperties.js";
 import { handleError } from "../components/errors";
 import { cancelJob } from "../components/job";
+import { translate } from "../../locale_provider";
 
 /**
  * load job
  */
 export const load = () => {
+  translate("proj.title", { query: "#title-status-label" });
   getJson("/api/job")
     .then((result) => {
       const data = result.data;

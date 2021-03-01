@@ -6,6 +6,7 @@ import { getJson } from "../../auth";
 import { handleError } from "../components/errors";
 import { navigate } from "../../router.js";
 import { update as jobUpdate } from "./job";
+import { translate } from "../../locale_provider";
 
 export const setUpRefill = () => {
   document.getElementById("refill").onclick = () => {
@@ -22,6 +23,7 @@ export const setUpRefill = () => {
 };
 
 const load = () => {
+  translate("refill.title", { query: "#title-status-label" });
   const yesButton = document.getElementById("yes");
   const noButton = document.getElementById("no");
   yesButton.onclick = () => {
