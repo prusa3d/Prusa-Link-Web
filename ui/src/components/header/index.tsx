@@ -43,7 +43,7 @@ class Locale extends Component<{}, { value: string }> {
     return (
       <div class="navbar-item">
         <form class="select" onSubmit={this.onSubmit}>
-          <select value={value} onChange={this.onChange}>
+          <select value={value.substr(0, 2)} onChange={this.onChange}>
             <option value="en">EN</option>
             <option value="cs">CS</option>
             <option value="de">DE</option>
