@@ -88,13 +88,12 @@ class App extends Component<{}, S> implements network, apiKey {
 
   notify = (error_code: string) => {
     const { t, i18n, ready } = useTranslation(null, { useSuspense: false });
-    return new Promise<string>(function(resolve, reject) {
-      if (ready) {
-        if (error_code == "#10307") {
-          resolve(t("ntf.e-307"));
-        }
-      }
-    }).then(message => Toast.error(t("ntf.error"), message));
+    if (error_code == "#10307") {
+      Toast.error(t("ntf.error"), t("ntf.e-307"));
+    }
+    if (error_code == "#10706"){
+      Toast.warning(t("ntf.warn-resin"), t("ntf.warn-resin-msg"));
+    }
   };
 
   updateData = data => {
@@ -128,6 +127,7 @@ class App extends Component<{}, S> implements network, apiKey {
   };
 
   componentDidMount = () => {
+    useTranslation(null, { useSuspense: false });
     fetch("/api/version").then(response => {
       if (response.status == 401) {
         if (window.location.pathname != "/login-failed") {

@@ -49,6 +49,8 @@
     "actn-pending": "Action will be executed after layer finish.",
     "e-307": "Resin measuring failed!",
     "error": "Error",
+    "warn-resin": "NOT ENOUGH RESIN",
+    "warn-resin-msg": "The amount of resin in the tank is not enough for the current project. Adding more resin will be required during the print.",
     "n-calibrated": "Printer is not calibrated!",
     "not-idle": "Printer is not idle!",
     "start-print": "The printer is getting ready.",

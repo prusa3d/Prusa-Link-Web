@@ -45,6 +45,8 @@
     "actn-pending": "Akcja zostanie wykonana po zakończeniu warstwy.",
     "e-307": "Niepowodzenie pomiaru poziomu żywicy!",
     "error": "Błąd",
+    "warn-resin": "ZA MAŁO ŻYWICY",
+    "warn-resin-msg": "Ilość żywicy w zbiorniku jest niewystarczająca do ukończenia wybranego projektu. Konieczne będzie jej uzupełnienie w trakcie drukowania.",
     "n-calibrated": "Drukarka nie jest skalibrowana!",
     "not-idle": "Drukarka nie znajduje się w stanie oczekiwania.",
     "start-print": "Drukarka jest przygotowywana.",

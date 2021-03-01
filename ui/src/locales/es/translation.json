@@ -46,6 +46,8 @@
     "actn-pending": "La acción se realizará al terminar la capa.",
     "e-307": "Falló la medición de resina.",
     "error": "Error",
+    "warn-resin": "NO HAY SUFICIENTE RESINA",
+    "warn-resin-msg": "La cantidad de resina en el tanque no es suficiente para el proyecto actual. Será necesario añadir más resina durante la impresión.",
     "n-calibrated": "¡La impresora no está calibrada!",
     "not-idle": "¡La impresora no está inactiva!",
     "start-print": "La impresora se está preparando.",
