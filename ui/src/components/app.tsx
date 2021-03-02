@@ -10,7 +10,7 @@ import {
   update,
   PrinterStatus,
   PrinterState,
-  initPrinterState
+  initPrinterState,
 } from "./telemetry";
 import { STATE_IDLE } from "./utils/states";
 import { networkProps, network, apiKey } from "./utils/network";
@@ -28,7 +28,7 @@ interface S {
   temperatures: Array<Array<number>>;
   printer_status: PrinterStatus;
   printer_state: PrinterState;
-  apikey: string;
+  apikey: boolean;
   last_error: number;
 }
 
@@ -36,74 +36,76 @@ const initState = {
   printer_status: initPrinterState,
   temperatures: [],
   printer_state: { state: STATE_IDLE },
-  last_error: 500
+  last_error: 500,
 };
 
 class App extends Component<{}, S> implements network, apiKey {
   timer = null;
-  http_auth = false;
+  http_auth = null;
   state = {
     ...initState,
     currentUrl: "/",
-    apikey: process.env.APIKEY
+    apikey: false,
   };
 
   onFetch = ({
     url,
     then,
     options = { method: "GET", headers: {} },
-    except = e => {}
+    except = (e) => {},
   }: networkProps) => {
-    if (navigator.onLine && this.http_auth) {
-      options.headers["X-Api-Key"] = this.state.apikey;
-      fetch(url, options)
-        .then(async function(response) {
-          if (!response.ok) {
-            const error = Error(await response.text());
-            error.name = "" + response.status;
-            throw error;
+    options.headers["X-Api-Key"] = this.getApikey();
+    return fetch(url, options)
+      .then(async function(response) {
+        if (!response.ok) {
+          const error = Error(await response.text());
+          error.name = "" + response.status;
+          throw error;
+        }
+        if (window.location.pathname == "/login-failed") {
+          route("/", true);
+        }
+        sessionStorage.setItem("auth", "true");
+        return response;
+      })
+      .then(function(response) {
+        then(response);
+      })
+      .catch((e) => {
+        if (e.name === "401") {
+          sessionStorage.setItem("auth", "false");
+          if (window.location.pathname != "/login-failed") {
+            route("/login-failed", true);
           }
-          if (window.location.pathname == "/login-failed") {
-            route("/", true);
-          }
-          return response;
-        })
-        .then(function(response) {
-          then(response);
-        })
-        .catch(e => {
-          if (e.name === "401") {
-            if (window.location.pathname != "/login-failed") {
-              route("/login-failed", true);
-            }
-          } else if (e.name === "403") {
-            this.setState({ apikey: null });
-          }
-          except(e);
-        });
-    }
+        } else if (e.name === "403") {
+          sessionStorage.setItem("auth", "false");
+          sessionStorage.removeItem("apiKey");
+        }
+        except(e);
+      });
   };
 
-  getApikey = (): string => this.state.apikey;
+  getApikey = (): string =>
+    sessionStorage.getItem("apiKey") || process.env.APIKEY;
 
   notify = (error_code: string) => {
     const { t, i18n, ready } = useTranslation(null, { useSuspense: false });
     if (error_code == "#10307") {
       Toast.error(t("ntf.error"), t("ntf.e-307"));
     }
-    if (error_code == "#10706"){
+    if (error_code == "#10706") {
       Toast.warning(t("ntf.warn-resin"), t("ntf.warn-resin-msg"));
     }
   };
 
-  updateData = data => {
+  updateData = (data) => {
     this.setState((prevState, props) => {
       const now = new Date().getTime();
 
-      const isOlder = dt => now - dt[0] > 200000; // ~ 3min
+      const isOlder = (dt) => now - dt[0] > 200000; // ~ 3min
       let indexOlder = 0;
       if (prevState.temperatures.findIndex(isOlder) > -1) {
-        indexOlder = prevState.temperatures.findIndex(e => !isOlder(e));
+        indexOlder = prevState.temperatures.findIndex((e) => !isOlder(e));
       }
 
       const error_code = data.printer_state.error_code;
@@ -117,47 +119,62 @@ class App extends Component<{}, S> implements network, apiKey {
         temperatures: prevState.temperatures
           .slice(indexOlder)
           .concat(data.temperatures),
-        last_error: error_code
+        last_error: error_code,
       };
     });
   };
 
   clearData = () => {
-    this.setState(prev => ({ ...prev, ...initState }));
+    this.setState((prev) => ({ ...prev, ...initState }));
   };
 
   componentDidMount = () => {
     useTranslation(null, { useSuspense: false });
-    fetch("/api/version").then(response => {
-      if (response.status == 401) {
-        if (window.location.pathname != "/login-failed") {
-          route("/login-failed", true);
-        }
-      } else if (response.status == 403) {
-        this.http_auth = true;
-        this.setState({ apikey: null });
-      } else {
-        this.http_auth = true;
-        this.timer = setInterval(
-          () =>
-            this.onFetch({
-              url: "/api/telemetry",
-              then: update(this.updateData),
-              except: e => this.clearData(),
-              options: {
-                headers: {
-                  "Content-Type": "application/json",
-                  Accept: "application/json"
-                }
-              }
-            }),
-          Number(process.env.UPDATE_PRINTER)
-        );
-        if (window.location.pathname == "/login-failed") {
-          route("/", true);
-        }
+
+    this.timer = setInterval(() => {
+      const auth = sessionStorage.getItem("auth") || "false";
+      if (auth == "true") {
+        if (this.http_auth == null)
+          this.http_auth = this.onFetch({
+            url: "/api/telemetry",
+            then: (data) => {
+              update(this.updateData)(data);
+              this.http_auth = null;
+            },
+            except: (e) => {
+              this.clearData();
+              this.http_auth = null;
+            },
+            options: {
+              headers: {
+                "Content-Type": "application/json",
+                Accept: "application/json",
+              },
+            },
+          });
+      } else if (this.http_auth == null) {
+        sessionStorage.setItem("auth", "pending");
+        this.http_auth = fetch("/api/version").then((response) => {
+          if (response.status == 401) {
+            if (window.location.pathname != "/login-failed") {
+              route("/login-failed", true);
+            }
+            this.setState({ apikey: false });
+            sessionStorage.setItem("auth", "false");
+          } else if (response.status == 403) {
+            this.setState({ apikey: true });
+            sessionStorage.setItem("auth", "false");
+          } else {
+            this.setState({ apikey: false });
+            sessionStorage.setItem("auth", "true");
+            if (window.location.pathname == "/login-failed") {
+              route("/", true);
+            }
+          }
+          this.http_auth = null;
+        });
       }
-    });
+    }, Number(process.env.UPDATE_PRINTER));
   };
 
   componentWillUnmount() {
@@ -168,7 +185,7 @@ class App extends Component<{}, S> implements network, apiKey {
     const handleRoute = (e: RouterOnChangeArgs) => {
       this.setState((prevState, props) => ({
         ...prevState,
-        currentUrl: e.url
+        currentUrl: e.url,
       }));
     };
 
@@ -176,14 +193,16 @@ class App extends Component<{}, S> implements network, apiKey {
     const { t, i18n, ready } = useTranslation(null, { useSuspense: false });
     return (
       <section id="app" class="section">
-        {this.state.apikey == null && (
+        {this.state.apikey && (
           <Loging
-            setApikey={value =>
+            setApikey={(value) => {
+              sessionStorage.setItem("apiKey", value);
+              sessionStorage.setItem("auth", "true");
               this.setState((prevState, props) => ({
                 ...prevState,
-                apikey: value
-              }))
-            }
+                apikey: false,
+              }));
+            }}
           />
         )}
         <div class="columns is-vcentered is-centered is-desktop prusa-line">
