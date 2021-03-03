@@ -20,7 +20,16 @@ module.exports = (env, args) => {
     "http-apikey": env["http-apikey"],
   };
 
-  printer_conf["printerFamily"] = printer_conf.type == "sl1" ? "sla" : "fdm";
+  if (printer_conf.type == "sl1") {
+    printer_conf["title"] = "Original Prusa SL1";
+    printer_conf["printerFamily"] = "sla";
+  } else if (printer_conf.type == "mini") {
+    printer_conf["title"] = "Original Prusa Mini";
+    printer_conf["printerFamily"] = "fdm";
+  } else {
+    printer_conf["title"] = "Original Prusa MK3";
+    printer_conf["printerFamily"] = "fdm";
+  }
 
   console.log(`===== ${printer_conf.title} =====`);
   console.log(printer_conf);
@@ -40,6 +49,7 @@ module.exports = (env, args) => {
     output: {
       filename: "[name].[contenthash].js",
       path: path.resolve(__dirname, "dist"),
+      publicPath: "",
     },
     devtool: env.dev ? "source-map" : false,
     plugins: [
@@ -48,6 +58,7 @@ module.exports = (env, args) => {
       new webpack.DefinePlugin({
         "process.env.MODE": JSON.stringify(printer_conf.mode),
         "process.env.TYPE": JSON.stringify(printer_conf.type),
+        "process.env.TITLE": JSON.stringify(printer_conf.title),
         "process.env.PRINTER_FAMILY": JSON.stringify(
           printer_conf.printerFamily
         ),
@@ -86,7 +97,7 @@ module.exports = (env, args) => {
           loader: "html-loader",
         },
         {
-          test: /\.(png|jpe?g|gif|svg)$/i,
+          test: /\.(png|jpe?g|gif|svg|woff2?)$/i,
           use: [
             {
               loader: "file-loader",

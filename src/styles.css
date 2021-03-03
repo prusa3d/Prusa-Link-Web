@@ -4,7 +4,6 @@
 */
 
 /* ===================================== TEXT ======================================= */
-.txt-normal .txt-size-2 .txt-grey .txt-bold,
 button,
 html,
 nav ul a {
@@ -155,9 +154,15 @@ nav ul li {
   list-style-type: none;
   padding: 16px;
   width: 100%;
+  margin-bottom: -3px;
+}
+nav ul li.active {
+  border-bottom: 1px solid #f8651b;
+}
+nav ul li:hover {
+  border-bottom: 1px solid #ffffff;
 }
 nav ul a {
-  font-size: 20px;
   list-style: none;
   text-decoration: none;
   width: 100%;
@@ -182,6 +187,7 @@ nav .navbar-burger div {
 }
 .burger-menu {
   display: none;
+  white-space: nowrap;
 }
 nav .navbar-burger.burger-open div:first-child {
   transform: rotateZ(45deg) scaleX(1.25) translate(19px, 31px);
@@ -216,6 +222,9 @@ nav .burger-icon.burger-open {
   padding: 12px 12px 12px 0;
   width: 45%;
 }
+.tel-prop > img {
+  margin-right: 1rem;
+}
 .tel-prop > div {
   display: flex;
   flex-direction: column;
@@ -238,7 +247,7 @@ nav .burger-icon.burger-open {
   justify-content: space-between;
   width: 100%;
   flex-direction: column;
-  margin-bottom: 16px;
+  padding-bottom: 0.25rem;
 }
 .title-status {
   color: #fff;
@@ -451,6 +460,7 @@ nav .burger-icon.burger-open {
   width: 100%;
   flex-direction: column;
   justify-content: space-between;
+  margin-left: 1rem;
 }
 .preview-prop {
   display: flex;
@@ -551,6 +561,7 @@ button:disabled {
 }
 .job {
   width: 100%;
+  margin-top: 1rem;
 }
 .job-stats {
   display: flex;
@@ -582,6 +593,7 @@ progress::-moz-progress-bar {
   border-radius: 0;
   height: 20px;
   color: #f8651b;
+  margin-top: 3px;
 }
 .stats {
   display: grid;
@@ -920,6 +932,7 @@ $toast-success-title-color: $text-white;
   outline: none;
   background-color: hsl(0, 0%, 4%);
   color: $text-white;
+  margin-top: 10px;
 }
 
 #lang:focus {
@@ -1038,5 +1051,8 @@ $toast-success-title-color: $text-white;
   }
   .modal-welcome img {
     width: 75%;
+  }
+  #lang {
+    margin-top: 0px;
   }
 }

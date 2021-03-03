@@ -16,6 +16,13 @@ const navigate = (url) => {
     .body.childNodes.forEach((n) => root.appendChild(n));
   route.module.load();
   printer.setModule(route.module);
+  const elm = document.querySelector(`a[href="#${page}"]`);
+  if (elm) {
+    document.getElementById("navbar").childNodes.forEach((elm) => {
+      elm.className = "";
+    });
+    elm.parentNode.className = "active";
+  }
   return true;
 };
 

@@ -6,7 +6,7 @@ import { translate } from "../../locale_provider";
 import * as graph from "../components/temperature_graph";
 
 const load = () => {
-  translate("temps.title", { query: "#title" });
+  translate("temps.title", { query: "#title-status-label" });
   graph.render();
 };
 

@@ -28,7 +28,7 @@ const metadata = {
  * @param {object} b
  */
 const sortByType = (a, b) => {
-  if (a.type == "folder" &&  b.type == "folder") {
+  if (a.type == "folder" && b.type == "folder") {
     return a.display.localeCompare(b.display);
   } else if (a.type == "folder") {
     return -1;
@@ -110,9 +110,9 @@ export function load() {
       view = view.find((elm) => elm.name == path).children;
     }
 
-    document.getElementById("title").innerHTML = metadata.current_path.join(
-      " > "
-    );
+    document.getElementById(
+      "title-status-label"
+    ).innerHTML = metadata.current_path.join(" > ");
     projects.appendChild(createUp());
     for (let node of view.sort(sortByType)) {
       if (node.type == "folder") {
@@ -123,7 +123,9 @@ export function load() {
     }
   } else {
     for (let name in metadata.files) {
-      document.getElementById("title").innerHTML = translate("proj.title");
+      document.getElementById("title-status-label").innerHTML = translate(
+        "proj.title"
+      );
       projects.appendChild(createFolder(name));
     }
   }
@@ -214,8 +216,8 @@ function createFile(node) {
 }
 
 function translateDetail(element, where, value) {
-  function getLabel (where) {
-    switch(where) {
+  function getLabel(where) {
+    switch (where) {
       case "gcodeAnalysis.layerHeight":
         return translate("prop.layer-ht");
       case "gcodeAnalysis.estimatedPrintTime":
@@ -223,17 +225,14 @@ function translateDetail(element, where, value) {
       case "gcodeAnalysis.material":
         return translate("prop.material");
       case "gcodeAnalysis.layerHeight":
-        return translate("prop.layer-ht")
+        return translate("prop.layer-ht");
       default:
         return null;
     }
   }
 
   const label = getLabel(where);
-  const data = formatData(
-    element.dataset.format,
-    value
-  );
+  const data = formatData(element.dataset.format, value);
 
   if (label) {
     element.querySelector("p").innerHTML = `${label} <span>${data}</span>`;

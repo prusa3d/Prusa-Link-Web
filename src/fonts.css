@@ -1,0 +1,72 @@
+/*  font size */
+$font-size-1-mobile: 2.5rem;
+$font-size-1-desktop: 1.15rem;
+$font-size-2-mobile: 1.8rem;
+$font-size-2-desktop: 1rem;
+$text-white: #ffffff;
+$text-grey: #707070;
+$text-orange: #f8651b;
+
+@font-face {
+  font-family: "Atlas Grotesk Regular Web";
+  src: url("./assets/fonts/AtlasGrotesk-Regular-Web.woff2") format("woff2"),
+    url("./assets/fonts/AtlasGrotesk-Regular-Web.woff") format("woff");
+  font-weight: 400;
+  font-style: normal;
+  font-stretch: normal;
+}
+
+@font-face {
+  font-family: "Atlas Grotesk Bold Web";
+  src: url("./assets/fonts/AtlasGrotesk-Bold-Web.woff2") format("woff2"),
+    url("./assets/fonts/AtlasGrotesk-Bold-Web.woff") format("woff");
+  font-weight: 700;
+  font-style: normal;
+  font-stretch: normal;
+}
+
+html {
+  line-height: 1.15;
+  font-size: 16px;
+  -webkit-text-size-adjust: 100%;
+  font-family: "Atlas Grotesk Regular Web";
+  color: $text-white;
+}
+
+select {
+  font-family: "Atlas Grotesk Bold Web";
+  color: $text-white;
+}
+
+.txt-bold {
+  font-family: "Atlas Grotesk Bold Web";
+}
+
+.txt-orange {
+  color: $text-orange;
+}
+
+.txt-grey {
+  color: $text-grey;
+}
+
+.txt-white {
+  color: $text-white !important;
+}
+
+.txt-size-1 {
+  font-size: $font-size-1-mobile;
+}
+
+.txt-size-2 {
+  font-size: $font-size-2-mobile;
+}
+
+@media only screen and (min-width: 992px) {
+  .txt-size-1 {
+    font-size: $font-size-1-desktop;
+  }
+  .txt-size-2 {
+    font-size: $font-size-2-desktop;
+  }
+}

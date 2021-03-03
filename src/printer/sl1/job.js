@@ -9,11 +9,13 @@ import { navigate } from "../../router.js";
 import changeExposureTimesQuestion from "./exposure";
 import { cancelJob } from "../components/job";
 import { setUpRefill } from "./refill";
+import { translate } from "../../locale_provider";
 
 /**
  * load job
  */
 export const load = () => {
+  translate("proj.title", { query: "#title-status-label" });
   getJson("/api/job")
     .then((result) => {
       const data = result.data;

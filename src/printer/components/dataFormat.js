@@ -141,7 +141,9 @@ const slaFormatData = (format, value) => {
     case "resin":
       return numberFormat(value) + " ml";
     case "cover":
-      return value ? translate("prop.cover-opened") : translate("prop.cover-closed");
+      return value
+        ? translate("prop.cover-opened")
+        : translate("prop.cover-closed");
     case "date":
       return dateFormat(value);
     case "progress":

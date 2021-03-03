@@ -16,7 +16,7 @@ window.onload = () => {
   document.querySelectorAll("a[href]").forEach((link) => {
     link.addEventListener("click", (e) => {
       if (navigate(link.href)) {
-        document.title = "Original Prusa Mini - " + link.innerText;
+        document.title = process.env.TITLE + " - " + link.innerText;
         history.pushState(null, document.title, link.href);
         e.preventDefault();
       }
@@ -42,7 +42,7 @@ window.onload = () => {
             }),
         UPDATE_INTERVAL
       );
-      window.onpopstate = (e) => e && navigate(e.location);
+      window.onpopstate = (e) => e && navigate(e.currentTarget.location.hash);
       navigate(window.location.hash || "#dashboard");
     });
   });

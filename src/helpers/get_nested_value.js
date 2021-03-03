@@ -8,8 +8,7 @@ function getNestedValue(object, path) {
   let obj = object;
   for (const key of keys) {
     obj = obj[key];
-    if (!obj)
-      break;
+    if (!obj) break;
   }
   return obj;
 }

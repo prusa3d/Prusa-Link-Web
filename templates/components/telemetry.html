@@ -31,23 +31,20 @@
 {% endif %}
 
 <div class="telemetry">
-{% for values in telemetry_list %}
-<div class="tel-prop">
-  <img class="icon" src="{{ pre.countOrRenderAssets(values.icon) | safe }}" />
-  <div class="value">
-    <p
-      class="txt-normal txt-size-2 txt-grey"
-      data-label="{{ values.label }}"
-    ></p>
-    <p
-      class="txt-bold txt-size-2"
-      data-type="telemetry"
-      data-format="{{ values.format }}"
-      data-where="{{ values.location }}"
-    >
-      NA
-    </p>
+  {% for values in telemetry_list %}
+  <div class="tel-prop">
+    <img class="icon" src="{{ pre.countOrRenderAssets(values.icon) | safe }}" />
+    <div class="value">
+      <p class="txt-size-2 txt-grey" data-label="{{ values.label }}"></p>
+      <p
+        class="txt-bold txt-size-2"
+        data-type="telemetry"
+        data-format="{{ values.format }}"
+        data-where="{{ values.location }}"
+      >
+        NA
+      </p>
+    </div>
   </div>
-</div>
-{% endfor %}
+  {% endfor %}
 </div>

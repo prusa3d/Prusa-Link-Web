@@ -2,6 +2,7 @@
 // Copyright (C) 2021 Prusa Research a.s. - www.prusa3d.com
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+import "../../fonts.css";
 import * as graph from "../components/temperature_graph";
 import Temperature from "./temperature.js";
 import temperature from "../../views/temperature.html";
@@ -27,17 +28,44 @@ const context = {
   printer: undefined,
 };
 
+const updateHostname = (obj) => {
+  const newHostname = () => {
+    const hostnameLabel = document.getElementById("title-hostname-label");
+    if (hostnameLabel) {
+      hostnameLabel.innerHTML = translate("glob.hostname") + ":";
+      document.getElementById("title-hostname").innerHTML =
+        context.version.hostname;
+    }
+  };
+  const load = obj.load;
+  obj.load = () => {
+    newHostname();
+    load();
+  };
+  return obj;
+};
+
 let currentModule = Dashboard;
 const sl1 = {
   routes: [
-    { path: "dashboard", html: dashboard, module: Dashboard },
-    { path: "projects", html: projects, module: Projects },
-    { path: "temperature", html: temperature, module: Temperature },
-    { path: "preview", html: preview, module: Preview },
-    { path: "job", html: job, module: Job },
-    { path: "question", html: question, module: Question },
-    { path: "loading", html: loading, module: { load: () => {} } },
-    { path: "refill", html: refill, module: Refill },
+    { path: "dashboard", html: dashboard, module: updateHostname(Dashboard) },
+    { path: "projects", html: projects, module: updateHostname(Projects) },
+    {
+      path: "temperature",
+      html: temperature,
+      module: updateHostname(Temperature),
+    },
+    { path: "preview", html: preview, module: updateHostname(Preview) },
+    { path: "job", html: job, module: updateHostname(Job) },
+    { path: "question", html: question, module: updateHostname(Question) },
+    {
+      path: "loading",
+      html: loading,
+      module: updateHostname({
+        load: () => translate("proj.title", { query: "#title-status-label" }),
+      }),
+    },
+    { path: "refill", html: refill, module: updateHostname(Refill) },
   ],
   init: (version, printerData) => {
     console.log("Init Printer API");
@@ -92,21 +120,6 @@ const updateTemperatureGraph = (data) => {
 
 const updateModule = () => {
   if (currentModule && currentModule.update) currentModule.update(context);
-};
-
-export const updateTitles = () => {
-  document.getElementById("title-hostname").innerHTML =
-    context.version.hostname;
-  if (
-    context.printer.state.flags.printing &&
-    !context.printer.state.flags.ready
-  ) {
-    document.getElementById("title-status").innerText = translate("prop.st-printing");
-    return true;
-  } else {
-    document.getElementById("title-status").innerText = translate("prop.st-idle");
-    return false;
-  }
 };
 
 export default sl1;

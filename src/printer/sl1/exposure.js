@@ -13,8 +13,14 @@ import { translate } from "../../locale_provider";
  */
 const translations = {
   exposureTime: { text: translate("exp-times.exp-time"), limit: [1, 60] },
-  exposureTimeFirst: { text: translate("exp-times.layer-1st"), limit: [10, 120] },
-  exposureTimeCalibration: { text: translate("exp-times.inc"), limit: [0.5, 5] },
+  exposureTimeFirst: {
+    text: translate("exp-times.layer-1st"),
+    limit: [10, 120],
+  },
+  exposureTimeCalibration: {
+    text: translate("exp-times.inc"),
+    limit: [0.5, 5],
+  },
 };
 
 /**
