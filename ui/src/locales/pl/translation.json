@@ -4,6 +4,7 @@
     "cancel": "Anuluj",
     "cancel-pt": "Anuluj wydruk",
     "chg-exp": "Zmień czasy naświetlania",
+    "confirm": "Potwierdzam",
     "del": "usuń",
     "login": "Zaloguj",
     "no": "Nie",
@@ -31,6 +32,9 @@
     "title": "Stan drukarki"
   },
   "msg": {
+    "api-key-1": "Witaj w interfejsie sieciowym Prusa Connect Local.",
+    "api-key-2": "Wpisz klucz API.",
+    "api-key-3": "Możesz znaleźć go w sekcji Ustawienia -> Sieć -> Dane logowania.",
     "cancel": "Czy na pewno chcesz anulować wydruk?",
     "del-proj": "Czy na pewno chcesz usunąć plik {{file_name}}?",
     "e-401-1": "Drukarka używa autentykacji HTTP digest.",
@@ -54,6 +58,12 @@
     "upld-not-sup": "Typ pliku {{file_name}} jest nieobsługiwany.",
     "upld-suc": "Przesyłanie projektu {{file_name}} powiodło się.",
     "upld-unsuc": "Przesyłanie projektu {{file_name}} nie powiodło się."
+  },
+  "print": {
+    "1": "Masz zamiar rozpocząć druk zdalnie przy pomocy interfejsu sieciowego. Upewnij się, że drukarka 3D jest prawidłowo skonfigurowana i gotowa do pracy.",
+    "2": "Platforma jest czysta i zamontowana w drukarce",
+    "3": "W zbiorniku jest wystarczająca ilość żywicy",
+    "4": "Pomarańczowa pokrywa jest zamknięta"
   },
   "proj": {
     "del": "Usuń plik",

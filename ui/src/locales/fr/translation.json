@@ -4,6 +4,7 @@
     "cancel": "Annuler",
     "cancel-pt": "Annuler l'impression",
     "chg-exp": "Modifier les temps d'exposition",
+    "confirm": "Confirmer",
     "del": "supprimer",
     "login": "Connexion",
     "no": "Non",
@@ -31,6 +32,9 @@
     "title": "État de l'imprimante"
   },
   "msg": {
+    "api-key-1": "Bienvenue sur l'interface web locale de Prusa Connect.",
+    "api-key-2": "Veuillez insérer la clé API.",
+    "api-key-3": "Vous pouvez la trouver dans Réglages -> Réseau -> Informations de connexion.",
     "cancel": "Voulez-vous vraiment annuler l'impression ?",
     "del-proj": "Voulez-vous vraiment supprimer le fichier {{file_name}} ?",
     "e-401-1": "L'imprimante utilise la sécurité HTTP Digest.",
@@ -54,6 +58,12 @@
     "upld-not-sup": "Le projet {{file_name}} n'est pas pris en charge.",
     "upld-suc": "Le projet {{file_name}} a été téléchargé correctement.",
     "upld-unsuc": "Le téléchargement du projet {{file_name}} a échoué."
+  },
+  "print": {
+    "1": "Vous êtes sur le point de démarrer une impression à distance à l'aide de l'interface utilisateur web. Veuillez vous assurer que votre imprimante 3D est correctement configurée et prête pour l'impression.",
+    "2": "La plateforme d'impression est propre et installée sur l'imprimante",
+    "3": "Une quantité suffisante de résine se trouve dans le réservoir",
+    "4": "Le couvercle en acrylique orange est fermé"
   },
   "proj": {
     "del": "Supprimer le Fichier",
