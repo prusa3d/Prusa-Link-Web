@@ -17,6 +17,8 @@
   {% include "components/job.html" %}
 {% endif %}
 
+<!-- prettier-ignore -->
+{% if env.type != "mini" %}
 <div class="main-wrapper home-row">
   <div class="component">
     <p class="txt-bold txt-grey txt-size-2">upload project</p>
@@ -34,3 +36,11 @@
     <div id="graph" class="temp"></div>
   </div>
 </div>
+{% else %}
+<div class="main-wrapper">
+  <div class="component">
+    <p class="txt-grey txt-size-1">temperatures</p>
+    <div id="graph" class="temp"></div>
+  </div>
+</div>
+{% endif %}
