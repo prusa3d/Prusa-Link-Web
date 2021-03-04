@@ -235,7 +235,9 @@ function translateDetail(element, where, value) {
   const data = formatData(element.dataset.format, value);
 
   if (label) {
-    element.querySelector("p").innerHTML = `${label} <span>${data}</span>`;
+    element.querySelector(
+      "p"
+    ).innerHTML = `${label} <span class="txt-bold txt-white">${data}</span>`;
   } else {
     element.querySelector("span").innerHTML = data;
   }

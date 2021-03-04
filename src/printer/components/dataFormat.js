@@ -54,16 +54,16 @@ function formatEstimatedTime(time) {
 
     let plus_days = "";
     if (end.getDate() == now.getDate() && end.getMonth() == now.getMonth()) {
-      plus_days = "today at ";
+      plus_days = translate("prop.today-at") + " ";
     } else if (
       end.getDate() == tomorrow.getDate() &&
       end.getMonth() == tomorrow.getMonth()
     ) {
-      plus_days = "tomorrow at ";
+      plus_days = translate("prop.tmw-at") + " ";
     } else {
       let options = { month: "numeric", day: "numeric" };
       const final_date = end.toLocaleString(window.navigator.language, options);
-      plus_days = `${final_date} at `;
+      plus_days = `${final_date} ${translate("prop.at")} `;
     }
 
     estimated_end =
@@ -81,14 +81,23 @@ function formatEstimatedTime(time) {
  */
 function formatTime(value) {
   if (value < 60) {
-    return "Less than a minute";
+    return translate("prop.less-than");
   }
   const minutes = Math.floor((value / 60) % 60);
   const hours = Math.floor((value / 3600) % 24);
   if (hours > 0) {
-    return hours + " h" + (minutes > 0 ? ` ${minutes} min` : "");
+    return (
+      hours +
+      " " +
+      translate("unit.h") +
+      (minutes > 0 ? ` ${minutes} ${translate("unit.min")}` : "")
+    );
   }
-  return minutes + " minute" + (minutes > 1 ? "s" : "");
+  return (
+    minutes +
+    " " +
+    (minutes > 1 ? translate("unit.minute_plural") : translate("unit.minute"))
+  );
 }
 
 /**
@@ -101,7 +110,7 @@ function formatExposure(expo) {
     expo.exposureTime == undefined ||
     expo.exposureTimeCalibration == undefined
   ) {
-    return "NA";
+    return translate("prop.na");
   }
   return `${numberFormat(expo.exposureTimeFirst / 1000)}/${numberFormat(
     expo.exposureTime / 1000
@@ -112,7 +121,7 @@ function totalLayers(data) {
   const currentLayer = data.progress.currentLayer;
   const layers = data.job.file.layers;
   if (currentLayer == undefined || layers == undefined) {
-    return "NA";
+    return translate("prop.na");
   }
   return `${currentLayer}/${layers}`;
 }
@@ -124,9 +133,8 @@ function totalLayers(data) {
  */
 const slaFormatData = (format, value) => {
   if (value === undefined) {
-    return "NA";
+    return translate("prop.na");
   }
-
   switch (format) {
     case "int":
       return parseInt(value);
@@ -137,7 +145,7 @@ const slaFormatData = (format, value) => {
     case "temp":
       return numberFormat(value) + " °C";
     case "fan":
-      return numberFormat(value) + " RPM";
+      return numberFormat(value) + " " + translate("unit.rpm");
     case "resin":
       return numberFormat(value) + " ml";
     case "cover":
@@ -168,7 +176,7 @@ const slaFormatData = (format, value) => {
  */
 const fdmFormatData = (format, value) => {
   if (value === undefined) {
-    return "NA";
+    return translate("prop.na");
   }
 
   switch (format) {
@@ -177,7 +185,7 @@ const fdmFormatData = (format, value) => {
     case "temp":
       return numberFormat(value) + " °C";
     case "fan":
-      return numberFormat(value) + " RPM";
+      return numberFormat(value) + " " + translate("unit.rpm");
     case "print":
       return numberFormat(value) + " mm/s";
     case "pos":

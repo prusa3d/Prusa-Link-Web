@@ -7,15 +7,7 @@
 
 <template id="modal-confirm">
   <div class="modal-confirm">
-    <div>
-      You are about to start a remote print using the web UI. Please, make sure
-      your 3D printer is set up correctly and ready for the print.
-      <ul>
-        <li>The printing platform is clean and installed in the printer</li>
-        <li>A sufficient amount of resin is in the tank</li>
-        <li>The orange acrylic lid is closed</li>
-      </ul>
-    </div>
+    <div id="msg"></div>
     <div class="buttons-wrapper">
       <button class="yes" id="yes">
         <img src="{{ pre.countOrRenderAssets('yes_color.svg') | safe }}" />

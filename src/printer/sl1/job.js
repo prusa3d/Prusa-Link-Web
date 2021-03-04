@@ -11,11 +11,28 @@ import { cancelJob } from "../components/job";
 import { setUpRefill } from "./refill";
 import { translate } from "../../locale_provider";
 
+const translateTexts = () => {
+  const jobMenu = document.querySelector(".job");
+  if (!jobMenu.dataset.translated) {
+    translate("proj.title", { query: "#title-status-label" });
+    translate("prop.rem-time", { query: "#remaining-time" });
+    translate("prop.est-end", { query: "#estimated-end" });
+    translate("prop.pnt-time", { query: "#printing-time" });
+    translate("prop.layers", { query: "#layers" });
+    translate("prop.sla-rmn-mt", { query: "#remaining-resin" });
+    translate("prop.sla-csm-mt", { query: "#consumed-resin" });
+    translate("btn.chg-exp", { query: "#exposure > p" });
+    translate("btn.sla-refill", { query: "#refill > p" });
+    translate("btn.cancel-pt", { query: "#no > p" });
+    jobMenu.dataset.translated = true;
+  }
+};
+
 /**
  * load job
  */
 export const load = () => {
-  translate("proj.title", { query: "#title-status-label" });
+  translateTexts();
   getJson("/api/job")
     .then((result) => {
       const data = result.data;

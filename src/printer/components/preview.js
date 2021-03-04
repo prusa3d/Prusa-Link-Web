@@ -11,6 +11,31 @@ import { confirmJob } from "./job.js";
 import { doQuestion } from "./question";
 import { translate } from "../../locale_provider";
 
+const createConfirm = (close) => {
+  const template = document.getElementById("modal-confirm");
+  const node = document.importNode(template.content, true);
+  const yesButton = node.getElementById("yes");
+  yesButton.addEventListener("click", (event) => {
+    event.preventDefault();
+    navigate("#loading");
+    confirmJob().then(() => {
+      close();
+      navigate("#projects");
+    });
+  });
+  const noButton = node.getElementById("no");
+  noButton.addEventListener("click", close);
+  node.getElementById("msg").innerHTML = `${translate(
+    "print.1"
+  )}<ul><li>${translate("print.2")}</li><li>${translate(
+    "print.3"
+  )}</li><li>${translate("print.4")}</li>
+  </ul>`;
+  translate("btn.confirm", { ref: yesButton.querySelector("p") });
+  translate("btn.cancel", { ref: noButton.querySelector("p") });
+  return node;
+};
+
 /**
  * load preview
  */
@@ -18,7 +43,6 @@ const load = () => {
   translate("proj.title", { query: "#title-status-label" });
   getJson("/api/job").then((result) => {
     const data = result.data;
-    console.log(data);
     const file = data.job.file;
     updateProperties("preview", data);
     if (file.refs.thumbnailBig) {
@@ -74,25 +98,9 @@ const load = () => {
      * set up confirm button
      */
     document.querySelector(".yes").addEventListener("click", (e) => {
-      modal("confirm", {
+      modal(createConfirm, {
         timeout: 10000,
         closeOutside: false,
-        events: {
-          click: {
-            yes: (event, close) => {
-              event.preventDefault();
-              navigate("#loading");
-              confirmJob().then(() => {
-                close();
-                navigate("#projects");
-              });
-            },
-            no: (event, close) => {
-              event.preventDefault();
-              close();
-            },
-          },
-        },
       });
       e.preventDefault();
     });

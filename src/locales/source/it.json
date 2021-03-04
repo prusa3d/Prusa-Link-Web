@@ -32,6 +32,9 @@
     "title": "Stato della stampante"
   },
   "msg": {
+    "api-key-1": "Benvenuti nell'interfaccia web di Prusa Connect Local.",
+    "api-key-2": "Si prega di inserire la chiave API.",
+    "api-key-3": "È possibile trovarla in Impostazioni -> Rete -> Credenziali di accesso",
     "cancel": "Vuoi davvero annullare la stampa?",
     "del-proj": "Vuoi davvero eliminare il file {{file_name}}?",
     "e-401-1": "La stampante utilizza la sicurezza digest HTTP.",

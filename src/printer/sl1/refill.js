@@ -10,6 +10,9 @@ import { translate } from "../../locale_provider";
 
 export const setUpRefill = () => {
   document.getElementById("refill").onclick = () => {
+    navigate("#projects");
+    document.title = process.env.TITLE + " - " + translate("proj.link");
+    history.pushState(null, document.title, "#projects");
     navigate("#loading");
     getJson("/api/system/commands/custom/resinrefill", {
       method: "POST",
@@ -24,6 +27,9 @@ export const setUpRefill = () => {
 
 const load = () => {
   translate("refill.title", { query: "#title-status-label" });
+  translate("msg.sla-fly-fill", { query: "#refill-question" });
+  translate("btn.sla-refilled", { query: "#yes > p" });
+  translate("btn.no", { query: "#no > p" });
   const yesButton = document.getElementById("yes");
   const noButton = document.getElementById("no");
   yesButton.onclick = () => {

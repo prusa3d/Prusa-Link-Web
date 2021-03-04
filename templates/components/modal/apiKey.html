@@ -6,13 +6,11 @@
 #}
 
 <template id="modal-apiKey">
-  <div class="modal-apiKey">
-    <p>Welcome to the Prusa Connect Local web interface.</p>
-    <p>
-      Please insert the API key.<br />
-      You can find it in Settings -> Network -> Login credentials.
-    </p>
-    <input id="apiKey" class="txt-size-2 txt-grey" type="text" autofocus />
+  <div class="modal-apiKey txt-size-2">
+    <p id="msg1" class="txt-bold"></p>
+    <p id="msg2" class="txt-bold"></p>
+    <p id="msg3" class="txt-bold"></p>
+    <input id="apiKey" class="txt-grey" type="text" autofocus />
     <button class="yes" id="login">
       <img src="{{ pre.countOrRenderAssets('yes_color.svg') | safe }}" />
       <p>Login</p>

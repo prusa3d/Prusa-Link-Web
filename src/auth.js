@@ -4,6 +4,35 @@
 
 import { modal } from "./printer/components/modal";
 import { handleError } from "./printer/components/errors";
+import { translate } from "./locale_provider";
+
+const createApiKey = (resolve) => {
+  return (close) => {
+    const template = document.getElementById(`modal-apiKey`);
+    const node = document.importNode(template.content, true);
+
+    const loginInput = node.getElementById("apiKey");
+    loginInput.addEventListener("keydown", (event) => {
+      if (event.key == "Enter") {
+        close();
+        resolve(event.target.value);
+      }
+    });
+
+    const loginButton = node.getElementById("login");
+    loginButton.addEventListener("click", (event) => {
+      event.preventDefault();
+      let apiKey = document.getElementById("apiKey").value;
+      close();
+      resolve(apiKey);
+    });
+
+    node.getElementById("msg1").innerHTML = translate("msg.api-key-1");
+    node.getElementById("msg2").innerHTML = translate("msg.api-key-2");
+    node.getElementById("msg3").innerHTML = translate("msg.api-key-3");
+    return node;
+  };
+};
 
 /**
  * Show modal and ask the api key
@@ -11,27 +40,9 @@ import { handleError } from "./printer/components/errors";
  */
 export const askApiKey = () =>
   new Promise((resolve, reject) => {
-    modal("apiKey", {
+    modal(createApiKey(resolve), {
       timeout: 0,
       closeOutside: false,
-      events: {
-        click: {
-          login: (event, close) => {
-            event.preventDefault();
-            let apiKey = document.getElementById("apiKey").value;
-            close();
-            resolve(apiKey);
-          },
-        },
-        keydown: {
-          apiKey: (event, close) => {
-            if (event.key == "Enter") {
-              close();
-              resolve(event.target.value);
-            }
-          },
-        },
-      },
     });
   }).then((apiKey) => sessionStorage.setItem("apiKey", apiKey));
 
@@ -140,11 +151,21 @@ const getImage = (url) =>
     }
   });
 
+const createWelcome = (close) => {
+  const template = document.getElementById(`modal-welcome`);
+  const node = document.importNode(template.content, true);
+  const closeButton = node.querySelector(".close-button");
+  closeButton.addEventListener("click", close);
+  node.getElementById("msg1").innerHTML = translate("msg.modal-p1");
+  node.getElementById("msg2").innerHTML = translate("msg.modal-p2");
+  return node;
+};
+
 const initAuth = () => {
   const showWelcome = localStorage.getItem("showWelcome");
   if (showWelcome == null) {
     return new Promise((resolve, reject) => {
-      modal("welcome", {
+      modal(createWelcome, {
         closeCallback: () => {
           localStorage.setItem("showWelcome", true);
           resolve();

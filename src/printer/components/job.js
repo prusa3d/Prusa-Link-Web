@@ -7,12 +7,13 @@ import { navigate } from "../../router.js";
 import { info } from "../components/toast";
 import { handleError } from "../components/errors";
 import { doQuestion } from "../components/question";
+import { translate } from "../../locale_provider";
 
 /**
  * start print
  */
 export const confirmJob = () => {
-  info("Start print", "The printer is getting ready.");
+  info(translate("btn.start-pt"), translate("ntf.start-print"));
   return getJson("/api/job", {
     method: "POST",
     headers: {
@@ -26,10 +27,13 @@ export const confirmJob = () => {
  * stop print
  */
 export const cancelJob = () => {
+  navigate("#projects");
+  document.title = process.env.TITLE + " - " + translate("proj.link");
+  history.pushState(null, document.title, "#projects");
   navigate("#loading");
   doQuestion({
-    title: "Cancel",
-    questionChildren: "Do you really want to cancel print?",
+    title: translate("btn.cancel"),
+    questionChildren: translate("msg.cancel"),
     yes: (close) => {
       getJson("/api/job", {
         method: "POST",
