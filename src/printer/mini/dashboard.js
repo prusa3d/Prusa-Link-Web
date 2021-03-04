@@ -4,7 +4,6 @@
 
 import * as graph from "../components/temperature_graph";
 import Job from "./job.js";
-import upload from "../components/upload";
 import { translate } from "../../locale_provider";
 
 const updateTitles = (context) => {
@@ -27,7 +26,6 @@ const updateTitles = (context) => {
 
 const load = () => {
   console.log("Dashboard Logic - mini");
-  upload.init();
   updateTitles();
   graph.render();
 };
