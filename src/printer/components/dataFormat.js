@@ -54,16 +54,17 @@ function formatEstimatedTime(time) {
 
     let plus_days = "";
     if (end.getDate() == now.getDate() && end.getMonth() == now.getMonth()) {
-      plus_days = translate("prop.today-at") + " ";
+      plus_days = `${translate("prop.today-at")} `;
     } else if (
       end.getDate() == tomorrow.getDate() &&
       end.getMonth() == tomorrow.getMonth()
     ) {
-      plus_days = translate("prop.tmw-at") + " ";
+      plus_days = `${translate("prop.tmw-at")} `;
     } else {
       let options = { month: "numeric", day: "numeric" };
       const final_date = end.toLocaleString(window.navigator.language, options);
-      plus_days = `${final_date} ${translate("prop.at")} `;
+      const at = translate("prop.at");
+      plus_days = `${final_date} ${at} `;
     }
 
     estimated_end =
