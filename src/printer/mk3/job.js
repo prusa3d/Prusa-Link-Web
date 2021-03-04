@@ -9,11 +9,25 @@ import { handleError } from "../components/errors";
 import { cancelJob } from "../components/job";
 import { translate } from "../../locale_provider";
 
+const translateTexts = () => {
+  const jobMenu = document.querySelector(".job");
+  if (!jobMenu.dataset.translated) {
+    translate("proj.title", { query: "#title-status-label" });
+    translate("prop.z-height", { query: "#pos_z_mm" });
+    translate("prop.speed", { query: "#printing_speed" });
+    translate("prop.flow", { query: "#flow_factor" });
+    translate("prop.rem-time", { query: "#estimated-end" });
+    translate("prop.pnt-time", { query: "#print_dur" });
+    translate("btn.cancel-pt", { query: "#no > p" });
+    jobMenu.dataset.translated = true;
+  }
+};
+
 /**
  * load job
  */
 export const load = () => {
-  translate("proj.title", { query: "#title-status-label" });
+  translateTexts();
   getJson("/api/job")
     .then((result) => {
       const data = result.data;

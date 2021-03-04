@@ -32,6 +32,9 @@
     "title": "Druckerstatus"
   },
   "msg": {
+    "api-key-1": "Willkommen auf der Web-Oberfläche von Prusa Connect Local.",
+    "api-key-2": "Bitte geben Sie den API-Schlüssel ein.",
+    "api-key-3": "Sie finden ihn in Einstellungen -> Netzwerk -> Anmeldedaten.",
     "cancel": "Wollen Sie den Druck wirklich abbrechen?",
     "del-proj": "Wollen Sie wirklich {{file_name}} löschen?",
     "e-401-1": "Der Drucker verwendet HTTP-Digest-Sicherheit.",

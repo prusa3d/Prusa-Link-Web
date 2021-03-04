@@ -36,7 +36,7 @@ const update = (context) => {
   if (updateTitles(context)) {
     Job.load();
   } else {
-    Job.update(null);
+    Job.update({});
   }
 };
 

@@ -26,8 +26,8 @@
 <template id="node-project">
   <div class="node line">
     <img class="node-img" src="../assets/thumbnail.png" />
-    <div class="node-wrapper">
-      <p id="name"></p>
+    <div class="node-wrapper txt-size-2">
+      <p id="name" class=""></p>
       <div class="node-details">
         {% for values in project_list %}
         <div
@@ -39,7 +39,7 @@
             class="icon"
             src="{{ pre.countOrRenderAssets(values.icon) | safe }}"
           />
-          <p>
+          <p class="txt-grey">
             {{ values.text }}
             <span></span>
           </p>

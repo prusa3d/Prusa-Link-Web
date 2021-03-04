@@ -9,18 +9,13 @@ const modalData = {
 
 /**
  * Show modal
- * @param {string} templateId modal id template to show
- * @param {dict} options { timeout: number, closeOutside: bool, closeCallback: func, actions: {event: {id:func}}}
+ * @param {function} createElement (close) => {} return a dom element to show
+ * @param {dict} options { timeout: number, closeOutside: bool, closeCallback: func
  */
-const modal = (templateId, options = {}) => {
-  const config = Object.assign(
-    { timeout: 5500, closeOutside: true, events: {}, insert: {} },
-    options
-  );
+const modal = (createElement, options = {}) => {
+  const config = Object.assign({ timeout: 5500, closeOutside: true }, options);
   const count = modalData.count;
   modalData.count = modalData.count + 1;
-  const template = document.getElementById(`modal-${templateId}`);
-  const node = document.importNode(template.content, true);
   const modalBox = document.querySelector(".modal-box");
   const modalWrapper = modalBox.parentElement;
 
@@ -46,39 +41,12 @@ const modal = (templateId, options = {}) => {
     }
   };
 
-  // if have button close add event listener
-  let closeButton = node.querySelector(".close-button");
-  if (closeButton) {
-    closeButton.addEventListener("click", removeModal);
-  }
-
   // close when click outside
   if (config.closeOutside) {
     window.addEventListener("click", windowOnClick);
   }
 
-  // add innerHTML
-  for (var queryName in config.insert) {
-    const content = config.insert[queryName];
-    if (Array.isArray(content)) {
-      content.forEach((e) => node.querySelector(queryName).appendChild(e));
-    } else {
-      node.querySelector(queryName).innerHTML = content;
-    }
-  }
-
-  // add a listener for each button by id
-  for (var eventName in config.events) {
-    let actions = config.events[eventName];
-    for (var actionId in actions) {
-      let actionButton = node.getElementById(actionId);
-      const action = actions[actionId];
-      actionButton.addEventListener(eventName, (event) =>
-        action(event, removeModal)
-      );
-    }
-  }
-
+  const node = createElement(removeModal);
   modalData.current = count;
   modalBox.appendChild(node);
   modalWrapper.classList.add("show-modal");

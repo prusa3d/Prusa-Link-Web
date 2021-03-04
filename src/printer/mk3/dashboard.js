@@ -6,6 +6,7 @@ import * as graph from "../components/temperature_graph";
 import { load as job } from "./job.js";
 import { translateTitles } from "../mini/translate";
 import upload from "../components/upload";
+import { translate } from "../../locale_provider";
 
 const updateTitles = (context) => {
   if (

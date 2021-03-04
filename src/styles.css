@@ -9,7 +9,6 @@ html,
 nav ul a {
   color: #fff;
 }
-.progress > p,
 .upload p,
 nav ul a {
   text-align: center;
@@ -18,7 +17,7 @@ nav ul a {
 /* ===================================== GLOBAL ======================================= */
 
 html {
-  line-height: 1.15;
+  line-height: 1.5;
   -webkit-text-size-adjust: 100%;
 }
 body {
@@ -88,6 +87,10 @@ progress {
   min-width: 50%;
 }
 
+.preview-prop div:first-of-type {
+  max-width: 50%;
+}
+
 ::-webkit-file-upload-button {
   -webkit-appearance: button;
   font: inherit;
@@ -130,11 +133,9 @@ nav {
   min-width: 685px;
 }
 nav .brand-logo {
-  display: flex;
   flex-grow: 10;
   min-width: 288px;
   min-height: 125px;
-  padding-bottom: 16px;
 }
 
 nav .brand-logo img {
@@ -154,7 +155,7 @@ nav ul li {
   list-style-type: none;
   padding: 16px;
   width: 100%;
-  margin-bottom: -3px;
+  margin-bottom: -1px;
 }
 nav ul li.active {
   border-bottom: 1px solid #f8651b;
@@ -274,7 +275,8 @@ nav .burger-icon.burger-open {
   flex-grow: 1;
   flex-wrap: wrap;
   width: 100%;
-  padding: 0 0 16px;
+  padding-top: 16px;
+  line-height: 1.5;
 }
 .upload,
 .upload img {
@@ -441,6 +443,7 @@ nav .burger-icon.burger-open {
 .preview > p {
   -ms-word-break: break-all;
   word-break: break-all;
+  padding: 0.2rem;
 }
 .preview-wrapper {
   display: flex;
@@ -470,9 +473,13 @@ nav .burger-icon.burger-open {
   display: flex;
   flex-direction: column;
   flex-grow: 1;
+  padding: 0.5rem;
 }
 .preview-prop > img {
   margin: 6px;
+}
+.preview-prop > div > p {
+  padding: 0.2rem;
 }
 .preview-buttons {
   display: flex;
@@ -587,6 +594,9 @@ progress::-webkit-progress-bar {
 progress::-moz-progress-bar {
   background: #f8651b;
 }
+.progress {
+  padding-top: 0.75rem;
+}
 .progress > progress {
   width: 100%;
   border: none;
@@ -595,11 +605,20 @@ progress::-moz-progress-bar {
   color: #f8651b;
   margin-top: 3px;
 }
+.progress > p:last-child {
+  text-align: center;
+}
 .stats {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   row-gap: 8px;
   flex-grow: 1;
+}
+.stats > div {
+  padding: 0.75rem;
+}
+.stats > div > p {
+  padding: 0.2rem;
 }
 .job-buttons,
 .refill {
@@ -707,21 +726,32 @@ progress::-moz-progress-bar {
 }
 
 .modal-welcome p {
-  padding-bottom: 20px;
+  padding: 0.2rem;
   text-align: center;
+}
+
+.modal-welcome p:last-child {
+  margin-top: 2rem;
 }
 
 /* ===================================== MODAL API KEY ======================================= */
 
 .modal-apiKey > p {
-  padding-top: 20px;
-  padding-bottom: 5px;
+  padding: 0.2rem;
+}
+
+.modal-apiKey > p:first-child {
+  padding-bottom: 1.5rem;
+  padding-top: 1rem;
 }
 
 .modal-apiKey > input {
   width: 100%;
   box-sizing: border-box;
   margin-bottom: 5px;
+  border-radius: 4px;
+  height: 2.2rem;
+  margin-top: 5px;
 }
 
 .modal-apiKey > button {
@@ -933,6 +963,7 @@ $toast-success-title-color: $text-white;
   background-color: hsl(0, 0%, 4%);
   color: $text-white;
   margin-top: 10px;
+  cursor: pointer;
 }
 
 #lang:focus {
@@ -991,10 +1022,10 @@ $toast-success-title-color: $text-white;
     flex-direction: row;
   }
   .home-row > div:not(:first-child) {
-    padding: 0 0 0 8px;
+    padding-left: 8px;
   }
   .home-row > div:first-child {
-    padding: 0 8px 0 0;
+    padding-right: 8px;
   }
   .content-wrapper,
   #title {

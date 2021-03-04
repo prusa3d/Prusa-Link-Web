@@ -62,7 +62,11 @@
 
 <div class="main-wrapper row">
   <div class="preview">
-    <p data-type="preview" data-where="job.file.name"></p>
+    <p
+      data-type="preview"
+      data-where="job.file.name"
+      class="txt-bold txt-size-2"
+    ></p>
     <div class="preview-wrapper">
       <div class="preview-img">
         <img id="preview-img" src="../assets/thumbnail.png" />
@@ -76,11 +80,12 @@
           />
           {% for values in prop.data %}
           <div>
-            <p data-label="{{ values.label }}"></p>
+            <p data-label="{{ values.label }}" class="txt-size-2 txt-grey"></p>
             <p
               data-format="{{ values.format }}"
               data-type="{{ values.type }}"
               data-where="{{ values.location }}"
+              class="txt-bold txt-size-2"
             >
               NA
             </p>
@@ -124,5 +129,3 @@
 
 <!-- prettier-ignore -->
 {% include "components/modal/confirmPrint.html" %}
-<!-- prettier-ignore -->
-{% include "components/modal/confirmDelete.html" %}

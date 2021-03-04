@@ -65,6 +65,9 @@ const setUpElements = (file, elements, div) => {
  */
 const changeExposureTimesQuestion = (file, next = "#preview") => {
   document.getElementById("exposure").addEventListener("click", (e) => {
+    navigate("#projects");
+    document.title = process.env.TITLE + " - " + translate("proj.link");
+    history.pushState(null, document.title, "#projects");
     const elements = {};
     const div = document.createElement("div");
     setUpElements(file, elements, div);

@@ -60,11 +60,19 @@ select {
   font-size: $font-size-2-mobile;
 }
 
+button > p {
+  font-family: "Atlas Grotesk Bold Web";
+  font-size: $font-size-2-mobile;
+}
+
 @media only screen and (min-width: 992px) {
   .txt-size-1 {
     font-size: $font-size-1-desktop;
   }
   .txt-size-2 {
+    font-size: $font-size-2-desktop;
+  }
+  button > p {
     font-size: $font-size-2-desktop;
   }
 }
