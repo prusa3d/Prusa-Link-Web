@@ -167,6 +167,7 @@ class App extends Component<{}, S> implements network, apiKey {
           } else {
             this.setState({ apikey: false });
             sessionStorage.setItem("auth", "true");
+            response.json().then(data => { sessionStorage.setItem("hostname", data["hostname"]); });
             if (window.location.pathname == "/login-failed") {
               route("/", true);
             }
