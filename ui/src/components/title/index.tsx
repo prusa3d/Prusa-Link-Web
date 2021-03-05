@@ -13,23 +13,12 @@ interface P extends network {
 }
 
 interface S {
-  hostname: string;
 }
 
 class Title extends Component<P, S> {
-  state = { hostname: null };
 
-  componentDidMount = () => {
-    this.props.onFetch({
-      url: "/api/hostname",
-      then: response =>
-        response.json().then(data => {
-          this.setState({ hostname: data.hostname });
-        })
-    });
-  };
-
-  render({ title, children, onFetch }, { hostname }) {
+  render({ title, children, onFetch }, { }) {
+    const hostname = sessionStorage.getItem("hostname");
     const { t, i18n, ready } = useTranslation(null, { useSuspense: false });
     return (
       <div class="box has-background-black is-paddingless prusa-line">
