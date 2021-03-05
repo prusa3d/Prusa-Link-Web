@@ -9,7 +9,7 @@
 {% include "../../components/title_default.html" %}
 
 <div class="main-wrapper">
-  <div id="refill-question">Please fully refill resin tank.</div>
+  <div data-label="msg.sla-fly-fill">Please fully refill resin tank.</div>
   <div class="refill">
     <div class="refill-images">
       <img src="../assets/refill.jpg" />
@@ -22,11 +22,11 @@
   <div class="buttons-wrapper">
     <button class="yes" id="yes" disabled>
       <img src="{{ pre.countOrRenderAssets('yes_color.svg') | safe }}" />
-      <p>resin fully refilled</p>
+      <p data-label="btn.sla-refilled">resin fully refilled</p>
     </button>
     <button class="no" id="no" disabled>
       <img src="{{ pre.countOrRenderAssets('cancel.svg') | safe }}" />
-      <p>no</p>
+      <p data-label="btn.no">no</p>
     </button>
   </div>
 </div>

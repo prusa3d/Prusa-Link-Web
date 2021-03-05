@@ -10,13 +10,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="theme-color" content="#fff" />
-    {% if env.type == "sl1" %}
-    <title>Original Prusa SL1 - Prusa Connect Local</title>
-    {% elif env.type == "mini" %}
-    <title>Original Prusa Mini - Prusa Connect Local</title>
-    {% else %}
-    <title>Original Prusa MK3 - Prusa Connect Local</title>
-    {% endif %}
+    <title>{{ env.title }} - {{ env.appName }}</title>
   </head>
 
   <body>
@@ -25,7 +19,7 @@
         <nav>
           <a href="#!" class="brand-logo">
             <img
-              src="{{ pre.countOrRenderAssets('prusa_connect_local_logo_black.svg') | safe }}"
+              src="{{ pre.countOrRenderAssets('prusa-link-logo-inv.svg') | safe }}"
             />
           </a>
           <a class="navbar-burger" id="menu">

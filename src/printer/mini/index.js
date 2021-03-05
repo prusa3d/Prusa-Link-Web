@@ -9,7 +9,6 @@ import Temperature from "./temperature.js";
 import dashboard from "../../views/dashboard.html";
 import temperature from "../../views/temperature.html";
 import { updateProperties } from "../components/updateProperties.js";
-import { translateTelemetry } from "./translate";
 
 const context = {
   version: undefined,
@@ -27,7 +26,6 @@ const mini = {
     context.version = version;
     context.printer = printerData;
     initTemperatureGraph();
-    translateTelemetry();
   },
   update: (data) => {
     console.log("Update Printer API");

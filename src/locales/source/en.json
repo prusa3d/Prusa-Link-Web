@@ -32,7 +32,7 @@
     "title": "Printer status"
   },
   "msg": {
-    "api-key-1": "Welcome to the Prusa Connect Local web interface.",
+    "api-key-1": "Welcome to the Prusa Link web interface.",
     "api-key-2": "Please insert the API key.",
     "api-key-3": "You can find it in Settings -> Network -> Login credentials.",
     "cancel": "Do you really want to cancel print?",

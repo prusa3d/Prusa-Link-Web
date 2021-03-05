@@ -172,7 +172,9 @@ class Printer {
   }
 
   createNewFile(options) {
-    const newPath = path.join(options.path || "", options.fileName);
+    const newPath = path.join(options.path || "", options.fileName)
+      .split("\\").join("/");
+
     return {
       origin: options.target,
       path: newPath,

@@ -2,6 +2,8 @@
 // Copyright (C) 2021 Prusa Research a.s. - www.prusa3d.com
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+import { translateLabels } from "../../locale_provider";
+
 const modalData = {
   count: 0,
   current: 0,
@@ -49,6 +51,7 @@ const modal = (createElement, options = {}) => {
   const node = createElement(removeModal);
   modalData.current = count;
   modalBox.appendChild(node);
+  translateLabels(modalBox)
   modalWrapper.classList.add("show-modal");
   // for default all modal there is a timeout
   if (config.timeout > 0) {

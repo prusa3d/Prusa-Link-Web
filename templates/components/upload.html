@@ -1,0 +1,24 @@
+<!-- prettier-ignore -->
+{#
+    # This file is part of the Prusa Connect Local
+    # Copyright (C) 2021 Prusa Research a.s. - www.prusa3d.com
+    # SPDX-License-Identifier: GPL-3.0-or-later
+#}
+
+<div id="upload" data-state="choose">
+    <input type="file">
+    </input>
+    <div class="state-choose">
+      <img
+        class="icon"
+        src="{{ pre.countOrRenderAssets('download.svg') | safe }}"
+      />
+      <p>Choose a *.sl1 or drop it here.</p>
+    </div>
+    <div class="abs-center state-uploading">
+      <img
+        class="icon"
+        src="{{ pre.countOrRenderAssets('dual-ring-1s-200px.svg') | safe }}"
+      />
+    </div>
+</div>

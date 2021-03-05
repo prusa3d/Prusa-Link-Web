@@ -44,9 +44,16 @@ router.get("/:target", async (req, res, next) => {
  * Upload file or create folder.
  */
 router.post("/:target", upload.any(), async (req, res, next) => {
+  const target = req.params.target;
+
+  if (target != "sdcard" && target != "local") {
+    new errors.FileNotFound().handleError(res); // TODO: send origin not found?
+    return;
+  }
+
   const uploadFile = req.files[0];
   const options = {
-    target: req.params.target,
+    target,
     select: req.body.select || false,
     print: req.body.print || false,
     path: req.body.path,

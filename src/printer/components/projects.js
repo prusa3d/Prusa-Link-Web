@@ -2,18 +2,21 @@
 // Copyright (C) 2021 Prusa Research a.s. - www.prusa3d.com
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-import { getJson, getImage } from "../../auth.js";
-import { navigate } from "../../router.js";
-import { handleError } from "./errors";
-import { getValue } from "./updateProperties.js";
 import formatData from "./dataFormat.js";
 import upload from "../components/upload";
-import { translate } from "../../locale_provider.js";
+import { getJson, getImage } from "../../auth.js";
+import { getValue } from "./updateProperties.js";
+import { handleError } from "./errors";
+import { navigate } from "../../router.js";
+import { translate, translateLabels } from "../../locale_provider.js";
+
+let lastData = null;
 
 /**
  * project context
  */
 const metadata = {
+  origin: "",
   current_path: [],
   files: {},
   eTag: null,
@@ -28,13 +31,37 @@ const metadata = {
  * @param {object} b
  */
 const sortByType = (a, b) => {
-  if (a.type == "folder" && b.type == "folder") {
-    return a.display.localeCompare(b.display);
+  if (a.type == b.type) {
+    let aName = a.display || a.name || "";
+    let bName = b.display || b.name || "";
+
+    return aName.localeCompare(bName);
   } else if (a.type == "folder") {
     return -1;
+  } else if (b.type == "folder") {
+    return 1;
   }
   return b.date - a.date;
 };
+
+const getInitialMetadataFiles = (data) => {
+  return [
+    {
+      name: "local",
+      origin: "local",
+      path: "/local",
+      type: "folder",
+      children: data.files.filter((elm) => elm.origin == "local"),
+    },
+    {
+      name: "sdcard",
+      origin: "sdcard",
+      path: "/sdcard",
+      type: "folder",
+      children: data.files.filter((elm) => elm.origin == "sdcard"),
+    },
+  ];
+}
 
 /**
  * callback for update the project context
@@ -47,11 +74,10 @@ const updateData = () => {
   })
     .then((result) => {
       const data = result.data;
-      if (data) {
-        metadata.files = {
-          local: data.files.filter((elm) => elm.origin == "local"),
-          usb: data.files.filter((elm) => elm.origin == "sdcard"),
-        };
+      const newData = JSON.stringify(data);
+      if (data && lastData !== newData) {
+        lastData = newData;
+        metadata.files = getInitialMetadataFiles(data);
         metadata.free = data.free;
         metadata.total = data.total;
         metadata.eTag = result.eTag;
@@ -92,19 +118,27 @@ export const update = (context) => {
   }
 };
 
+function initUpload() {
+  const origin = metadata.origin;
+  const path = joinPaths(...getCurrentPath());
+  upload.init(origin, path);
+}
+
 /**
  * load projects page
  */
 export function load() {
-  translate("upld.title", { query: ".proj-upload p" });
-  upload.init();
   const projects = document.getElementById("projects");
   while (projects.firstChild) {
     projects.removeChild(projects.firstChild);
   }
 
+  if (metadata.current_path.length === 0)
+    metadata.origin = "local";
+  initUpload();
+
   if (metadata.current_path.length > 0) {
-    let view = metadata.files[metadata.current_path[0]];
+    let view = metadata.files.find((elm) => elm.name == metadata.current_path[0]).children;
     for (let i = 1; i < metadata.current_path.length; i++) {
       let path = metadata.current_path[i];
       view = view.find((elm) => elm.name == path).children;
@@ -113,20 +147,25 @@ export function load() {
     document.getElementById(
       "title-status-label"
     ).innerHTML = metadata.current_path.join(" > ");
+
     projects.appendChild(createUp());
     for (let node of view.sort(sortByType)) {
       if (node.type == "folder") {
-        projects.appendChild(createFolder(node.display));
+        projects.appendChild(createFolder(node.display || node.name, node.path));
       } else {
         projects.appendChild(createFile(node));
       }
     }
   } else {
-    for (let name in metadata.files) {
-      document.getElementById("title-status-label").innerHTML = translate(
-        "proj.title"
-      );
-      projects.appendChild(createFolder(name));
+    document.getElementById("title-status-label").innerHTML = translate("proj.title");
+    if (metadata.files.length) {
+      for (let file of metadata.files) {
+        if (file.type == "folder") {
+          projects.appendChild(createFolder(file.name, joinPaths(file.path), file.origin));
+        } else {
+          projects.appendChild(createFile(file));
+        }
+      }
     }
   }
 }
@@ -151,10 +190,18 @@ function createElement(templateName, name, cb) {
 /**
  * Create a folder element
  * @param {string} name
+ * @param {string} path
+ * @param {string|undefined} origin (optimal)
  */
-function createFolder(name) {
+function createFolder(name, path, origin) {
   return createElement("node-folder", name, () => {
-    metadata.current_path.push(name);
+    if (origin) {
+      metadata.origin = origin;
+      metadata.current_path = path.split("/").filter(str => str !== "");
+    } else {
+      metadata.current_path = [metadata.origin, ...path.split("/").filter(str => str !== "")];
+    }
+
     load();
   });
 }
@@ -174,8 +221,12 @@ function createUp() {
  * @param {object} node
  */
 const onClickFile = (node) => {
+  const paths = [metadata.origin, ...getCurrentPath(), node.name]
+  const url = joinPaths("api/files", ...paths);
+  console.log(`Request file: ${url}`);
+
   navigate("#loading");
-  getJson(node.refs.resource, {
+  getJson(url, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -194,14 +245,19 @@ const onClickFile = (node) => {
  * @param {object} node
  */
 function createFile(node) {
-  const elm = createElement("node-project", node.display, (e) =>
+  const elm = createElement("node-project", node.display || node.name, (e) =>
     onClickFile(node)
   );
   const nodeDetails = elm.querySelector(".node-details");
   nodeDetails.querySelectorAll(".details").forEach((element) => {
+    translateLabels(element);
     const value = getValue(element.dataset.where, node);
     if (value) {
-      translateDetail(element, element.dataset.where, value);
+      const data = formatData(
+        element.dataset.format,
+        value
+      );
+      element.querySelector("p").innerHTML += ` <span>${data}</span>`
     } else {
       nodeDetails.removeChild(element);
     }
@@ -215,32 +271,24 @@ function createFile(node) {
   return elm;
 }
 
-function translateDetail(element, where, value) {
-  function getLabel(where) {
-    switch (where) {
-      case "gcodeAnalysis.layerHeight":
-        return translate("prop.layer-ht");
-      case "gcodeAnalysis.estimatedPrintTime":
-        return translate("prop.pnt-time");
-      case "gcodeAnalysis.material":
-        return translate("prop.material");
-      case "gcodeAnalysis.layerHeight":
-        return translate("prop.layer-ht");
-      default:
-        return null;
+/**
+ * Get current path. Not include origin.
+ * For Sl1 without "local" or "sdcard"
+ */
+function getCurrentPath() {
+  return metadata.current_path.slice(1, metadata.current_path.length);
+}
+
+function joinPaths(...segments) {
+  return segments.map(str => {
+    if (str[0] === '/') {
+      str = str.substring(1);
     }
-  }
-
-  const label = getLabel(where);
-  const data = formatData(element.dataset.format, value);
-
-  if (label) {
-    element.querySelector(
-      "p"
-    ).innerHTML = `${label} <span class="txt-bold txt-white">${data}</span>`;
-  } else {
-    element.querySelector("span").innerHTML = data;
-  }
+    if (str[str.length - 1] === "/") {
+      str = str.substring(0, str.length - 1);
+    }
+    return str;
+  }).filter(str => str !== "").join("/");
 }
 
 export default { load, update };

@@ -22,7 +22,6 @@ build type:
 printer types:
 
 - sl1
-- mk3
 - mini
 
 Example:

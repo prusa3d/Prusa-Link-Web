@@ -3,5 +3,4 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 const PrinterSL1 = require("./sl1.js");
-const PrinterMK3 = require("./mk3.js");
-module.exports = { PrinterSL1, PrinterMK3 };
+module.exports = { PrinterSL1 };

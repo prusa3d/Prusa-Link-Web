@@ -4,7 +4,7 @@
 
 const basicAuth = require("express-basic-auth");
 const bodyParser = require("body-parser");
-const { PrinterSL1, PrinterMK3 } = require("./mock");
+const { PrinterSL1 } = require("./mock");
 const { Unauthorized, ApiKeyMissing } = require("./mock/errors");
 
 const devServer = (app, conf) => {
@@ -46,7 +46,7 @@ const devServer = (app, conf) => {
   if (conf.type == "sl1") {
     app.set("printer", new PrinterSL1());
   } else {
-    app.set("printer", new PrinterMK3());
+    throw new Error("FDM is not implemented");
   }
 
   /*

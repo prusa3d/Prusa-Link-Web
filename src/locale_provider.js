@@ -1,3 +1,7 @@
+// This file is part of the Prusa Connect Local
+// Copyright (C) 2021 Prusa Research a.s. - www.prusa3d.com
+// SPDX-License-Identifier: GPL-3.0-or-later
+
 import getNestedValue from "./helpers/get_nested_value";
 
 /** File that contains all translations */
@@ -115,4 +119,18 @@ function assign(word, parameters) {
       }
     }
   }
+}
+
+/** Translate all data-label(s) from templates.
+ * @param {(HTMLElement|string|undefined)} root Root element - from that element
+ * the search for data-label begins. Pass HTMLElement (ref), string (id) or undefined (body).
+ */
+export function translateLabels(root) {
+  let rootElement = (typeof root === "string")
+    ? document.getElementById(root)
+    : root || document.body;
+
+  rootElement.querySelectorAll(`[data-label]`).forEach((elm) => {
+    elm.innerHTML = translate(elm.getAttribute("data-label"));
+  });
 }
