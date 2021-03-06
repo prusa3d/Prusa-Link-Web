@@ -44,7 +44,7 @@ module.exports = (env, args) => {
       ? env.update_progress
       : update_timer;
   const update_files =
-    typeof env.update_files !== "undefined" ? env.update_files : update_timer;
+    typeof env.update_files !== "undefined" ? env.update_files : update_timer*1.5;
   console.log(`* printer: ${printer}`);
   console.log(`* update printer: ${update_printer}`);
   console.log(`* update progress: ${update_progress}`);
