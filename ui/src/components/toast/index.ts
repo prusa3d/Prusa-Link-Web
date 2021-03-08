@@ -8,7 +8,7 @@ class Toast {
   static notifications: Array<HTMLElement> = [];
   static container: HTMLElement = document.getElementById("prusa-toast");
 
-  static info(title: string, message: string, type: string = ""): void {
+  static info(title: string, message: string, type: string = "", autoClone=true): void {
     const notification = document.createElement("article");
     if (type) {
       notification.className = type;
@@ -39,17 +39,19 @@ class Toast {
     notification.appendChild(body);
 
     this.container.appendChild(notification);
-    setTimeout(() => {
-      this.container.removeChild(notification);
-    }, 10500);
+    if(autoClone){
+      setTimeout(() => {
+        this.container.removeChild(notification);
+      }, 10500);
+    }
   }
 
   static warning(title: string, message: string): void {
-    this.info(title, message, "warning");
+    this.info(title, message, "warning", false);
   }
 
   static error(title: string, message: string): void {
-    this.info(title, message, "error");
+    this.info(title, message, "error", false);
   }
 
   static success(title: string, message: string): void {
