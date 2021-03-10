@@ -11,9 +11,6 @@
     "dev:sl1": "npm run dev --env PRINTER=SL1",
     "start:sl1": "npm run start --env PRINTER=SL1",
     "build:sl1": "webpack --env PRINTER=SL1",
-    "dev:mk3": "npm run dev --env PRINTER=MK3",
-    "start:mk3": "npm run start --env PRINTER=MK3",
-    "build:mk3": "webpack --env PRINTER=MK3",
     "dev:mini": "npm run dev --env PRINTER=Mini",
     "start:mini": "npm run start --env PRINTER=Mini",
     "build:mini": "webpack --env PRINTER=Mini"

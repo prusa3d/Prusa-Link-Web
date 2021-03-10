@@ -23,11 +23,8 @@ module.exports = (env, args) => {
   if (printer_conf.type == "sl1") {
     printer_conf["title"] = "Original Prusa SL1";
     printer_conf["printerFamily"] = "sla";
-  } else if (printer_conf.type == "mini") {
+  } else /* (printer_conf.type == "mini") */ {
     printer_conf["title"] = "Original Prusa Mini";
-    printer_conf["printerFamily"] = "fdm";
-  } else {
-    printer_conf["title"] = "Original Prusa MK3";
     printer_conf["printerFamily"] = "fdm";
   }
 
