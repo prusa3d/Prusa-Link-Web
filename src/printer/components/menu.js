@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 // prettier-ignore
+import { Dropdown } from "./dropdown";
 import { getLanguage, getLanguages, setLanguage, translate } from "../../locale_provider";
 
 export const initMenu = () => {
@@ -17,16 +18,15 @@ export const initMenu = () => {
     }
   });
 
-  // Fill language selector with available languages
-  let langSelector = document.getElementById("lang");
-  langSelector.innerHTML = getLanguages()
-    .map((lang) => `<option value="${lang}">${lang.toUpperCase()}</option>`)
-    .join("\n");
-  langSelector.value = getLanguage();
-
-  document.getElementById("lang").addEventListener("change", (e) => {
-    if (setLanguage(e.currentTarget.value)) window.location.reload();
-  });
+  const dropdown = Dropdown.init(document.getElementById("navbar"));
+  if (dropdown) {
+    dropdown.setOptions(getLanguages());
+    dropdown.value = getLanguage();
+    dropdown.onselect = (lang) => {
+      setLanguage(lang);
+      window.location.reload();
+    };
+  };
 
   document.querySelectorAll("#navbar a[href]").forEach((e) => {
     let path = e.href.split("#");

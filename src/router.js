@@ -19,9 +19,10 @@ const navigate = (url) => {
   const elm = document.querySelector(`a[href="#${page}"]`);
   if (elm) {
     document.getElementById("navbar").childNodes.forEach((elm) => {
-      elm.className = "";
+      if (elm.nodeName.toLowerCase() === "li")
+        elm.classList.remove(["active"]);
     });
-    elm.parentNode.className = "active";
+    elm.parentNode.classList.remove(["active"]);
   }
   return true;
 };
