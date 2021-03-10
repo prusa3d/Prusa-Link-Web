@@ -27,7 +27,7 @@ interface S {
   origin: string;
   preview: any;
 }
-let firstTime = true;
+let isLoading = true;
 
 const sortByType = (a, b) => {
   if (a["type"] == "folder") {
@@ -73,9 +73,10 @@ export class Tree extends Component<TreeProps, S> {
 
     this.props.onFetch({
       url: url,
-      then: () => {},
+      then: () => { isLoading = false; },
       options,
       except: (e) => {
+        isLoading = false;
         const { t, i18n, ready } = useTranslation(null, { useSuspense: false });
         new Promise<string>(function(resolve, reject) {
           if (ready) {
@@ -98,7 +99,7 @@ export class Tree extends Component<TreeProps, S> {
         then: (response) => {
           const eTag = response.headers.get("etag");
           response.json().then((data) => {
-            firstTime = false;
+            isLoading = false;
             this.setState({
               eTag: eTag,
               files: data.files,
@@ -114,6 +115,7 @@ export class Tree extends Component<TreeProps, S> {
           },
         },
         except: (e) => {
+          isLoading = false;
           if (e.name === "304") {
             if (this.props.showPreview && !this.state.preview) {
               this.getPreview();
@@ -187,7 +189,7 @@ export class Tree extends Component<TreeProps, S> {
         material={props.material}
         layer_height={props.layer_height}
         onSelectFile={() => {
-          firstTime = true;
+          isLoading = true;
           this.onOpenFile(`/api/files/${node.origin}/${node.path}`);
         }}
         preview_src={`/api/files/preview/${node.origin}/${node.path}.png`}
@@ -289,7 +291,7 @@ export class Tree extends Component<TreeProps, S> {
     return (
       <ProjectView
         onBack={() => {
-          firstTime = false;
+          isLoading = false;
           this.setState({
             ...this.state,
             preview: null,
@@ -330,7 +332,7 @@ export class Tree extends Component<TreeProps, S> {
       }
       return this.showPreview();
     } else {
-      if (firstTime) {
+      if (isLoading) {
         return <Loading />;
       }
       return this.showProjects();
