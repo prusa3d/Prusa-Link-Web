@@ -4,33 +4,33 @@
 
 const Printer = require("./printer.js");
 
-class PrinterMK3 extends Printer {
+class PrinterFDM extends Printer {
   constructor() {
-    super(require("./files_gcode"), "Original Prusa MK3", 300);
+    super(require("./files_gcode"), "FDM Mock Printer", 300);
   }
 
   job() {
-    const jobMK3 = super.job();
+    const job = super.job();
     const pos_z = 50;
     const length = 45;
     const volume = 80;
 
-    if (jobMK3.progress) {
-      const completion = jobMK3.progress.completion;
-      jobMK3.progress = {
-        ...jobMK3.progress,
+    if (job.progress) {
+      const completion = job.progress.completion;
+      job.progress = {
+        ...job.progress,
         pos_z_mm: pos_z * completion,
         printSpeed: Math.random() * 10,
         flow_factor: Math.random() * 5,
         filament_status: parseInt(Math.random() * 5),
       };
-      jobMK3["filament"] = {
+      job["filament"] = {
         length: length * completion,
         volume: volume * completion,
       };
     }
 
-    return jobMK3;
+    return job;
   }
 
   onUpdate() {
@@ -49,4 +49,4 @@ class PrinterMK3 extends Printer {
   }
 }
 
-module.exports = PrinterMK3;
+module.exports = PrinterFDM;

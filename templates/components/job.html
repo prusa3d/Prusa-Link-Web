@@ -34,13 +34,6 @@
           'print_dur': {'text': 'Printing time', "format": "time", "location": "progress.printTime" }
       }
   %}
-  {% if env.type == "mk3" %}
-    {%
-      set job_buttons = {
-          'no': {'text': 'cancel print', icon: 'cancel.svg', class: 'no' }
-      }
-    %}
-  {% endif %}
 
 {% endif %}
 

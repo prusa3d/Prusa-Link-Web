@@ -32,6 +32,8 @@ const sortByType = (a, b) => {
     return a.display.localeCompare(b.display);
   } else if (a.type == "folder") {
     return -1;
+  } else if (b.type == "folder") {
+    return 1;
   }
   return b.date - a.date;
 };
