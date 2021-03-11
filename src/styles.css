@@ -6,11 +6,11 @@
 /* ===================================== TEXT ======================================= */
 button,
 html,
-nav ul a {
+nav > ul a {
   color: #fff;
 }
 .upload p,
-nav ul a {
+nav > ul a {
   text-align: center;
 }
 
@@ -53,7 +53,7 @@ button > img {
   margin: 2px;
 }
 .content,
-nav ul {
+nav > ul {
   margin-left: auto;
 }
 button,
@@ -142,7 +142,7 @@ nav .brand-logo img {
   width: 100%;
   height: auto;
 }
-nav ul {
+nav > ul {
   padding-left: 0;
   display: flex;
   align-items: center;
@@ -150,23 +150,28 @@ nav ul {
   width: 100%;
   margin-bottom: 0;
 }
-nav ul li {
+nav > ul > li {
   display: flex;
   list-style-type: none;
   padding: 16px;
   width: 100%;
+  margin-bottom: 0px;
+}
+nav > ul > li.active {
+  border-bottom: 1px solid #f8651b;
   margin-bottom: -1px;
 }
-nav ul li.active {
-  border-bottom: 1px solid #f8651b;
-}
-nav ul li:hover {
+nav > ul > li:hover {
   border-bottom: 1px solid #ffffff;
+  margin-bottom: -1px;
 }
 nav ul a {
   list-style: none;
   text-decoration: none;
   width: 100%;
+}
+nav > ul > .dropdown {
+  align-self: flex-start;
 }
 nav .navbar-burger {
   display: flex;
@@ -955,20 +960,43 @@ $toast-success-title-color: $text-white;
   }
 }
 
-/* ===================================== SELECT LANG ======================================= */
+/* ===================================== DROPDOWN ======================================= */
 
-#lang {
-  border: none;
-  outline: none;
+.dropdown {
+  position: relative;
+  text-transform: uppercase;
+  width: max-content;
+}
+.dropdown .open {
+  visibility: visible;
+}
+.dropdown ul {
   background-color: hsl(0, 0%, 4%);
-  color: $text-white;
-  margin-top: 10px;
-  cursor: pointer;
+  border: 1px solid #707070;
+  list-style: none;
+  padding: 0;
 }
 
-#lang:focus {
-  border: none;
-  outline: none;
+.dropdown-btn,
+.dropdown li {
+  cursor: pointer;
+  padding: 2px 4px;
+}
+.dropdown li:hover {
+  background: #f8651b;
+}
+
+.dropdown-btn img {
+  height: .7em;
+  width: .7em;
+  max-width: none;
+  padding: 0;
+}
+
+.dropdown-content {
+  min-width: 100%;
+  position: absolute;
+  visibility: collapse;
 }
 
 /* ===================================== LOADING ======================================= */
@@ -993,10 +1021,14 @@ $toast-success-title-color: $text-white;
   .content {
     width: 75%;
   }
-  nav ul {
+  nav > ul {
     flex-wrap: nowrap;
     flex-direction: row;
     width: inherit;
+  }
+  nav .dropdown {
+    align-self: unset !important;
+    min-width: fit-content !important;
   }
   .burger-menu {
     display: flex;
