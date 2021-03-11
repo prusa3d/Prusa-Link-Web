@@ -7,7 +7,7 @@ const output_file = path.resolve(__dirname, "../../src/locales/locales.json");
 const source_dir = path.resolve(__dirname, "../../src/locales/source");
 
 // init
-removeFile(output_file);
+// removeFile(output_file);
 const languages = fs
   .readdirSync(source_dir)
   .map((fileName) => fileName.replace(".json", "")); // => [ 'cs', 'de', 'it' ]
