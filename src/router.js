@@ -22,7 +22,7 @@ const navigate = (url) => {
       if (elm.nodeName.toLowerCase() === "li")
         elm.classList.remove(["active"]);
     });
-    elm.parentNode.classList.remove(["active"]);
+    elm.parentNode.className = "active";
   }
   return true;
 };
