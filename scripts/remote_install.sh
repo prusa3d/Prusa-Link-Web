@@ -15,10 +15,10 @@ echo "Target is ${target}"
 
 echo "Building"
 rm -fr dist/*
-npm run ui:build
+npm run dev:sl1
 
 echo "Removing remote web"
-ssh root@${target} "find /srv/http/intranet/* \( ! -name error_401.txt \) -exec rm -fr {} \; 2>/dev/null"
+ssh root@${target} "find /srv/http/intranet/* -exec rm -fr {} \; 2>/dev/null"
 
 echo "Installing on target"
 scp -r dist/* root@${target}:/srv/http/intranet/

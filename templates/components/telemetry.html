@@ -9,9 +9,9 @@
 {% if env.printerFamily == "sla" %}
   {%
       set telemetry_list = [
-          {'label': 'prop.temp-cpu', 'icon': 'temperature_color.svg', 'format': 'temp',  "location": "telemetry.tempCpu" },
-          {'label': 'prop.temp-led', 'icon': 'temperature_color.svg', 'format': 'temp',  "location": "telemetry.tempUvLed" },
-          {'label': 'prop.temp-amb', 'icon': 'temperature_color.svg', 'format': 'temp',  "location": "telemetry.tempAmbient" },
+          {'label': 'prop.temp-cpu', 'icon': 'temperature_color.svg', 'format': 'temp',  "location": "temperature.bed.actual" },
+          {'label': 'prop.temp-led', 'icon': 'temperature_color.svg', 'format': 'temp',  "location": "temperature.tool0.actual" },
+          {'label': 'prop.temp-amb', 'icon': 'temperature_color.svg', 'format': 'temp',  "location": "temperature.chamber.actual" },
           {'label': 'prop.fan-led', 'icon': 'fan_color.svg', 'format': 'fan',  "location": "telemetry.fanUvLed" },
           {'label': 'prop.fan-blower', 'icon': 'fan_color.svg', 'format': 'fan',  "location": "telemetry.fanBlower" },
           {'label': 'prop.fan-rear', 'icon': 'fan_color.svg', 'format': 'fan',  "location": "telemetry.fanRear" },
@@ -21,10 +21,8 @@
 {% else %}
   {%
       set telemetry_list = [
-          {'label': 'prop.temp-nozzle', 'icon': 'status_nozzle.svg', 'format': 'temp', "location": "telemetry.temp-nozzle" },
-          {'label': 'prop.temp-bed', 'icon': 'status_heatbed.svg', 'format': 'temp', "location": "telemetry.temp-bed" },
-          {'label': 'prop.speed', 'icon': 'status_prnspeed.svg', 'format': 'print', "location": "telemetry.print-speed" },
-          {'label': 'prop.z-height', 'icon': 'status_z_axis.svg', "location": "telemetry.z-height", 'format': 'pos'  },
+          {'label': 'prop.temp-nozzle', 'icon': 'status_nozzle.svg', 'format': 'temp', "location": "temperature.tool0.actual" },
+          {'label': 'prop.temp-bed', 'icon': 'status_heatbed.svg', 'format': 'temp', "location": "temperature.bed.actual" },
           {'label': 'prop.material', 'icon': 'status_filament.svg', "location": "telemetry.material" }
       ]
   %}

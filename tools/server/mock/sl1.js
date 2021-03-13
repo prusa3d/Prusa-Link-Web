@@ -73,12 +73,7 @@ class PrinterSL1 extends Printer {
 
   onUpdate() {
     const printerStatus = super.onUpdate();
-    const temperatures = printerStatus.temperature;
-
     printerStatus["telemetry"] = {
-      tempCpu: temperatures.bed.actual,
-      tempUvLed: this.isPrinting ? temperatures.tool0.actual : 0,
-      tempAmbient: temperatures.chamber.actual,
       fanUvLed: this.isPrinting ? Math.random() * 1000 : 0,
       fanBlower: this.isPrinting ? Math.random() * 1000 : 0,
       fanRear: this.isPrinting ? Math.random() * 1000 : 0,

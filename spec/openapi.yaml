@@ -1098,10 +1098,6 @@ components:
     TelemetryMini:
       type: object
       properties:
-        temp_bed:
-          type: number
-        temp_nozzle:
-          type: number
         material:
           type: string
 
@@ -1120,15 +1116,6 @@ components:
         coverClosed:
           type: boolean
           example: true
-        tempAmbient:
-          type: number
-          example: 23.4
-        tempCpu:
-          type: number
-          example: 46.9
-        tempUvLed:
-          type: number
-          example: 52.6
 
     #JobFileFDM:
 
