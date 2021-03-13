@@ -38,10 +38,6 @@ class PrinterFDM extends Printer {
     const temperatures = printerStatus.temperature;
 
     printerStatus["telemetry"] = {
-      "temp-bed": this.isPrinting ? temperatures.bed.actual : 0,
-      "temp-nozzle": this.isPrinting ? temperatures.tool0.actual : 0,
-      "print-speed": 100,
-      "z-height": 0.5,
       material: "Material",
     };
 

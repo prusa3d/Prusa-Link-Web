@@ -29,7 +29,7 @@ const metadata = {
  */
 const sortByType = (a, b) => {
   if (a.type == "folder" && b.type == "folder") {
-    return a.display.localeCompare(b.display);
+    return a.name.localeCompare(b.name);
   } else if (a.type == "folder") {
     return -1;
   } else if (b.type == "folder") {
@@ -50,10 +50,7 @@ const updateData = () => {
     .then((result) => {
       const data = result.data;
       if (data) {
-        metadata.files = {
-          local: data.files.filter((elm) => elm.origin == "local"),
-          usb: data.files.filter((elm) => elm.origin == "sdcard"),
-        };
+        metadata.files = data.files;
         metadata.free = data.free;
         metadata.total = data.total;
         metadata.eTag = result.eTag;
@@ -105,30 +102,29 @@ export function load() {
     projects.removeChild(projects.firstChild);
   }
 
-  if (metadata.current_path.length > 0) {
-    let view = metadata.files[metadata.current_path[0]];
+  let view = metadata.files;
+  if (metadata.current_path.length > 1) {
     for (let i = 1; i < metadata.current_path.length; i++) {
       let path = metadata.current_path[i];
       view = view.find((elm) => elm.name == path).children;
     }
-
     document.getElementById(
       "title-status-label"
     ).innerHTML = metadata.current_path.join(" > ");
     projects.appendChild(createUp());
+  } else {
+    document.getElementById("title-status-label").innerHTML = translate(
+      "proj.title"
+    );
+  }
+
+  if (view.length > 0) {
     for (let node of view.sort(sortByType)) {
       if (node.type == "folder") {
-        projects.appendChild(createFolder(node.display));
+        projects.appendChild(createFolder(node));
       } else {
         projects.appendChild(createFile(node));
       }
-    }
-  } else {
-    for (let name in metadata.files) {
-      document.getElementById("title-status-label").innerHTML = translate(
-        "proj.title"
-      );
-      projects.appendChild(createFolder(name));
     }
   }
 }
@@ -154,9 +150,12 @@ function createElement(templateName, name, cb) {
  * Create a folder element
  * @param {string} name
  */
-function createFolder(name) {
-  return createElement("node-folder", name, () => {
-    metadata.current_path.push(name);
+function createFolder(node) {
+  return createElement("node-folder", node.name, () => {
+    if (metadata.current_path.length == 0) {
+      metadata.current_path.push(node.origin);
+    }
+    metadata.current_path.push(node.name);
     load();
   });
 }
@@ -165,7 +164,7 @@ function createFolder(name) {
  * create a up button element
  */
 function createUp() {
-  return createElement("node-up", translate("proj.main"), () => {
+  return createElement("node-up", "..", () => {
     metadata.current_path.pop();
     load();
   });
@@ -196,7 +195,7 @@ const onClickFile = (node) => {
  * @param {object} node
  */
 function createFile(node) {
-  const elm = createElement("node-project", node.display, (e) =>
+  const elm = createElement("node-project", node.name, (e) =>
     onClickFile(node)
   );
   const nodeDetails = elm.querySelector(".node-details");
