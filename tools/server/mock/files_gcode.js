@@ -10,6 +10,7 @@ module.exports = {
       display: "examples",
       name: "examples",
       type: "folder",
+      date: 25,
       typePath: ["folder"],
       children: [
         {
@@ -63,6 +64,7 @@ module.exports = {
           display: "Calibration objects",
           name: "Calibration objects",
           type: "folder",
+          date: 10,
           typePath: ["folder"],
           children: [
             {
@@ -220,6 +222,7 @@ module.exports = {
       display: "examples",
       name: "examples",
       type: "folder",
+      date: 80,
       typePath: ["folder"],
       children: [
         {

@@ -29,7 +29,7 @@ const metadata = {
  */
 const sortByType = (a, b) => {
   if (a.type == "folder" && b.type == "folder") {
-    return a.name.localeCompare(b.name);
+    return b.date - a.date;
   } else if (a.type == "folder") {
     return -1;
   } else if (b.type == "folder") {
@@ -104,9 +104,10 @@ export function load() {
 
   let view = metadata.files;
   if (metadata.current_path.length > 1) {
+    const origin = metadata.current_path[0];
     for (let i = 1; i < metadata.current_path.length; i++) {
       let path = metadata.current_path[i];
-      view = view.find((elm) => elm.name == path).children;
+      view = view.find((elm) => elm.name == path && elm.origin == origin).children;
     }
     document.getElementById(
       "title-status-label"
@@ -166,6 +167,9 @@ function createFolder(node) {
 function createUp() {
   return createElement("node-up", "..", () => {
     metadata.current_path.pop();
+    if (metadata.current_path.length == 1) {
+      metadata.current_path.pop();
+    }
     load();
   });
 }

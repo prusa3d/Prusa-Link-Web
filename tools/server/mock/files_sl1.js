@@ -10,6 +10,7 @@ module.exports = {
       display: "examples",
       name: "examples",
       type: "folder",
+      date: 80,
       typePath: ["folder"],
       children: [
         {
@@ -63,6 +64,7 @@ module.exports = {
           display: "Calibration objects",
           name: "Calibration objects",
           type: "folder",
+          date: 77,
           typePath: ["folder"],
           children: [
             {
@@ -224,6 +226,7 @@ module.exports = {
       display: "examples",
       name: "examples",
       type: "folder",
+      date: 25,
       typePath: ["folder"],
       children: [
         {
@@ -231,7 +234,7 @@ module.exports = {
           path:
             "examples/Prusa_SL1_Calibration_test_2H_40M_50um_Prusa_Orange.sl1",
           display: "Prusa_SL1_Calibration_test_2H_40M_50um_Prusa_Orange.sl1",
-          name: "Prusa_SL1_Calibration_test_2H_40M_50um_Prusa_Orange.sl1",
+          name: "1_Prusa_SL1_Calibration_test_2H_40M_50um_Prusa_Orange.sl1",
           size: 3636012,
           date: 1597667691,
           type: "machinecode",
