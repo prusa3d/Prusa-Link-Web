@@ -32,13 +32,13 @@ let isLoading = true;
 const sortByType = (a, b) => {
   if (a["type"] == "folder") {
     if (b["type"] == "folder") {
-      return a.display.localeCompare(b.display);
+      return b.date - a.date;
     } else {
       return -1;
     }
   } else {
     if (b["type"] == "folder") {
-      return Number.MAX_SAFE_INTEGER;
+      return 1;
     } else {
       return b.date - a.date;
     }
