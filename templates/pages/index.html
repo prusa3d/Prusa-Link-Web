@@ -1,22 +1,16 @@
 <!-- prettier-ignore -->
 {#
- # This file is part of the Prusa Connect Local
- # Copyright (C) 2021 Prusa Research a.s. - www.prusa3d.com
- # SPDX-License-Identifier: GPL-3.0-or-later
-#}
+  # This file is part of the Prusa Connect Local
+  # Copyright (C) 2021 Prusa Research a.s. - www.prusa3d.com
+  # SPDX-License-Identifier: GPL-3.0-or-later
+ #}
 
 <!DOCTYPE html>
 <html>
   <head>
     <meta charset="utf-8" />
     <meta name="theme-color" content="#fff" />
-    {% if env.type == "sl1" %}
-    <title>Original Prusa SL1 - Prusa Connect Local</title>
-    {% elif env.type == "mini" %}
-    <title>Original Prusa Mini - Prusa Connect Local</title>
-    {% else %}
-    <title>Prusa Connect Local</title>
-    {% endif %}
+    <title>{{ env.title }} - {{ env.appName }}</title>
   </head>
 
   <body>

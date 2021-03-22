@@ -9,7 +9,8 @@ html,
 nav > ul a {
   color: #fff;
 }
-.upload p,
+.progress > p,
+#upload p,
 nav > ul a {
   text-align: center;
 }
@@ -155,23 +156,21 @@ nav > ul > li {
   list-style-type: none;
   padding: 16px;
   width: 100%;
-  margin-bottom: 0px;
 }
 nav > ul > li.active {
   border-bottom: 1px solid #f8651b;
-  margin-bottom: -1px;
 }
 nav > ul > li:hover {
   border-bottom: 1px solid #ffffff;
-  margin-bottom: -1px;
 }
-nav ul a {
+nav > ul a {
   list-style: none;
   text-decoration: none;
   width: 100%;
 }
 nav > ul > .dropdown {
-  align-self: flex-start;
+    align-self: center;
+    padding: 16px 0;
 }
 nav .navbar-burger {
   display: flex;
@@ -272,8 +271,7 @@ nav .burger-icon.burger-open {
 }
 
 /* ===================================== UPLOAD ======================================= */
-.center,
-.upload {
+.center {
   align-items: center;
 }
 .component {
@@ -283,22 +281,63 @@ nav .burger-icon.burger-open {
   padding-top: 16px;
   line-height: 1.5;
 }
-.upload,
-.upload img {
+.abs-center {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+#upload,
+#upload .state-choose img {
   padding-bottom: 20px;
 }
 
 .proj-upload {
   width: 90%;
 }
-.upload {
+#upload {
+  position: relative;
   border-style: dashed;
   border-color: #f8651b;
   margin-top: 12px;
-  display: flex;
-  flex-flow: column nowrap;
   padding-top: 20px;
 }
+#upload div {
+  display: flex;
+  flex-flow: column nowrap;
+  align-items: center;
+}
+#upload input {
+  position: absolute;
+  opacity: 0;
+  width: 100%;
+  height: 100%;
+  top: -2.4px;
+  left: -2.4px;
+  padding: 2.4px;
+}
+#upload input:hover {
+  cursor: pointer;
+}
+#upload .state-choose {
+  opacity: 0;
+}
+#upload .state-uploading {
+  display: none;
+  width: 100%;
+  height: 100%;
+}
+#upload .state-uploading img {
+  width: 100%;
+  height: 100%;
+}
+#upload[data-state="choose"] .state-choose {
+  opacity: 1;
+}
+#upload[data-state="uploading"] .state-uploading {
+  display: block;
+}
+
 .temp {
   display: contents;
 }
@@ -1035,7 +1074,12 @@ $toast-success-title-color: $text-white;
     flex-direction: row;
     width: inherit;
   }
+  nav > ul > li,
+  nav > ul .dropdown {
+  margin-bottom: -10px;
+}
   nav .dropdown {
+    padding: 0;
     align-self: unset !important;
     min-width: fit-content !important;
   }

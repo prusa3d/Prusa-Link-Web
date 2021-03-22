@@ -1,3 +1,8 @@
+// This file is part of the Prusa Connect Local
+// Copyright (C) 2021 Prusa Research a.s. - www.prusa3d.com
+// SPDX-License-Identifier: GPL-3.0-or-later
+
+import getElement from "./helpers/get_element";
 import getNestedValue from "./helpers/get_nested_value";
 
 /** File that contains all translations */
@@ -12,14 +17,14 @@ let lang;
 /** Index of current language in languages array. */
 let langIndex;
 
+console.log(`known languages: ${languages}`);
+console.log(`known texts: `);
+console.log(texts);
+
 setLanguage(localStorage.getItem("lang")) ||
   setLanguage(detectBrowserLang().toLowerCase()) ||
   setLanguage(detectBrowserLang().toLowerCase().split("-")[0]) || // en-GB as en
   setLanguage("en");
-
-console.log(`known languages: ${languages}`);
-console.log(`known texts: `);
-console.log(texts);
 
 function detectBrowserLang() {
   return navigator.language || navigator.userLanguage || "";
@@ -115,4 +120,16 @@ function assign(word, parameters) {
       }
     }
   }
+}
+
+/** Translate all data-label(s) from templates.
+ * @param {(HTMLElement|string|undefined)} root Root element - from that element
+ * the search for data-label begins. Pass HTMLElement (ref), string (id) or undefined (body).
+ */
+export function translateLabels(root) {
+  let rootElement = getElement(root);
+
+  rootElement.querySelectorAll(`[data-label]`).forEach((elm) => {
+    elm.innerHTML = translate(elm.getAttribute("data-label"));
+  });
 }

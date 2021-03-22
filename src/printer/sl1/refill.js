@@ -27,9 +27,6 @@ export const setUpRefill = () => {
 
 const load = () => {
   translate("refill.title", { query: "#title-status-label" });
-  translate("msg.sla-fly-fill", { query: "#refill-question" });
-  translate("btn.sla-refilled", { query: "#yes > p" });
-  translate("btn.no", { query: "#no > p" });
   const yesButton = document.getElementById("yes");
   const noButton = document.getElementById("no");
   yesButton.onclick = () => {

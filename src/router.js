@@ -2,6 +2,7 @@
 // Copyright (C) 2021 Prusa Research a.s. - www.prusa3d.com
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+import { translateLabels } from "./locale_provider";
 import printer from "./printer";
 
 const navigate = (url) => {
@@ -14,6 +15,7 @@ const navigate = (url) => {
   new DOMParser()
     .parseFromString(route.html, "text/html")
     .body.childNodes.forEach((n) => root.appendChild(n));
+    translateLabels(root);
   route.module.load();
   printer.setModule(route.module);
   const elm = document.querySelector(`a[href="#${page}"]`);

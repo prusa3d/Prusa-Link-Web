@@ -9,32 +9,31 @@
 {% if env.printerFamily == "sla" %}
   {%
     set job_dict = {
-        'remaining-time': {'text': 'remaining time', "format": "time", "location": "progress.printTimeLeft" },
-        'estimated-end': {'text': 'estimated end', "location": "progress.printTimeLeft", "format": "timeEst" },
-        'printing-time': {'text': 'printing time', "format": "time", "location": "progress.printTime" },
-        'layers': {'text': 'layers', "format": "totalLayer" },
-        'remaining-resin': {'text': 'remaining resin', "format": "resin", "location": "resin.remaining" },
-        'consumed-resin': {'text': 'consumed resin', "format": "resin", "location": "resin.consumed" }
+        'remaining-time': {'text': 'remaining time', 'label': 'prop.rem-time', "format": "time", "location": "progress.printTimeLeft" },
+        'estimated-end': {'text': 'estimated end', 'label': 'prop.est-end', "location": "progress.printTimeLeft", "format": "timeEst" },
+        'printing-time': {'text': 'printing time', 'label': 'prop.pnt-time', "format": "time", "location": "progress.printTime" },
+        'layers': {'text': 'layers', 'label': 'prop.layers', "format": "totalLayer" },
+        'remaining resin': {'text': 'remaining resin', 'label': 'prop.sla-rmn-mt', "format": "resin", "location": "resin.remaining" },
+        'consumed resin': {'text': 'consumed resin', 'label': 'prop.sla-csm-mt', "format": "resin", "location": "resin.consumed" }
     }
   %}
   {%
     set job_buttons = {
-        'exposure': {'text': 'change exposure times', icon: 'exposure_times_color.svg', class: 'action' },
-        'refill': {'text': 'refill resin', icon: 'refill_color.svg', class: 'action' },
-        'no': {'text': 'cancel print', icon: 'cancel.svg', class: 'no' }
+        'exposure': {'text': 'change exposure times', 'label': 'btn.chg-exp', icon: 'exposure_times_color.svg', class: 'action' },
+        'refill': {'text': 'refill resin', 'label': 'btn.sla-refill', icon: 'refill_color.svg', class: 'action' },
+        'no': {'text': 'cancel print', 'label': 'btn.cancel-pt', icon: 'cancel.svg', class: 'no' }
     }
-  %}  
+  %}
 {% else %}
   {%
       set job_dict = {
-          'pos_z_mm': {'text': 'Z-Height', "location": "progress.pos_z_mm", 'format': 'pos' },
-          'printing_speed': {'text': 'Printing Speed', 'format': 'print', "location": "progress.printSpeed" },
-          'flow_factor': {'text': 'Printing Flow', "location": "progress.flow_factor", 'format': 'number' },
-          'estimated-end': {'text': 'Estimated end', "location": "progress.printTimeLeft", "format": "timeEst" },
-          'print_dur': {'text': 'Printing time', "format": "time", "location": "progress.printTime" }
+          'pos_z_mm': {'text': 'Z-Height', 'label': 'prop.z-height', "location": "progress.pos_z_mm", 'format': 'pos' },
+          'printing_speed': {'text': 'Printing Speed', 'label': 'prop.speed', 'format': 'print', "location": "progress.printSpeed" },
+          'flow_factor': {'text': 'Printing Flow', 'label': 'prop.flow', "location": "progress.flow_factor", 'format': 'print' },
+          'estimated-end': {'text': 'Estimated end', 'label': 'prop.est-end', "location": "progress.printTimeLeft", "format": "timeEst" },
+          'print_dur': {'text': 'Printing time', 'label': 'prop.pnt-time', "format": "time", "location": "progress.printTime" }
       }
   %}
-
 {% endif %}
 
 <!-- prettier-ignore -->
@@ -54,7 +53,7 @@
     <div class="stats" id="job-stats">
       {% for key, values in job_dict %}
       <div>
-        <p id="{{ key }}" class="txt-size-2 txt-grey">{{ values.text }}</p>
+        <p data-label="{{ values.label }}" class="txt-size-2 txt-grey">{{ values.text }}</p>
         <p
           class="txt-bold txt-size-2"
           data-format="{{ values.format }}"
@@ -78,7 +77,7 @@
     {% for key, values in job_buttons %}
     <button id="{{ key }}" class="{{ values.class }}">
       <img src="{{ pre.countOrRenderAssets(values.icon) | safe }}" />
-      <p>{{ values.text }}</p>
+      <p data-label="{{ values.label }}">{{ values.text }}</p>
     </button>
     {% endfor %}
   </div>

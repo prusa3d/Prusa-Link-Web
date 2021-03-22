@@ -8,7 +8,9 @@ import { handleError } from "./errors";
 import { getValue } from "./updateProperties.js";
 import formatData from "./dataFormat.js";
 import upload from "../components/upload";
-import { translate } from "../../locale_provider.js";
+import { translate, translateLabels } from "../../locale_provider.js";
+
+let lastData = null;
 
 /**
  * project context
@@ -21,6 +23,21 @@ const metadata = {
   total: 0,
   firstTime: true,
 };
+
+const getInitialMetadataFiles = (data) => {
+  return [
+    {
+      name: "local",
+      type: "folder",
+      children: data.files.filter((elm) => elm.origin == "local"),
+    },
+    {
+      name: "sdcard",
+      type: "folder",
+      children: data.files.filter((elm) => elm.origin == "sdcard"),
+    },
+  ];
+}
 
 /**
  * Sort projects by type and name
@@ -50,7 +67,7 @@ const updateData = () => {
     .then((result) => {
       const data = result.data;
       if (data) {
-        metadata.files = data.files;
+        metadata.files = getInitialMetadataFiles(data);
         metadata.free = data.free;
         metadata.total = data.total;
         metadata.eTag = result.eTag;
@@ -91,23 +108,27 @@ export const update = (context) => {
   }
 };
 
+function initUpload() {
+  const origin = getCurrentOrigin();
+  const path = joinPaths(...getCurrentPath());
+  upload.init(origin, path);
+}
+
 /**
  * load projects page
  */
 export function load() {
-  translate("upld.title", { query: ".proj-upload p" });
-  upload.init();
+  initUpload();
   const projects = document.getElementById("projects");
   while (projects.firstChild) {
     projects.removeChild(projects.firstChild);
   }
 
   let view = metadata.files;
-  if (metadata.current_path.length > 1) {
-    const origin = metadata.current_path[0];
-    for (let i = 1; i < metadata.current_path.length; i++) {
+  if (metadata.current_path.length > 0) {
+    for (let i = 0; i < metadata.current_path.length; i++) {
       let path = metadata.current_path[i];
-      view = view.find((elm) => elm.name == path && elm.origin == origin).children;
+      view = view.find((elm) => elm.name == path).children;
     }
     document.getElementById(
       "title-status-label"
@@ -153,9 +174,6 @@ function createElement(templateName, name, cb) {
  */
 function createFolder(node) {
   return createElement("node-folder", node.name, () => {
-    if (metadata.current_path.length == 0) {
-      metadata.current_path.push(node.origin);
-    }
     metadata.current_path.push(node.name);
     load();
   });
@@ -167,9 +185,6 @@ function createFolder(node) {
 function createUp() {
   return createElement("node-up", "..", () => {
     metadata.current_path.pop();
-    if (metadata.current_path.length == 1) {
-      metadata.current_path.pop();
-    }
     load();
   });
 }
@@ -179,6 +194,12 @@ function createUp() {
  * @param {object} node
  */
 const onClickFile = (node) => {
+  let url = node.refs.resource;
+  if (!url) {
+    const paths = [...metadata.current_path, node.name]
+    url = joinPaths("api/files", ...paths);
+  }
+
   navigate("#loading");
   getJson(node.refs.resource, {
     method: "POST",
@@ -204,9 +225,14 @@ function createFile(node) {
   );
   const nodeDetails = elm.querySelector(".node-details");
   nodeDetails.querySelectorAll(".details").forEach((element) => {
+    translateLabels(element);
     const value = getValue(element.dataset.where, node);
     if (value) {
-      translateDetail(element, element.dataset.where, value);
+      const data = formatData(
+        element.dataset.format,
+        value
+      );
+      element.querySelector("p").innerHTML += ` <span>${data}</span>`
     } else {
       nodeDetails.removeChild(element);
     }
@@ -220,32 +246,30 @@ function createFile(node) {
   return elm;
 }
 
-function translateDetail(element, where, value) {
-  function getLabel(where) {
-    switch (where) {
-      case "gcodeAnalysis.layerHeight":
-        return translate("prop.layer-ht");
-      case "gcodeAnalysis.estimatedPrintTime":
-        return translate("prop.pnt-time");
-      case "gcodeAnalysis.material":
-        return translate("prop.material");
-      case "gcodeAnalysis.layerHeight":
-        return translate("prop.layer-ht");
-      default:
-        return null;
+/**
+ * Get current path array. Not include origin.
+ */
+ function getCurrentPath() {
+  let path = "";
+  if (metadata.current_path.length > 0)
+    path = metadata.current_path.slice(1, metadata.current_path.length);
+  return path;
+}
+
+function getCurrentOrigin() {
+  return metadata.current_path[0] || "local";
+}
+
+function joinPaths(...segments) {
+  return segments.map(str => {
+    if (str[0] === '/') {
+      str = str.substring(1);
     }
-  }
-
-  const label = getLabel(where);
-  const data = formatData(element.dataset.format, value);
-
-  if (label) {
-    element.querySelector(
-      "p"
-    ).innerHTML = `${label} <span class="txt-bold txt-white">${data}</span>`;
-  } else {
-    element.querySelector("span").innerHTML = data;
-  }
+    if (str[str.length - 1] === "/") {
+      str = str.substring(0, str.length - 1);
+    }
+    return str;
+  }).filter(str => str !== "").join("/");
 }
 
 export default { load, update };

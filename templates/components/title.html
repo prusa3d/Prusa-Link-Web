@@ -8,7 +8,7 @@
 {% if env.type == "mini" %}
 <div id="title" class="txt-size-1">
   <p class="title-status">
-    <span id="title-status-label" class="txt-grey">Printer status: </span>
+    <span data-label="home.title" class="txt-grey">Printer status: </span>
     <span id="title-status">Idle</span>
   </p>
   <p class="title-hostname txt-orange">Original Prusa Mini</p>
@@ -16,12 +16,12 @@
 {% else %}
 <div id="title" class="txt-size-1">
   <p class="title-status">
-    <span id="title-status-label" class="txt-grey">Printer status: </span>
+    <span data-label="home.title" class="txt-grey">Printer status: </span>
     <span id="title-status">Idle</span>
   </p>
   <p class="title-hostname">
-    <span id="title-hostname-label" class="txt-grey">Hostname: </span>
-    <span id="title-hostname" class="txt-orange"></span>
+    <span data-label="glob.hostname" class="txt-grey">Hostname: </span>
+    <span id="title-hostname" class="txt-orange">localhost</span>
   </p>
 </div>
 {% endif %}

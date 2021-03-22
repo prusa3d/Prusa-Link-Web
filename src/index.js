@@ -7,11 +7,13 @@ import { navigate } from "./router.js";
 import printer from "./printer";
 import { getJson, initAuth } from "./auth.js";
 import { initMenu } from "./printer/components/menu";
+import { translateLabels } from "./locale_provider";
 
 const UPDATE_INTERVAL = process.env.UPDATE_INTERVAL;
 
 window.onload = () => {
   initMenu();
+  translateLabels(); // Translate menu and telemetry
 
   document.querySelectorAll("a[href]").forEach((link) => {
     link.addEventListener("click", (e) => {

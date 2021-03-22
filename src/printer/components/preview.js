@@ -25,14 +25,6 @@ const createConfirm = (close) => {
   });
   const noButton = node.getElementById("no");
   noButton.addEventListener("click", close);
-  node.getElementById("msg").innerHTML = `${translate(
-    "print.1"
-  )}<ul><li>${translate("print.2")}</li><li>${translate(
-    "print.3"
-  )}</li><li>${translate("print.4")}</li>
-  </ul>`;
-  translate("btn.confirm", { ref: yesButton.querySelector("p") });
-  translate("btn.cancel", { ref: noButton.querySelector("p") });
   return node;
 };
 
@@ -72,6 +64,10 @@ const load = () => {
     /**
      * set up delete button
      */
+    if (!file.refs.resource) {
+      document.getElementById("delete").disabled = true;
+      console.error("Reference to file resource is null!");
+    }
     document.getElementById("delete").addEventListener("click", (e) => {
       doQuestion({
         title: translate("proj.del"),
@@ -105,18 +101,6 @@ const load = () => {
       e.preventDefault();
     });
   });
-
-  translate("prop.time-est", { query: `[data-label="prop.time-est"]` });
-  translate("prop.est-end", { query: `[data-label="prop.est-end"]` });
-  translate("prop.layers", { query: `[data-label="prop.layers"]` });
-  translate("prop.layer-ht", { query: `[data-label="prop.layer-ht"]` });
-  translate("prop.exp-times", { query: `[data-label="prop.exp-times"]` });
-  translate("prop.last-mod", { query: `[data-label="prop.last-mod"]` });
-
-  translate("btn.del", { query: "#delete p" });
-  translate("btn.start-pt", { query: "#start p" });
-  translate("btn.chg-exp", { query: "#exposure p" });
-  translate("btn.cancel", { query: "#cancel p" });
 };
 
 /**
