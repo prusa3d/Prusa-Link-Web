@@ -245,6 +245,10 @@ module.exports = {
               "http://localhost:9000/api/files/local/examples/Prusa_SL1_Calibration_test_2H_40M_50um_Prusa_Orange.sl1",
             download:
               "http://localhost:9000/api/downloads/local/examples/Prusa_SL1_Calibration_test_2H_40M_50um_Prusa_Orange.sl1",
+            thumbnailSmall:
+            "http://localhost:9000/api/thumbnails/tmpy36n51rt/thumbnail/thumbnail800x400.png",
+            thumbnailBig:
+              "http://localhost:9000/api/thumbnails/tmpy36n51rt/thumbnail/thumbnail800x480.png",
           },
           gcodeAnalysis: {
             estimatedPrintTime: 0,
@@ -267,6 +271,10 @@ module.exports = {
               "http://localhost:9000/api/files/local/examples/Petrin_Tower_10H_50um_Prusa_Orange.sl1",
             download:
               "http://localhost:9000/api/downloads/local/examples/Petrin_Tower_10H_50um_Prusa_Orange.sl1",
+            thumbnailSmall:
+              "http://localhost:9000/api/thumbnails/tmpy36n51rt/thumbnail/thumbnail400x480.png",
+            thumbnailBig:
+              "http://localhost:9000/api/thumbnails/tmpy36n51rt/thumbnail/thumbnail400x480.png",
           },
           gcodeAnalysis: {
             estimatedPrintTime: 0,
@@ -289,6 +297,10 @@ module.exports = {
               "http://localhost:9000/api/files/local/examples/Prusacek_Clay_Army_1H_50um_Prusa_Orange.sl1",
             download:
               "http://localhost:9000/api/downloads/local/examples/Prusacek_Clay_Army_1H_50um_Prusa_Orange.sl1",
+            thumbnailSmall:
+              "http://localhost:9000/api/thumbnails/tmpy36n51rt/thumbnail/thumbnail230x480.png",
+            thumbnailBig:
+              "http://localhost:9000/api/thumbnails/tmpy36n51rt/thumbnail/thumbnail230x480.png",
           },
           gcodeAnalysis: {
             estimatedPrintTime: 3705000.0,
