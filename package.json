@@ -8,12 +8,12 @@
     "postinstall": "husky install",
     "dev": "webpack --env dev",
     "start": "webpack serve --env dev",
-    "dev:sl1": "npm run dev --env PRINTER=SL1",
-    "start:sl1": "npm run start --env PRINTER=SL1",
-    "build:sl1": "webpack --env PRINTER=SL1",
-    "dev:mini": "npm run dev --env PRINTER=Mini",
-    "start:mini": "npm run start --env PRINTER=Mini",
-    "build:mini": "webpack --env PRINTER=Mini"
+    "dev:sl1": "npm run dev --env PRINTER=SL1 locales && npm run dev --env PRINTER=SL1",
+    "start:sl1": "npm run start --env PRINTER=SL1 locales",
+    "build:sl1": "webpack --env PRINTER=SL1 locales && webpack --env PRINTER=SL1",
+    "dev:mini": "npm run dev --env PRINTER=Mini locales && npm run dev --env PRINTER=Mini",
+    "start:mini": "npm run start --env PRINTER=Mini locales",
+    "build:mini": "webpack --env PRINTER=Mini locales && webpack --env PRINTER=Mini"
   },
   "repository": {
     "type": "git",

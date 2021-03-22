@@ -4,6 +4,18 @@
 
 import { translate } from "../../locale_provider";
 
+// TODO: translate more units - mm, s, ...
+const str_at = translate("prop.at");
+const str_h = translate("unit.h");
+const str_less_than_a_minute = translate("prop.less-than");
+const str_min = translate("unit.min");
+const str_minute = translate("unit.minute");
+const str_minute_plural = translate("unit.minute_plural");
+const str_ml = translate("unit.ml");
+const str_rpm = translate("unit.rpm");
+const str_today_at = translate("prop.today-at");
+const str_tomorow_at = translate("prop.tmw-at");
+
 /**
  * Format the value data with format specificated.
  * @param {string} format - one of ["int", "number", "layer", "temp", "fan", "resin", "cover", "date", "progress", "timeEst", "time", "expo"]
@@ -54,17 +66,16 @@ function formatEstimatedTime(time) {
 
     let plus_days = "";
     if (end.getDate() == now.getDate() && end.getMonth() == now.getMonth()) {
-      plus_days = `${translate("prop.today-at")} `;
+      plus_days = `${str_today_at} `;
     } else if (
       end.getDate() == tomorrow.getDate() &&
       end.getMonth() == tomorrow.getMonth()
     ) {
-      plus_days = `${translate("prop.tmw-at")} `;
+      plus_days = `${str_tomorow_at} `;
     } else {
       let options = { month: "numeric", day: "numeric" };
       const final_date = end.toLocaleString(window.navigator.language, options);
-      const at = translate("prop.at");
-      plus_days = `${final_date} ${at} `;
+      plus_days = `${final_date} ${str_at} `;
     }
 
     estimated_end =
@@ -82,23 +93,16 @@ function formatEstimatedTime(time) {
  */
 function formatTime(value) {
   if (value < 60) {
-    return translate("prop.less-than");
+    return str_less_than_a_minute;
   }
   const minutes = Math.floor((value / 60) % 60);
   const hours = Math.floor((value / 3600) % 24);
   if (hours > 0) {
-    return (
-      hours +
-      " " +
-      translate("unit.h") +
-      (minutes > 0 ? ` ${minutes} ${translate("unit.min")}` : "")
-    );
+    return hours + ` ${str_h}` + (minutes > 0 ? ` ${minutes} ${str_min}` : "");
+    // return hours + " h" + (minutes > 0 ? ` ${minutes} min` : "");
   }
-  return (
-    minutes +
-    " " +
-    (minutes > 1 ? translate("unit.minute_plural") : translate("unit.minute"))
-  );
+  return minutes + " " + (minutes > 1 ? str_minute_plural : str_minute);
+  // return minutes + " minute" + (minutes > 1 ? "s" : "");
 }
 
 /**
@@ -146,9 +150,9 @@ const slaFormatData = (format, value) => {
     case "temp":
       return numberFormat(value) + " °C";
     case "fan":
-      return numberFormat(value) + " " + translate("unit.rpm");
+      return numberFormat(value) + ` ${str_rpm}`;
     case "resin":
-      return numberFormat(value) + " ml";
+      return numberFormat(value) + ` ${str_ml}`;
     case "cover":
       return value
         ? translate("prop.cover-opened")
@@ -156,7 +160,7 @@ const slaFormatData = (format, value) => {
     case "date":
       return dateFormat(value);
     case "progress":
-      return numberFormat(value * 100) + "%";
+      return numberFormat(value * 100) + " %";
     case "timeEst":
       return formatEstimatedTime(value);
     case "time":
@@ -186,9 +190,9 @@ const fdmFormatData = (format, value) => {
     case "temp":
       return numberFormat(value) + " °C";
     case "fan":
-      return numberFormat(value) + " " + translate("unit.rpm");
+      return numberFormat(value) + ` ${str_rpm}`;
     case "print":
-      return numberFormat(value) + " mm/s";
+      return numberFormat(value) + " %";
     case "pos":
       return numberFormat(value) + " mm";
     case "date":

@@ -3,10 +3,9 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import * as graph from "../components/temperature_graph";
+import upload from "../components/upload";
 import { load as job } from "./job.js";
 import { translate } from "../../locale_provider";
-import { translateTitles } from "./translate";
-import upload from "../components/upload";
 
 const updateTitles = (context) => {
   if (
@@ -28,7 +27,6 @@ const updateTitles = (context) => {
 
 const load = () => {
   console.log("Dashboard Logic - sl1");
-  translateTitles();
   updateTitles();
   upload.init();
   graph.render();

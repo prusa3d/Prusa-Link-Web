@@ -4,7 +4,6 @@
 
 import { modal } from "./printer/components/modal";
 import { handleError } from "./printer/components/errors";
-import { translate } from "./locale_provider";
 
 const createApiKey = (resolve) => {
   return (close) => {
@@ -26,10 +25,6 @@ const createApiKey = (resolve) => {
       close();
       resolve(apiKey);
     });
-
-    node.getElementById("msg1").innerHTML = translate("msg.api-key-1");
-    node.getElementById("msg2").innerHTML = translate("msg.api-key-2");
-    node.getElementById("msg3").innerHTML = translate("msg.api-key-3");
     return node;
   };
 };
@@ -156,8 +151,6 @@ const createWelcome = (close) => {
   const node = document.importNode(template.content, true);
   const closeButton = node.querySelector(".close-button");
   closeButton.addEventListener("click", close);
-  node.getElementById("msg1").innerHTML = translate("msg.modal-p1");
-  node.getElementById("msg2").innerHTML = translate("msg.modal-p2");
   return node;
 };
 

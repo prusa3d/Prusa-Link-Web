@@ -12,7 +12,9 @@ const PreprocessingPlugin = require("./tools/preprocessing");
 const devServer = require("./tools/server");
 
 module.exports = (env, args) => {
+  const buildLocales = env.locales;
   const printer_conf = {
+    appName: "Prusa Connect Local",
     mode: env.dev ? "development" : "production",
     type: env.PRINTER.toLowerCase(),
     updateInterval: 1000,
@@ -28,9 +30,15 @@ module.exports = (env, args) => {
     printer_conf["printerFamily"] = "fdm";
   }
 
-  console.log(`===== ${printer_conf.title} =====`);
-  console.log(printer_conf);
-  console.log(`=============================`);
+  if (buildLocales) {
+    console.log(`===== ${printer_conf.title} =====`);
+    console.log("building locales");
+    console.log(`=============================`);
+  } else {
+    console.log(`===== ${printer_conf.title} =====`);
+    console.log(printer_conf);
+    console.log(`=============================`);
+  }
 
   const preprocessing = new PreprocessingPlugin({
     printer_conf: printer_conf,
@@ -53,6 +61,7 @@ module.exports = (env, args) => {
       preprocessing,
       new webpack.ProgressPlugin(),
       new webpack.DefinePlugin({
+        "process.env.APP_NAME": JSON.stringify(printer_conf.appName),
         "process.env.MODE": JSON.stringify(printer_conf.mode),
         "process.env.TYPE": JSON.stringify(printer_conf.type),
         "process.env.TITLE": JSON.stringify(printer_conf.title),
@@ -93,6 +102,12 @@ module.exports = (env, args) => {
           test: /\.html$/i,
           loader: "html-loader",
         },
+        buildLocales ?
+          {
+            test: /\.html$/i,
+            loader: path.resolve(__dirname, "tools/loaders/locale_loader_html"),
+            include: path.resolve(__dirname, "src/views/"),
+          } : {},
         {
           test: /\.(png|jpe?g|gif|svg|woff2?)$/i,
           use: [
@@ -101,11 +116,12 @@ module.exports = (env, args) => {
             },
           ],
         },
-        {
-          test: /\.js/,
-          loader: path.resolve(__dirname, "tools/loaders/locale_loader"),
-          // Directory settings are in locale_loader script
-        },
+        buildLocales ?
+          {
+            test: /\.js/,
+            loader: path.resolve(__dirname, "tools/loaders/locale_loader_js"),
+            exclude: path.resolve(__dirname, "node_modules"),
+          } : {},
       ],
     },
 

@@ -9,14 +9,16 @@ import { error } from "./toast";
  * @param {object} data
  */
 export function handleError(result) {
-  const data = result.data;
-  if (data) {
-    const title = `${data.title} - ${data.code}`;
-    const message =
-      data.message +
-      `<br/><a href="${
-        "https://help.prusa3d.com/en/" + data.code.replace("#", "")
-      }">more info</a>`;
-    error(title, message);
+  if (result) {
+    const data = result.data;
+    if (data) {
+      const title = `${data.title} - ${data.code}`;
+      const message =
+        data.message +
+        `<br/><a href="${
+          "https://help.prusa3d.com/en/" + data.code.replace("#", "")
+        }">more info</a>`;
+      error(title, message);
+    }
   }
 }

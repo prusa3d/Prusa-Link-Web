@@ -1,19 +1,24 @@
 <!-- prettier-ignore -->
 {#
-    # This file is part of the Prusa Connect Local
-    # Copyright (C) 2021 Prusa Research a.s. - www.prusa3d.com
-    # SPDX-License-Identifier: GPL-3.0-or-later
+  # This file is part of the Prusa Connect Local
+  # Copyright (C) 2021 Prusa Research a.s. - www.prusa3d.com
+  # SPDX-License-Identifier: GPL-3.0-or-later
 #}
 
 <template id="modal-apiKey">
   <div class="modal-apiKey txt-size-2">
-    <p id="msg1" class="txt-bold"></p>
-    <p id="msg2" class="txt-bold"></p>
-    <p id="msg3" class="txt-bold"></p>
-    <input id="apiKey" class="txt-grey" type="text" autofocus />
+    <p data-label="msg.api-key-1" class="txt-bold">Welcome to the {{ env.appName }} web interface.</p>
+    <p>
+      <span data-label="msg.api-key-2" class="txt-bold">Please insert the API key.</span>
+      <br />
+      <span data-label="msg.api-key-3" class="txt-bold">
+        You can find it in Settings -> Network -> Login credentials.
+      </span>
+    </p>
+    <input id="apiKey" class="txt-size-2 txt-grey" type="text" autofocus />
     <button class="yes" id="login">
       <img src="{{ pre.countOrRenderAssets('yes_color.svg') | safe }}" />
-      <p>Login</p>
+      <p data-label="btn.login">Login</p>
     </button>
   </div>
 </template>

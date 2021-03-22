@@ -21,7 +21,6 @@ import question from "../../views/question.html";
 import loading from "../../views/loading.html";
 import { updateProperties } from "../components/updateProperties.js";
 import { translate } from "../../locale_provider";
-import { translateTelemetry } from "./translate";
 
 const context = {
   version: undefined,
@@ -72,7 +71,6 @@ const sl1 = {
     context.version = version;
     context.printer = printerData;
     initTemperatureGraph();
-    translateTelemetry();
   },
   update: (data) => {
     console.log("Update Printer API");

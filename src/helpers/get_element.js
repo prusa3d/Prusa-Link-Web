@@ -11,4 +11,3 @@ function getElement(element) {
 }
 
 export default getElement;
-// TODO: use this function in locale_provider.js after rebase

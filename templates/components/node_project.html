@@ -1,26 +1,26 @@
 <!-- prettier-ignore -->
 {#
-    # This file is part of the Prusa Connect Local
-    # Copyright (C) 2021 Prusa Research a.s. - www.prusa3d.com
-    # SPDX-License-Identifier: GPL-3.0-or-later
+  # This file is part of the Prusa Connect Local
+  # Copyright (C) 2021 Prusa Research a.s. - www.prusa3d.com
+  # SPDX-License-Identifier: GPL-3.0-or-later
 #}
 
 <!-- prettier-ignore -->
 {% if env.printerFamily == "sla" %}
-    {%
-        set project_list = [
-          {"text": "Printing time", "format": "time", "location": "gcodeAnalysis.estimatedPrintTime", "icon": "time_color.svg" },
-          {"text": "Material", "format": "material", "location": "gcodeAnalysis.material", "icon": "status_filament.svg" },
-          {"text": "Layer Height", "format": "layer", "location": "gcodeAnalysis.layerHeight", "icon": "quality_medium.svg" }
-        ]
-    %}
+  {%
+      set project_list = [
+        {"text": "Printing time", "label": "prop.pnt-time", "format": "time", "location": "gcodeAnalysis.estimatedPrintTime", "icon": "time_color.svg" },
+        {"text": "Material", "label": "prop.material", "format": "material", "location": "gcodeAnalysis.material", "icon": "status_filament.svg" },
+        {"text": "Layer Height", "label": "prop.layer-ht", "format": "layer", "location": "gcodeAnalysis.layerHeight", "icon": "quality_medium.svg" }
+      ]
+  %}
 {% else %}
-    {%
-        set project_list = [
-          {"text": "Printing time", "format": "time", "location": "gcodeAnalysis.estimatedPrintTime", "icon": "time_color.svg" },
-          {"text": "Material", "format": "material", "location": "gcodeAnalysis.material", "icon": "status_filament.svg" }
-        ]
-    %}
+  {%
+      set project_list = [
+        {"text": "Printing time", "label": "prop.pnt-time", "format": "time", "location": "gcodeAnalysis.estimatedPrintTime", "icon": "time_color.svg" },
+        {"text": "Material", "label": "prop.material", "format": "material", "location": "gcodeAnalysis.material", "icon": "status_filament.svg" }
+      ]
+  %}
 {% endif %}
 
 <template id="node-project">
@@ -41,7 +41,7 @@
             class="icon"
             src="{{ pre.countOrRenderAssets(values.icon) | safe }}"
           />
-          <p class="txt-grey">
+          <p data-label="{{ values.label }}" class="txt-grey">
             {{ values.text }}
             <span></span>
           </p>
