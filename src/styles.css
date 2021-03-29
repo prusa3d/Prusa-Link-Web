@@ -9,7 +9,7 @@ html,
 nav > ul a {
   color: #fff;
 }
-.progress > p,
+
 #upload p,
 nav > ul a {
   text-align: center;
@@ -1076,7 +1076,7 @@ $toast-success-title-color: $text-white;
   }
   nav > ul > li,
   nav > ul .dropdown {
-  margin-bottom: -10px;
+  margin-bottom: -2px;
 }
   nav .dropdown {
     padding: 0;
