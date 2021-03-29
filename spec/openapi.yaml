@@ -764,6 +764,11 @@ components:
               description: The name of the file without path.
               example: "harry_potter_hogwarts_anthony_mohimont.sl1"
               nullable: true
+            path:
+              type: string
+              description: The name of the file with path.
+              example: "internal/examples/harry_potter_hogwarts_anthony_mohimont.sl1"
+              nullable: true
             origin:
               enum: ["local", "sdcard"]
               nullable: true
@@ -777,14 +782,6 @@ components:
               description: The size of the file in bytes.
               example: 873151
               nullable: true
-            refs:
-              type: object
-              properties:
-                resource:
-                  type: string
-                thumbnailBig:
-                  type: string
-                  nullable: true
 
     Progress:
       oneOf:

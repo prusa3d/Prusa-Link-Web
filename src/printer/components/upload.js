@@ -2,14 +2,13 @@
 // Copyright (C) 2021 Prusa Research a.s. - www.prusa3d.com
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-import { handleError } from "./errors";
-import { success } from "./toast";
+import { error, success } from "./toast";
 import { translate } from "../../locale_provider";
 import uploadRequest from "../../helpers/upload_request";
 
 const fileType = process.env.PRINTER_FAMILY === "fdm" ? "gcode" : "sl1";
 
-let upload = {
+const upload = {
   init: (origin, path) => {
     translate("upld.open", { query: "#upload p", file: `*.${fileType}` });
     initInput(origin || "local", path);
@@ -54,7 +53,9 @@ const uploadFile = (file, origin, path) => {
     const message = translate("ntf.upld-suc", { file_name: file.name });
     success(title, message);
   }).catch(result => {
-    handleError(result);
+    const title = translate("ntf.error");
+    const message = translate("ntf.upld-unsuc", { file_name: file.name });
+    error(title, message);
   }).finally(() => {
     reset();
   });

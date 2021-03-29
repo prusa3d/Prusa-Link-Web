@@ -10,6 +10,7 @@ import { modal } from "./modal.js";
 import { confirmJob } from "./job.js";
 import { doQuestion } from "./question";
 import { translate } from "../../locale_provider";
+import joinPaths from "../../helpers/join_paths";
 
 const createConfirm = (close) => {
   const template = document.getElementById("modal-confirm");
@@ -35,71 +36,81 @@ const load = () => {
   translate("proj.title", { query: "#title-status-label" });
   getJson("/api/job").then((result) => {
     const data = result.data;
-    const file = data.job.file;
+    const jobFile = data.job.file;
+    const path = joinPaths(jobFile.origin, jobFile.path);
+
     updateProperties("preview", data);
-    if (file.refs.thumbnailBig) {
-      const img = document.getElementById("preview-img");
-      getImage(file.refs.thumbnailBig).then((url) => {
-        img.src = url;
+    getJson(`/api/files/${path}`).then((result) => {
+      const file = result.data;
+
+      if (file.refs && file.refs.thumbnailBig) {
+        const img = document.getElementById("preview-img");
+        getImage(file.refs.thumbnailBig).then((url) => {
+          img.src = url;
+        });
+      }
+
+      if (!file.refs.resource)
+        console.error("Reference to file resource is null!");
+
+      document.getElementById("start").disabled = false; // !file.refs.resource;
+      document.getElementById("delete").disabled = !file.refs.resource;
+
+      /**
+       * set up delete button
+       */
+      document.getElementById("delete").addEventListener("click", (e) => {
+        doQuestion({
+          title: translate("proj.del"),
+          // TODO: add strong - Do you really want to delete <strong>${file.name}</strong>?
+          questionChildren: translate("msg.del-proj", { file_name: file.name }),
+          yes: (close) => {
+            getJson(file.refs.resource, { method: "DELETE" })
+              .catch((result) => handleError(result))
+              .finally((result) => close());
+          },
+          next: "#projects",
+        });
+        e.preventDefault();
       });
-    }
 
-    /**
-     * set up cancel button
-     */
-    document.getElementById("cancel").addEventListener("click", (e) => {
-      navigate("#loading");
-      getJson("/api/job", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ command: "cancel" }),
-      })
-        .catch((result) => handleError(result))
-        .finally((result) => navigate("#projects"));
-      e.preventDefault();
-    });
+      /**
+       * set up change exposure times button (sla)
+       */
+      if (process.env.PRINTER_FAMILY == "sla") {
+        require("../sl1/exposure").default(jobFile);
+      }
 
-    /**
-     * set up delete button
-     */
-    if (!file.refs.resource) {
-      document.getElementById("delete").disabled = true;
-      console.error("Reference to file resource is null!");
-    }
-    document.getElementById("delete").addEventListener("click", (e) => {
-      doQuestion({
-        title: translate("proj.del"),
-        // TODO: add strong - Do you really want to delete <strong>${file.name}</strong>?
-        questionChildren: translate("msg.del-proj", { file_name: file.name }),
-        yes: (close) => {
-          getJson(file.refs.resource, { method: "DELETE" })
+      /**
+       * set up confirm button
+       */
+      document.querySelector(".yes").addEventListener("click", (e) => {
+        modal(createConfirm, {
+          timeout: 10000,
+          closeOutside: false,
+        });
+        e.preventDefault();
+      });
+    })
+      .catch((result) => handleError(result))
+      .finally(() => {
+        /**
+         * set up cancel button
+         */
+        document.getElementById("cancel").addEventListener("click", (e) => {
+          navigate("#loading");
+          getJson("/api/job", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ command: "cancel" }),
+          })
             .catch((result) => handleError(result))
-            .finally((result) => close());
-        },
-        next: "#projects",
+            .finally((result) => navigate("#projects"));
+          e.preventDefault();
+        });
       });
-      e.preventDefault();
-    });
-
-    /**
-     * set up change exposure times button (sla)
-     */
-    if (process.env.PRINTER_FAMILY == "sla") {
-      require("../sl1/exposure").default(file);
-    }
-
-    /**
-     * set up confirm button
-     */
-    document.querySelector(".yes").addEventListener("click", (e) => {
-      modal(createConfirm, {
-        timeout: 10000,
-        closeOutside: false,
-      });
-      e.preventDefault();
-    });
   });
 };
 
@@ -114,12 +125,11 @@ const update = (context) => {
       if (process.env.PRINTER_FAMILY == "sla") {
         if (flags.pausing || flags.paused) {
           navigate("#refill");
-        } else {
-          navigate("#job");
+          return;
         }
-      } else {
-        navigate("#job");
       }
+      navigate("#job");
+      return;
     }
   } else {
     navigate("#projects");
