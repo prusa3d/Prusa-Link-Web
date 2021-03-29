@@ -10,6 +10,7 @@ const HtmlWebpackPlugin = require("html-webpack-plugin");
 const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 const PreprocessingPlugin = require("./tools/preprocessing");
 const devServer = require("./tools/server");
+const CopyPlugin = require("copy-webpack-plugin");
 
 module.exports = (env, args) => {
   const buildLocales = env.locales;
@@ -22,12 +23,16 @@ module.exports = (env, args) => {
     "http-apikey": env["http-apikey"],
   };
 
+  let icons;
+
   if (printer_conf.type == "sl1") {
     printer_conf["title"] = "Original Prusa SL1";
     printer_conf["printerFamily"] = "sla";
+    icons = { from: "./src/assets/icons", to: "./" };
   } else /* (printer_conf.type == "mini") */ {
     printer_conf["title"] = "Original Prusa Mini";
     printer_conf["printerFamily"] = "fdm";
+    icons = { from: "./src/assets/icons/favicon-32x32.png", to: "./" };
   }
 
   if (buildLocales) {
@@ -80,6 +85,11 @@ module.exports = (env, args) => {
       new HtmlWebpackPlugin({
         template: "./src/views/index.html",
         minify: !env.dev,
+      }),
+      new CopyPlugin({
+        patterns: [
+          icons,
+        ]
       }),
     ],
 
