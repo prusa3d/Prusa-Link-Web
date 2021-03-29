@@ -11,18 +11,18 @@ html {
   line-height: 1.15;
   font-size: 16px;
   -webkit-text-size-adjust: 100%;
-  font-family: "Helvetica, Arial";
+  font-family: Helvetica, sans-serif;
   color: $text-white;
 }
 
 select {
-  font-family: "Helvetica, Arial";
+  font-family: Helvetica, sans-serif;
   font-weight: bold;
   color: $text-white;
 }
 
 .txt-bold {
-  font-family: "Helvetica, Arial";
+  font-family: Helvetica, sans-serif;
   font-weight: bold;
 }
 
@@ -47,7 +47,7 @@ select {
 }
 
 button > p {
-  font-family: "Helvetica, Arial";
+  font-family: Helvetica, sans-serif;
   font-weight: bold;
   font-size: $font-size-2-mobile;
 }
