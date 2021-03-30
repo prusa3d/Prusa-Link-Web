@@ -64,7 +64,9 @@ const setUpElements = (file, elements, div) => {
  * @param {object} file - job file information
  */
 const changeExposureTimesQuestion = (file, next = "#preview") => {
-  document.getElementById("exposure").addEventListener("click", (e) => {
+  const btn = document.getElementById("exposure");
+  btn.disabled = false;
+  btn.addEventListener("click", (e) => {
     navigate("#projects");
     document.title = process.env.TITLE + " - " + translate("proj.link");
     history.pushState(null, document.title, "#projects");

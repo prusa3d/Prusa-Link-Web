@@ -100,7 +100,7 @@
 
     <div class="preview-buttons">
       <div class="preview-buttons-first">
-        <button class="no" id="delete">
+        <button class="no" id="delete" disabled>
           <img
             src="{{ pre.countOrRenderAssets('delete_small_white.svg') | safe }}"
           />
@@ -109,14 +109,14 @@
       </div>
       <div class="buttons-wrapper">
         {% if env.printerFamily == "sla" %}
-        <button id="exposure" class="action">
+        <button id="exposure" class="action" disabled>
           <img
             src="{{ pre.countOrRenderAssets('exposure_times_color.svg') | safe }}"
           />
           <p data-label="btn.chg-exp">change exposure times</p>
         </button>
         {% endif %}
-        <button class="yes" id="start">
+        <button class="yes" id="start" disabled>
           <img src="{{ pre.countOrRenderAssets('yes_color.svg') | safe }}" />
           <p data-label="btn.start-pt">start print</p>
         </button>

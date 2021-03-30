@@ -149,28 +149,30 @@ nav > ul {
   align-items: center;
   flex-direction: column;
   width: 100%;
-  margin-bottom: 0;
+  margin-bottom: 0px;
 }
 nav > ul > li {
   display: flex;
   list-style-type: none;
   padding: 16px;
   width: 100%;
+  margin-bottom: 0px;
 }
 nav > ul > li.active {
   border-bottom: 1px solid #f8651b;
+  margin-bottom: -1px;
 }
 nav > ul > li:hover {
   border-bottom: 1px solid #ffffff;
+  margin-bottom: -1px;
 }
-nav > ul a {
+nav ul a {
   list-style: none;
   text-decoration: none;
   width: 100%;
 }
 nav > ul > .dropdown {
-    align-self: center;
-    padding: 16px 0;
+  align-self: flex-start;
 }
 nav .navbar-burger {
   display: flex;
@@ -1074,10 +1076,6 @@ $toast-success-title-color: $text-white;
     flex-direction: row;
     width: inherit;
   }
-  nav > ul > li,
-  nav > ul .dropdown {
-  margin-bottom: -2px;
-}
   nav .dropdown {
     padding: 0;
     align-self: unset !important;
