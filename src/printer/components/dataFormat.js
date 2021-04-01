@@ -112,14 +112,17 @@ function formatTime(value) {
 function formatExposure(expo) {
   if (
     expo.exposureTimeFirst == undefined ||
-    expo.exposureTime == undefined ||
-    expo.exposureTimeCalibration == undefined
+    expo.exposureTime == undefined
   ) {
     return translate("prop.na");
   }
-  return `${numberFormat(expo.exposureTimeFirst / 1000)}/${numberFormat(
+  let expo_times = `${numberFormat(expo.exposureTimeFirst / 1000)}/${numberFormat(
     expo.exposureTime / 1000
-  )}/${numberFormat(expo.exposureTimeCalibration / 1000)} s`;
+  )}`;
+  if (expo.exposureTimeCalibration !== undefined){
+    expo_times =  `${expo_times}/${numberFormat(expo.exposureTimeCalibration / 1000)}`;
+  }
+  return expo_times + " s";
 }
 
 function totalLayers(data) {

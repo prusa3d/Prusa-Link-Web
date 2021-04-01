@@ -151,10 +151,10 @@ function createElement(templateName, name, cb) {
  * @param {string} name
  */
 function createFolder(node) {
-  if (metadata.current_path.length == 0) {
-    metadata.current_path.push(node.origin);
-  }
   return createElement("node-folder", node.name, () => {
+    if (metadata.current_path.length == 0) {
+      metadata.current_path.push(node.origin);
+    }
     metadata.current_path.push(node.name);
     load();
   });
