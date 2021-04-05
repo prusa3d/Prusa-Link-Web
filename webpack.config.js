@@ -29,7 +29,7 @@ module.exports = (env, args) => {
     printer_conf["title"] = "Original Prusa SL1";
     printer_conf["printerFamily"] = "sla";
     icons = { from: "./src/assets/icons", to: "./" };
-  } else /* (printer_conf.type == "mini") */ {
+  } /* (printer_conf.type == "mini") */ else {
     printer_conf["title"] = "Original Prusa Mini";
     printer_conf["printerFamily"] = "fdm";
     icons = { from: "./src/assets/icons/favicon-32x32.png", to: "./" };
@@ -87,9 +87,7 @@ module.exports = (env, args) => {
         minify: !env.dev,
       }),
       new CopyPlugin({
-        patterns: [
-          icons,
-        ]
+        patterns: [icons],
       }),
     ],
 
@@ -112,12 +110,16 @@ module.exports = (env, args) => {
           test: /\.html$/i,
           loader: "html-loader",
         },
-        buildLocales ?
-          {
-            test: /\.html$/i,
-            loader: path.resolve(__dirname, "tools/loaders/locale_loader_html"),
-            include: path.resolve(__dirname, "src/views/"),
-          } : {},
+        buildLocales
+          ? {
+              test: /\.html$/i,
+              loader: path.resolve(
+                __dirname,
+                "tools/loaders/locale_loader_html"
+              ),
+              include: path.resolve(__dirname, "src/views/"),
+            }
+          : {},
         {
           test: /\.(png|jpe?g|gif|svg|woff2?)$/i,
           use: [
@@ -126,12 +128,13 @@ module.exports = (env, args) => {
             },
           ],
         },
-        buildLocales ?
-          {
-            test: /\.js/,
-            loader: path.resolve(__dirname, "tools/loaders/locale_loader_js"),
-            exclude: path.resolve(__dirname, "node_modules"),
-          } : {},
+        buildLocales
+          ? {
+              test: /\.js/,
+              loader: path.resolve(__dirname, "tools/loaders/locale_loader_js"),
+              exclude: path.resolve(__dirname, "node_modules"),
+            }
+          : {},
       ],
     },
 

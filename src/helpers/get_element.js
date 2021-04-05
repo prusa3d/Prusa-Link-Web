@@ -5,7 +5,7 @@
  * @returns {HTMLElement}
  */
 function getElement(element) {
-  return (typeof element === "string")
+  return typeof element === "string"
     ? document.getElementById(element)
     : element || document.body;
 }

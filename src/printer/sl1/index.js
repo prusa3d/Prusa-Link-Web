@@ -18,13 +18,17 @@ import Refill from "./refill.js";
 import refill from "../../views/refill.html";
 import Question from "../components/question.js";
 import question from "../../views/question.html";
-import loading from "../../views/loading.html";
+import busy from "../../views/busy.html";
+import Busy from "../components/busy.js";
 import { updateProperties } from "../components/updateProperties.js";
 import { translate } from "../../locale_provider";
+import { states, get_state } from "../components/state";
 
 const context = {
   version: undefined,
   printer: undefined,
+  state: undefined,
+  last_state: undefined,
 };
 
 const updateHostname = (obj) => {
@@ -58,23 +62,22 @@ const sl1 = {
     { path: "job", html: job, module: updateHostname(Job) },
     { path: "question", html: question, module: updateHostname(Question) },
     {
-      path: "loading",
-      html: loading,
-      module: updateHostname({
-        load: () => translate("proj.title", { query: "#title-status-label" }),
-      }),
+      path: "busy",
+      html: busy,
+      module: updateHostname(Busy),
     },
     { path: "refill", html: refill, module: updateHostname(Refill) },
   ],
   init: (version, printerData) => {
-    console.log("Init Printer API");
     context.version = version;
     context.printer = printerData;
+    context.state = states.IDLE;
     initTemperatureGraph();
   },
   update: (data) => {
-    console.log("Update Printer API");
     context.printer = data;
+    context.last_state = context.state;
+    context.state = get_state(data);
     updateProperties("telemetry", data);
     updateTemperatureGraph(data);
     updateModule();

@@ -8,7 +8,7 @@
  * @param {String} path Path to key. For example "nodes.for.specific.key"
  */
 
- // module.exports format is due to compatibility with webpack loader
+// module.exports format is due to compatibility with webpack loader
 
 module.exports = function (object, path) {
   let keys = path.split(".");

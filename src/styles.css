@@ -1037,8 +1037,8 @@ $toast-success-title-color: $text-white;
 }
 
 .dropdown-btn img {
-  height: .7em;
-  width: .7em;
+  height: 0.7em;
+  width: 0.7em;
   max-width: none;
   padding: 0;
 }

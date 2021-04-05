@@ -31,6 +31,7 @@ class Printer {
       error: false, // true if an unrecoverable error occurred, false otherwise
       ready: true, // true if the printer is operational and no data is currently being streamed to SD, so ready to receive instructions
       closedOrError: false, // true if the printer is disconnected (possibly due to an error), false otherwise
+      busy: false,
     };
     this.last_error = null;
   }
@@ -172,8 +173,10 @@ class Printer {
   }
 
   createNewFile(options) {
-    const newPath = path.join(options.path || "", options.fileName)
-      .split("\\").join("/");
+    const newPath = path
+      .join(options.path || "", options.fileName)
+      .split("\\")
+      .join("/");
     return {
       origin: options.target,
       path: newPath,
@@ -294,13 +297,17 @@ class Printer {
       return this.last_error;
     }
 
-    this.startPrint();
+    this.isPrinting = true;
+    this.status.ready = false;
+    this.status.busy = true;
+    setTimeout(() => this.startPrint(), 2000);
     return true;
   }
 
   startPrint() {
     this.isPrinting = true;
     this.status.ready = false;
+    this.status.busy = false;
     let estimatedPrintTime = 120;
     if (
       this.printingProject.gcodeAnalysis &&
@@ -321,6 +328,7 @@ class Printer {
     this.status.printing = false; // close project
     this.status.ready = true;
     this.status.cancelling = false;
+    this.status.busy = false;
     this.statusText = "Operational";
   }
 
@@ -428,12 +436,14 @@ class Printer {
     }
     this.isPrinting = false;
     this.status.pausing = true;
+    this.status.busy = true;
     this.statusText = "Pausing";
 
     setTimeout(() => {
       this.status.paused = true;
       this.status.pausing = false;
       this.statusText = "Paused";
+      this.status.busy = false;
     }, 3000);
     return true;
   }

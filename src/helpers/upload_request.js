@@ -4,7 +4,7 @@
  * @param {FormData} data file(s) packed in FormData
  * @param {{onProgress(progress): void}} opt options
  */
- function uploadRequest(url, data, opt) {
+function uploadRequest(url, data, opt) {
   return new Promise((resolve, reject) => {
     var request = new XMLHttpRequest();
 
@@ -15,11 +15,11 @@
       } else {
         reject(response);
       }
-    }
+    };
 
     const errorHandler = () => {
       reject(undefined);
-    }
+    };
 
     initProgressHandler(request, opt.onProgress);
     request.addEventListener("load", completeHandler, false);
@@ -39,7 +39,7 @@ function initProgressHandler(request, callback) {
         total: event.total,
         percentage: Math.round((event.loaded / event.total) * 100),
       });
-    }
+    };
     request.upload.addEventListener("progress", progressHandler, false);
   }
 }
@@ -51,13 +51,13 @@ function toResponse(target) {
       return JSON.parse(response);
     } catch {
       return undefined;
-    };
+    }
   }
 
   return {
     status: target.status,
     statusText: target.statusText,
-    ok: (target.status >= 200 && target.status <= 299),
+    ok: target.status >= 200 && target.status <= 299,
     data: toJson(target.response),
   };
 }

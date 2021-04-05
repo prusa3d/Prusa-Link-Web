@@ -3,11 +3,12 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import { getJson } from "../../auth";
-import { navigate } from "../../router.js";
-import { info } from "../components/toast";
-import { handleError } from "../components/errors";
-import { doQuestion } from "../components/question";
 import { translate } from "../../locale_provider";
+import { info } from "./toast";
+import { setBusy } from "./busy";
+import { handleError } from "./errors";
+import { doQuestion } from "./question";
+import { navigateToProjects } from "./projects";
 
 /**
  * start print
@@ -26,11 +27,9 @@ export const confirmJob = () => {
 /**
  * stop print
  */
-export const cancelJob = () => {
-  navigate("#projects");
-  document.title = process.env.TITLE + " - " + translate("proj.link");
-  history.pushState(null, document.title, "#projects");
-  navigate("#loading");
+export const cancelJob = (e) => {
+  navigateToProjects();
+  setBusy();
   doQuestion({
     title: translate("btn.cancel"),
     questionChildren: translate("msg.cancel"),
@@ -45,6 +44,6 @@ export const cancelJob = () => {
         .catch((result) => handleError(result))
         .finally((result) => close());
     },
-    next: "#job",
+    next: null,
   });
 };

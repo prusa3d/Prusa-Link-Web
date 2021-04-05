@@ -10,8 +10,9 @@ const getNestedValue = require("../../src/helpers/get_nested_value");
 const output_file = path.resolve(__dirname, "../../src/locales/locales.json");
 const source_dir = path.resolve(__dirname, "../../src/locales/source");
 
-const languages = fs.readdirSync(source_dir)
-  .map(fileName => fileName.replace('.json', '')); // => [ 'cs', 'de', 'it' ]
+const languages = fs
+  .readdirSync(source_dir)
+  .map((fileName) => fileName.replace(".json", "")); // => [ 'cs', 'de', 'it' ]
 
 let count = 0;
 
@@ -23,8 +24,7 @@ const loader_module = {
 function createHierarchy(object, keys) {
   if (keys.length > 0) {
     let o = object[keys[0]];
-    if (o === undefined)
-      o = object[keys[0]] = new Object();
+    if (o === undefined) o = object[keys[0]] = new Object();
 
     keys.shift();
     return createHierarchy(o, keys);
@@ -42,7 +42,7 @@ function getContent() {
     content = {
       langs: languages,
       texts: {},
-    }
+    };
   }
 
   return content;
@@ -53,8 +53,7 @@ function writeJson(path, data) {
 }
 
 function removeFile(path) {
-  if (fs.existsSync(path))
-    fs.unlinkSync(path);
+  if (fs.existsSync(path)) fs.unlinkSync(path);
 }
 
 function saveWords(words) {
@@ -79,7 +78,13 @@ function saveWords(words) {
           const file = require(path.resolve(source_dir, `${lang}.json`));
           const translation = getNestedValue(file, word);
           if (translation === undefined) {
-            console.log(colors.red.bold(`[${lang}] missing translation for "${word.split('\n').join('\\n')}"`));
+            console.log(
+              colors.red.bold(
+                `[${lang}] missing translation for "${word
+                  .split("\n")
+                  .join("\\n")}"`
+              )
+            );
           }
           return translation;
         });
@@ -93,7 +98,7 @@ function saveWords(words) {
       console.log("remove: " + output_file);
       removeFile(output_file);
     }
-    count ++;
+    count++;
 
     writeJson(output_file, JSON.stringify(content));
   }

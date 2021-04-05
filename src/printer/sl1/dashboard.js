@@ -5,45 +5,51 @@
 import * as graph from "../components/temperature_graph";
 import upload from "../components/upload";
 import { load as job } from "./job.js";
+import { navigateToProjects } from "../components/projects";
 import { translate } from "../../locale_provider";
+import { states } from "../components/state";
 
-const updateTitles = (context) => {
-  if (
-    context &&
-    context.printer.state.flags.printing &&
-    !context.printer.state.flags.ready
-  ) {
-    document.getElementById("title-status").innerText = translate(
-      "prop.st-printing"
-    );
-    return true;
-  } else {
-    document.getElementById("title-status").innerText = translate(
-      "prop.st-idle"
-    );
-    return false;
-  }
+const idleTitle = () => {
+  document.getElementById("title-status").innerText = translate("prop.st-idle");
+};
+
+const printingTitle = () => {
+  document.getElementById("title-status").innerText = translate(
+    "prop.st-printing"
+  );
 };
 
 const load = () => {
-  console.log("Dashboard Logic - sl1");
-  updateTitles();
+  idleTitle();
   upload.init();
   graph.render();
 };
 
 const update = (context) => {
   const jobElm = document.querySelector(".job");
-  const flags = context.printer.state.flags;
-  if (updateTitles(context) && !(flags.pausing || flags.paused)) {
-    if (jobElm.hasAttribute("hidden")) {
-      jobElm.removeAttribute("hidden");
-    }
-    job();
-  } else {
-    if (!jobElm.hasAttribute("hidden")) {
-      jobElm.setAttribute("hidden", true);
-    }
+
+  switch (context.state) {
+    case states.OPENED:
+      if (context.last_state == states.IDLE) {
+        navigateToProjects();
+      }
+    case states.IDLE:
+      idleTitle();
+      break;
+    case states.PRINTING:
+      printingTitle();
+      if (jobElm.hasAttribute("hidden")) {
+        jobElm.removeAttribute("hidden");
+      }
+      job();
+      break;
+    case states.BUSY:
+    case states.REFILL:
+      printingTitle();
+      if (!jobElm.hasAttribute("hidden")) {
+        jobElm.setAttribute("hidden", true);
+      }
+      break;
   }
 };
 

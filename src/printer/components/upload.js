@@ -20,9 +20,10 @@ function initInput(origin, path) {
   var input = document.querySelector('#upload input[type="file"]');
   input.setAttribute("accept", `.${fileType}`);
   input.onchange = () => {
-    if (input.files.length > 0) // TODO: upload multiple files?
+    if (input.files.length > 0)
+      // TODO: upload multiple files?
       uploadFile(input.files[0], origin, path);
-  }
+  };
 }
 
 function reset() {
@@ -40,25 +41,27 @@ function setProgress(pct) {
 
 const uploadFile = (file, origin, path) => {
   let url = `/api/files/${origin || "local"}`;
-  var data = new FormData()
-  if (path)
-    data.append('path', path);
-  data.append('file', file);
+  var data = new FormData();
+  if (path) data.append("path", path);
+  data.append("file", file);
 
   setState("uploading");
   uploadRequest(url, data, {
     onProgress: (progress) => setProgress(progress.percentage),
-  }).then(result => {
-    const title = translate("ntf.success");
-    const message = translate("ntf.upld-suc", { file_name: file.name });
-    success(title, message);
-  }).catch(result => {
-    const title = translate("ntf.error");
-    const message = translate("ntf.upld-unsuc", { file_name: file.name });
-    error(title, message);
-  }).finally(() => {
-    reset();
-  });
-}
+  })
+    .then((result) => {
+      const title = translate("ntf.success");
+      const message = translate("ntf.upld-suc", { file_name: file.name });
+      success(title, message);
+    })
+    .catch((result) => {
+      const title = translate("ntf.error");
+      const message = translate("ntf.upld-unsuc", { file_name: file.name });
+      error(title, message);
+    })
+    .finally(() => {
+      reset();
+    });
+};
 
 export default upload;
