@@ -5,8 +5,9 @@
 import { getJson } from "../../auth";
 import { handleError } from "../components/errors";
 import { doQuestion } from "../components/question";
-import { navigate } from "../../router.js";
+import { navigateToProjects } from "../components/projects";
 import { translate } from "../../locale_provider";
+import { setBusy } from "../components/busy";
 
 /**
  * id: translations, limits
@@ -67,9 +68,7 @@ const changeExposureTimesQuestion = (file, next = "#preview") => {
   const btn = document.getElementById("exposure");
   btn.disabled = false;
   btn.addEventListener("click", (e) => {
-    navigate("#projects");
-    document.title = process.env.TITLE + " - " + translate("proj.link");
-    history.pushState(null, document.title, "#projects");
+    navigateToProjects();
     const elements = {};
     const div = document.createElement("div");
     setUpElements(file, elements, div);
@@ -77,7 +76,7 @@ const changeExposureTimesQuestion = (file, next = "#preview") => {
       title: translate("exp-times.title"),
       questionChildren: [div],
       yes: (close) => {
-        navigate("#loading");
+        setBusy();
         const result = {};
         for (let expo in elements) {
           result[expo] = parseFloat(elements[expo].innerHTML) * 1000;

@@ -9,6 +9,8 @@ import { getValue } from "./updateProperties.js";
 import formatData from "./dataFormat.js";
 import upload from "../components/upload";
 import { translate, translateLabels } from "../../locale_provider.js";
+import { setBusy, clearBusy } from "./busy";
+import { states, to_page } from "./state";
 
 /**
  * project context
@@ -54,9 +56,9 @@ const updateData = () => {
         metadata.free = data.free;
         metadata.total = data.total;
         metadata.eTag = result.eTag;
-        metadata.firstTime = false;
-        if (window.location.hash == "#projects") {
-          navigate("#projects");
+        if (metadata.firstTime) {
+          metadata.firstTime = false;
+          clearBusy();
         }
       }
     })
@@ -68,27 +70,14 @@ const updateData = () => {
  * @param {object} context
  */
 export const update = (context) => {
-  const flags = context.printer.state.flags;
-  if (flags.printing) {
-    if (flags.ready) {
-      navigate("#preview");
-    } else {
-      if (process.env.PRINTER_FAMILY == "sla") {
-        if (flags.pausing || flags.paused) {
-          navigate("#refill");
-        } else {
-          navigate("#job");
-        }
-      } else {
-        navigate("#job");
-      }
-    }
-  } else {
-    if (metadata.firstTime) {
-      navigate("#loading");
-    }
-    updateData();
+  if (context.state != states.IDLE) {
+    to_page(context.state);
+    return;
   }
+  if (metadata.firstTime) {
+    setBusy();
+  }
+  updateData();
 };
 
 /**
@@ -106,7 +95,8 @@ export function load() {
     const origin = metadata.current_path[0];
     for (let i = 1; i < metadata.current_path.length; i++) {
       let path = metadata.current_path[i];
-      view = view.find((elm) => elm.name == path && elm.origin == origin).children;
+      view = view.find((elm) => elm.name == path && elm.origin == origin)
+        .children;
     }
     document.getElementById(
       "title-status-label"
@@ -164,7 +154,8 @@ function createFolder(node) {
  * create a up button element
  */
 function createUp() {
-  const title = metadata.current_path.length == 1 ? translate("proj.main") : "..";
+  const title =
+    metadata.current_path.length == 1 ? translate("proj.main") : "..";
   return createElement("node-up", title, () => {
     metadata.current_path.pop();
     if (metadata.current_path.length == 1) {
@@ -179,7 +170,7 @@ function createUp() {
  * @param {object} node
  */
 const onClickFile = (node) => {
-  navigate("#loading");
+  setBusy();
   getJson(node.refs.resource, {
     method: "POST",
     headers: {
@@ -187,9 +178,9 @@ const onClickFile = (node) => {
     },
     body: JSON.stringify({ command: "select" }),
   })
-    .then((result) => navigate("#preview"))
+    .then((result) => clearBusy())
     .catch((result) => {
-      navigate("#projects");
+      clearBusy();
       handleError(result);
     });
 };
@@ -207,11 +198,8 @@ function createFile(node) {
     translateLabels(element);
     const value = getValue(element.dataset.where, node);
     if (value) {
-      const data = formatData(
-        element.dataset.format,
-        value
-      );
-      element.querySelector("p").innerHTML += ` <span>${data}</span>`
+      const data = formatData(element.dataset.format, value);
+      element.querySelector("p").innerHTML += ` <span>${data}</span>`;
     } else {
       nodeDetails.removeChild(element);
     }
@@ -224,5 +212,11 @@ function createFile(node) {
   }
   return elm;
 }
+
+export const navigateToProjects = () => {
+  document.title = process.env.TITLE + " - " + translate("proj.link");
+  history.pushState(null, document.title, "#projects");
+  navigate("#projects");
+};
 
 export default { load, update };

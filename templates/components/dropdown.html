@@ -6,13 +6,13 @@
 #}
 
 <template id="dropdown-template">
-<div class="dropdown">
-  <div class="dropdown-btn">
-    <span class="dropdown-label">Dropdown</span>
-    <img src="{{ pre.countOrRenderAssets('dropdown.svg') | safe }}" />
+  <div class="dropdown">
+    <div class="dropdown-btn">
+      <span class="dropdown-label">Dropdown</span>
+      <img src="{{ pre.countOrRenderAssets('dropdown.svg') | safe }}" />
+    </div>
+    <div class="dropdown-content">
+      <ul></ul>
+    </div>
   </div>
-  <div class="dropdown-content">
-    <ul></ul>
-  </div>
-</div>
 </template>

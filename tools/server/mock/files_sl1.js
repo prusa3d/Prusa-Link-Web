@@ -246,7 +246,7 @@ module.exports = {
             download:
               "http://localhost:9000/api/downloads/local/examples/Prusa_SL1_Calibration_test_2H_40M_50um_Prusa_Orange.sl1",
             thumbnailSmall:
-            "http://localhost:9000/api/thumbnails/tmpy36n51rt/thumbnail/thumbnail800x400.png",
+              "http://localhost:9000/api/thumbnails/tmpy36n51rt/thumbnail/thumbnail800x400.png",
             thumbnailBig:
               "http://localhost:9000/api/thumbnails/tmpy36n51rt/thumbnail/thumbnail800x480.png",
           },

@@ -110,17 +110,16 @@ function formatTime(value) {
  * @param {object} expo
  */
 function formatExposure(expo) {
-  if (
-    expo.exposureTimeFirst == undefined ||
-    expo.exposureTime == undefined
-  ) {
+  if (expo.exposureTimeFirst == undefined || expo.exposureTime == undefined) {
     return translate("prop.na");
   }
-  let expo_times = `${numberFormat(expo.exposureTimeFirst / 1000)}/${numberFormat(
-    expo.exposureTime / 1000
-  )}`;
-  if (expo.exposureTimeCalibration !== undefined){
-    expo_times =  `${expo_times}/${numberFormat(expo.exposureTimeCalibration / 1000)}`;
+  let expo_times = `${numberFormat(
+    expo.exposureTimeFirst / 1000
+  )}/${numberFormat(expo.exposureTime / 1000)}`;
+  if (expo.exposureTimeCalibration !== undefined) {
+    expo_times = `${expo_times}/${numberFormat(
+      expo.exposureTimeCalibration / 1000
+    )}`;
   }
   return expo_times + " s";
 }

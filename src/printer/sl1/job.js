@@ -5,11 +5,11 @@
 import { getJson } from "../../auth";
 import { updateProperties } from "../components/updateProperties.js";
 import { handleError } from "../components/errors";
-import { navigate } from "../../router.js";
 import changeExposureTimesQuestion from "./exposure";
 import { cancelJob } from "../components/job";
 import { setUpRefill } from "./refill";
 import { translate } from "../../locale_provider";
+import { states, to_page } from "../components/state";
 
 /**
  * load job
@@ -51,19 +51,10 @@ export const load = () => {
  * @param {object} context
  */
 export const update = (context) => {
-  const flags = context.printer.state.flags;
-  if (flags.printing) {
-    if (flags.ready) {
-      navigate("#preview");
-    } else {
-      if (flags.pausing || flags.paused) {
-        navigate("#refill");
-      } else {
-        load();
-      }
-    }
+  if (context.state != states.PRINTING) {
+    to_page(context.state);
   } else {
-    navigate("#projects");
+    load();
   }
 };
 
