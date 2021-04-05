@@ -51,7 +51,7 @@ const modal = (createElement, options = {}) => {
   const node = createElement(removeModal);
   modalData.current = count;
   modalBox.appendChild(node);
-  translateLabels(modalBox)
+  translateLabels(modalBox);
   modalWrapper.classList.add("show-modal");
   // for default all modal there is a timeout
   if (config.timeout > 0) {

@@ -26,7 +26,9 @@
 <ul class="burger-menu txt-bold" id="navbar">
   {% for key, values in menu_dict %}
   <li>
-    <a href="{{ values.path }}" data-label="{{ values.label }}">{{ values.text }}</a>
+    <a href="{{ values.path }}" data-label="{{ values.label }}"
+      >{{ values.text }}</a
+    >
   </li>
   {% endfor %}
   <select data-type="dropdown"></select>

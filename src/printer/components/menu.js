@@ -25,5 +25,5 @@ export const initMenu = () => {
       setLanguage(lang);
       window.location.reload();
     };
-  };
+  }
 };

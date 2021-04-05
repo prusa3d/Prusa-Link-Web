@@ -15,14 +15,13 @@ const navigate = (url) => {
   new DOMParser()
     .parseFromString(route.html, "text/html")
     .body.childNodes.forEach((n) => root.appendChild(n));
-    translateLabels(root);
+  translateLabels(root);
   route.module.load();
   printer.setModule(route.module);
   const elm = document.querySelector(`a[href="#${page}"]`);
   if (elm) {
     document.getElementById("navbar").childNodes.forEach((elm) => {
-      if (elm.nodeName.toLowerCase() === "li")
-        elm.classList.remove(["active"]);
+      if (elm.nodeName.toLowerCase() === "li") elm.classList.remove(["active"]);
     });
     elm.parentNode.className = "active";
   }

@@ -4,22 +4,23 @@
 
 import { getJson } from "../../auth";
 import { handleError } from "../components/errors";
-import { navigate } from "../../router.js";
-import { update as jobUpdate } from "./job";
 import { translate } from "../../locale_provider";
+import { setBusy, clearBusy } from "../components/busy";
+import { states, to_page } from "../components/state";
+import { navigateToProjects } from "../components/projects";
 
 export const setUpRefill = () => {
   document.getElementById("refill").onclick = () => {
-    navigate("#projects");
-    document.title = process.env.TITLE + " - " + translate("proj.link");
-    history.pushState(null, document.title, "#projects");
-    navigate("#loading");
+    navigateToProjects();
+    setBusy();
     getJson("/api/system/commands/custom/resinrefill", {
       method: "POST",
     })
-      .then((result) => navigate("#refill"))
+      .then((result) => {
+        clearBusy();
+      })
       .catch((result) => {
-        navigate("#job");
+        clearBusy();
         handleError(result);
       });
   };
@@ -34,9 +35,7 @@ const load = () => {
     noButton.disabled = true;
     getJson("/api/system/commands/custom/resinrefilled", {
       method: "POST",
-    })
-      .catch((result) => handleError(result))
-      .finally((result) => navigate("#job"));
+    }).catch((result) => handleError(result));
   };
   noButton.onclick = () => {
     yesButton.disabled = true;
@@ -47,20 +46,17 @@ const load = () => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({ command: "pause", action: "resume" }),
-    })
-      .catch((result) => handleError(result))
-      .finally((result) => navigate("#job"));
+    }).catch((result) => handleError(result));
   };
 };
 
 export const update = (context) => {
-  const flags = context.printer.state.flags;
-  if (flags.paused) {
+  if (context.state == states.REFILL) {
     for (let buttonId of ["yes", "no"]) {
       document.getElementById(buttonId).disabled = false;
     }
-  } else if (!flags.pausing) {
-    jobUpdate(context);
+  } else {
+    to_page(context.state);
   }
 };
 

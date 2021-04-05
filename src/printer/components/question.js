@@ -4,6 +4,7 @@
 
 import { translate } from "../../locale_provider.js";
 import { navigate } from "../../router.js";
+import { setBusy, clearBusy } from "./busy";
 
 const question = {};
 
@@ -15,7 +16,10 @@ const cleanQuestion = () => {
   question.questionChildren = null;
   question.yes = null;
   question.no = null;
-  navigate(question.next);
+  clearBusy();
+  if (question.next) {
+    navigate(question.next);
+  }
 };
 
 /**
@@ -65,8 +69,9 @@ export const load = () => {
     const func = question[actionName];
     action.querySelector("p").innerHTML = question[actionName + "Text"];
     action.addEventListener("click", (e) => {
+      e.preventDefault();
       e.stopPropagation();
-      navigate("#loading");
+      setBusy();
       func(cleanQuestion);
     });
   }

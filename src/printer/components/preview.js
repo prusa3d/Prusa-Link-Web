@@ -11,6 +11,8 @@ import { confirmJob } from "./job.js";
 import { doQuestion } from "./question";
 import { translate } from "../../locale_provider";
 import joinPaths from "../../helpers/join_paths";
+import { setBusy, clearBusy } from "./busy";
+import { states, to_page } from "./state";
 
 const createConfirm = (close) => {
   const template = document.getElementById("modal-confirm");
@@ -18,9 +20,10 @@ const createConfirm = (close) => {
   const yesButton = node.getElementById("yes");
   yesButton.addEventListener("click", (event) => {
     event.preventDefault();
-    navigate("#loading");
+    setBusy();
     confirmJob().then(() => {
       close();
+      clearBusy();
       navigate("#projects");
     });
   });
@@ -40,65 +43,68 @@ const load = () => {
     const path = joinPaths(jobFile.origin, jobFile.path);
 
     updateProperties("preview", data);
-    getJson(`/api/files/${path}`).then((result) => {
-      const file = result.data;
+    getJson(`/api/files/${path}`)
+      .then((result) => {
+        const file = result.data;
 
-      if (file.refs && file.refs.thumbnailBig) {
-        const img = document.getElementById("preview-img");
-        getImage(file.refs.thumbnailBig).then((url) => {
-          img.src = url;
+        if (file.refs && file.refs.thumbnailBig) {
+          const img = document.getElementById("preview-img");
+          getImage(file.refs.thumbnailBig).then((url) => {
+            img.src = url;
+          });
+        }
+
+        if (!file.refs.resource)
+          console.error("Reference to file resource is null!");
+
+        document.getElementById("start").disabled = false; // !file.refs.resource;
+        document.getElementById("delete").disabled = !file.refs.resource;
+
+        /**
+         * set up delete button
+         */
+        document.getElementById("delete").addEventListener("click", (e) => {
+          doQuestion({
+            title: translate("proj.del"),
+            // TODO: add strong - Do you really want to delete <strong>${file.name}</strong>?
+            questionChildren: translate("msg.del-proj", {
+              file_name: file.name,
+            }),
+            yes: (close) => {
+              getJson(file.refs.resource, { method: "DELETE" })
+                .catch((result) => handleError(result))
+                .finally((result) => close());
+            },
+            next: "#projects",
+          });
+          e.preventDefault();
         });
-      }
 
-      if (!file.refs.resource)
-        console.error("Reference to file resource is null!");
+        /**
+         * set up change exposure times button (sla)
+         */
+        if (process.env.PRINTER_FAMILY == "sla") {
+          require("../sl1/exposure").default(jobFile);
+        }
 
-      document.getElementById("start").disabled = false; // !file.refs.resource;
-      document.getElementById("delete").disabled = !file.refs.resource;
-
-      /**
-       * set up delete button
-       */
-      document.getElementById("delete").addEventListener("click", (e) => {
-        doQuestion({
-          title: translate("proj.del"),
-          // TODO: add strong - Do you really want to delete <strong>${file.name}</strong>?
-          questionChildren: translate("msg.del-proj", { file_name: file.name }),
-          yes: (close) => {
-            getJson(file.refs.resource, { method: "DELETE" })
-              .catch((result) => handleError(result))
-              .finally((result) => close());
-          },
-          next: "#projects",
+        /**
+         * set up confirm button
+         */
+        document.querySelector(".yes").addEventListener("click", (e) => {
+          modal(createConfirm, {
+            timeout: 10000,
+            closeOutside: false,
+          });
+          e.preventDefault();
         });
-        e.preventDefault();
-      });
-
-      /**
-       * set up change exposure times button (sla)
-       */
-      if (process.env.PRINTER_FAMILY == "sla") {
-        require("../sl1/exposure").default(jobFile);
-      }
-
-      /**
-       * set up confirm button
-       */
-      document.querySelector(".yes").addEventListener("click", (e) => {
-        modal(createConfirm, {
-          timeout: 10000,
-          closeOutside: false,
-        });
-        e.preventDefault();
-      });
-    })
+      })
       .catch((result) => handleError(result))
       .finally(() => {
         /**
          * set up cancel button
          */
         document.getElementById("cancel").addEventListener("click", (e) => {
-          navigate("#loading");
+          setBusy();
           getJson("/api/job", {
             method: "POST",
             headers: {
@@ -107,7 +113,10 @@ const load = () => {
             body: JSON.stringify({ command: "cancel" }),
           })
             .catch((result) => handleError(result))
-            .finally((result) => navigate("#projects"));
+            .finally((result) => {
+              clearBusy();
+              navigate("#projects");
+            });
           e.preventDefault();
         });
       });
@@ -119,20 +128,8 @@ const load = () => {
  * @param {object} context
  */
 const update = (context) => {
-  const flags = context.printer.state.flags;
-  if (flags.printing) {
-    if (!flags.ready) {
-      if (process.env.PRINTER_FAMILY == "sla") {
-        if (flags.pausing || flags.paused) {
-          navigate("#refill");
-          return;
-        }
-      }
-      navigate("#job");
-      return;
-    }
-  } else {
-    navigate("#projects");
+  if (context.state != states.OPENED) {
+    to_page(context.state);
   }
 };
 

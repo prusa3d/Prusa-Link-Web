@@ -5,11 +5,11 @@ export class Dropdown {
   set value(val) {
     this._value = val;
     this.updateLabel();
-  };
+  }
 
   get value() {
     return this._value;
-  };
+  }
 
   constructor(btn, label, ul) {
     /** @type {HTMLElement} */
@@ -46,8 +46,7 @@ export class Dropdown {
     const template = document.getElementById("dropdown-template");
     const select = rootElement.querySelector('select[data-type="dropdown"]');
 
-    if (!select)
-      return undefined;
+    if (!select) return undefined;
 
     select.after(document.importNode(template.content, true));
     const dropdown = select.nextElementSibling;
@@ -66,15 +65,14 @@ export class Dropdown {
   }
 
   setOptions(options) {
-    options.forEach(option => {
+    options.forEach((option) => {
       const li = document.createElement("li");
       li.innerHTML = option;
       li.onclick = () => {
         this.select(option);
-        if (this.onselect)
-          this.onselect(option);
+        if (this.onselect) this.onselect(option);
         this.close();
-      }
+      };
       this._ul.appendChild(li);
     });
   }
@@ -89,9 +87,9 @@ export class Dropdown {
 
   open() {
     this._ul.classList.toggle("open");
-  };
+  }
 
   close() {
     this._ul.classList.remove(["open"]);
-  };
-};
+  }
+}
