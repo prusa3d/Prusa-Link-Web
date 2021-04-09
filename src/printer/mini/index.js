@@ -22,13 +22,11 @@ const mini = {
     { path: "temperature", html: temperature, module: Temperature },
   ],
   init: (version, printerData) => {
-    console.log("Init Printer API");
     context.version = version;
     context.printer = printerData;
     initTemperatureGraph();
   },
   update: (data) => {
-    console.log("Update Printer API");
     context.printer = data;
     updateProperties("telemetry", data);
     updateTemperatureGraph(data);

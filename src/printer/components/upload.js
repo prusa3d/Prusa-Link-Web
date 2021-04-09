@@ -2,6 +2,7 @@
 // Copyright (C) 2021 Prusa Research a.s. - www.prusa3d.com
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+import { handleError } from "./errors";
 import { error, success } from "./toast";
 import { translate } from "../../locale_provider";
 import uploadRequest from "../../helpers/upload_request";
@@ -54,11 +55,7 @@ const uploadFile = (file, origin, path) => {
       const message = translate("ntf.upld-suc", { file_name: file.name });
       success(title, message);
     })
-    .catch((result) => {
-      const title = translate("ntf.error");
-      const message = translate("ntf.upld-unsuc", { file_name: file.name });
-      error(title, message);
-    })
+    .catch((result) => handleError(result))
     .finally(() => {
       reset();
     });

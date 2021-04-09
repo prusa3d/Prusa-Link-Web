@@ -17,9 +17,11 @@ let lang;
 /** Index of current language in languages array. */
 let langIndex;
 
-console.log(`known languages: ${languages}`);
-console.log(`known texts: `);
-console.log(texts);
+if (process.env.MODE == "development") {
+  console.log(`known languages: ${languages}`);
+  console.log(`known texts: `);
+  console.log(texts);
+}
 
 setLanguage(localStorage.getItem("lang")) ||
   setLanguage(detectBrowserLang().toLowerCase()) ||
@@ -67,9 +69,11 @@ export function translate(textId, parameters) {
 
   if (word === null || word === undefined) {
     word = textId;
-    console.warn(
-      `[${lang}] missing translation for "${textId.split("\n").join("\\n")}"`
-    );
+    if (process.env.MODE == "development") {
+      console.warn(
+        `[${lang}] missing translation for "${textId.split("\n").join("\\n")}"`
+      );
+    }
     assign(word, parameters);
     return word;
   }
@@ -93,10 +97,13 @@ export function translate(textId, parameters) {
       if (paramName in parameters) {
         let param = parameters[paramName];
         editedWord = editedWord.replace(match[0], param);
-      } else {
-        console.warn(
-          `missing parameter [${paramName}] in translation for ${textId}.`
-        );
+      }
+      if (process.env.MODE == "development") {
+        if (!(paramName in parameters)) {
+          console.warn(
+            `missing parameter [${paramName}] in translation for ${textId}.`
+          );
+        }
       }
     }
     word = editedWord;
@@ -115,8 +122,11 @@ function assign(word, parameters) {
       let element = document.querySelector(parameters.query);
       if (element) {
         element.innerHTML = word;
-      } else {
-        console.warn(`cannot find element with "${parameters.query}" query`);
+      }
+      if (process.env.MODE == "development") {
+        if (!element) {
+          console.warn(`cannot find element with "${parameters.query}" query`);
+        }
       }
     }
   }

@@ -70,7 +70,9 @@ const updateData = () => {
  * @param {object} context
  */
 export const update = (context) => {
-  if (context.state != states.IDLE) {
+  if (
+    [states.READY, states.ERROR, states.ATTENTION].indexOf(context.state) < 0
+  ) {
     to_page(context.state);
     return;
   }

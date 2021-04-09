@@ -9,6 +9,8 @@ import { navigateToProjects } from "../components/projects";
 import { translate } from "../../locale_provider";
 import { setBusy } from "../components/busy";
 
+let mouse_context = null;
+
 /**
  * id: translations, limits
  */
@@ -22,6 +24,15 @@ const translations = {
     text: translate("exp-times.inc"),
     limit: [0.5, 5],
   },
+};
+
+const setValue = (value, min, max, tax) => {
+  return () => {
+    const newValue = parseFloat(value.innerHTML) + tax;
+    if (min <= newValue && newValue <= max) {
+      value.innerHTML = newValue;
+    }
+  };
 };
 
 /**
@@ -40,20 +51,24 @@ const setUpElements = (file, elements, div) => {
       const value = elm.getElementById("value");
       value.innerHTML = file[expo] / 1000;
       const [min, max] = translations[expo].limit;
-      elm.getElementById("minus").addEventListener("click", (e) => {
-        e.stopPropagation();
-        const newValue = parseFloat(value.innerHTML) - 0.5;
-        if (min <= newValue && newValue <= max) {
-          value.innerHTML = newValue;
-        }
-      });
-      elm.getElementById("plus").addEventListener("click", (e) => {
-        e.stopPropagation();
-        const newValue = parseFloat(value.innerHTML) + 0.5;
-        if (min <= newValue && newValue <= max) {
-          value.innerHTML = newValue;
-        }
-      });
+      const minus = elm.getElementById("minus");
+      const setMinus = setValue(value, min, max, -0.5);
+      minus.onclick = setMinus;
+      minus.onmousedown = () => {
+        mouse_context = setInterval(setMinus, 250);
+      };
+      minus.onmouseup = () => {
+        clearInterval(mouse_context);
+      };
+      const plus = elm.getElementById("plus");
+      const setPlus = setValue(value, min, max, 0.5);
+      plus.onclick = setPlus;
+      plus.onmousedown = () => {
+        mouse_context = setInterval(setPlus, 250);
+      };
+      plus.onmouseup = () => {
+        clearInterval(mouse_context);
+      };
       elements[expo] = value;
       div.appendChild(elm);
     }

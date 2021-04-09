@@ -54,11 +54,13 @@ const load = () => {
           });
         }
 
-        if (!file.refs.resource)
-          console.error("Reference to file resource is null!");
+        if (process.env.MODE == "development") {
+          if (!file.refs.resource)
+            console.error("Reference to file resource is null!");
+        }
 
-        document.getElementById("start").disabled = false; // !file.refs.resource;
-        document.getElementById("delete").disabled = !file.refs.resource;
+        document.getElementById("start").disabled = false;
+        document.getElementById("delete").disabled = false;
 
         /**
          * set up delete button
@@ -128,7 +130,7 @@ const load = () => {
  * @param {object} context
  */
 const update = (context) => {
-  if (context.state != states.OPENED) {
+  if (context.state != states.SELECTED) {
     to_page(context.state);
   }
 };
