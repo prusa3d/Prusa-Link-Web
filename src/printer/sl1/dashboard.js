@@ -10,11 +10,13 @@ import { translate } from "../../locale_provider";
 import { states } from "../components/state";
 
 const idleTitle = () => {
-  document.getElementById("title-status").innerText = translate("prop.st-idle");
+  document.getElementById("title-status-label").innerText = translate(
+    "prop.st-idle"
+  );
 };
 
 const printingTitle = () => {
-  document.getElementById("title-status").innerText = translate(
+  document.getElementById("title-status-label").innerText = translate(
     "prop.st-printing"
   );
 };
@@ -29,11 +31,13 @@ const update = (context) => {
   const jobElm = document.querySelector(".job");
 
   switch (context.state) {
-    case states.OPENED:
+    case states.SELECTED:
       if (context.last_state == states.IDLE) {
         navigateToProjects();
       }
-    case states.IDLE:
+    case states.READY:
+    case states.ERROR:
+    case states.ATTENTION:
       idleTitle();
       break;
     case states.PRINTING:

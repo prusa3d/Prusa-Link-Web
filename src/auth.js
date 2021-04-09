@@ -63,10 +63,12 @@ const setUpAuth = () =>
     return fetch("/api/version", { headers: getHeaders() })
       .then((response) => {
         if (response.status == 401) {
-          response.json().then((data) => handleError({ data }));
           const auth_type = response.headers
             .get("WWW-Authenticate")
             .split(" ")[0];
+          if (auth_type != "ApiKey" || sessionStorage.getItem("authType")) {
+            response.json().then((data) => handleError({ data }));
+          }
           sessionStorage.setItem("authType", auth_type);
           sessionStorage.removeItem("apiKey");
           if (auth_type == "ApiKey") {

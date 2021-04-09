@@ -25,7 +25,6 @@ const updateTitles = (context) => {
 };
 
 const load = () => {
-  console.log("Dashboard Logic - mini");
   updateTitles();
   graph.render();
 };

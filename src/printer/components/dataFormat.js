@@ -157,8 +157,8 @@ const slaFormatData = (format, value) => {
       return numberFormat(value) + ` ${str_ml}`;
     case "cover":
       return value
-        ? translate("prop.cover-opened")
-        : translate("prop.cover-closed");
+        ? translate("prop.cover-closed")
+        : translate("prop.cover-opened");
     case "date":
       return dateFormat(value);
     case "progress":

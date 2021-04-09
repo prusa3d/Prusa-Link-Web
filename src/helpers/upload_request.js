@@ -27,6 +27,7 @@ function uploadRequest(url, data, opt) {
     request.addEventListener("abort", errorHandler, false);
 
     request.open("POST", url);
+    request.setRequestHeader("Accept", "application/json");
     request.send(data);
   });
 }

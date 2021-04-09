@@ -7,7 +7,6 @@ const { saveWords } = require("./shared");
 
 /** @param {String} source js file content */
 module.exports = function (source) {
-  //console.log(colors.magenta.bold(this.resourcePath));
   let words = [];
 
   if (/(import(.*?)translate(.*?)from(.*?)locale_provider)/g.test(source)) {

@@ -7,7 +7,6 @@ const { saveWords } = require("./shared");
 
 /** @param {String} source html file content */
 module.exports = function (source) {
-  //console.log(colors.cyan.bold(this.resourcePath));
   const words = getWords(source);
   saveWords(words);
   return source;

@@ -57,7 +57,9 @@ export class Dropdown {
     const ul = dropdown.querySelector(".dropdown-content ul");
 
     if (!btn || !label || !ul) {
-      console.error("Error while reading dropdowndropdown template");
+      if (process.env.MODE == "development") {
+        console.error("Error while reading dropdowndropdown template");
+      }
       return undefined;
     }
 

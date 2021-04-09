@@ -23,6 +23,7 @@ import Busy from "../components/busy.js";
 import { updateProperties } from "../components/updateProperties.js";
 import { translate } from "../../locale_provider";
 import { states, get_state } from "../components/state";
+import { checkErrors } from "../components/errors";
 
 const context = {
   version: undefined,
@@ -73,14 +74,17 @@ const sl1 = {
     context.printer = printerData;
     context.state = states.IDLE;
     initTemperatureGraph();
+    localStorage.setItem("hostname", context.version.hostname);
   },
   update: (data) => {
     context.printer = data;
     context.last_state = context.state;
     context.state = get_state(data);
+
     updateProperties("telemetry", data);
     updateTemperatureGraph(data);
     updateModule();
+    checkErrors();
   },
   setModule: (module) => {
     currentModule = module;
