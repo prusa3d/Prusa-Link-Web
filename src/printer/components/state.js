@@ -5,11 +5,13 @@
 import { navigate } from "../../router.js";
 
 export const states = {
-  IDLE: "idle",
+  READY: "ready",
   PRINTING: "printing",
-  OPENED: "opened",
+  SELECTED: "selected",
   BUSY: "busy",
   REFILL: "refill",
+  ATTENTION: "attention",
+  ERROR: "error",
 };
 
 export const get_state = (data) => {
@@ -17,30 +19,38 @@ export const get_state = (data) => {
 
   if (flags.printing) {
     if (flags.ready) {
-      return states.OPENED;
+      return states.SELECTED;
     } else {
       if (flags.paused) {
         return states.REFILL;
       } else if (flags.busy) {
         return states.BUSY;
+      } else if (flags.error) {
+        return states.ATTENTION;
       } else {
         return states.PRINTING;
       }
     }
   }
 
-  return states.IDLE;
+  if (flags.closedOrError) {
+    return states.ERROR;
+  }
+
+  return states.READY;
 };
 
 export const to_page = (state) => {
   switch (state) {
-    case states.IDLE:
+    case states.READY:
+    case states.ERROR:
+    case states.ATTENTION:
       navigate("#projects");
       break;
     case states.PRINTING:
       navigate("#job");
       break;
-    case states.OPENED:
+    case states.SELECTED:
       navigate("#preview");
       break;
     case states.BUSY:

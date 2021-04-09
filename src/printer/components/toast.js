@@ -39,15 +39,6 @@ export function info(title, message, type = "") {
 }
 
 /**
- * Create and show a warning toast
- * @param {string} title
- * @param {string} message
- */
-export function warning(title, message) {
-  info(title, message, "warning");
-}
-
-/**
  * Create and show a success toast
  * @param {string} title
  * @param {string} message
@@ -61,14 +52,23 @@ export function success(title, message) {
  * @param {string} title
  * @param {string} message
  */
-export function error(title, message) {
-  const article = createToast(title, message, "error");
+export function error(title, message, type = "error") {
+  const article = createToast(title, message, type);
   article.querySelector("span").addEventListener("click", (e) => {
     e.preventDefault();
     toast_context.removeChild(article);
   });
 
   toast_context.appendChild(article);
+}
+
+/**
+ * Create and show a warning toast
+ * @param {string} title
+ * @param {string} message
+ */
+export function warning(title, message) {
+  error(title, message, "warning");
 }
 
 export default { info, warning, success, error };

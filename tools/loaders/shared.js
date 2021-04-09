@@ -77,14 +77,16 @@ function saveWords(words) {
         let translations = languages.map((lang) => {
           const file = require(path.resolve(source_dir, `${lang}.json`));
           const translation = getNestedValue(file, word);
-          if (translation === undefined) {
-            console.log(
-              colors.red.bold(
-                `[${lang}] missing translation for "${word
-                  .split("\n")
-                  .join("\\n")}"`
-              )
-            );
+          if (process.env.MODE == "development") {
+            if (translation === undefined) {
+              console.log(
+                colors.red.bold(
+                  `[${lang}] missing translation for "${word
+                    .split("\n")
+                    .join("\\n")}"`
+                )
+              );
+            }
           }
           return translation;
         });
@@ -95,7 +97,6 @@ function saveWords(words) {
 
     if (count == 0) {
       // We don't have information about printer config while initializing, so we remove json here.
-      console.log("remove: " + output_file);
       removeFile(output_file);
     }
     count++;
