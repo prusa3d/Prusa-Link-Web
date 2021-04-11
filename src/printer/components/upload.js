@@ -23,7 +23,15 @@ function initInput(origin, path) {
   input.onchange = () => {
     if (input.files.length > 0)
       // TODO: upload multiple files?
-      uploadFile(input.files[0], origin, path);
+
+    var file = input.files[0];
+    if (file.name.endsWith("." + fileType)) {
+      uploadFile(file, origin, path);
+    } else {
+      const title = translate("ntf.error");
+      const message = translate("ntf.upld-not-sup", { file_name: file.name });
+      error(title, message);
+    }
   };
 }
 
