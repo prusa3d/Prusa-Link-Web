@@ -28,6 +28,9 @@ function uploadRequest(url, data, opt) {
 
     request.open("POST", url);
     request.setRequestHeader("Accept", "application/json");
+    if (sessionStorage.getItem("authType") == "ApiKey") {
+      request.setRequestHeader("X-Api-Key", sessionStorage.getItem("apiKey"));
+    }
     request.send(data);
   });
 }
