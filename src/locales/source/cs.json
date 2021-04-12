@@ -49,8 +49,6 @@
     "actn-pending": "Akce se vykoná po dokončení vytvrzení vrstvy.",
     "e-307": "Chyba při měření množství resinu!",
     "error": "Chyba",
-    "warn-resin": "NEDOSTATEK RESINU",
-    "warn-resin-msg": "Množství resinu ve vaničce není dostatečné pro aktuální projekt. Během tisku bude potřeba resin doplnit.",
     "n-calibrated": "Tiskárna není zkalibrovaná!",
     "not-idle": "Tiskárna je zaneprázdněna, prosím vyčkejte!",
     "start-print": "Tiskárna se připravuje.",

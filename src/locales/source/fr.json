@@ -49,8 +49,6 @@
     "actn-pending": "L'action sera exécutée une fois la couche terminée.",
     "e-307": "La mesure de la résine a échoué",
     "error": "Erreur",
-    "warn-resin": "PAS ASSEZ DE RÉSINE",
-    "warn-resin-msg": "La quantité de résine dans le réservoir n'est pas suffisante pour le projet en cours. Il faudra ajouter d'avantage de résine pendant l'impression.",
     "n-calibrated": "L'imprimante n'est pas calibrée !",
     "not-idle": "L'imprimante n'est pas au repos !",
     "start-print": "Préparation de l'imprimante.",

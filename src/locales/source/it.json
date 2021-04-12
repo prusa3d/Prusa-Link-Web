@@ -49,8 +49,6 @@
     "actn-pending": "L'azione verrà eseguita dopo il completamento del layer.",
     "e-307": "Misurazione resina non riuscita!",
     "error": "Errore",
-    "warn-resin": "RESINA NON SUFFICIENTE",
-    "warn-resin-msg": "La quantità di resina nel serbatoio non è sufficiente per questo progetto. Sarà necessario aggiungere altra resina durante la stampa.",
     "n-calibrated": "La stampante adesso è calibrata!",
     "not-idle": "La stampante non è inattiva!",
     "start-print": "Preparazione della stampante.",
