@@ -60,6 +60,7 @@ const updateData = () => {
           metadata.firstTime = false;
           clearBusy();
         }
+        load();
       }
     })
     .catch((result) => handleError(result));
@@ -116,6 +117,12 @@ export function load() {
         projects.appendChild(createFolder(node));
       } else {
         projects.appendChild(createFile(node));
+        // update medatada in backend
+        getJson(node.refs.resource, {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
       }
     }
   }
