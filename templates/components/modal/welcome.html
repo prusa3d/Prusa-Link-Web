@@ -1,0 +1,27 @@
+<!-- prettier-ignore -->
+{#
+  # This file is part of the Prusa Connect Local
+  # Copyright (C) 2021 Prusa Research a.s. - www.prusa3d.com
+  # SPDX-License-Identifier: GPL-3.0-or-later
+#}
+
+<template id="modal-welcome">
+  <div class="modal-welcome">
+    <img
+      src="{{ pre.countOrRenderAssets('prusa_connect_local_logo_black.svg') | safe }}"
+    />
+    <span class="close-button"></span>
+    <div class="txt-size-2">
+      <p>
+        <span data-label="msg.modal-p1"
+          >Welcome to the web interface of your</span
+        >
+        <br />
+        <span class="txt-bold">{{env.title}}</span>
+      </p>
+      <p data-label="msg.modal-p2">
+        Please note that values are shown only when the printer is printing.
+      </p>
+    </div>
+  </div>
+</template>

@@ -1,0 +1,35 @@
+<!-- prettier-ignore -->
+{#
+    # This file is part of the Prusa Connect Local
+    # Copyright (C) 2021 Prusa Research a.s. - www.prusa3d.com
+    # SPDX-License-Identifier: GPL-3.0-or-later
+#}
+
+<!-- prettier-ignore -->
+{% if env.type == "mini" %}
+    {%
+        set menu_dict = {
+            'link-home': {'text': 'Dashboard', label: 'home.link', path: '#dashboard' },
+            'link-temp': {'text': 'Temperatures', label: 'temps.title', path: '#temperature' }
+        }
+    %}
+{% else %}
+    {%
+        set menu_dict = {
+            'link-home': {'text': 'Dashboard', label: 'home.link', path: '#dashboard' },
+            'link-proj': {'text': 'Projects', label: 'proj.link', path: '#projects' },
+            'link-temp': {'text': 'Temperatures', label: 'temps.title', path: '#temperature' }
+        }
+    %}
+{% endif %}
+
+<ul class="burger-menu txt-bold" id="navbar">
+  {% for key, values in menu_dict %}
+  <li>
+    <a href="{{ values.path }}" data-label="{{ values.label }}"
+      >{{ values.text }}</a
+    >
+  </li>
+  {% endfor %}
+  <select data-type="dropdown"></select>
+</ul>

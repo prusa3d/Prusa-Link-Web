@@ -1,0 +1,65 @@
+/*  font size */
+$font-size-1-mobile: 2.5rem;
+$font-size-1-desktop: 1.15rem;
+$font-size-2-mobile: 1.8rem;
+$font-size-2-desktop: 1rem;
+$text-white: #ffffff;
+$text-grey: #707070;
+$text-orange: #f8651b;
+
+html {
+  line-height: 1.15;
+  font-size: 16px;
+  -webkit-text-size-adjust: 100%;
+  font-family: Helvetica, sans-serif;
+  color: $text-white;
+}
+
+select {
+  font-family: Helvetica, sans-serif;
+  font-weight: bold;
+  color: $text-white;
+}
+
+.txt-bold {
+  font-family: Helvetica, sans-serif;
+  font-weight: bold;
+}
+
+.txt-orange {
+  color: $text-orange;
+}
+
+.txt-grey {
+  color: $text-grey;
+}
+
+.txt-white {
+  color: $text-white !important;
+}
+
+.txt-size-1 {
+  font-size: $font-size-1-mobile;
+}
+
+.txt-size-2 {
+  font-size: $font-size-2-mobile;
+}
+
+button > p {
+  font-family: Helvetica, sans-serif;
+  font-weight: bold;
+  font-size: $font-size-2-mobile;
+}
+
+@media only screen and (min-width: 992px) {
+  .txt-size-1 {
+    font-size: $font-size-1-desktop;
+  }
+  .txt-size-2 {
+    font-size: $font-size-2-desktop;
+  }
+  button > p {
+    font-size: $font-size-2-desktop;
+  }
+}

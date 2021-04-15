@@ -1,0 +1,245 @@
+<!-- prettier-ignore -->
+{#
+  # This file is part of the Prusa Connect Local
+  # Copyright (C) 2021 Prusa Research a.s. - www.prusa3d.com
+  # SPDX-License-Identifier: GPL-3.0-or-later
+#}
+
+<template id="graph-template">
+  <svg
+    width="550"
+    height="300"
+    role="img"
+    viewBox="10 10 500 300"
+    class="temp-svg"
+  >
+    <path
+      vector-effect="non-scaling-stroke"
+      fill="none"
+      d="M355 280h170.855v20.75H355z"
+    />
+    <path d="M394 285a6 6 0 1012 0 6 6 0 10-12 0" class="temp-legend-orange" />
+    <path
+      d="M467.903 285a6 6 0 1012 0 6 6 0 10-12 0"
+      class="temp-legend-blue"
+    />
+    <text direction="inherit" dx="0" dy="5.325" x="424.952" y="285">
+      <tspan x="408" dx="0" class="temp-text">nozzle</tspan>
+    </text>
+    <text direction="inherit" dx="0" dy="5.325" x="481.903" y="285">
+      <tspan x="481.903" dx="0" class="temp-text">bed</tspan>
+    </text>
+    <g clip-path="url(#a)" class="temp-g-label">
+      <defs>
+        <clipPath id="a">
+          <path vector-effect="non-scaling-stroke" d="M50 50h450v200H50z" />
+        </clipPath>
+      </defs>
+      <path id="temp-line-orange" />
+    </g>
+    <g clip-path="url(#b)" class="temp-g-label">
+      <defs>
+        <clipPath id="b">
+          <path vector-effect="non-scaling-stroke" d="M50 50h450v200H50z" />
+        </clipPath>
+      </defs>
+      <path id="temp-line-blue" />
+    </g>
+    <g>
+      <path
+        vector-effect="non-scaling-stroke"
+        class="temp-label-line"
+        d="M50 250h450"
+      />
+      <text direction="inherit" dx="0" dy="12.825" x="275" y="280">
+        <tspan
+          x="275"
+          dx="0"
+          text-anchor="middle"
+          class="temp-label-x"
+          data-label="temps.x"
+        >
+          Time [s]
+        </tspan>
+      </text>
+      <path
+        vector-effect="non-scaling-stroke"
+        class="temp-connect-text"
+        d="M50 250v5"
+      />
+      <text direction="inherit" dx="0" dy="12.825" x="50" y="260">
+        <tspan x="50" dx="0" text-anchor="middle" class="temp-line-text">
+          -180
+        </tspan>
+      </text>
+      <path
+        vector-effect="non-scaling-stroke"
+        class="temp-connect-text"
+        d="M129.412 250v5"
+      />
+      <text direction="inherit" dx="0" dy="12.825" x="129.412" y="260">
+        <tspan x="129.412" dx="0" text-anchor="middle" class="temp-line-text">
+          -150
+        </tspan>
+      </text>
+      <path
+        vector-effect="non-scaling-stroke"
+        class="temp-connect-text"
+        d="M208.824 250v5"
+      />
+      <text direction="inherit" dx="0" dy="12.825" x="208.824" y="260">
+        <tspan x="208.824" dx="0" text-anchor="middle" class="temp-line-text">
+          -120
+        </tspan>
+      </text>
+      <path
+        vector-effect="non-scaling-stroke"
+        class="temp-connect-text"
+        d="M288.235 250v5"
+      />
+      <text direction="inherit" dx="0" dy="12.825" x="288.235" y="260">
+        <tspan x="288.235" dx="0" text-anchor="middle" class="temp-line-text">
+          -90
+        </tspan>
+      </text>
+      <g>
+        <path
+          vector-effect="non-scaling-stroke"
+          class="temp-connect-text"
+          d="M367.647 250v5"
+        />
+        <text direction="inherit" dx="0" dy="12.825" x="367.647" y="260">
+          <tspan x="367.647" dx="0" text-anchor="middle" class="temp-line-text">
+            -60
+          </tspan>
+        </text>
+      </g>
+      <g>
+        <path
+          vector-effect="non-scaling-stroke"
+          class="temp-connect-text"
+          d="M447.059 250v5"
+        />
+        <text direction="inherit" dx="0" dy="12.825" x="447.059" y="260">
+          <tspan x="447.059" dx="0" text-anchor="middle" class="temp-line-text">
+            -30
+          </tspan>
+        </text>
+      </g>
+      <g>
+        <path
+          vector-effect="non-scaling-stroke"
+          class="temp-connect-text"
+          d="M500 250v5"
+        />
+        <text direction="inherit" dx="0" dy="12.825" x="500" y="260">
+          <tspan x="500" dx="0" text-anchor="middle" class="temp-line-text">
+            -10
+          </tspan>
+        </text>
+      </g>
+    </g>
+    <g>
+      <path
+        vector-effect="non-scaling-stroke"
+        class="temp-label-line"
+        d="M50 50v200"
+      />
+      <text
+        direction="inherit"
+        dx="0"
+        dy="-2.175"
+        x="15"
+        y="150"
+        transform="rotate(-90 15 150)"
+      >
+        <tspan
+          x="15"
+          dx="0"
+          text-anchor="middle"
+          class="temp-label-y"
+          data-label="temps.y"
+        >
+          Temperature [°C]
+        </tspan>
+      </text>
+      <path
+        vector-effect="non-scaling-stroke"
+        class="temp-h-line"
+        d="M50 250h450"
+      />
+      <path
+        vector-effect="non-scaling-stroke"
+        class="temp-connect-text"
+        d="M50 250h-5"
+      />
+      <text direction="inherit" dx="0" dy="5.325" x="40" y="250">
+        <tspan x="40" dx="0" text-anchor="end" class="temp-line-text">0</tspan>
+      </text>
+      <path
+        vector-effect="non-scaling-stroke"
+        class="temp-h-line"
+        d="M50 200h450"
+      />
+      <path
+        vector-effect="non-scaling-stroke"
+        class="temp-connect-text"
+        d="M50 200h-5"
+      />
+      <text direction="inherit" dx="0" dy="5.325" x="40" y="200">
+        <tspan x="40" dx="0" text-anchor="end" class="temp-line-text">75</tspan>
+      </text>
+      <g>
+        <path
+          vector-effect="non-scaling-stroke"
+          class="temp-h-line"
+          d="M50 150h450"
+        />
+        <path
+          vector-effect="non-scaling-stroke"
+          class="temp-connect-text"
+          d="M50 150h-5"
+        />
+        <text direction="inherit" dx="0" dy="5.325" x="40" y="150">
+          <tspan x="40" dx="0" text-anchor="end" class="temp-line-text">
+            150
+          </tspan>
+        </text>
+      </g>
+      <g>
+        <path
+          vector-effect="non-scaling-stroke"
+          class="temp-h-line"
+          d="M50 100h450"
+        />
+        <path
+          vector-effect="non-scaling-stroke"
+          class="temp-connect-text"
+          d="M50 100h-5"
+        />
+        <text direction="inherit" dx="0" dy="5.325" x="40" y="100">
+          <tspan x="40" dx="0" text-anchor="end" class="temp-line-text">
+            225
+          </tspan>
+        </text>
+      </g>
+      <g>
+        <path
+          vector-effect="non-scaling-stroke"
+          class="temp-h-line"
+          d="M50 50h450"
+        />
+        <path
+          vector-effect="non-scaling-stroke"
+          class="temp-connect-text"
+          d="M50 50h-5"
+        />
+        <text direction="inherit" dx="0" dy="5.325" x="40" y="50">
+          <tspan x="40" dx="0" text-anchor="end" class="temp-line-text">
+            300
+          </tspan>
+        </text>
+      </g>
+    </g>
+  </svg>
+</template>

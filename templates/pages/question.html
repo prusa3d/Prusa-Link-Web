@@ -1,0 +1,23 @@
+<!-- prettier-ignore -->
+{#
+    # This file is part of the Prusa Connect Local
+    # Copyright (C) 2021 Prusa Research a.s. - www.prusa3d.com
+    # SPDX-License-Identifier: GPL-3.0-or-later
+#}
+
+<!-- prettier-ignore -->
+{% include "components/title_default.html" %}
+
+<div class="main-wrapper">
+  <div id="question" class="txt-size-2"></div>
+  <div class="buttons-wrapper">
+    <button class="yes" id="yes">
+      <img src="{{ pre.countOrRenderAssets('yes_color.svg') | safe }}" />
+      <p>save changes</p>
+    </button>
+    <button class="no" id="no">
+      <img src="{{ pre.countOrRenderAssets('cancel.svg') | safe }}" />
+      <p>cancel</p>
+    </button>
+  </div>
+</div>

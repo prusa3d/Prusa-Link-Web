@@ -157,7 +157,7 @@ paths:
   #   - sends plaintext error description in response body (compatibility with older slicer)
   #   - sends Content-Location header with URL to <PCL IP>/error (in the future it may send URL to hlep.prusa3d.com)
   # - if Accept header is present (currently supports only Accept: application/json):
-  #   - sends JSON with same content as this /api/printer/error endpoint (code, title, text, url) 
+  #   - sends JSON with same content as this /api/printer/error endpoint (code, title, text, url)
   #    sends Content-Location header with URL to <PCL IP>/error (in the future it may send URL to hlep.prusa3d.com)
   /api/printer/error:
     get:
@@ -172,7 +172,7 @@ paths:
         403:
           $ref: "#/components/responses/Unauthorized"
 
-  /api/job:   # this should be used instead of /files/preview to determine if project was selected. If "file" object is not null, project was previously selected
+  /api/job: # this should be used instead of /files/preview to determine if project was selected. If "file" object is not null, project was previously selected
     get:
       summary: Retrieve information about the current job (if there is one).
       responses:
@@ -244,15 +244,15 @@ paths:
             schema:
               type: object
               properties:
-                exposureTime:       # [ms]
+                exposureTime: # [ms]
                   type: integer
                   example: 6000
                   nullable: true
-                exposureTimeFirst:  # [ms]
+                exposureTimeFirst: # [ms]
                   type: number
                   example: 30000
                   nullable: true
-                exposureTimeCalibration:  # [ms]
+                exposureTimeCalibration: # [ms]
                   type: number
                   example: 30000
                   nullable: true
@@ -262,7 +262,7 @@ paths:
 
   /api/system/commands/custom/resinrefill:
     post:
-      summary:  After that printer is ready to refill, state should change to "paused".
+      summary: After that printer is ready to refill, state should change to "paused".
       responses:
         204:
           description: No error.
@@ -342,7 +342,7 @@ paths:
           schema:
             type: boolean
             default: false
-          
+
       responses:
         200:
           description: OK
@@ -603,25 +603,25 @@ components:
         resource:
           type: string
       default: [
-        {
-          "action": "resinrefill",  # after sending this command, printer should change its state to "busy" (PCL will show "wait until layer finishes"). After printer is ready to refill, state should change to "paused"
-          "name": "Refill resin",
-          "source": "custom",
-          "resource": "http://localhost/api/system/commands/custom/resinrefill"
-        },
-        {
-          "action": "resinrefilled",  # after sending this command, printer should update the resin volume in tank. PCL will then send /api/job with command: pause, action: resume
-          "name": "Resin fully refilled",
-          "source": "custom",
-          "resource": "http://localhost/api/system/commands/custom/resinrefilled"
-        },
-        {
-          "action": "changeexposure",
-          "name": "Change exposure times",
-          "source": "custom",
-          "resource": "http://localhost/api/system/commands/custom/changeexposure"
-        },
-      ]
+          {
+            "action": "resinrefill", # after sending this command, printer should change its state to "busy" (PCL will show "wait until layer finishes"). After printer is ready to refill, state should change to "paused"
+            "name": "Refill resin",
+            "source": "custom",
+            "resource": "http://localhost/api/system/commands/custom/resinrefill",
+          },
+          {
+            "action": "resinrefilled", # after sending this command, printer should update the resin volume in tank. PCL will then send /api/job with command: pause, action: resume
+            "name": "Resin fully refilled",
+            "source": "custom",
+            "resource": "http://localhost/api/system/commands/custom/resinrefilled",
+          },
+          {
+            "action": "changeexposure",
+            "name": "Change exposure times",
+            "source": "custom",
+            "resource": "http://localhost/api/system/commands/custom/changeexposure",
+          },
+        ]
 
     Profiles:
       type: object
@@ -647,13 +647,13 @@ components:
             default:
               type: boolean
               example: true
-            heatedBed:      # Original Prusa SL1 uses for CPU temperature
-              type: boolean
-              example:  true
-            heatedChamber:  # Original Prusa SL1 uses for ambient temp
+            heatedBed: # Original Prusa SL1 uses for CPU temperature
               type: boolean
               example: true
-            extruder:       # Original Prusa SL1 uses for UV LED temp
+            heatedChamber: # Original Prusa SL1 uses for ambient temp
+              type: boolean
+              example: true
+            extruder: # Original Prusa SL1 uses for UV LED temp
               type: object
               properties:
                 count:
@@ -665,7 +665,7 @@ components:
                   items:
                     type: array
                     items:
-                        type: number
+                      type: number
                     example: [0.0, 0.0]
             resource:
               type: string
@@ -733,13 +733,16 @@ components:
             sdReady:
               type: boolean
               example: false
-            error:  # this will indicate printer has an error to show in /api/priner/error
+            error: # this will indicate printer has an error to show in /api/priner/error
               type: boolean
               example: false
             ready:
               type: boolean
               example: true
             closedOrError:
+              type: boolean
+              example: false
+            busy:
               type: boolean
               example: false
 
@@ -764,6 +767,11 @@ components:
               description: The name of the file without path.
               example: "harry_potter_hogwarts_anthony_mohimont.sl1"
               nullable: true
+            path:
+              type: string
+              description: The name of the file with path.
+              example: "internal/examples/harry_potter_hogwarts_anthony_mohimont.sl1"
+              nullable: true
             origin:
               enum: ["local", "sdcard"]
               nullable: true
@@ -777,14 +785,6 @@ components:
               description: The size of the file in bytes.
               example: 873151
               nullable: true
-            refs:
-              type: object
-              properties:
-                resource:
-                  type: string
-                thumbnailBig:
-                  type: string
-                  nullable: true
 
     Progress:
       oneOf:
@@ -822,7 +822,7 @@ components:
           type: number
         flow_factor:
           type: number
-        filament_status:  # shouldn't it be filamentSensor?
+        filament_status: # shouldn't it be filamentSensor?
           type: string
 
     ProgressSL1:
@@ -890,10 +890,10 @@ components:
               type: string
             download:
               type: string
-            thumbnailSmall:     # do not send if metadata not ready
+            thumbnailSmall: # do not send if metadata not ready
               type: string
               nullable: true
-            thumbnailBig:      # do not send if metadata not ready
+            thumbnailBig: # do not send if metadata not ready
               type: string
               nullable: true
         gcodeAnalysis:
@@ -1084,24 +1084,22 @@ components:
 
     State:
       type: string
-      enum: [
-        "Operational",
-        "Printing",
-        "Pausing",
-        "Paused",
-        "Cancelling",
-        "Error",
-        "Offline",
-      ]
+      enum:
+        [
+          "Operational",
+          "Printing",
+          "Pausing",
+          "Paused",
+          "Cancelling",
+          "Error",
+          "Offline",
+          "Busy",
+        ]
       example: "Operational"
 
     TelemetryMini:
       type: object
       properties:
-        temp_bed:
-          type: number
-        temp_nozzle:
-          type: number
         material:
           type: string
 
@@ -1120,15 +1118,6 @@ components:
         coverClosed:
           type: boolean
           example: true
-        tempAmbient:
-          type: number
-          example: 23.4
-        tempCpu:
-          type: number
-          example: 46.9
-        tempUvLed:
-          type: number
-          example: 52.6
 
     #JobFileFDM:
 
@@ -1143,15 +1132,15 @@ components:
         layerHeight: # [mm]
           type: number
           example: 0.025
-        exposureTime:       # [ms]
+        exposureTime: # [ms]
           type: integer
           example: 6000
           nullable: true
-        exposureTimeFirst:  # [ms]
+        exposureTimeFirst: # [ms]
           type: number
           example: 30000
           nullable: true
-        exposureTimeCalibration:  # [ms]
+        exposureTimeCalibration: # [ms]
           type: number
           example: 30000
           nullable: true

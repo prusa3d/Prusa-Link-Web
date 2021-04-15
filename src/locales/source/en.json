@@ -1,0 +1,132 @@
+{
+  "btn": {
+    "back": "Back",
+    "cancel": "Cancel",
+    "cancel-pt": "Cancel print",
+    "chg-exp": "Change exposure times",
+    "confirm": "Confirm",
+    "del": "delete",
+    "login": "Login",
+    "no": "No",
+    "save-chgs": "Save changes",
+    "sla-refill": "Refill resin",
+    "sla-refilled": "Resin fully refilled",
+    "start-pt": "Start print",
+    "yes": "Yes"
+  },
+  "error": {
+    "401-title": "Login failed"
+  },
+  "exp-times": {
+    "exp-time": "Exposure [s]",
+    "inc": "Exposure time incr. [s]",
+    "layer-1st": "First Layer Expo. [s]",
+    "title": "Change exposure times"
+  },
+  "glob": {
+    "hd-st": "hardware state",
+    "hostname": "Hostname"
+  },
+  "home": {
+    "link": "Dashboard",
+    "title": "Printer status"
+  },
+  "msg": {
+    "api-key-1": "Welcome to the Prusa Connect Local web interface.",
+    "api-key-2": "Please insert the API key.",
+    "api-key-3": "You can find it in Settings -> Network -> Login credentials.",
+    "cancel": "Do you really want to cancel print?",
+    "del-proj": "Do you really want to delete {{file_name}}?",
+    "e-401-1": "The printer uses HTTP digest security.",
+    "e-401-2": "Please fill in the correct credentials.",
+    "e-401-3": "You can find it in Settings > Network > Login credentials.",
+    "modal-p1": "Welcome to the web interface of your",
+    "modal-p2": "Please note that values are shown only when the printer is printing.",
+    "sla-fill": "Please fill the resin tank and close the cover.",
+    "sla-fly-fill": "Please fully refill resin tank."
+  },
+  "ntf": {
+    "actn-pending": "Action will be executed after layer finish.",
+    "e-307": "Resin measuring failed!",
+    "error": "Error",
+    "n-calibrated": "Printer is not calibrated!",
+    "not-idle": "Printer is not idle!",
+    "start-print": "The printer is getting ready.",
+    "upld-exists": "The project {{file_name}} already exists.",
+    "upld-not-sup": "The project {{file_name}} is not supported.",
+    "upld-suc": "The project {{file_name}} uploaded successfully.",
+    "upld-unsuc": "The project {{file_name}} upload was unsuccessful."
+  },
+  "print": {
+    "1": "You are about to start a remote print using the web UI. Please, make sure your 3D printer is set up correctly and ready for the print.",
+    "2": "The printing platform is clean and installed in the printer",
+    "3": "A sufficient amount of resin is in the tank",
+    "4": "The orange acrylic lid is closed"
+  },
+  "proj": {
+    "del": "Delete File",
+    "link": "Projects",
+    "main": "Main",
+    "title": "Project files"
+  },
+  "prop": {
+    "at": "at",
+    "cover": "Cover state",
+    "cover-closed": "Closed",
+    "cover-opened": "Opened",
+    "d+": "D+",
+    "est-end": "Estimated end",
+    "exp-time": "exposure time",
+    "exp-times": "Exposure times",
+    "fan-blower": "Blower fan",
+    "fan-led": "UV LED fan",
+    "fan-rear": "Rear fan",
+    "fdm-sensor": "Filament sensor",
+    "flow": "Printing Flow",
+    "last-mod": "Last Modified",
+    "layer-1st": "first layer",
+    "layer-ht": "Layer Height",
+    "layers": "Layers",
+    "less-than": "Less than a minute",
+    "material": "Material",
+    "na": "NA",
+    "pnt-time": "Printing time",
+    "rem-time": "Remaining time",
+    "sla-csm-mt": "Consumed resin",
+    "sla-rmn-mt": "Remaining resin",
+    "speed": "Printing Speed",
+    "st-idle": "Idle",
+    "st-printing": "Printing",
+    "temp-amb": "Ambient temperature",
+    "temp-bed": "Heatbed",
+    "temp-cpu": "CPU temperature",
+    "temp-led": "UV LED temperature",
+    "temp-nozzle": "Nozzle Temperature",
+    "time-est": "Print Time Estimate",
+    "tmw": "Tomorrow",
+    "tmw-at": "Tomorrow at",
+    "today-at": "Today at",
+    "z-height": "Z-Height"
+  },
+  "refill": {
+    "title": "Refill resin"
+  },
+  "temps": {
+    "title": "Temperatures",
+    "x": "Time [s]",
+    "y": "Temperature [°C]"
+  },
+  "unit": {
+    "h": "h",
+    "min": "min",
+    "minute": "minute",
+    "minute_plural": "minutes",
+    "ml": "ml",
+    "rpm": "RPM"
+  },
+  "upld": {
+    "loading": "Uploading...",
+    "open": "Choose a {{file}} or drop it here.",
+    "title": "upload project"
+  }
+}
