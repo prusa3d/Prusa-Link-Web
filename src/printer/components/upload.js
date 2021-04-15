@@ -24,7 +24,7 @@ function initInput(origin, path) {
     if (input.files.length > 0)
       // TODO: upload multiple files?
 
-    var file = input.files[0];
+      var file = input.files[0];
     if (file.name.endsWith("." + fileType)) {
       uploadFile(file, origin, path);
     } else {
