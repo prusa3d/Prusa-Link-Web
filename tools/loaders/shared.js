@@ -58,6 +58,13 @@ function removeFile(path) {
 
 function saveWords(words) {
   if (words.length > 0) {
+    if (count == 0) {
+      // We don't have information about printer config while initializing, so we remove json here.
+      console.log(colors.yellow.bold("remove: " + output_file));
+      removeFile(output_file);
+    }
+    count ++;
+
     let content = getContent();
 
     words.forEach((word) => {
@@ -72,37 +79,43 @@ function saveWords(words) {
         keys.slice(0, keys.length - 1)
       );
 
+      let missing = [];
       if (!ref[lastKey]) {
         // printer["button"]["cancel"]
         let translations = languages.map((lang) => {
           const file = require(path.resolve(source_dir, `${lang}.json`));
           const translation = getNestedValue(file, word);
-          if (process.env.MODE == "development") {
-            if (translation === undefined) {
-              console.log(
-                colors.red.bold(
-                  `[${lang}] missing translation for "${word
-                    .split("\n")
-                    .join("\\n")}"`
-                )
-              );
-            }
-          }
+          if (translation === undefined)
+            missing.push(lang);
           return translation;
         });
+
+        if (missing.length > 0)
+          logMissingTranslation(word, missing, languages);
 
         ref[lastKey] = translations;
       }
     });
 
-    if (count == 0) {
-      // We don't have information about printer config while initializing, so we remove json here.
-      removeFile(output_file);
-    }
-    count++;
-
     writeJson(output_file, JSON.stringify(content));
   }
+}
+
+function logMissingTranslation(word, missing, languages) {
+  const m = languages.map((lang) => {
+    if (missing.includes(lang)) {
+      return colors.red.bold(lang);
+    } else {
+      return colors.green(lang);
+    }
+  });
+
+  // for example: [cs, de, en, es, fr, it, pl] missing translation for "btn.cancel"
+  console.log(
+    `\n[${m.join(", ")}]`
+    + colors.red(" missing translation for ")
+    + colors.red.bold(`"${word.split('\n').join('\\n')}"`)
+  );
 }
 
 module.exports = loader_module;
