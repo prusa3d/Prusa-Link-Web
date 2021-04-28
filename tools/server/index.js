@@ -58,6 +58,7 @@ const devServer = (app, conf) => {
   app.use("/api/thumbnails", require("./thumbnails"));
   app.use("/api/system", require("./system"));
   app.use("/api/", require("./miscellaneous"));
+  app.use("/error", require("./error"));
 };
 
 module.exports = devServer;

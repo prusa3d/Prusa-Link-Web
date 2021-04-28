@@ -9,7 +9,7 @@
 {% if env.printerFamily == "sla" %}
   {%
       set project_list = [
-        {"text": "Printing time", "label": "prop.pnt-time", "format": "time", "location": "gcodeAnalysis.estimatedPrintTime", "icon": "time_color.svg" },
+        {"text": "Printing time", "label": "prop.est-pnt-time", "format": "est-time", "location": "gcodeAnalysis.estimatedPrintTime", "icon": "time_color.svg" },
         {"text": "Material", "label": "prop.material", "format": "material", "location": "gcodeAnalysis.material", "icon": "status_filament.svg" },
         {"text": "Layer Height", "label": "prop.layer-ht", "format": "layer", "location": "gcodeAnalysis.layerHeight", "icon": "quality_medium.svg" }
       ]

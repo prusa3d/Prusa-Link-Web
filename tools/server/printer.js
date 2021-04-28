@@ -54,29 +54,14 @@ router.get("/sd", async (req, res, next) => {
   res.json(req.app.get("printer").getSD());
 });
 
-/**
- * Retrive the error number and text. Not compatible with
- * OctoPrint.
- *
- * MINI
- * - will probably not support this endpoint.
- * - On error sends plaintext error description in response body
- * - On error possibly sends Content-Location header with URL to help.prusa3d.com.
- * - PCL page /error will be ommited
- *
- * SL1
- * - supports this endpoint
- * - Response is dependent on Accept header in request
- * - If no Accept header is present:
- *   - sends plaintext error description in response body (compatibility with older slicer)
- *   - sends Content-Location header with URL to <PCL IP>/error (in the future it may send URL to hlep.prusa3d.com)
- * - if Accept header is present (currently supports only Accept: application/json):
- *   - sends JSON with same content as this /api/printer/error endpoint (code, title, text, url)
- *    sends Content-Location header with URL to <PCL IP>/error (in the future it may send URL to hlep.prusa3d.com)
- */
 router.get("/error", async (req, res, next) => {
-  console.log(`- ${req.method} ${req.originalUrl} - ${req.params} => 501`);
-  res.status(501).json({ error: "Not Implemented" });
+  const printer = req.app.get("printer");
+  const last_error = printer.last_error;
+  if (last_error) {
+    res.json(last_error["error"]);
+  } else {
+    res.json({});
+  }
 });
 
 module.exports = router;

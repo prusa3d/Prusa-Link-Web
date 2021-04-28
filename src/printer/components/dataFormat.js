@@ -167,6 +167,8 @@ const slaFormatData = (format, value) => {
       return formatEstimatedTime(value);
     case "time":
       return formatTime(value);
+    case "est-time":
+      return "~ "+ formatTime(value);
     case "expo":
       return formatExposure(value);
     case "totalLayer":
