@@ -47,7 +47,7 @@ function numberFormat(value) {
  * @param {number} value
  */
 function dateFormat(value) {
-  const date = new Date(value);
+  const date = new Date(value * 1000);
   const dateFormatted = date.toDateString() + " " + date.toTimeString();
   return dateFormatted.substring(0, 25);
 }
