@@ -28,15 +28,11 @@ export function handleError(result) {
 }
 
 export function checkErrors() {
-  return getJson("/api/printer/error").then((response) => {
-    if (response.ok) {
-      return response.json().then((data) => {
+  return getJson("/api/printer/error").then(({data, ...others}) => {
         const code = data.code;
         if (code && last_error.indexOf(code) < 0) {
           last_error[1] = code;
           handleError({ data });
         }
-      });
-    }
   });
 }
