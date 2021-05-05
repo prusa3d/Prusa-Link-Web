@@ -63,7 +63,7 @@ function saveWords(words) {
       console.log(colors.yellow.bold("remove: " + output_file));
       removeFile(output_file);
     }
-    count ++;
+    count++;
 
     let content = getContent();
 
@@ -85,13 +85,11 @@ function saveWords(words) {
         let translations = languages.map((lang) => {
           const file = require(path.resolve(source_dir, `${lang}.json`));
           const translation = getNestedValue(file, word);
-          if (translation === undefined)
-            missing.push(lang);
+          if (translation === undefined) missing.push(lang);
           return translation;
         });
 
-        if (missing.length > 0)
-          logMissingTranslation(word, missing, languages);
+        if (missing.length > 0) logMissingTranslation(word, missing, languages);
 
         ref[lastKey] = translations;
       }
@@ -112,9 +110,9 @@ function logMissingTranslation(word, missing, languages) {
 
   // for example: [cs, de, en, es, fr, it, pl] missing translation for "btn.cancel"
   console.log(
-    `\n[${m.join(", ")}]`
-    + colors.red(" missing translation for ")
-    + colors.red.bold(`"${word.split('\n').join('\\n')}"`)
+    `\n[${m.join(", ")}]` +
+      colors.red(" missing translation for ") +
+      colors.red.bold(`"${word.split("\n").join("\\n")}"`)
   );
 }
 
