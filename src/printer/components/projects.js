@@ -260,7 +260,7 @@ export const removeProject = (origin, path) => {
     parent.splice(index, 1);
   } else {
     parent.children.splice(index, 1);
-    if (parent.children == 0) {
+    if (!parent.children.length) {
       removeProject(origin, parent.path);
       metadata.current_path.pop();
     }
