@@ -13,6 +13,7 @@ import { translate } from "../../locale_provider";
 import joinPaths from "../../helpers/join_paths";
 import { setBusy, clearBusy } from "./busy";
 import { states, to_page } from "./state";
+import { removeProject } from "./projects";
 
 const createConfirm = (close) => {
   const template = document.getElementById("modal-confirm");
@@ -74,6 +75,7 @@ const load = () => {
             }),
             yes: (close) => {
               getJson(file.refs.resource, { method: "DELETE" })
+                .then(() => removeProject(jobFile.origin, jobFile.path))
                 .catch((result) => handleError(result))
                 .finally((result) => close());
             },

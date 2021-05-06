@@ -228,4 +228,43 @@ export const navigateToProjects = () => {
   navigate("#projects");
 };
 
+export const findNode = (origin, path) => {
+  const current_path = path.split("/");
+  let view = metadata.files;
+  let parent = view;
+  let index = -1;
+
+  if (Object.keys(view).length === 0) {
+    return [parent, index];
+  }
+
+  for (let i = 0; i < current_path.length; i++) {
+    let _path = current_path[i];
+    index = view.findIndex((elm) => elm.name == _path && elm.origin == origin);
+    if (i < current_path.length - 1) {
+      parent = view[index];
+      view = parent.children;
+    }
+  }
+
+  return [parent, index];
+};
+
+export const removeProject = (origin, path) => {
+  const [parent, index] = findNode(origin, path);
+  if (index < 0) {
+    return;
+  }
+
+  if (Array.isArray(parent)) {
+    parent.splice(index, 1);
+  } else {
+    parent.children.splice(index, 1);
+    if (parent.children == 0) {
+      removeProject(origin, parent.path);
+      metadata.current_path.pop();
+    }
+  }
+};
+
 export default { load, update };
