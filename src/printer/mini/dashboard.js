@@ -25,6 +25,11 @@ const updateTitles = (context) => {
 };
 
 const load = () => {
+  document.getElementById(
+    "title-status-label"
+  ).innerHTML = `<p class="txt-grey" >${translate(
+    "home.title"
+  )}:<span id="title-status" class="txt-orange">Idle</span></p>`;
   updateTitles();
   graph.render();
 };
