@@ -65,24 +65,27 @@ function formatEstimatedTime(time) {
     tomorrow.setDate(tomorrow.getDate() + 1);
 
     let plus_days = "";
-    if (end.getDate() == now.getDate() && end.getMonth() == now.getMonth()) {
+    if (
+      end.getUTCDate() == now.getUTCDate() &&
+      end.getUTCMonth() == now.getUTCMonth()
+    ) {
       plus_days = `${str_today_at} `;
     } else if (
-      end.getDate() == tomorrow.getDate() &&
-      end.getMonth() == tomorrow.getMonth()
+      end.getUTCDate() == tomorrow.getUTCDate() &&
+      end.getUTCMonth() == tomorrow.getUTCMonth()
     ) {
       plus_days = `${str_tomorow_at} `;
     } else {
-      let options = { month: "numeric", day: "numeric" };
+      let options = { month: "numeric", day: "numeric", timeZone: "UTC" };
       const final_date = end.toLocaleString(window.navigator.language, options);
       plus_days = `${final_date} ${str_at} `;
     }
 
     estimated_end =
       plus_days +
-      ("0" + end.getHours()).substr(-2) +
+      ("0" + end.getUTCHours()).substr(-2) +
       ":" +
-      ("0" + end.getMinutes()).substr(-2);
+      ("0" + end.getUTCMinutes()).substr(-2);
   }
   return estimated_end;
 }
@@ -96,7 +99,7 @@ function formatTime(value) {
     return str_less_than_a_minute;
   }
   const minutes = Math.floor((value / 60) % 60);
-  const hours = Math.floor((value / 3600) % 24);
+  const hours = Math.floor(value / 3600);
   if (hours > 0) {
     return hours + ` ${str_h}` + (minutes > 0 ? ` ${minutes} ${str_min}` : "");
     // return hours + " h" + (minutes > 0 ? ` ${minutes} min` : "");
