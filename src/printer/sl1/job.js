@@ -15,7 +15,9 @@ import { states, to_page } from "../components/state";
  * load job
  */
 export const load = () => {
-  translate("proj.title", { query: "#title-status-label" });
+  if (window.location.hash == "#projects") {
+    translate("proj.title", { query: "#title-status-label" });
+  }
   getJson("/api/job")
     .then((result) => {
       const data = result.data;

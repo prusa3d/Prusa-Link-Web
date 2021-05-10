@@ -10,19 +10,25 @@ import { translate } from "../../locale_provider";
 import { states } from "../components/state";
 
 const idleTitle = () => {
-  document.getElementById("title-status-label").innerText = translate(
-    "prop.st-idle"
-  );
+  document.getElementById("title-status").innerText = translate("prop.st-idle");
 };
 
 const printingTitle = () => {
-  document.getElementById("title-status-label").innerText = translate(
+  document.getElementById("title-status").innerText = translate(
     "prop.st-printing"
   );
 };
 
 const load = () => {
+  document.getElementById(
+    "title-status-label"
+  ).innerHTML = `<p class="txt-grey" >${translate(
+    "home.title"
+  )}:<span id="title-status" class="txt-orange">Idle</span></p>`;
   idleTitle();
+  document.getElementById("temps-title").innerText = translate(
+    "temps.title"
+  ).toLowerCase();
   upload.init();
   graph.render();
 };
