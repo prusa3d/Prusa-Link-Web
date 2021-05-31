@@ -24,7 +24,7 @@ const config = {
   exposureTimeFirst: {
     text: translate("exp-times.layer-1st"),
     limit: [10, 120],
-    step: 0.1,
+    step: 1.0,
   },
   exposureTimeCalibration: {
     text: translate("exp-times.inc"),
