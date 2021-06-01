@@ -66,7 +66,7 @@ const setUpElements = (file, elements, div) => {
       const elm = document.importNode(template, true);
       elm.getElementById("desc").innerHTML = config[expo].text;
       const value = elm.getElementById("value");
-      value.innerHTML = file[expo] / 1000;
+      value.innerHTML = (file[expo] / 1000).toFixed(1);
       const [min, max] = config[expo].limit;
       const minus = elm.getElementById("minus");
       const setMinus = setValue(value, min, max, -config[expo].step);
