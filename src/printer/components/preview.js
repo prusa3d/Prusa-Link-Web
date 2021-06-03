@@ -134,6 +134,8 @@ const load = () => {
 const update = (context) => {
   if (context.state != states.SELECTED) {
     to_page(context.state);
+  } else {
+    load();
   }
 };
 
