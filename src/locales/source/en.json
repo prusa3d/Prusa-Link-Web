@@ -42,6 +42,7 @@
     "e-401-3": "You can find it in Settings > Network > Login credentials.",
     "modal-p1": "Welcome to the web interface of your",
     "modal-p2": "Please note that values are shown only when the printer is printing.",
+    "modal-p3": "ORIGINAL PRUSA 3D PRINTER",
     "sla-fill": "Please fill the resin tank and close the cover.",
     "sla-fly-fill": "Please fully refill resin tank."
   },
