@@ -76,7 +76,7 @@ const setUpAuth = () =>
               setUpAuth().then((data) => resolve(data))
             ); // ApiKey
           }
-          return setUpAuth().then((data) => resolve(data)); // http-digest
+          return null;
         } else {
           return response.json(); // done
         }
