@@ -28,8 +28,8 @@ const config = {
   },
   exposureTimeCalibration: {
     text: translate("exp-times.inc"),
-    limit: [0.5, 5],
-    step: 0.5,
+    limit: [0.1, 5],
+    step: 0.1,
   },
 };
 
