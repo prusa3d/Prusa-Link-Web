@@ -26,6 +26,10 @@ window.onload = () => {
   });
 
   initAuth().then((version) => {
+    if (version == null) {
+      return;
+    }
+
     getJson("/api/printer").then((printerData) => {
       printer.init(version, printerData.data);
       setInterval(
