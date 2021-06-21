@@ -53,6 +53,7 @@
     "n-calibrated": "Printer is not calibrated!",
     "not-idle": "Printer is not idle!",
     "start-print": "The printer is getting ready.",
+    "success": "Success",
     "upld-exists": "The project {{file_name}} already exists.",
     "upld-not-sup": "The project {{file_name}} is not supported.",
     "upld-suc": "The project {{file_name}} uploaded successfully.",

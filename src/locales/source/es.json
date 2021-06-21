@@ -10,7 +10,6 @@
     "no": "No",
     "save-chgs": "Guardar cambios",
     "sla-refill": "Rellenar resina",
-    "sla-refilled": "Resina completamente rellenada",
     "start-pt": "Empezar impresión",
     "yes": "Sí"
   },
@@ -42,6 +41,7 @@
     "e-401-3": "Puedes encontrarla en Ajustes > Red > Credenciales de acceso.",
     "modal-p1": "Bienvenido a la interfaz web de tu",
     "modal-p2": "Tenga en cuenta que los valores se muestran solo cuando la impresora está imprimiendo.",
+    "modal-p3": "IMPRESORA 3D ORIGINAL PRUSA",
     "sla-fill": "Llena el tanque de resina y cierra la tapa.",
     "sla-fly-fill": "Rellena completamente el tanque de resina."
   },
@@ -52,6 +52,7 @@
     "n-calibrated": "¡La impresora no está calibrada!",
     "not-idle": "¡La impresora no está inactiva!",
     "start-print": "La impresora se está preparando.",
+    "success": "Éxito",
     "upld-exists": "El proyecto {{file_name}} ya existe.",
     "upld-not-sup": "El proyecto {{file_name}} no es compatible.",
     "upld-suc": "El envío del proyecto {{file_name}} se completó.",

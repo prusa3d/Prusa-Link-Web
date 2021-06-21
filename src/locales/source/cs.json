@@ -42,6 +42,7 @@
     "e-401-3": "Otevřete menu Nastavení > Síť > Přihlašovací údaje.",
     "modal-p1": "Vítejte na webovém rozhraní vaší",
     "modal-p2": "Upozornění: některé hodnoty jsou zobrazeny pouze v průběhu tisku.",
+    "modal-p3": "ORIGINAL PRUSA 3D TISKÁRNY",
     "sla-fill": "Naplňte prosím nádržku na resin a zavřete víko.",
     "sla-fly-fill": "Prosím naplňte vaničku na resin."
   },
@@ -52,6 +53,7 @@
     "n-calibrated": "Tiskárna není zkalibrovaná!",
     "not-idle": "Tiskárna je zaneprázdněna, prosím vyčkejte!",
     "start-print": "Tiskárna se připravuje.",
+    "success": "Úspěch",
     "upld-exists": "Projekt s názvem {{file_name}} již existuje",
     "upld-not-sup": "Projekt {{file_name}} není podporován",
     "upld-suc": "Projekt {{file_name}} úspěšně nahrán.",

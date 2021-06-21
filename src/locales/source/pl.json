@@ -42,6 +42,7 @@
     "e-401-3": "Możesz znaleźć go w sekcji Ustawienia -> Sieć -> Dane logowania",
     "modal-p1": "Witaj w interfejsie Twojej",
     "modal-p2": "Wartości będą wyświetlane tylko podczas drukowania.",
+    "modal-p3": "DRUKARKI 3D ORYGINALNEJ PRUSA",
     "sla-fill": "Uzupełnij żywicę i zamknij pokrywę.",
     "sla-fly-fill": "Uzupełnij żywicę do znacznika 100%."
   },
@@ -52,6 +53,7 @@
     "n-calibrated": "Drukarka nie jest skalibrowana!",
     "not-idle": "Drukarka nie znajduje się w stanie oczekiwania.",
     "start-print": "Drukarka jest przygotowywana.",
+    "success": "Sukces",
     "upld-exists": "Istnieje już projekt o nazwie {{file_name}}.",
     "upld-not-sup": "Typ pliku {{file_name}} jest nieobsługiwany.",
     "upld-suc": "Przesyłanie projektu {{file_name}} powiodło się.",

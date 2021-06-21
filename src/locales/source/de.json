@@ -42,7 +42,8 @@
     "e-401-3": "Sie finden sie in Einstellungen -> Netzwerk -> Anmeldedaten.",
     "modal-p1": "Willkommen zur Weboberfläche Ihres",
     "modal-p2": "Bitte beachten Sie, dass die Werte nur angezeigt werden, wenn der Drucker gerade druckt.",
-    "sla-fill": "Bitte füllen Sie den Harzbehälter und schließen Sie den Deckel.",
+    "modal-p3": "ORIGINAL PRUSA 3D DRUCKER",
+    "sla-fill": "Bitte füllen Sie den Harztank und schließen Sie den Deckel.",
     "sla-fly-fill": "Bitte füllen Sie den Harztank vollständig auf."
   },
   "ntf": {
@@ -52,6 +53,7 @@
     "n-calibrated": "Der Drucker ist nicht kalibriert!",
     "not-idle": "Der Drucker arbeitet!",
     "start-print": "Der Drucker bereitet sich vor.",
+    "success": "Erfolg",
     "upld-exists": "Das Projekt {{file_name}} existiert bereits.",
     "upld-not-sup": "Das Projekt {{file_name}} wird nicht unterstützt.",
     "upld-suc": "Das Hochladen des Projekts {{file_name}} war erfolgreich.",
