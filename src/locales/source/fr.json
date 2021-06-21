@@ -42,6 +42,7 @@
     "e-401-3": "Vous pouvez le trouver dans Réglages > Réseau > Informations de connexion.",
     "modal-p1": "Bienvenue dans l'interface web de votre",
     "modal-p2": "Veuillez noter que les valeurs sont affichées uniquement lorsque l'imprimante imprime.",
+    "modal-p3": "IMPRIMANTE 3D ORIGINALE PRUSA",
     "sla-fill": "Veuillez remplir le réservoir de résine et fermer le couvercle.",
     "sla-fly-fill": "Veuillez remplir complètement le réservoir de résine."
   },
@@ -52,6 +53,7 @@
     "n-calibrated": "L'imprimante n'est pas calibrée !",
     "not-idle": "L'imprimante n'est pas au repos !",
     "start-print": "Préparation de l'imprimante.",
+    "success": "Succès",
     "upld-exists": "Le projet {{file_name}} existe déjà.",
     "upld-not-sup": "Le projet {{file_name}} n'est pas pris en charge.",
     "upld-suc": "Le projet {{file_name}} a été téléchargé correctement.",

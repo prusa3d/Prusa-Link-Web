@@ -33,3 +33,13 @@ npm run start:mini
 npm run start:mini http-basic
 npm run start:mini http-apikey
 ```
+
+## Translations
+
+1. Append all new keys in `src/locales/source/en.json` and add default english translation.
+2. Send `src/locales/source/en.json` file to the content
+3. Copy all files from translators in `src/locales/source` folder. Name of the files should be `cs_CZ.json`, `en_US.json`, ...
+4. Run `src/locales/update_translations.py` script to extract only used strings.
+5. Check the diff.
+6. Delete `cs_CZ.json`, `en_US.json`, ... files.
+7. Commit
