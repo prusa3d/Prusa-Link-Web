@@ -7,7 +7,7 @@ import { error, success } from "./toast";
 import { translate } from "../../locale_provider";
 import uploadRequest from "../../helpers/upload_request";
 
-const fileType = process.env.PRINTER_FAMILY === "fdm" ? "gcode" : "sl1";
+const fileType = process.env.PRINTER_FAMILY === "fdm" ? "gcode" : ".sl1,.sl1s";
 
 const upload = {
   init: (origin, path) => {
