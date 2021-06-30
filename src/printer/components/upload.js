@@ -7,11 +7,11 @@ import { error, success } from "./toast";
 import { translate } from "../../locale_provider";
 import uploadRequest from "../../helpers/upload_request";
 
-const fileType = process.env.PRINTER_FAMILY === "fdm" ? "gcode" : "sl1";
+const fileType = process.env.PRINTER_FAMILY === "fdm" ? "gcode" : ".sl1,.sl1s";
 
 const upload = {
   init: (origin, path) => {
-    translate("upld.open", { query: "#upload p", file: `*.${fileType}` });
+    translate("upld.open", { query: "#upload p", file: `*${fileType}` });
     initInput(origin || "local", path);
   },
 };
@@ -19,7 +19,7 @@ const upload = {
 function initInput(origin, path) {
   reset();
   var input = document.querySelector('#upload input[type="file"]');
-  input.setAttribute("accept", `.${fileType}`);
+  input.setAttribute("accept", `${fileType}`);
   input.onchange = () => {
     if (input.files.length > 0)
       // TODO: upload multiple files?
