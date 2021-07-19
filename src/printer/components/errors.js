@@ -30,9 +30,18 @@ export function handleError(result) {
 export function checkErrors() {
   return getJson("/api/printer/error").then(({ data, ...others }) => {
     const code = data.code;
-    if (code && last_error.indexOf(code) < 0) {
+    if (
+      code &&
+      last_error.indexOf(code) < 0 &&
+      sessionStorage.getItem("error_seen") != code
+    ) {
       last_error[1] = code;
+      sessionStorage.setItem("error_seen", code);
       handleError({ data });
+    }
+
+    if (!code) {
+      sessionStorage.removeItem("error_seen");
     }
   });
 }
