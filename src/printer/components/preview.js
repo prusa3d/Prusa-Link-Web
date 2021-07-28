@@ -66,7 +66,7 @@ const load = () => {
         /**
          * set up delete button
          */
-        document.getElementById("delete").addEventListener("click", (e) => {
+        document.getElementById("delete").onclick = function (e) {
           doQuestion({
             title: translate("proj.del"),
             // TODO: add strong - Do you really want to delete <strong>${file.name}</strong>?
@@ -82,7 +82,7 @@ const load = () => {
             next: "#projects",
           });
           e.preventDefault();
-        });
+        };
 
         /**
          * set up change exposure times button (sla)
@@ -94,20 +94,20 @@ const load = () => {
         /**
          * set up confirm button
          */
-        document.querySelector(".yes").addEventListener("click", (e) => {
+        document.querySelector(".yes").onclick = function (e) {
           modal(createConfirm, {
             timeout: 10000,
             closeOutside: false,
           });
           e.preventDefault();
-        });
+        };
       })
       .catch((result) => handleError(result))
       .finally(() => {
         /**
          * set up cancel button
          */
-        document.getElementById("cancel").addEventListener("click", (e) => {
+        document.getElementById("cancel").onclick = function (e) {
           setBusy();
           getJson("/api/job", {
             method: "POST",
@@ -122,7 +122,7 @@ const load = () => {
               navigate("#projects");
             });
           e.preventDefault();
-        });
+        };
       });
   });
 };
