@@ -5,6 +5,7 @@
     "cancel-pt": "Anuluj wydruk",
     "chg-exp": "Zmień czasy naświetlania",
     "confirm": "Potwierdzam",
+    "continue": "Kontynuuj",
     "del": "usuń",
     "login": "Zaloguj",
     "no": "Nie",
@@ -19,8 +20,11 @@
   },
   "exp-times": {
     "exp-time": "Czas naświetlania [s]",
+    "faster": "Szybciej",
     "inc": "Przyrost czasu naświetl. [s]",
     "layer-1st": "Naśw. 1. warstwy [s]",
+    "profile": "Profil druku",
+    "slower": "Wolniej",
     "title": "Zmień czasy naświetlania"
   },
   "glob": {
@@ -42,7 +46,8 @@
     "e-401-3": "Możesz znaleźć go w sekcji Ustawienia -> Sieć -> Dane logowania",
     "modal-p1": "Witaj w interfejsie Twojej",
     "modal-p2": "Wartości będą wyświetlane tylko podczas drukowania.",
-    "modal-p3": "DRUKARKI 3D ORYGINALNEJ PRUSA",
+    "modal-p3": "DRUKARKA 3D ORIGINAL PRUSA",
+    "pour-resin": "Wlej do zbiornika żywicę w ilości odpowiedniej dla wybranego projektu i zamknij pokrywę.",
     "sla-fill": "Uzupełnij żywicę i zamknij pokrywę.",
     "sla-fly-fill": "Uzupełnij żywicę do znacznika 100%."
   },
@@ -63,7 +68,8 @@
     "1": "Masz zamiar rozpocząć druk zdalnie przy pomocy interfejsu sieciowego. Upewnij się, że drukarka 3D jest prawidłowo skonfigurowana i gotowa do pracy.",
     "2": "Platforma jest czysta i zamontowana w drukarce",
     "3": "W zbiorniku jest wystarczająca ilość żywicy",
-    "4": "Pomarańczowa pokrywa jest zamknięta"
+    "4": "Pomarańczowa pokrywa jest zamknięta",
+    "5": "Zbiornik jest czysty i zamontowany w drukarce"
   },
   "proj": {
     "del": "Usuń plik",
@@ -111,7 +117,8 @@
     "z-height": "Wysokość Z"
   },
   "refill": {
-    "title": "Uzupełnij żywicę"
+    "title": "Uzupełnij żywicę",
+    "title-pour-resin": "Dolej żywicy"
   },
   "temps": {
     "title": "Temperatury",
@@ -124,7 +131,7 @@
     "minute": "minuta",
     "minute_plural": "minuty",
     "ml": "ml",
-    "rpm": "Obroty"
+    "rpm": "Obr./min"
   },
   "upld": {
     "loading": "Przesyłanie...",

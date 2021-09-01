@@ -5,6 +5,7 @@
     "cancel-pt": "Druck abbrechen",
     "chg-exp": "Belichtungszeiten ändern",
     "confirm": "Bestätigen",
+    "continue": "Fortfahren",
     "del": "löschen",
     "login": "Login",
     "no": "Nein",
@@ -19,8 +20,11 @@
   },
   "exp-times": {
     "exp-time": "Belichtung [s]",
+    "faster": "Schneller",
     "inc": "Belichtungszeit inkr. [s]",
     "layer-1st": "Erste Schicht Bel. [s]",
+    "profile": "Druckprofil",
+    "slower": "Langsamer",
     "title": "Belichtungszeiten ändern"
   },
   "glob": {
@@ -43,6 +47,7 @@
     "modal-p1": "Willkommen zur Weboberfläche Ihres",
     "modal-p2": "Bitte beachten Sie, dass die Werte nur angezeigt werden, wenn der Drucker gerade druckt.",
     "modal-p3": "ORIGINAL PRUSA 3D DRUCKER",
+    "pour-resin": "Füllen Sie genügend Harz für das gewählte Projekt in den Behälter und schließen Sie den Deckel.",
     "sla-fill": "Bitte füllen Sie den Harztank und schließen Sie den Deckel.",
     "sla-fly-fill": "Bitte füllen Sie den Harztank vollständig auf."
   },
@@ -63,7 +68,8 @@
     "1": "Sie sind dabei, einen Remote-Druck über die Web-Benutzeroberfläche zu starten. Bitte stellen Sie sicher, dass Ihr 3D-Drucker korrekt eingerichtet und für den Druck bereit ist.",
     "2": "Die Druckplattform ist sauber und im Drucker installiert",
     "3": "Eine ausreichende Menge Harz befindet sich im Tank",
-    "4": "Der orangefarbene Acryldeckel ist geschlossen"
+    "4": "Der orangefarbene Acryldeckel ist geschlossen",
+    "5": "Der Harzbehälter ist sauber und im Drucker installiert."
   },
   "proj": {
     "del": "Datei löschen",
@@ -111,7 +117,8 @@
     "z-height": "Z-Höhe"
   },
   "refill": {
-    "title": "Harz auffüllen"
+    "title": "Harz auffüllen",
+    "title-pour-resin": "Harz hinzufügen"
   },
   "temps": {
     "title": "Temperaturen",

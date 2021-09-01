@@ -16,6 +16,8 @@ import Job from "./job.js";
 import job from "../../views/job.html";
 import Refill from "./refill.js";
 import refill from "../../views/refill.html";
+import PourResin from "./pour_resin.js";
+import pourResin from "../../views/pour_resin.html";
 import Question from "../components/question.js";
 import question from "../../views/question.html";
 import busy from "../../views/busy.html";
@@ -68,6 +70,7 @@ const sl1 = {
       module: updateHostname(Busy),
     },
     { path: "refill", html: refill, module: updateHostname(Refill) },
+    { path: "pour_resin", html: pourResin, module: updateHostname(PourResin) },
   ],
   init: (version, printerData) => {
     context.version = version;

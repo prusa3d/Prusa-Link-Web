@@ -5,6 +5,7 @@
     "cancel-pt": "Cancelar impresión",
     "chg-exp": "Cambiar tiempos de exposición",
     "confirm": "Confirmar",
+    "continue": "Continuar",
     "del": "borrar",
     "login": "Iniciar sesión",
     "no": "No",
@@ -19,8 +20,11 @@
   },
   "exp-times": {
     "exp-time": "Exposición [s]",
+    "faster": "Rápido",
     "inc": "Incremento tiempo exp. [s]",
     "layer-1st": "Primera Capa Expo. [s]",
+    "profile": "Perfil de Impresión",
+    "slower": "Lento",
     "title": "Cambiar tiempos de exposición"
   },
   "glob": {
@@ -43,6 +47,7 @@
     "modal-p1": "Bienvenido a la interfaz web de tu",
     "modal-p2": "Tenga en cuenta que los valores se muestran solo cuando la impresora está imprimiendo.",
     "modal-p3": "IMPRESORA 3D ORIGINAL PRUSA",
+    "pour-resin": "Llena el depósito con suficiente resina para el proyecto seleccionado y cierra la tapa.",
     "sla-fill": "Llena el tanque de resina y cierra la tapa.",
     "sla-fly-fill": "Rellena completamente el tanque de resina."
   },
@@ -63,7 +68,8 @@
     "1": "Estás a punto de empezar una impresión remota usando la interefaz de la web. Por favor, asegúrate de que la impresora 3D está configurada correctamente y está lista para la impresión.",
     "2": "La plataforma de impresión está limpia e instalada en la impresora",
     "3": "Una cantidad suficiente de resina está en el tanque",
-    "4": "La cubierta naranja acrílica está cerrada"
+    "4": "La cubierta naranja acrílica está cerrada",
+    "5": "El depósito de resina está limpio e instalado en la impresora"
   },
   "proj": {
     "del": "Borrar archivo",
@@ -111,7 +117,8 @@
     "z-height": "Altura-Z"
   },
   "refill": {
-    "title": "Rellenar resina"
+    "title": "Rellenar resina",
+    "title-pour-resin": "Llenar de resina"
   },
   "temps": {
     "title": "Temperaturas",

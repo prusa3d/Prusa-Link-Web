@@ -5,6 +5,7 @@
     "cancel-pt": "Zrušit tisk",
     "chg-exp": "Změnit časy expozice",
     "confirm": "Potvrdit",
+    "continue": "Pokračovat",
     "del": "smazat",
     "login": "Přihlášení",
     "no": "Ne",
@@ -19,8 +20,11 @@
   },
   "exp-times": {
     "exp-time": "Doba osvitu [s]",
+    "faster": "Rychlejší",
     "inc": "Navýšení expozice (s)",
     "layer-1st": "Osvit první vrstvy [s]",
+    "profile": "Tiskový profil",
+    "slower": "Pomalejší",
     "title": "Změnit expoziční časy"
   },
   "glob": {
@@ -42,9 +46,10 @@
     "e-401-3": "Otevřete menu Nastavení > Síť > Přihlašovací údaje.",
     "modal-p1": "Vítejte na webovém rozhraní vaší",
     "modal-p2": "Upozornění: některé hodnoty jsou zobrazeny pouze v průběhu tisku.",
-    "modal-p3": "ORIGINAL PRUSA 3D TISKÁRNY",
-    "sla-fill": "Naplňte prosím nádržku na resin a zavřete víko.",
-    "sla-fly-fill": "Prosím naplňte vaničku na resin."
+    "modal-p3": "3D TISKÁRNA ORIGINAL PRUSA",
+    "pour-resin": "Do vaničky přidejte dostatečné množství resinu pro tento projekt a zavřete víko.",
+    "sla-fill": "Naplňte prosím vaničku na resin a zavřete víko.",
+    "sla-fly-fill": "Naplňte vaničku na resin."
   },
   "ntf": {
     "actn-pending": "Akce se vykoná po dokončení vytvrzení vrstvy.",
@@ -63,7 +68,8 @@
     "1": "Spouštíte vzdálený tisk pomocí webového rozhraní. Ujistěte se, že vaše 3D tiskárna je správně nastavena a je připravena k tisku.",
     "2": "Tisková platforma je čistá a správně nainstalovaná.",
     "3": "Ve vaničce je dostatečné množství resinu",
-    "4": "Oranžový kryt je zavřený"
+    "4": "Oranžový kryt je zavřený",
+    "5": "Vanička na resin je čistá a zajištěná v tiskárně."
   },
   "proj": {
     "del": "Smazat soubor",
@@ -111,7 +117,8 @@
     "z-height": "Výška Z"
   },
   "refill": {
-    "title": "Doplnit resin"
+    "title": "Doplnit resin",
+    "title-pour-resin": "Doplňte resin"
   },
   "temps": {
     "title": "Teploty",

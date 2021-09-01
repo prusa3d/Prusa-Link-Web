@@ -37,7 +37,7 @@ export const load = () => {
         /**
          * set up change exposure times button (sla)
          */
-        changeExposureTimesQuestion(data.job.file, "#job");
+        changeExposureTimesQuestion("#job");
 
         /**
          * set up refill (sla)

@@ -119,7 +119,9 @@ function formatExposure(expo) {
   }
   let expo_times = `${numberFormat(
     expo.exposureTimeFirst / 1000
-  )}/${numberFormat(expo.exposureTime / 1000)}`;
+  )}/${numberFormat(expo.exposureTime / 1000)}/${numberFormat(
+    expo.exposureUserProfile
+  )}`;
   if (expo.exposureTimeCalibration !== undefined) {
     expo_times = `${expo_times}/${numberFormat(
       expo.exposureTimeCalibration / 1000
