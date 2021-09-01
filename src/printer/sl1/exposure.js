@@ -8,6 +8,8 @@ import { doQuestion } from "../components/question";
 import { navigateToProjects } from "../components/projects";
 import { translate } from "../../locale_provider";
 import { setBusy } from "../components/busy";
+import previousIcon from "../../assets/previous-icon.svg";
+import nextIcon from "../../assets/next-icon.svg";
 
 const repeatInterval = 250; // milliseconds, how often should the value be updated when holding the button
 let effectiveRepeatInterval = repeatInterval; // Will be dynamically shortened to create an acceleration effect
@@ -18,29 +20,40 @@ let pressed = false;
 const config = {
   exposureTime: {
     text: translate("exp-times.exp-time"),
-    limit: [1, 60],
-    step: 0.1,
-  },
-  exposureTimeFirst: {
-    text: translate("exp-times.layer-1st"),
-    limit: [10, 120],
-    step: 1.0,
+    limit: [1000, 60000],
+    step: 100,
   },
   exposureTimeCalibration: {
     text: translate("exp-times.inc"),
-    limit: [0.1, 5],
-    step: 0.1,
+    limit: [100, 5000],
+    step: 100,
+  },
+  exposureTimeFirst: {
+    text: translate("exp-times.layer-1st"),
+    limit: [10000, 120000],
+    step: 1000,
+  },
+  exposureUserProfile: {
+    text: translate("exp-times.profile"),
+    limit: [0, 1],
+    step: 1,
   },
 };
 
 const getPressed = () => pressed;
 
-const setValue = (value, min, max, tax) => {
+const setValue = (item_name, value, min, max, step) => {
   const setValueTo = () => {
     if (getPressed()) {
-      const newValue = parseFloat(value.innerHTML) + tax;
+      const newValue = parseInt(value.dataset.value) + step;
       if (min <= newValue && newValue <= max) {
-        value.innerHTML = newValue.toFixed(1);
+        value.dataset.value = newValue;
+        if (item_name == "exposureUserProfile")
+          value.innerHTML =
+            value.dataset.value == 1
+              ? translate("exp-times.slower")
+              : translate("exp-times.faster");
+        else value.innerHTML = (newValue / 1000).toFixed(1);
       }
     }
     if (getPressed()) {
@@ -62,14 +75,23 @@ const setUpElements = (file, elements, div) => {
   const template = document.getElementById("exposure-item").content;
   div.className = "modal-exposure";
   for (let expo in config) {
-    if (file[expo]) {
+    if (expo in file) {
       const elm = document.importNode(template, true);
+      const minus = elm.getElementById("minus");
+      const plus = elm.getElementById("plus");
       elm.getElementById("desc").innerHTML = config[expo].text;
       const value = elm.getElementById("value");
-      value.innerHTML = (file[expo] / 1000).toFixed(1);
+      value.dataset.value = file[expo].toFixed(0);
+      if (expo == "exposureUserProfile") {
+        value.innerHTML =
+          file[expo] == 1
+            ? translate("exp-times.slower")
+            : translate("exp-times.faster");
+        minus.src = previousIcon;
+        plus.src = nextIcon;
+      } else value.innerHTML = (file[expo] / 1000).toFixed(1);
       const [min, max] = config[expo].limit;
-      const minus = elm.getElementById("minus");
-      const setMinus = setValue(value, min, max, -config[expo].step);
+      const setMinus = setValue(expo, value, min, max, -config[expo].step);
       minus.onclick = setMinus;
       minus.onmousedown = () => {
         pressed = true;
@@ -79,8 +101,7 @@ const setUpElements = (file, elements, div) => {
         pressed = false;
         effectiveRepeatInterval = repeatInterval;
       };
-      const plus = elm.getElementById("plus");
-      const setPlus = setValue(value, min, max, config[expo].step);
+      const setPlus = setValue(expo, value, min, max, config[expo].step);
       plus.onclick = setPlus;
       plus.onmousedown = () => {
         pressed = true;
@@ -100,37 +121,40 @@ const setUpElements = (file, elements, div) => {
  * Create a question for set up the exposure times
  * @param {object} file - job file information
  */
-const changeExposureTimesQuestion = (file, next = "#preview") => {
+const changeExposureTimesQuestion = (next = "#pour_resin") => {
   const btn = document.getElementById("exposure");
-  btn.disabled = false;
   btn.addEventListener("click", (e) => {
-    navigateToProjects();
-    const elements = {};
-    const div = document.createElement("div");
-    setUpElements(file, elements, div);
-    doQuestion({
-      title: translate("exp-times.title"),
-      questionChildren: [div],
-      yes: (close) => {
-        setBusy();
-        const result = {};
-        for (let expo in elements) {
-          result[expo] = parseFloat(elements[expo].innerHTML) * 1000;
-        }
+    getJson("/api/job").then((result) => {
+      const data = result.data;
+      var file = data.job.file;
+      navigateToProjects();
+      const elements = {};
+      const div = document.createElement("div");
+      setUpElements(file, elements, div);
+      doQuestion({
+        title: translate("exp-times.title"),
+        questionChildren: [div],
+        yes: (close) => {
+          setBusy();
+          const result = {};
+          for (let expo in elements) {
+            result[expo] = parseInt(elements[expo].dataset.value);
+          }
 
-        getJson("/api/system/commands/custom/changeexposure", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(result),
-        })
-          .catch((result) => handleError(result))
-          .finally((result) => close());
-      },
-      yesText: translate("btn.save-chgs"),
-      noText: translate("btn.cancel"),
-      next,
+          getJson("/api/system/commands/custom/changeexposure", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(result),
+          })
+            .catch((result) => handleError(result))
+            .finally((result) => close());
+        },
+        yesText: translate("btn.save-chgs"),
+        noText: translate("btn.cancel"),
+        next,
+      });
     });
   });
 };

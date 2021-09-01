@@ -842,6 +842,8 @@ progress::-moz-progress-bar {
 .modal-exposure > img {
   border-radius: 50%;
   cursor: pointer;
+  width: 48px;
+  height: 48px;
 }
 
 /* ===================================== QUESTION ======================================= */

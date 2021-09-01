@@ -151,6 +151,13 @@ module.exports = (env, args) => {
         devServer(app, printer_conf);
         preprocessing.startWatcher(server);
       },
+      // To run Prusa Link against the real server
+      /*
+      port: 9000,
+      proxy: {
+        "/": "http://localhost:8080",
+      },
+      */
     },
   };
 };

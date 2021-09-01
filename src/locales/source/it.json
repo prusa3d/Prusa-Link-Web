@@ -5,6 +5,7 @@
     "cancel-pt": "Annulla stampa",
     "chg-exp": "Cambia i tempi di esposizione",
     "confirm": "Conferma",
+    "continue": "Continua",
     "del": "elimina",
     "login": "Accedi",
     "no": "No",
@@ -19,8 +20,11 @@
   },
   "exp-times": {
     "exp-time": "Esposizione [s]",
+    "faster": "Più veloce",
     "inc": "Incremento tempo di esposizione [s]",
     "layer-1st": "Esposizione Primo layer [s]",
+    "profile": "Profilo di stampa",
+    "slower": "Più lento",
     "title": "Cambia i tempi di esposizione"
   },
   "glob": {
@@ -43,6 +47,7 @@
     "modal-p1": "Benvenuto nell'interfaccia web del tuo",
     "modal-p2": "Si noti che i valori vengono visualizzati solo durante la stampa.",
     "modal-p3": "STAMPANTE 3D ORIGINAL PRUSA",
+    "pour-resin": "Versare una quantità di resina sufficiente per il progetto selezionato nella tanica e chiudere il coperchio.",
     "sla-fill": "Si prega di riempire il serbatoio della resina e chiudere il coperchio.",
     "sla-fly-fill": "Si prega di riempire completamente il serbatoio della resina."
   },
@@ -63,7 +68,8 @@
     "1": "Stai per avviare una stampa da remoto utilizzando l'interfaccia utente web. Assicurarsi che la stampante 3D sia impostata correttamente e pronta per la stampa.",
     "2": "La piattaforma di stampa è pulita e installata sulla stampante",
     "3": "Nel serbatoio è presente una quantità sufficiente di resina",
-    "4": "Il coperchio acrilico arancione è chiuso"
+    "4": "Il coperchio acrilico arancione è chiuso",
+    "5": "La tanica della resina è pulita ed installata nella stampante"
   },
   "proj": {
     "del": "Elimina File",
@@ -111,7 +117,8 @@
     "z-height": "Altezza-Z"
   },
   "refill": {
-    "title": "Riempire la resina"
+    "title": "Riempire la resina",
+    "title-pour-resin": "Aggiungi resina"
   },
   "temps": {
     "title": "Temperature",

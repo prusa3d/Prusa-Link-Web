@@ -5,6 +5,7 @@
     "cancel-pt": "Annuler l'impression",
     "chg-exp": "Modifier les temps d'exposition",
     "confirm": "Confirmer",
+    "continue": "Continuer",
     "del": "supprimer",
     "login": "Connexion",
     "no": "Non",
@@ -19,8 +20,11 @@
   },
   "exp-times": {
     "exp-time": "Exposition [s]",
+    "faster": "Plus rapide",
     "inc": "Incr. du temps d'exposition [s]",
     "layer-1st": "Première couche Expo. [s]",
+    "profile": "Profil d'Impression",
+    "slower": "Plus lent",
     "title": "Modifier les temps d'exposition"
   },
   "glob": {
@@ -43,6 +47,7 @@
     "modal-p1": "Bienvenue dans l'interface web de votre",
     "modal-p2": "Veuillez noter que les valeurs sont affichées uniquement lorsque l'imprimante imprime.",
     "modal-p3": "IMPRIMANTE 3D ORIGINALE PRUSA",
+    "pour-resin": "Versez suffisamment de résine dans le réservoir pour le projet sélectionné et fermez le capot.",
     "sla-fill": "Veuillez remplir le réservoir de résine et fermer le couvercle.",
     "sla-fly-fill": "Veuillez remplir complètement le réservoir de résine."
   },
@@ -63,7 +68,8 @@
     "1": "Vous êtes sur le point de démarrer une impression à distance à l'aide de l'interface utilisateur web. Veuillez vous assurer que votre imprimante 3D est correctement configurée et prête pour l'impression.",
     "2": "La plateforme d'impression est propre et installée sur l'imprimante",
     "3": "Une quantité suffisante de résine se trouve dans le réservoir",
-    "4": "Le couvercle en acrylique orange est fermé"
+    "4": "Le couvercle en acrylique orange est fermé",
+    "5": "Le réservoir de résine est propre et installé dans l'imprimante"
   },
   "proj": {
     "del": "Supprimer le Fichier",
@@ -111,7 +117,8 @@
     "z-height": "Hauteur en Z"
   },
   "refill": {
-    "title": "Faire le plein de résine"
+    "title": "Faire le plein de résine",
+    "title-pour-resin": "Verser de la résine"
   },
   "temps": {
     "title": "Températures",

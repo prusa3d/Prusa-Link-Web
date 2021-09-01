@@ -85,13 +85,6 @@ const load = () => {
         };
 
         /**
-         * set up change exposure times button (sla)
-         */
-        if (process.env.PRINTER_FAMILY == "sla") {
-          require("../sl1/exposure").default(jobFile);
-        }
-
-        /**
          * set up confirm button
          */
         document.querySelector(".yes").onclick = function (e) {

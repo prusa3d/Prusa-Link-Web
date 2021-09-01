@@ -5,6 +5,7 @@
     "cancel-pt": "Cancel print",
     "chg-exp": "Change exposure times",
     "confirm": "Confirm",
+    "continue": "Continue",
     "del": "delete",
     "login": "Login",
     "no": "No",
@@ -19,8 +20,11 @@
   },
   "exp-times": {
     "exp-time": "Exposure [s]",
+    "faster": "Faster",
     "inc": "Exposure time incr. [s]",
     "layer-1st": "First Layer Expo. [s]",
+    "profile": "Print profile",
+    "slower": "Slower",
     "title": "Change exposure times"
   },
   "glob": {
@@ -43,6 +47,7 @@
     "modal-p1": "Welcome to the web interface of your",
     "modal-p2": "Please note that values are shown only when the printer is printing.",
     "modal-p3": "ORIGINAL PRUSA 3D PRINTER",
+    "pour-resin": "Fill enough resin for selected project into the tank and close the lid.",
     "sla-fill": "Please fill the resin tank and close the cover.",
     "sla-fly-fill": "Please fully refill resin tank."
   },
@@ -63,7 +68,8 @@
     "1": "You are about to start a remote print using the web UI. Please, make sure your 3D printer is set up correctly and ready for the print.",
     "2": "The printing platform is clean and installed in the printer",
     "3": "A sufficient amount of resin is in the tank",
-    "4": "The orange acrylic lid is closed"
+    "4": "The orange acrylic lid is closed",
+    "5": "The resin tank is clean and installed in the printer"
   },
   "proj": {
     "del": "Delete File",
@@ -111,7 +117,8 @@
     "z-height": "Z-Height"
   },
   "refill": {
-    "title": "Refill resin"
+    "title": "Refill resin",
+    "title-pour-resin": "Fill resin"
   },
   "temps": {
     "title": "Temperatures",

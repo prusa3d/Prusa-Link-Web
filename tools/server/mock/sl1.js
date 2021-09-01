@@ -11,10 +11,12 @@ class PrinterSL1 extends Printer {
     this.exposureTime = 1500;
     this.exposureTimeFirst = 15000;
     this.exposureTimeCalibration = 3000;
+    this.exposureUserProfile = 0;
     this.limits = {
       exposureTime: { min: 1000, max: 60000 },
       exposureTimeFirst: { min: 10000, max: 120000 },
       exposureTimeCalibration: { min: 500, max: 5000 },
+      exposureUserProfile: { min: 0, max: 1 },
     };
   }
 
@@ -57,6 +59,7 @@ class PrinterSL1 extends Printer {
         exposureTime: this.exposureTime,
         exposureTimeFirst: this.exposureTimeFirst,
         exposureTimeCalibration: this.exposureTimeCalibration,
+        exposureUserProfile: this.exposureUserProfile,
       };
       if (this.isPrinting) {
         const completion = jobSL1.progress.completion;

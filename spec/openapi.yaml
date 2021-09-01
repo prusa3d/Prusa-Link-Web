@@ -256,6 +256,10 @@ paths:
                   type: number
                   example: 30000
                   nullable: true
+                exposureUserProfile: # [-]
+                  type: number
+                  example: 1
+                  nullable: true
       responses:
         204:
           description: No error.
@@ -1143,6 +1147,10 @@ components:
         exposureTimeCalibration: # [ms]
           type: number
           example: 30000
+          nullable: true
+        exposureUserProfile: # [-]
+          type: number
+          example: 1
           nullable: true
 
     JobFDM:
