@@ -3,6 +3,9 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import "./styles.css";
+if (process.env.TYPE == "m1") {
+  import("./m1-styles.css");
+}
 import { navigate } from "./router.js";
 import printer from "./printer";
 import { getJson, initAuth } from "./auth.js";
@@ -31,25 +34,27 @@ window.onload = () => {
     }
 
     getJson("/api/printer").then((printerData) => {
-      printer.init(version, printerData.data);
-      setInterval(
-        () =>
-          getJson("/api/printer")
-            .then((data) => {
-              printer.update(data.data);
-            })
-            .catch((data) => {
-              if (data.code == 401) {
-                const auth = sessionStorage.getItem("auth") || "false";
-                if (auth == "false") {
-                  initAuth();
+      getJson("/api/connection").then((connection) => {
+        printer.init(version, printerData.data, connection.data);
+        setInterval(
+          () =>
+            getJson("/api/printer")
+              .then((data) => {
+                printer.update(data.data);
+              })
+              .catch((data) => {
+                if (data.code == 401) {
+                  const auth = sessionStorage.getItem("auth") || "false";
+                  if (auth == "false") {
+                    initAuth();
+                  }
                 }
-              }
-            }),
-        UPDATE_INTERVAL
-      );
-      window.onpopstate = (e) => e && navigate(e.currentTarget.location.hash);
-      navigate(window.location.hash || "#dashboard");
+              }),
+          UPDATE_INTERVAL
+        );
+        window.onpopstate = (e) => e && navigate(e.currentTarget.location.hash);
+        navigate(window.location.hash || "#dashboard");
+      });
     });
   });
 };

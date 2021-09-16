@@ -69,7 +69,11 @@ class Preprocess {
   async loadAssets() {
     for (var filename in this.countAssets) {
       if (filename.endsWith(".svg")) {
-        let assets_path = path.join(this.assets_dir, filename);
+        let assets_path = path.join(
+          this.assets_dir,
+          this.printer_conf.type,
+          filename
+        );
         let svg = await this.optimizeSVG(assets_path);
         if (this.countAssets[filename] > 1) {
           // more than 1: save in /views/{filename}

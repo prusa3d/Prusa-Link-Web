@@ -5,6 +5,7 @@
 const printer = (() => {
   if (process.env.TYPE == "mini") return require("./mini");
   if (process.env.TYPE == "sl1") return require("./sl1");
+  if (process.env.TYPE == "m1") return require("./m1");
 })().default;
 
 export default printer;

@@ -1,4 +1,4 @@
-# Prusa-Connect-Local
+# Prusa-Link-Web
 
 This is a printer connect webservice. It is compatible with other 3D printer services, so many applications can use this service.
 

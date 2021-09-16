@@ -72,10 +72,11 @@ const sl1 = {
     { path: "refill", html: refill, module: updateHostname(Refill) },
     { path: "pour_resin", html: pourResin, module: updateHostname(PourResin) },
   ],
-  init: (version, printerData) => {
+  init: (version, printerData, connection) => {
     context.version = version;
     context.printer = printerData;
     context.state = states.IDLE;
+    console.log(connection);
     initTemperatureGraph();
     localStorage.setItem("hostname", context.version.hostname);
   },

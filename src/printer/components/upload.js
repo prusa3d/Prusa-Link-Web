@@ -7,8 +7,13 @@ import { error, success } from "./toast";
 import { translate } from "../../locale_provider";
 import uploadRequest from "../../helpers/upload_request";
 
-const fileType = process.env.PRINTER_FAMILY === "fdm" ? "gcode" : ".sl1,.sl1s";
-
+if (process.env.PRINTER_FAMILY == "fdm") {
+  var fileType = "gcode";
+} else if (process.env.TYPE == "m1") {
+  var fileType = ".m1";
+} else {
+  var fileType = ".sl1,.sl1s";
+}
 const upload = {
   init: (origin, path) => {
     translate("upld.open", { query: "#upload p", file: `*${fileType}` });
