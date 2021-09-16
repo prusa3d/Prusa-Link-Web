@@ -846,6 +846,11 @@ progress::-moz-progress-bar {
   height: 48px;
 }
 
+.modal-exposure #next,
+.modal-exposure #previous {
+  display: none;
+}
+
 /* ===================================== QUESTION ======================================= */
 
 #question {

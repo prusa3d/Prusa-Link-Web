@@ -12,7 +12,7 @@ class PreprocessingPlugin {
    *  options = {
    *    printer: "sl1",
    *    templates_dir: "templates",
-   *    assets_dir: "src/assets",
+   *    assets_dir: "src/assets/<printer_type>",
    *    output_dir: "src/views",
    *  }
    *

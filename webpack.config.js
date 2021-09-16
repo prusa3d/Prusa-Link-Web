@@ -15,7 +15,7 @@ const CopyPlugin = require("copy-webpack-plugin");
 module.exports = (env, args) => {
   const buildLocales = env.locales;
   const printer_conf = {
-    appName: "Prusa Connect Local",
+    appName: "PrusaLink",
     mode: env.dev ? "development" : "production",
     type: env.PRINTER.toLowerCase(),
     updateInterval: 1000,
@@ -29,6 +29,10 @@ module.exports = (env, args) => {
     printer_conf["title"] = "Original Prusa SL1";
     printer_conf["printerFamily"] = "sla";
     icons = { from: "./src/assets/icons", to: "./" };
+  } else if (printer_conf.type == "m1") {
+    printer_conf["title"] = "Original Prusa M1";
+    printer_conf["printerFamily"] = "sla";
+    icons = { from: "./src/assets/icons/favicon-32x32_medical.png", to: "./" };
   } /* (printer_conf.type == "mini") */ else {
     printer_conf["title"] = "Original Prusa Mini";
     printer_conf["printerFamily"] = "fdm";
@@ -48,7 +52,7 @@ module.exports = (env, args) => {
   const preprocessing = new PreprocessingPlugin({
     printer_conf: printer_conf,
     templates_dir: path.resolve(__dirname, "templates"),
-    assets_dir: path.resolve(__dirname, "src/assets"),
+    assets_dir: path.resolve(__dirname, "src/assets/" + printer_conf.type),
     output_dir: path.resolve(__dirname, "src/views"),
   });
 
@@ -58,7 +62,7 @@ module.exports = (env, args) => {
 
     output: {
       filename: "[name].[contenthash].js",
-      path: path.resolve(__dirname, "dist"),
+      path: path.resolve(__dirname, "dist-" + printer_conf.type),
       publicPath: "",
     },
     devtool: env.dev ? "source-map" : false,
@@ -144,7 +148,7 @@ module.exports = (env, args) => {
 
     //...
     devServer: {
-      contentBase: path.join(__dirname, "dist"),
+      contentBase: path.join(__dirname, "dist-" + printer_conf.type),
       compress: true,
       port: 9000,
       after: function (app, server, compiler) {

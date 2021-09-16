@@ -1,7 +1,7 @@
 {
-  "name": "prusa-connect-local",
+  "name": "prusa-link-web",
   "version": "2.0.0",
-  "description": "This is a printer connect webservice. It is compatible with another 3D printer services, so many applications which use this service.",
+  "description": "This is a Prusa 3D printer webservice compatible with octoprint API.",
   "private": false,
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -11,20 +11,23 @@
     "dev:sl1": "npm run dev --env PRINTER=SL1 locales && npm run dev --env PRINTER=SL1",
     "start:sl1": "npm run start --env PRINTER=SL1 locales",
     "build:sl1": "webpack --env PRINTER=SL1 locales && webpack --env PRINTER=SL1",
+    "dev:m1": "npm run dev --env PRINTER=M1 locales && npm run dev --env PRINTER=M1",
+    "start:m1": "npm run start --env PRINTER=M1 locales",
+    "build:m1": "webpack --env PRINTER=M1 locales && webpack --env PRINTER=M1",
     "dev:mini": "npm run dev --env PRINTER=Mini locales && npm run dev --env PRINTER=Mini",
     "start:mini": "npm run start --env PRINTER=Mini locales",
     "build:mini": "webpack --env PRINTER=Mini locales && webpack --env PRINTER=Mini"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/prusa3d/Prusa-Connect-Local.git"
+    "url": "git+https://github.com/prusa3d/Prusa-Link-Web.git"
   },
   "author": "Bruno Carvalho",
   "license": "GPL-3.0",
   "bugs": {
-    "url": "https://github.com/prusa3d/Prusa-Connect-Local/issues"
+    "url": "https://github.com/prusa3d/Prusa-Link-Web/issues"
   },
-  "homepage": "https://github.com/prusa3d/Prusa-Connect-Local#readme",
+  "homepage": "https://github.com/prusa3d/Prusa-Link-Web#readme",
   "lint-staged": {
     "**/*": "prettier --write --ignore-unknown"
   },
