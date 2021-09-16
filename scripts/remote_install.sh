@@ -6,21 +6,27 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 # Resolve target
-if [ "$#" -ne 1 ]; then
-    echo "Please provide target ip as the only argument"
+if [ -z ${1} ]; then
+    echo "Please provide target ip as the first argument"
     exit -1
 fi
-target=${1}
-echo "Target is ${target}"
+if [ -z ${2} ]; then
+    echo "Please provide target name as the second argument (sl1/m1)"
+    exit -1
+fi
+
+ip=${1}
+target=${2}
+echo "Target is ${target}@${ip}"
 
 echo "Building"
 rm -fr dist/*
-npm run dev:sl1
+npm run dev:${target}
 
 echo "Removing remote web"
-ssh root@${target} "find /srv/http/intranet/* -exec rm -fr {} \; 2>/dev/null"
+ssh root@${ip} "find /srv/http/${target}/* -exec rm -fr {} \; 2>/dev/null"
 
 echo "Installing on target"
-scp -r dist/* root@${target}:/srv/http/intranet/
+scp -r dist/* root@${ip}:/srv/http/${target}/
 
 echo "Done"

@@ -12,7 +12,7 @@ class PreprocessingPlugin {
    *  options = {
    *    config: {},
    *    templates_dir: "templates",
-   *    assets_dir: "src/assets",
+   *    assets_dir: "src/assets[/env.PRINTER_CODE]",
    *    output_dir: "src/views",
    *  }
    *

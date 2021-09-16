@@ -1,6 +1,6 @@
 {
-  "name": "prusa-link-web",
-  "version": "3.1.0",
+  "name": "prusalink",
+  "version": "3.2.0",
   "description": "This is a printer connect webservice. It is compatible with other 3D printer services, so many applications can use this service.",
   "private": false,
   "scripts": {
@@ -10,6 +10,8 @@
     "build": "webpack --env locales && webpack",
     "start:sl1": "webpack --config config.sl1.js --env locales dev && webpack serve --config config.sl1.js --env dev",
     "build:sl1": "webpack --config config.sl1.js --env locales && webpack --config config.sl1.js",
+    "start:m1": "webpack --config config.m1.js --env locales dev && webpack serve --config config.m1.js --env dev",
+    "build:m1": "webpack --config config.m1.js --env locales && webpack --config config.m1.js",
     "start:mini": "webpack --config config.mini.js --env locales dev && webpack serve --config config.mini.js --env dev",
     "build:mini": "webpack --config config.mini.js --env locales && webpack --config config.mini.js",
     "start:custom": "webpack --config config.custom.js --env locales dev && webpack serve --config config.custom.js --env dev",

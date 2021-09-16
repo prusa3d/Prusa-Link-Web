@@ -1,4 +1,4 @@
-# Prusa-Link-Web
+# PrusaLink
 
 This is a printer connect webservice. It is compatible with other 3D printer services, so many applications can use this service.
 
@@ -16,13 +16,14 @@ npm run {command}[:{config}] [option]
 ```
 Where `{command}` is one of the following:
 
-* `build` -> build static files with production 
+* `build` -> build static files with production
 * `start` -> run a dev server, including virtual printer mockup
 * start [http-*] -> run a dev server with authentication
 
 `{config}` is one of the following:
 
 * `sl1` -> Prusa SL1 printer configuration (see `config.sl1.js`)
+* `m1` -> Prusa SL1 printer configuration (see `config.m1.js`)
 * `mini` -> Prusa Mini printer configuration (see `config.mini.js`)
 * `custom` -> Tries to use custom configuration file `config.custom.js` (not a part of the git repository)
 * if not set, default configuration from `webpack.config.js` is being used

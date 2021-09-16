@@ -4,7 +4,7 @@
 
 if (process.env.WITH_FONT) {
   require("../atlas-grotesk-web.css");
-} 
+}
 
 import "../fonts.css";
 

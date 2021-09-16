@@ -1,0 +1,39 @@
+/*This file is part of the Prusa Connect Local
+* Copyright (C) 2021 Prusa Research a.s. - www.prusa3d.com
+* SPDX-License-Identifier: GPL-3.0-or-later
+*/
+$green: #5ea796;
+
+nav > ul > li.active {
+  border-bottom: 1px solid;
+  margin-bottom: -1px;
+}
+
+#upload,
+nav > ul > li.active {
+  border-color: $green;
+}
+
+#title .txt-orange {
+  color: $green;
+}
+
+progress.print-progress {
+  -webkit-appearance: none;
+  appearance: none;
+}
+progress.print-progress::-webkit-progress-value {
+  background: $green;
+}
+
+.temp-legend-orange {
+  fill: $green;
+}
+
+#temp-line-orange {
+  stroke: $green;
+}
+
+.dropdown li:hover {
+  background: $green;
+}

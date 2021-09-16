@@ -7,8 +7,6 @@ import { handleError } from "../components/errors";
 import { doQuestion } from "../components/question";
 import { translate } from "../../locale_provider";
 // import { setBusy } from "../components/busy";
-import previousIcon from "../../assets/previous-icon.svg";
-import nextIcon from "../../assets/next-icon.svg";
 
 const repeatInterval = 250; // milliseconds, how often should the value be updated when holding the button
 let effectiveRepeatInterval = repeatInterval; // Will be dynamically shortened to create an acceleration effect
@@ -76,8 +74,8 @@ const setUpElements = (file, elements, div) => {
   for (let expo in config) {
     if (expo in file) {
       const elm = document.importNode(template, true);
-      const minus = elm.getElementById("minus");
-      const plus = elm.getElementById("plus");
+      var minus = elm.getElementById("minus");
+      var plus = elm.getElementById("plus");
       elm.getElementById("desc").innerHTML = config[expo].text;
       const value = elm.getElementById("value");
       value.dataset.value = file[expo].toFixed(0);
@@ -86,8 +84,12 @@ const setUpElements = (file, elements, div) => {
           file[expo] == 1
             ? translate("exp-times.slower")
             : translate("exp-times.faster");
-        minus.src = previousIcon;
-        plus.src = nextIcon;
+        minus.style.display = "none";
+        plus.style.display = "none";
+        minus = elm.getElementById("previous");
+        plus = elm.getElementById("next");
+        minus.style.display = "block";
+        plus.style.display = "block";
       } else value.innerHTML = (file[expo] / 1000).toFixed(1);
       const [min, max] = config[expo].limit;
       const setMinus = setValue(expo, value, min, max, -config[expo].step);
