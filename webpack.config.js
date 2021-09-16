@@ -17,8 +17,9 @@ const DEFAULT_NAME = "Original Prusa 3D Printer";
 module.exports = (env, args) => {
   const buildLocales = env.locales;
 
-  const config = {
+  var config = {
     PRINTER_NAME: env["PRINTER_NAME"] || DEFAULT_NAME,
+    PRINTER_CODE: env["PRINTER_NAME"].split(" ").slice(-1)[0].toLowerCase(),
     PRINTER_TYPE: env["PRINTER_TYPE"] || "fdm", // "fdm" | "sla"
 
     APP_NAME: env["APP_NAME"] || "Prusa-Link-Web",
@@ -36,6 +37,7 @@ module.exports = (env, args) => {
     WITH_FONT: env["WITH_FONT"] || false,
     WITH_EMBEDDED_SVGS: env["WITH_EMBEDDED_SVGS"] || false,
   };
+  config["TPL_ASSETS_PATH"] = config["PRINTER_CODE"] == "m1" ? "../assets/m1" : "../assets";
 
   const env_variables = Object.fromEntries(
     Object.entries(config)
@@ -55,7 +57,7 @@ module.exports = (env, args) => {
   const preprocessing = new PreprocessingPlugin({
     config,
     templates_dir: path.resolve(__dirname, "templates"),
-    assets_dir: path.resolve(__dirname, "src/assets"),
+    assets_dir: path.resolve(__dirname, "src" + config["TPL_ASSETS_PATH"].slice(2)),
     output_dir: path.resolve(__dirname, "src/views"),
   });
 

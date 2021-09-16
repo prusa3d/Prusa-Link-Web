@@ -28,7 +28,7 @@ const str_false = translate("prop.false");
  * @param {any} value
  */
 const formatData = (format, value) => {
-  if (process.env.PRINTER_TYPE == "sla") {
+  if (process.env.PRINTER_TYPE === "sla") {
     return slaFormatData(format, value);
   } else {
     return fdmFormatData(format, value);

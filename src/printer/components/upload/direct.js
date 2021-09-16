@@ -7,12 +7,14 @@ import { handleError } from "../errors";
 import { translate } from "../../../locale_provider";
 import uploadRequest from "../../../helpers/upload_request";
 
-const fileType = process.env.PRINTER_TYPE === "fdm" ? "gcode" : "sl1";
+const fileType = process.env.PRINTER_TYPE === "fdm" ? ".gcode" :
+  (process.env.PRINTER_CODE === "m1" ? ".m1" : ".sl1, .sl1s");
+
 let isUploading = false;
 let progress = 0;
 
 function init(origin, path) {
-  translate("upld.direct.choose", { query: "#upld-direct p", file: `*.${fileType}` });
+  translate("upld.direct.choose", { query: "#upld-direct p", file: `${fileType}` });
   initInput(origin || "local", "/" + path);
   if (isUploading) {
     setState("uploading");
@@ -23,7 +25,7 @@ function init(origin, path) {
 function initInput(origin, path) {
   var input = document.querySelector('#upld-direct input[type="file"]');
   if (input) {
-    input.setAttribute("accept", `.${fileType}`);
+    input.setAttribute("accept", `${fileType}`);
     input.onchange = () => {
       if (input.files.length > 0 && !isUploading) {
         let file = input.files[0];

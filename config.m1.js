@@ -2,7 +2,7 @@ const webpackConfig = require("./webpack.config");
 
 module.exports = (env, args) => {
     const config = {
-        PRINTER_NAME: "Original Prusa SL1",
+        PRINTER_NAME: "Original Prusa M1",
         PRINTER_TYPE: "sla",
 
         WITH_SETTINGS: false,

@@ -119,7 +119,7 @@ body > .content {
 /* ===================================== HEAD ======================================= */
 
 nav {
-  padding: 16px 0 0;
+  padding: 4px 0 0;
   display: flex;
   align-items: center;
   flex-wrap: wrap;
@@ -149,6 +149,7 @@ nav > ul > li {
   list-style-type: none;
   padding: 16px;
   width: 100%;
+  border-bottom: 1px solid #707070;
 }
 nav > ul > li.active {
   border-bottom: 1px solid #f8651b;
@@ -1032,6 +1033,11 @@ button:disabled {
   cursor: pointer;
   width: 48px;
   height: 48px;
+}
+
+.modal-exposure #next,
+.modal-exposure #previous {
+  display: none;
 }
 
 /* ===================================== QUESTION ======================================= */
