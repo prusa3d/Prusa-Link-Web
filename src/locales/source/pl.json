@@ -3,7 +3,7 @@
     "back": "Wstecz",
     "cancel": "Anuluj",
     "cancel-pt": "Anuluj wydruk",
-    "chg-exp": "Zmień czasy naświetlania",
+    "chg-exp": "Ustawienia druku",
     "confirm": "Potwierdzam",
     "continue": "Kontynuuj",
     "del": "usuń",
@@ -25,7 +25,7 @@
     "layer-1st": "Naśw. 1. warstwy [s]",
     "profile": "Profil druku",
     "slower": "Wolniej",
-    "title": "Zmień czasy naświetlania"
+    "title": "Ustawienia druku"
   },
   "glob": {
     "hd-st": "Stan sprzętu",

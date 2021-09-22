@@ -3,7 +3,7 @@
     "back": "Retour",
     "cancel": "Annuler",
     "cancel-pt": "Annuler l'impression",
-    "chg-exp": "Modifier les temps d'exposition",
+    "chg-exp": "Réglages d'Impression",
     "confirm": "Confirmer",
     "continue": "Continuer",
     "del": "supprimer",
@@ -25,7 +25,7 @@
     "layer-1st": "Première couche Expo. [s]",
     "profile": "Profil d'Impression",
     "slower": "Plus lent",
-    "title": "Modifier les temps d'exposition"
+    "title": "Réglages d'Impression"
   },
   "glob": {
     "hd-st": "état du matériel",
