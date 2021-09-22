@@ -3,7 +3,7 @@
     "back": "Atrás",
     "cancel": "Cancelar",
     "cancel-pt": "Cancelar impresión",
-    "chg-exp": "Cambiar tiempos de exposición",
+    "chg-exp": "Ajustes de Impresión",
     "confirm": "Confirmar",
     "continue": "Continuar",
     "del": "borrar",
@@ -25,7 +25,7 @@
     "layer-1st": "Primera Capa Expo. [s]",
     "profile": "Perfil de Impresión",
     "slower": "Lento",
-    "title": "Cambiar tiempos de exposición"
+    "title": "Ajustes de Impresión"
   },
   "glob": {
     "hd-st": "estado del hardware",

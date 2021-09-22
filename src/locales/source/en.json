@@ -4,7 +4,7 @@
     "cancel": "Cancel",
     "cancel-pt": "Cancel print",
     "chg": "change",
-    "chg-exp": "Change exposure times",
+    "chg-exp": "Print Settings",
     "confirm": "Confirm",
     "continue": "Continue",
     "del": "delete",
@@ -65,7 +65,7 @@
     "layer-1st": "First Layer Expo. [s]",
     "profile": "Print profile",
     "slower": "Slower",
-    "title": "Change exposure times"
+    "title": "Print Settings"
   },
   "glob": {
     "hd-st": "hardware state",
