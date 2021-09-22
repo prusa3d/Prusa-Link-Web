@@ -4,7 +4,7 @@
     "cancel": "Zrušit",
     "cancel-pt": "Zrušit tisk",
     "chg": "změnit",
-    "chg-exp": "Změnit časy expozice",
+    "chg-exp": "Tisková nastavení",
     "confirm": "Potvrdit",
     "continue": "Pokračovat",
     "del": "smazat",
@@ -65,7 +65,7 @@
     "layer-1st": "Osvit první vrstvy [s]",
     "profile": "Tiskový profil",
     "slower": "Pomalejší",
-    "title": "Změnit expoziční časy"
+    "title": "Tisková nastavení"
   },
   "glob": {
     "hd-st": "stav zařízení",

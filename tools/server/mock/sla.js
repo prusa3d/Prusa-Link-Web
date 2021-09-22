@@ -25,20 +25,20 @@ class PrinterSLA extends Printer {
     commands["custom"] = [
       {
         action: "resinrefill", // after sending this command, printer should change its state to "busy" (PCL will show "wait until layer finishes"). After printer is ready to refill, state should change to "paused"
-        name: "ResinRefill",
+        name: "Resin Refill",
         confirm: "Are you sure?",
         source: "custom",
         resource: url + "/custom/resinrefill",
       },
       {
         action: "resinrefilled", // after sending this command, printer should update the resin volume in tank. PCL will then send /api/job with command: pause, action: resume
-        name: "ResinRefilled",
+        name: "Resin Refilled",
         source: "custom",
         resource: url + "/custom/resinrefilled",
       },
       {
         action: "changeexposure",
-        name: "Change exposure times",
+        name: "Print Settings",
         source: "custom",
         resource: "http://localhost/api/system/commands/custom/changeexposure",
       },
