@@ -1,9 +1,9 @@
 openapi: 3.0.1
 info:
-  title: Prusa Connect Local
+  title: Prusa Link Web
   description:
-    This is a printer connect webservice. It is compatible with another 3D printer services, so many applications
-    which use this service
+    This is a printer connect webservice. It is compatible with another 3D
+    printer services, so many applications which use this service
   contact:
     email: developer@prusa3d.cz
   license:
@@ -19,6 +19,14 @@ paths:
   /api/version:
     get:
       summary: version informations
+      parameters:
+        - in: query
+          name: system
+          required: false
+          description: If system versions must be returned.
+          schema:
+            type: boolean
+            default: false
       responses:
         200:
           description: OK
@@ -33,13 +41,47 @@ paths:
                   server:
                     type: string
                     example: "1.1.0"
+                    description: "Firmware on Prusa-Link version"
                   text:
                     type: string
                     example: "Prusa SLA SL1 1.0.5"
                   hostname:
                     type: string
                     example: "prusa-sl1"
-
+                  firmware:
+                    type: string
+                    description: "Firmaware version"
+                    example: "3.10.0"
+                  sdk:
+                    type: string
+                    example: "0.2.0"
+                  python:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        name:
+                          type: string
+                          example: "urllib3"
+                        version:
+                          type: string
+                          example: "1.26.1"
+                        path:
+                          type: string
+                          example: "/usr/lib/python3/dist-packages"
+                  system:
+                    type: object
+                    properties:
+                      python:
+                        type: string
+                      DESCRIPTION:
+                        type: string
+                      ID:
+                        type: string
+                        example: "Raspbian"
+                      OS:
+                        type: string
+                        example: "GNU/Linux"
   /api/connection:
     get:
       summary: Retrieve a mock for current connection settings.
@@ -55,6 +97,11 @@ paths:
                     $ref: "#/components/schemas/ConnCurrent"
                   options:
                     $ref: "#/components/schemas/ConnOptions"
+                  connect:
+                    $ref: "#/components/schemas/ConnConfig"
+                  states:
+                    $ref: "#/components/schemas/ConnStates"
+
         403:
           $ref: "#/components/responses/Unauthorized"
     post:
@@ -77,11 +124,36 @@ paths:
                 printerProfile:
                   type: string
                   default: _default
+                connect:
+                  type: object
+                  properties:
+                    hostname:
+                      type: string
+                      example: "dev.connect.prusa"
+                    port:
+                      type: integer
+                      default: 8080
+                    tls:
+                      type: boolean
+                      default: false
       responses:
+        # Return 200 only, if connect is filled
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  url:
+                    type: string
+                    example: "http://dev.connect.prusa:8080/add-printer/connect/1.3.1/AHWAXF7JZI/Shelf/Home"
+
         204:
           description: No Content
         403:
           $ref: "#/components/responses/Unauthorized"
+
 
   /api/printerprofiles:
     get:
@@ -143,6 +215,159 @@ paths:
                 $ref: "#/components/schemas/SDState"
         403:
           $ref: "#/components/responses/Unauthorized"
+
+  /api/printer/printhead:
+    post:
+      summary: Control printhead movement in XYZ axes
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                jog:
+                  type: object
+                  properties:
+                    command:
+                      type: string
+                      example: "jog"
+                    x:
+                      type: number
+                      example: 10
+                    y:
+                      type: number
+                      example: -5
+                    z:
+                      type: number
+                      example: 0.02
+                home:
+                  type: object
+                  properties:
+                    command:
+                      type: string
+                      example: "home"
+                    axes:
+                      type: array
+                      items:
+                        type: string
+                        example: ["x", "y"]
+                feedrate:
+                  type: object
+                  properties:
+                    command:
+                      type: string
+                      example: "home"
+                    factor:
+                      type: number
+                      example: 105
+      responses:
+        204:
+          description: No error
+        400:
+          $ref: "#/components/responses/BadRequest"
+        409:
+          $ref: "#/components/responses/Conflict"
+
+  /api/printer/tool:
+    post:
+      summary: Control extruder
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                target:
+                  type: object
+                  properties:
+                    command:
+                      type: string
+                      example: "target"
+                    targets:
+                      type: object
+                      properties:
+                        tool0:
+                          type: number
+                          example: 220
+                offset:
+                  type: object
+                  properties:
+                    command:
+                      type: string
+                      example: "offset"
+                    offsets:
+                      type: object
+                      properties:
+                        tool0:
+                          type: number
+                          example: 10
+                select:
+                  type: object
+                  properties:
+                    command:
+                      type: string
+                      example: "select"
+                    tool:
+                      type: string
+                      example: "tool0"
+                extrude:
+                  type: object
+                  properties:
+                    command:
+                      type: string
+                      example: "extrude"
+                    amount:
+                      type: number
+                      example: 5
+                retract:
+                  type: object
+                  properties:
+                    command:
+                      type: string
+                      example: "extrude"
+                    amount:
+                      type: number
+                      example: -3
+                flowrate:
+                  type: object
+                  properties:
+                    command:
+                      type: string
+                      example: "flowrate"
+                    amount:
+                      type: number
+                      example: 95
+      responses:
+        204:
+          description: No error
+        400:
+          $ref: "#/components/responses/BadRequest"
+        409:
+          $ref: "#/components/responses/Conflict"
+
+  /api/printer/bed:
+    post:
+      summary: Control bed temperature
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                command:
+                  type: string
+                  example: "target"
+                target:
+                  type: number
+                  example: 75
+
+      responses:
+        204:
+          description: No error
+        400:
+          $ref: "#/components/responses/BadRequest"
+        409:
+          $ref: "#/components/responses/Conflict"
 
   # MINI
   # - will probably not support this endpoint.
@@ -224,7 +449,7 @@ paths:
 
   /api/system/commands:
     get:
-      summary: Retrieves all configured system commands. Currently just a mock.
+      summary: Retrieves all configured system commands.
       responses:
         200:
           description: OK
@@ -234,6 +459,48 @@ paths:
                 $ref: "#/components/schemas/Commands"
         403:
           $ref: "#/components/responses/Unauthorized"
+
+  /api/system/commands/core/reboot:
+    post:
+      summary: Execute system reboot.
+      responses:
+        200:
+          description: OK
+          content: application/json
+        400:
+          description: BAD REQUEST
+          content: application/json
+        403:
+          $ref: "#/components/responses/Unauthorized"
+
+
+  /api/system/commands/core/restart:
+    post:
+      summary: Trigger restarting of Prusa-Link.
+      responses:
+        200:
+          description: OK
+          content: application/json
+        400:
+          description: BAD REQUEST
+          content: application/json
+        403:
+          $ref: "#/components/responses/Unauthorized"
+
+
+  /api/system/commands/core/shutdown:
+    post:
+      summary: Shutdown whole system.
+      responses:
+        200:
+          description: OK
+          content: application/json
+        400:
+          description: BAD REQUEST
+          content: application/json
+        403:
+          $ref: "#/components/responses/Unauthorized"
+
 
   /api/system/commands/custom/changeexposure:
     post:
@@ -296,6 +563,84 @@ paths:
         403:
           $ref: "#/components/responses/Unauthorized"
 
+  /api/settings:
+    get:
+      summary: Returns printer settings info
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  api-key:
+                    type: string
+                  printer:
+                    type: object
+                    properties:
+                      name:
+                        type: string
+                      location:
+                        type: string
+    post:
+      summary: Sets new printer and/or user settings and writes it to ini file
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                  printer:
+                    type: object
+                    properties:
+                      name:
+                        type: string
+                      location:
+                        type: string
+                  user:
+                    type: object
+                    properties:
+                      password:
+                        type: string
+                      username:
+                        type: string
+                      new_password:
+                        type: string
+                      new_repassword:
+                        type: string
+      responses:
+        200:
+          description: OK
+        400:
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: object
+                    properties:
+                      printer:
+                        type: object
+                        properties:
+                          missing_credentials:
+                            type: boolean
+                      user:
+                        type: object
+                        properties:
+                          username:
+                            type: boolean
+                          password:
+                            type: boolean
+                          repassword:
+                            type: boolean
+                          old_digest:
+                            type: boolean
+                          same_digest:
+                            type: boolean
+
   /api/downloads/{target}/{filename}:
     parameters:
       - in: path
@@ -330,6 +675,86 @@ paths:
           $ref: "#/components/responses/NotFound"
         415:
           $ref: "#/components/responses/UnsupportedMediaType"
+
+  /api/download:
+    get:
+      summary: Get information about the file currently being downloaded.
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  url:
+                    type: string
+                    example: "https://www.prusaprinters.org/castle.gcode"
+                  target:
+                    type: string
+                    example: "local"
+                  destination:
+                    type: string
+                    example: "/Prusa Link gcodes/castle.gcode"
+                  size:
+                    type: string
+                    example: "68073825"
+                  start_time:
+                    type: string
+                    example: "1620292282"
+                  progress:
+                    type: string
+                    example: "0.95"
+                  remaining_time:
+                    type: string
+                    example: "281.92677480085825"
+                  to_select:
+                    type: boolean
+                  to_print:
+                    type: boolean
+        204:
+          description: No Content
+        403:
+          $ref: "#/components/responses/Unauthorized"
+    post:
+      summary: Download file from url to intended location.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                  url:
+                    type: string
+                  target:
+                    type: string
+                    default: "local"
+                  destination:
+                    type: string
+                  to_select:
+                    type: boolean
+                    default: false
+                  to_print:
+                    type: boolean
+                    default: false
+              required:
+                - url
+                - target
+                - destination
+      responses:
+        201:
+          description: Created
+        403:
+          $ref: "#/components/responses/Unauthorized"
+        409:
+          $ref: "#/components/responses/Conflict"
+          description: Another file is being downloaded or same file is currently being printed.
+    delete:
+      summary: Terminate the current file download process.
+      responses:
+        204:
+          description: No Content
+                       No Error
 
   /api/files:
     get:
@@ -527,6 +952,59 @@ paths:
           $ref: "#/components/responses/Conflict"
           description: If the file to be deleted is currently being printed
 
+  /api/logs:
+    get:
+      summary: Return available logs
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  files:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        name:
+                          type: string
+                          description: File name
+                          example: system.log
+                        date:
+                          type: integer
+                          description: Last modified timestamp
+                        size:
+                          type: integer
+                        refs:
+                          type: object
+                          properties:
+                            download:
+                              type: string
+                              description: The download URL for the log file
+
+  /api/logs/{filename}:
+    parameters:
+      - in: path
+        name: filename
+        required: true
+        description: The name of the log
+        schema:
+          type: string
+          example: system.log
+    get:
+      summary: Return log content
+      responses:
+        200:
+          description: OK
+          content:
+            text/plain:
+              schema:
+                type: string
+        404:
+          description: Not Found
+
 components:
   schemas:
     ConnCurrent:
@@ -571,6 +1049,45 @@ components:
                 type: string
                 example: Prusa SL1
 
+    ConnConfig:
+      type: object
+      properties:
+          hostname:
+            type: string
+            example: "dev.connect.prusa"
+          port:
+            type: integer
+            default: 8080
+          tls:
+            type: boolean
+            default: false
+          registrated:
+            type: boolean
+            example: true
+
+    ConnStates:
+      type: object
+      properties:
+        printer:
+          type: object
+          properties:
+            ok:
+              type: boolean
+              example: false
+            message:
+              type: string
+              example: "Serial number cannot be obtained"
+        connect:
+          type: object
+          properties:
+            ok:
+              type: boolean
+              nullable: true
+              example: true
+            message:
+              type: string
+              example: "OK"
+
     Commands:
       type: object
       properties:
@@ -607,25 +1124,25 @@ components:
         resource:
           type: string
       default: [
-          {
-            "action": "resinrefill", # after sending this command, printer should change its state to "busy" (PCL will show "wait until layer finishes"). After printer is ready to refill, state should change to "paused"
-            "name": "Refill resin",
-            "source": "custom",
-            "resource": "http://localhost/api/system/commands/custom/resinrefill",
-          },
-          {
-            "action": "resinrefilled", # after sending this command, printer should update the resin volume in tank. PCL will then send /api/job with command: pause, action: resume
-            "name": "Resin fully refilled",
-            "source": "custom",
-            "resource": "http://localhost/api/system/commands/custom/resinrefilled",
-          },
-          {
-            "action": "changeexposure",
-            "name": "Change exposure times",
-            "source": "custom",
-            "resource": "http://localhost/api/system/commands/custom/changeexposure",
-          },
-        ]
+        {
+          "action": "resinrefill", # after sending this command, printer should change its state to "busy" (PCL will show "wait until layer finishes"). After printer is ready to refill, state should change to "paused"
+          "name": "Refill resin",
+          "source": "custom",
+          "resource": "http://localhost/api/system/commands/custom/resinrefill"
+        },
+        {
+          "action": "resinrefilled", # after sending this command, printer should update the resin volume in tank. PCL will then send /api/job with command: pause, action: resume
+          "name": "Resin fully refilled",
+          "source": "custom",
+          "resource": "http://localhost/api/system/commands/custom/resinrefilled"
+        },
+        {
+          "action": "changeexposure",
+          "name": "Change exposure times",
+          "source": "custom",
+          "resource": "http://localhost/api/system/commands/custom/changeexposure"
+        },
+      ]
 
     Profiles:
       type: object
@@ -789,6 +1306,14 @@ components:
               description: The size of the file in bytes.
               example: 873151
               nullable: true
+            refs:
+              type: object
+              properties:
+                resource:
+                  type: string
+                thumbnailBig:
+                  type: string
+                  nullable: true
 
     Progress:
       oneOf:
@@ -1088,22 +1613,25 @@ components:
 
     State:
       type: string
-      enum:
-        [
-          "Operational",
-          "Printing",
-          "Pausing",
-          "Paused",
-          "Cancelling",
-          "Error",
-          "Offline",
-          "Busy",
-        ]
+      enum: [
+        "Operational",
+        "Printing",
+        "Pausing",
+        "Paused",
+        "Cancelling",
+        "Error",
+        "Offline",
+        "Busy",
+      ]
       example: "Operational"
 
     TelemetryMini:
       type: object
       properties:
+        temp_bed:
+          type: number
+        temp_nozzle:
+          type: number
         material:
           type: string
 
@@ -1122,6 +1650,15 @@ components:
         coverClosed:
           type: boolean
           example: true
+        tempAmbient:
+          type: number
+          example: 23.4
+        tempCpu:
+          type: number
+          example: 46.9
+        tempUvLed:
+          type: number
+          example: 52.6
 
     #JobFileFDM:
 
@@ -1193,19 +1730,22 @@ components:
         code:
           type: string
           description: Prusa error code. Mus be string if we will have printer with code for example 04
-          default: "10108"
+          example: "10108"
         title:
           type: string
           description: Prusa error text string with prefiled variable macros.
-          default: "RESIN TOO LOW"
+          example: "RESIN TOO LOW"
         text:
           type: string
           description: Prusa error text string with prefiled variable macros.
-          default: "Measured resin volume 22.4 ml is lower than required for this print. Refill the tank and restart the print."
+          example: "Measured resin volume 22.4 ml is lower than required for this print. Refill the tank and restart the print."
         url:
           type: string
           description: Link to the Prusa help page
-          default: "https://help.prusa3d.com/en/10108/LHE3Q0I1"
+          example: "https://help.prusa3d.com/en/10108/LHE3Q0I1"
+      required:
+        - title
+        - text
 
     ResponsePlaintext:
       type: string

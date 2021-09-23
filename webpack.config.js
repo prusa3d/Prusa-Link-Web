@@ -1,8 +1,9 @@
-// This file is part of the Prusa Connect Local
+// This file is part of the Prusa Link Web
 // Copyright (C) 2021 Prusa Research a.s. - www.prusa3d.com
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 const path = require("path");
+const packageFile = require("./package.json");
 const webpack = require("webpack");
 const TerserPlugin = require("terser-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
@@ -10,50 +11,55 @@ const HtmlWebpackPlugin = require("html-webpack-plugin");
 const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 const PreprocessingPlugin = require("./tools/preprocessing");
 const devServer = require("./tools/server");
-const CopyPlugin = require("copy-webpack-plugin");
+
+const DEFAULT_NAME = "Original Prusa 3D Printer";
 
 module.exports = (env, args) => {
   const buildLocales = env.locales;
-  const printer_conf = {
-    appName: "Prusa Connect Local",
-    mode: env.dev ? "development" : "production",
-    type: env.PRINTER.toLowerCase(),
-    updateInterval: 1000,
-    "http-basic": env["http-basic"],
-    "http-apikey": env["http-apikey"],
+
+  const config = {
+    PRINTER_NAME: env["PRINTER_NAME"] || DEFAULT_NAME,
+    PRINTER_TYPE: env["PRINTER_TYPE"] || "fdm", // "fdm" | "sla"
+
+    APP_NAME: env["APP_NAME"] || "Prusa-Link-Web",
+    APP_TITLE: env["APP_TITLE"] || env["PRINTER_NAME"] || DEFAULT_NAME,
+    APP_VERSION: packageFile.version,
+
+    MODE: env.dev ? "development" : "production",
+    UPDATE_INTERVAL: env["UPDATE_INTERVAL"] || 1000,
+    HTTP_APIKEY: env["HTTP_APIKEY"] || env["http-apikey"] || false,
+    HTTP_BASIC: env["HTTP_BASIC"] || env["http-basic"] || false,
+
+    WITH_SETTINGS: env["WITH_SETTINGS"] || false,
+    WITH_CONTROLS: env["WITH_CONTROLS"] || false,
+    WITH_LOGS: env["WITH_LOGS"] || false,
+    WITH_FONT: env["WITH_FONT"] || false,
   };
 
-  let icons;
-
-  if (printer_conf.type == "sl1") {
-    printer_conf["title"] = "Original Prusa SL1";
-    printer_conf["printerFamily"] = "sla";
-    icons = { from: "./src/assets/icons", to: "./" };
-  } /* (printer_conf.type == "mini") */ else {
-    printer_conf["title"] = "Original Prusa Mini";
-    printer_conf["printerFamily"] = "fdm";
-    icons = { from: "./src/assets/icons/favicon-32x32.png", to: "./" };
-  }
+  const env_variables = Object.fromEntries(
+    Object.entries(config)
+      .map(([key, value]) => [`process.env.${key}`, JSON.stringify(value)])
+  );
 
   if (buildLocales) {
-    console.log(`===== ${printer_conf.title} =====`);
+    console.log(`===== ${config.APP_TITLE} =====`);
     console.log("building locales");
     console.log(`=============================`);
   } else {
-    console.log(`===== ${printer_conf.title} =====`);
-    console.log(printer_conf);
+    console.log(`===== ${config.APP_TITLE} =====`);
+    console.log(config);
     console.log(`=============================`);
   }
 
   const preprocessing = new PreprocessingPlugin({
-    printer_conf: printer_conf,
+    config,
     templates_dir: path.resolve(__dirname, "templates"),
     assets_dir: path.resolve(__dirname, "src/assets"),
     output_dir: path.resolve(__dirname, "src/views"),
   });
 
   return {
-    mode: printer_conf.mode,
+    mode: config.MODE,
     entry: "./src/index.js",
 
     output: {
@@ -65,19 +71,7 @@ module.exports = (env, args) => {
     plugins: [
       preprocessing,
       new webpack.ProgressPlugin(),
-      new webpack.DefinePlugin({
-        "process.env.APP_NAME": JSON.stringify(printer_conf.appName),
-        "process.env.MODE": JSON.stringify(printer_conf.mode),
-        "process.env.TYPE": JSON.stringify(printer_conf.type),
-        "process.env.TITLE": JSON.stringify(printer_conf.title),
-        "process.env.PRINTER_FAMILY": JSON.stringify(
-          printer_conf.printerFamily
-        ),
-        "process.env.APIKEY": JSON.stringify(printer_conf.apiKey),
-        "process.env.UPDATE_INTERVAL": JSON.stringify(
-          printer_conf.updateInterval
-        ),
-      }),
+      new webpack.DefinePlugin(env_variables),
       new CleanWebpackPlugin(),
       new MiniCssExtractPlugin({
         filename: "[name].[contenthash].css",
@@ -85,9 +79,6 @@ module.exports = (env, args) => {
       new HtmlWebpackPlugin({
         template: "./src/views/index.html",
         minify: !env.dev,
-      }),
-      new CopyPlugin({
-        patterns: [icons],
       }),
     ],
 
@@ -110,16 +101,12 @@ module.exports = (env, args) => {
           test: /\.html$/i,
           loader: "html-loader",
         },
-        buildLocales
-          ? {
-              test: /\.html$/i,
-              loader: path.resolve(
-                __dirname,
-                "tools/loaders/locale_loader_html"
-              ),
-              include: path.resolve(__dirname, "src/views/"),
-            }
-          : {},
+        buildLocales ?
+          {
+            test: /\.html$/i,
+            loader: path.resolve(__dirname, "tools/loaders/locale_loader_html"),
+            include: path.resolve(__dirname, "src/views/"),
+          } : {},
         {
           test: /\.(png|jpe?g|gif|svg|woff2?)$/i,
           use: [
@@ -128,13 +115,12 @@ module.exports = (env, args) => {
             },
           ],
         },
-        buildLocales
-          ? {
-              test: /\.js/,
-              loader: path.resolve(__dirname, "tools/loaders/locale_loader_js"),
-              exclude: path.resolve(__dirname, "node_modules"),
-            }
-          : {},
+        buildLocales ?
+          {
+            test: /\.js/,
+            loader: path.resolve(__dirname, "tools/loaders/locale_loader_js"),
+            exclude: path.resolve(__dirname, "node_modules"),
+          } : {},
       ],
     },
 
@@ -148,16 +134,9 @@ module.exports = (env, args) => {
       compress: true,
       port: 9000,
       after: function (app, server, compiler) {
-        devServer(app, printer_conf);
+        devServer(app, config);
         preprocessing.startWatcher(server);
       },
-      // To run Prusa Link against the real server
-      /*
-      port: 9000,
-      proxy: {
-        "/": "http://localhost:8080",
-      },
-      */
     },
   };
 };

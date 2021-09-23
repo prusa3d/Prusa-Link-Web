@@ -36,7 +36,7 @@
     "title": "Stato della stampante"
   },
   "msg": {
-    "api-key-1": "Benvenuti nell'interfaccia web di Prusa Connect Local.",
+    "api-key-1": "Benvenuti nell'interfaccia web di Prusa Link Web.",
     "api-key-2": "Si prega di inserire la chiave API.",
     "api-key-3": "È possibile trovarla in Impostazioni -> Rete -> Credenziali di accesso",
     "cancel": "Vuoi davvero annullare la stampa?",
@@ -65,11 +65,13 @@
     "upld-unsuc": "Caricamento del progetto {{file_name}} non riuscito."
   },
   "print": {
-    "1": "Stai per avviare una stampa da remoto utilizzando l'interfaccia utente web. Assicurarsi che la stampante 3D sia impostata correttamente e pronta per la stampa.",
-    "2": "La piattaforma di stampa è pulita e installata sulla stampante",
-    "3": "Nel serbatoio è presente una quantità sufficiente di resina",
-    "4": "Il coperchio acrilico arancione è chiuso",
-    "5": "La tanica della resina è pulita ed installata nella stampante"
+    "sla": {
+      "1": "Stai per avviare una stampa da remoto utilizzando l'interfaccia utente web. Assicurarsi che la stampante 3D sia impostata correttamente e pronta per la stampa.",
+      "2": "La piattaforma di stampa è pulita e installata sulla stampante",
+      "3": "Nel serbatoio è presente una quantità sufficiente di resina",
+      "4": "Il coperchio acrilico arancione è chiuso",
+      "5": "La tanica della resina è pulita ed installata nella stampante"
+    }
   },
   "proj": {
     "del": "Elimina File",

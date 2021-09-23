@@ -1,4 +1,4 @@
-// This file is part of the Prusa Connect Local
+// This file is part of the Prusa Link Web
 // Copyright (C) 2021 Prusa Research a.s. - www.prusa3d.com
 // SPDX-License-Identifier: GPL-3.0-or-later
 
@@ -39,6 +39,15 @@ export function info(title, message, type = "") {
 }
 
 /**
+ * Create and show a warning toast
+ * @param {string} title
+ * @param {string} message
+ */
+export function warning(title, message) {
+  info(title, message, "warning");
+}
+
+/**
  * Create and show a success toast
  * @param {string} title
  * @param {string} message
@@ -52,23 +61,14 @@ export function success(title, message) {
  * @param {string} title
  * @param {string} message
  */
-export function error(title, message, type = "error") {
-  const article = createToast(title, message, type);
+export function error(title, message) {
+  const article = createToast(title, message, "error");
   article.querySelector("span").addEventListener("click", (e) => {
     e.preventDefault();
     toast_context.removeChild(article);
   });
 
   toast_context.appendChild(article);
-}
-
-/**
- * Create and show a warning toast
- * @param {string} title
- * @param {string} message
- */
-export function warning(title, message) {
-  error(title, message, "warning");
 }
 
 export default { info, warning, success, error };

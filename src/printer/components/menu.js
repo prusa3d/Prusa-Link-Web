@@ -1,9 +1,8 @@
-// This file is part of the Prusa Connect Local
+// This file is part of the Prusa Link Web
 // Copyright (C) 2021 Prusa Research a.s. - www.prusa3d.com
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-import { Dropdown } from "./dropdown";
-import { getLanguage, getLanguages, setLanguage } from "../../locale_provider";
+import langSelect from "./dropdown/language";
 
 export const initMenu = () => {
   document.getElementById("menu").addEventListener("click", (e) => {
@@ -17,13 +16,5 @@ export const initMenu = () => {
     }
   });
 
-  const dropdown = Dropdown.init(document.getElementById("navbar"));
-  if (dropdown) {
-    dropdown.setOptions(getLanguages());
-    dropdown.value = getLanguage();
-    dropdown.onselect = (lang) => {
-      setLanguage(lang);
-      window.location.reload();
-    };
-  }
+  langSelect.init("navbar")
 };

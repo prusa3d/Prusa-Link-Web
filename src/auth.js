@@ -1,4 +1,4 @@
-// This file is part of the Prusa Connect Local
+// This file is part of the Prusa Link Web
 // Copyright (C) 2021 Prusa Research a.s. - www.prusa3d.com
 // SPDX-License-Identifier: GPL-3.0-or-later
 
@@ -43,15 +43,16 @@ export const askApiKey = () =>
 
 /**
  * Create the readers with apiKey if exist and Accept keys
+ * @param {string?} accept Accept header, default is `application/json`
  */
-const getHeaders = () => {
+const getHeaders = (accept) => {
   if (sessionStorage.getItem("authType") == "ApiKey") {
     return {
       "X-Api-Key": sessionStorage.getItem("apiKey"),
-      Accept: "application/json",
+      Accept: accept || "application/json",
     };
   }
-  return { Accept: "application/json" };
+  return { Accept: accept || "application/json" };
 };
 
 /**
@@ -63,12 +64,10 @@ const setUpAuth = () =>
     return fetch("/api/version", { headers: getHeaders() })
       .then((response) => {
         if (response.status == 401) {
+          response.json().then((data) => handleError({ data }));
           const auth_type = response.headers
             .get("WWW-Authenticate")
             .split(" ")[0];
-          if (auth_type != "ApiKey" || sessionStorage.getItem("authType")) {
-            response.json().then((data) => handleError({ data }));
-          }
           sessionStorage.setItem("authType", auth_type);
           sessionStorage.removeItem("apiKey");
           if (auth_type == "ApiKey") {
@@ -76,7 +75,7 @@ const setUpAuth = () =>
               setUpAuth().then((data) => resolve(data))
             ); // ApiKey
           }
-          return null;
+          return setUpAuth().then((data) => resolve(data)); // http-digest
         } else {
           return response.json(); // done
         }
@@ -93,60 +92,106 @@ const setUpAuth = () =>
  * @param {object} opts
  */
 const getJson = (url, opts = {}) =>
+  fetchUrl(url, opts, "application/json", "json");
+
+/**
+ * Async function for fetch url then call the callback with the data
+ * @param {string} url
+ * @param {object} opts
+ */
+const getPlainText = (url, opts = {}) =>
+  fetchUrl(url, opts, "text/plain", "text");
+
+/**
+ * Async function for fetch url then call the callback with the data
+ * @param {string} url
+ * @param {object} opts
+ * @param {"application/json" | "text/plain" } accept Accept header
+ * @param {"text" | "json"} parse Parse as text or json?
+ */
+async function fetchUrl(url, opts = {}, accept, parse) {
+  const auth = sessionStorage.getItem("auth");
+  if (auth == "true") {
+    opts.headers = { ...opts.headers, ...getHeaders(accept) };
+    const response = await fetch(url, opts);
+    const status = response.status;
+    const result = {
+      code: status,
+      eTag: response.headers.get("etag"),
+    };
+
+    switch (status) {
+      case 401: // Unauthorized
+        sessionStorage.setItem("auth", "false");
+        throw result;
+      case 204: // No Content
+      case 304: // Not Modified
+        return result;
+      default:
+        const text = await response.text();
+
+        if (!response.ok) {
+          if (text.length > 0) {
+            try {
+              result["data"] = JSON.parse(text);
+            } catch { }
+          }
+          result["data"] = result["data"] || {
+            title: `Error ${status}`,
+            message: response.statusText
+          };
+          throw result;
+        }
+
+        if (parse === "json") {
+          result["data"] = text.length === 0 ? {} : JSON.parse(text);
+        } else {
+          result["data"] = text;
+        }
+        return result;
+    }
+  } else {
+    throw { code: 401 };
+  }
+}
+
+/**
+ * Async function to get url to the file that request authentication
+ * @param {string} url
+ * @param {object} opts
+ */
+const getFileURL = (url, opts) =>
   new Promise((resolve, reject) => {
     const auth = sessionStorage.getItem("auth");
     if (auth == "true") {
       opts.headers = { ...opts.headers, ...getHeaders() };
       fetch(url, opts).then((response) => {
-        const status = response.status;
-        const result = {
-          code: status,
-          eTag: response.headers.get("etag"),
-        };
-        if (status == 401) {
+        if (response.status == 401) {
           sessionStorage.setItem("auth", "false");
-          reject(result);
-        } else if (status == 204 || status == 304) {
-          resolve(result);
-        } else {
-          response.json().then((data) => {
-            result["data"] = data;
-            if (response.ok) {
-              resolve(result);
-            } else {
-              reject(result);
-            }
-          });
+          reject(response);
         }
-      });
+        if (response.ok) {
+          response.blob().then((blob) => resolve(URL.createObjectURL(blob)));
+        } else {
+          reject(response)
+        }
+      }).catch((e) => reject(e));
     } else {
-      reject({ code: 401 });
+      reject();
     }
   });
 
 /**
  * Async function for fetch image
  * @param {string} url
- * @param {object} opts
  */
-const getImage = (url) =>
-  new Promise((resolve, reject) => {
-    const auth = sessionStorage.getItem("auth");
-    if (auth == "true") {
-      const opts = {
-        headers: { "Content-Type": "image/png", ...getHeaders() },
-      };
-      fetch(url, opts).then((response) => {
-        if (response.status == 401) {
-          sessionStorage.setItem("auth", "false");
-          reject();
-        }
-        response.blob().then((blob) => resolve(URL.createObjectURL(blob)));
-      });
-    } else {
-      reject();
-    }
-  });
+const getImage = (url) => getFileURL(url, { headers: { "Content-Type": "image/png" } });
+
+/**
+ * Async function for fetch file
+ * @param {string} url
+ */
+const getFile = (url) => getFileURL(url, {});
 
 const createWelcome = (close) => {
   const template = document.getElementById(`modal-welcome`);
@@ -172,4 +217,4 @@ const initAuth = () => {
   }
 };
 
-export { getJson, initAuth, getImage };
+export { getJson, initAuth, getImage, getFile, getPlainText };

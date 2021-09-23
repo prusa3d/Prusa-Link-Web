@@ -1,0 +1,164 @@
+<!-- prettier-ignore -->
+{#
+  # This file is part of the Prusa Link Web
+  # Copyright (C) 2021 Prusa Research a.s. - www.prusa3d.com
+  # SPDX-License-Identifier: GPL-3.0-or-later
+#}
+
+<!-- prettier-ignore -->
+{% if env.PRINTER_TYPE == "fdm" %}
+  {%
+    set version_section = [
+      {'text': 'api ', 'label': 'version.api', "location": "version.api", 'type': 'settings' },
+      {'text': 'hostname', 'label': 'version.hostname', "location": "version.hostname", 'type': 'settings' },
+      {'text': 'firmware', 'label': 'version.firmware', "location": "version.firmware", 'type': 'settings' },
+      {'text': 'server', 'label': 'version.server', "location": "version.server", 'type': 'settings' },
+      {'text': 'text', 'label': 'version.text', "location": "version.text", 'type': 'settings' },
+      {'text': 'sdk', 'label': 'version.sdk', "location": "version.sdk", 'type': 'settings' },
+      {'text': 'frontend', 'label': 'version.fe', 'value': env.APP_VERSION }
+    ]
+  %}
+{% else %}
+  {%
+    set version_section = [
+      {'text': 'api ', 'label': 'version.api', "location": "version.api", 'type': 'settings' },
+      {'text': 'hostname', 'label': 'version.hostname', "location": "version.hostname", 'type': 'settings' },
+      {'text': 'server', 'label': 'version.server', "location": "version.server", 'type': 'settings' },
+      {'text': 'text', 'label': 'version.text', "location": "version.text", 'type': 'settings' },
+      {'text': 'sdk', 'label': 'version.sdk', "location": "version.sdk", 'type': 'settings' },
+      {'text': 'frontend', 'label': 'version.fe', 'value': env.APP_VERSION }
+    ]
+  %}
+{% endif %}
+
+<!-- prettier-ignore -->
+{%
+  set section_logs = [
+    {'text': 'select file', 'label': 'logs.select-file', 'type': 'dropdown', 'editable': true, 'value': 'log.log', 'button': {id: 'download-log', text: 'download file'} }
+  ]
+%}
+
+<!-- prettier-ignore -->
+{%
+  set section_connection = [
+    {'text': 'PRUSA CONNECT connection status' , 'label': 'conn.prusa-connect-status', 'id': 'conn-prusa-connect-status', 'component': 'conn-status' },
+    {'id': 'conn-prusa-connect-status-msg' },
+    {'text': '3D printer connection status' , 'label': 'conn.printer-status', 'id': 'conn-printer-status', 'component': 'conn-status' },
+    {'id': 'conn-printer-status-msg'}
+  ]
+%}
+
+<!-- prettier-ignore -->
+{%
+  set section_printer = [
+    {text: 'printer name', label: 'printer.name', id: 'printer-name', type: 'text', editable: true, spacer: true },
+    {text: 'printer location', label: 'printer.location', id: 'printer-location', type: 'text', editable: true, spacer: true },
+    {type: 'btn-only', button: {id: 'edit-printer', text: 'change', label: 'btn.chg', disabled: true}, spacer: true }
+  ]
+%}
+
+<!-- prettier-ignore -->
+{%
+  set section_user = [
+    {text: 'username', label: 'user.username', id: 'username', type: 'text', editable: true, spacer: true },
+    {text: 'new password', label: 'user.new-password', id: 'new-password', type: 'password', editable: true, spacer: true },
+    {text: 'repeat password', label: 'user.re-password', id: 're-password', type: 'password', editable: true, spacer: true },
+    {text: ''},
+    {text: ''},
+    {text: 'current password', label: 'user.password', id: 'password', type: 'password', editable: true, spacer: true},
+    {type: 'btn-only', button: {id: 'edit-user', text: 'change', label: 'btn.chg', disabled: true}, spacer: true }
+  ]
+%}
+
+<!-- prettier-ignore -->
+{%
+  set settings = [
+    {'text': 'version', 'label': 'version.title', 'settings': version_section },
+    {'text': 'system version', 'label': 'sys-version.title', 'settings': [], 'id': 'sys-version' },
+    {'text': 'connection', 'label': 'conn.title', 'settings': section_connection },
+    {'text': 'printer', 'label': 'printer.title', 'settings': section_printer },
+    {'text': 'user', 'label': 'user.title', 'settings': section_user },
+    {'text': 'logs', 'label': 'logs.title', 'settings': section_logs, 'condition': env.WITH_LOGS }
+  ]
+%}
+
+<!-- prettier-ignore -->
+{% include "components/title_default.html" %}
+
+<div class="main-wrapper center" id="settings">
+  {% for section in settings %}
+    {% if not "condition" in section or section.condition %}
+      <div class="component"
+        {% if section.id %}
+          id="{{section.id}}"
+        {% endif %}
+      >
+        <p class="txt-bold txt-grey txt-size-2" data-label="{{section.label}}">{{section.text}}</p>
+        <div class="table">
+          {% for values in section.settings %}
+            <div class="row">
+
+              <div class="col txt-size-3">
+                <p class="txt-bold txt-grey" data-label="{{values.label}}">{{ values.text }}</p>
+              </div>
+
+              {% if values.type != "btn-only" %}
+                <div class="col txt-size-2">
+                  {% if values.editable %}
+                    {% if values.type == "dropdown" %}
+                      <select data-type="dropdown"></select>
+                    {% else %}
+                      <input id="{{values.id}}" type="{{values.type}}" value="{{values.value}}" />
+                    {% endif %}
+                  {% elif values.component == "conn-status" %}
+                    {% set add_id = values.id %}
+                    {% include "components/settings/connection_status.html" %}
+                  {% else %}
+                    <p
+                      {% if values.id %}
+                        id="{{values.id}}"
+                      {% endif %}
+                      {% if values.format %}
+                        data-format={{values.format}}
+                      {% endif %}
+                      {% if values.type %}
+                        data-type="{{values.type}}"
+                      {% endif %}
+                      {% if values.location %}
+                        data-where="{{values.location}}"
+                      {% endif %}
+                    >{{values.value}}</p>
+                  {% endif %}
+                </div>
+              {% endif %}
+
+              {% if values.button %}
+                <div class="col">
+                  <button class="action" id="{{values.button.id}}"
+                    {% if values.disabled %}
+                      disabled
+                    {% endif %}
+                  >
+                    <p data-label="{{values.button.label}}">
+                      {{values.button.text}}
+                    </p>
+                  </button>
+                </div>
+              {% elif values.spacer %}
+                <div class="col"></div>
+              {% endif %}
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+    {% endif %}
+  {% endfor %}
+
+  {% if env.WITH_LOGS %}
+    <div class="component">
+      <ul class="logs">
+        <li data-label="logs.not-selected">No log file is selected!</li>
+      </ul>
+    </div>
+  {% endif %}
+</div>

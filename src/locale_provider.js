@@ -1,4 +1,4 @@
-// This file is part of the Prusa Connect Local
+// This file is part of the Prusa Link Web
 // Copyright (C) 2021 Prusa Research a.s. - www.prusa3d.com
 // SPDX-License-Identifier: GPL-3.0-or-later
 
@@ -97,9 +97,8 @@ export function translate(textId, parameters) {
       if (paramName in parameters) {
         let param = parameters[paramName];
         editedWord = editedWord.replace(match[0], param);
-      }
-      if (process.env.MODE == "development") {
-        if (!(paramName in parameters)) {
+      } else {
+        if (process.env.MODE == "development") {
           console.warn(
             `missing parameter [${paramName}] in translation for ${textId}.`
           );
@@ -122,11 +121,8 @@ function assign(word, parameters) {
       let element = document.querySelector(parameters.query);
       if (element) {
         element.innerHTML = word;
-      }
-      if (process.env.MODE == "development") {
-        if (!element) {
-          console.warn(`cannot find element with "${parameters.query}" query`);
-        }
+      } else {
+        console.warn(`cannot find element with "${parameters.query}" query`);
       }
     }
   }
@@ -139,7 +135,7 @@ function assign(word, parameters) {
 export function translateLabels(root) {
   let rootElement = getElement(root);
 
-  rootElement.querySelectorAll(`[data-label]`).forEach((elm) => {
+  rootElement.querySelectorAll(`[data-label]:not([data-label=""])`).forEach((elm) => {
     elm.innerHTML = translate(elm.getAttribute("data-label"));
   });
 }

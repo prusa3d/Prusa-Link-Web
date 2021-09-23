@@ -36,7 +36,7 @@
     "title": "Stan drukarki"
   },
   "msg": {
-    "api-key-1": "Witaj w interfejsie sieciowym Prusa Connect Local.",
+    "api-key-1": "Witaj w interfejsie sieciowym Prusa Link Web.",
     "api-key-2": "Wpisz klucz API.",
     "api-key-3": "Możesz znaleźć go w sekcji Ustawienia -> Sieć -> Dane logowania.",
     "cancel": "Czy na pewno chcesz anulować wydruk?",
@@ -65,11 +65,13 @@
     "upld-unsuc": "Przesyłanie projektu {{file_name}} nie powiodło się."
   },
   "print": {
-    "1": "Masz zamiar rozpocząć druk zdalnie przy pomocy interfejsu sieciowego. Upewnij się, że drukarka 3D jest prawidłowo skonfigurowana i gotowa do pracy.",
-    "2": "Platforma jest czysta i zamontowana w drukarce",
-    "3": "W zbiorniku jest wystarczająca ilość żywicy",
-    "4": "Pomarańczowa pokrywa jest zamknięta",
-    "5": "Zbiornik jest czysty i zamontowany w drukarce"
+    "sla": {
+      "1": "Masz zamiar rozpocząć druk zdalnie przy pomocy interfejsu sieciowego. Upewnij się, że drukarka 3D jest prawidłowo skonfigurowana i gotowa do pracy.",
+      "2": "Platforma jest czysta i zamontowana w drukarce",
+      "3": "W zbiorniku jest wystarczająca ilość żywicy",
+      "4": "Pomarańczowa pokrywa jest zamknięta",
+      "5": "Zbiornik jest czysty i zamontowany w drukarce"
+    }
   },
   "proj": {
     "del": "Usuń plik",

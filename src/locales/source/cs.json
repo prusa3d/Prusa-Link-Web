@@ -3,17 +3,57 @@
     "back": "Zpět",
     "cancel": "Zrušit",
     "cancel-pt": "Zrušit tisk",
+    "chg": "změnit",
     "chg-exp": "Změnit časy expozice",
     "confirm": "Potvrdit",
     "continue": "Pokračovat",
     "del": "smazat",
+    "disable-steppers": "vypnout motory",
+    "download": "stáhnout",
+    "extrude": "vytlačit",
     "login": "Přihlášení",
     "no": "Ne",
+    "pause-pt": "Pozastavit tisk",
+    "resume-pt": "Pokračovat v tisku",
+    "retract": "vtáhnout",
     "save-chgs": "Uložit změny",
+    "set": "NASTAVIT",
     "sla-refill": "Doplnit resin",
     "sla-refilled": "Resin zcela doplněn",
     "start-pt": "Start tisku",
+    "upld-proj": "Upload project",
     "yes": "Ano"
+  },
+  "conn": {
+    "printer-status" : "stav připojení 3D tiskárny",
+    "prusa-connect-status": "stav připojení PRUSA CONNECT",
+    "suc": "Úspěšně připojeno",
+    "title": "připojení",
+    "unsuc": "Připojení se nezdařilo"
+  },
+  "control": {
+    "axis": {
+      "x": "osa X",
+      "y": "osa Y",
+      "z": "osa Z"
+    },
+    "coordinates": "souřadnice tiskárny",
+    "extrude-retract-step": "krok vytlačení/vtažení [mm]",
+    "extruder": "extrudér",
+    "flow": "průtok",
+    "heated-bed-move": "pohyb podložky v ose X a Y",
+    "heated-bed-temp": "heated bed temperature",
+    "link": "Ovládání",
+    "move-step": "krok pohybu [mm]",
+    "nozzle-temp": "nozzle temperature",
+    "nozzle-z-move": "pohyb extrudéru v ose Z",
+    "speed": "rychlost",
+    "stepper-motors": "krokové motory",
+    "title": "Ovládání tiskárny"
+  },
+  "download": {
+    "start-pt": "Spustit tisk",
+    "dl-started": "Začátek stahování"
   },
   "error": {
     "401-title": "Přihlášení selhalo"
@@ -35,8 +75,16 @@
     "link": "Přehled",
     "title": "Stav tiskárny"
   },
+  "logs": {
+    "empty-file": "Soubor je prázdný!",
+    "file-too-large": "Soubory logů o velikosti větší než {{size}} jsou k dispozici pouze ke stažení!",
+    "not-selected": "Není vybrán soubor logů!",
+    "select-file": "vyberte soubor",
+    "select-file-placeholder": "Vyberte soubor logů",
+    "title": "logy"
+  },
   "msg": {
-    "api-key-1": "Vítejte ve webovém rozhraní Prusa Connect Local!",
+    "api-key-1": "Vítejte ve webovém rozhraní Prusa Link Web!",
     "api-key-2": "Vložte API klíč.",
     "api-key-3": "Otevřete menu Nastavení -> Síť -> Přihlašovací údaje",
     "cancel": "Chcete opravdu zrušit tisk?",
@@ -57,19 +105,31 @@
     "error": "Chyba",
     "n-calibrated": "Tiskárna není zkalibrovaná!",
     "not-idle": "Tiskárna je zaneprázdněna, prosím vyčkejte!",
+    "settings-suc": "Nastavení bylo úspěšně změněno.",
     "start-print": "Tiskárna se připravuje.",
-    "success": "Úspěch",
+    "success": "Požadavek byl úspěšný",
     "upld-exists": "Projekt s názvem {{file_name}} již existuje",
     "upld-not-sup": "Projekt {{file_name}} není podporován",
-    "upld-suc": "Projekt {{file_name}} úspěšně nahrán.",
+    "upld-suc": "Projekt {{file_name}} byl úspěšně nahrán.",
     "upld-unsuc": "Nahrání projektu {{file_name}} selhalo."
   },
   "print": {
-    "1": "Spouštíte vzdálený tisk pomocí webového rozhraní. Ujistěte se, že vaše 3D tiskárna je správně nastavena a je připravena k tisku.",
-    "2": "Tisková platforma je čistá a správně nainstalovaná.",
-    "3": "Ve vaničce je dostatečné množství resinu",
-    "4": "Oranžový kryt je zavřený",
-    "5": "Vanička na resin je čistá a zajištěná v tiskárně."
+    "fdm": {
+      "1": "Je tiskárna připravena?",
+      "2": "Je tisková podložka prázdná a čistá?"
+    },
+    "sla": {
+      "1": "Spouštíte vzdálený tisk pomocí webového rozhraní. Ujistěte se, že vaše 3D tiskárna je správně nastavena a je připravena k tisku.",
+      "2": "Tisková platforma je čistá a správně nainstalovaná.",
+      "3": "Ve vaničce je dostatečné množství resinu",
+      "4": "Oranžový kryt je zavřený",
+      "5": "Vanička na resin je čistá a zajištěná v tiskárně."
+    }
+  },
+  "printer": {
+    "location": "umístění tiskárny",
+    "name": "název tiskárny",
+    "title": "tiskárna"
   },
   "proj": {
     "del": "Smazat soubor",
@@ -86,6 +146,7 @@
     "est-end": "Odhadovaný konec",
     "exp-time": "doba expozice",
     "exp-times": "Doba expozice",
+    "false": "Ne",
     "fan-blower": "Ventilátor",
     "fan-led": "Ventilátor UV LED",
     "fan-rear": "Zadní ventilátor",
@@ -99,11 +160,15 @@
     "material": "Materiál",
     "na": "N/A",
     "pnt-time": "Doba tisku",
+    "progress": "Postup",
     "rem-time": "Zbývající čas",
+    "size": "Velikost souboru",
     "sla-csm-mt": "Spotřeba resinu",
     "sla-rmn-mt": "Zbývající resin",
     "speed": "Rychlost tisku",
     "st-idle": "Nečinná",
+    "st-paused": "Pozastavena",
+    "st-pausing": "Pozastavuje se",
     "st-printing": "Probíhá tisk",
     "temp-amb": "Teplota okolí",
     "temp-bed": "Vyhřívaná podložka",
@@ -114,11 +179,22 @@
     "tmw": "Zítra",
     "tmw-at": "Zítra v",
     "today-at": "Dnes v",
+    "true": "Ano",
     "z-height": "Výška Z"
   },
   "refill": {
     "title": "Doplnit resin",
     "title-pour-resin": "Doplňte resin"
+  },
+  "settings": {
+    "title": "Nastavení"
+  },
+  "sys-version": {
+    "description": "popis",
+    "id": "ID",
+    "os": "OS",
+    "python": "python",
+    "title": "verze systému"
   },
   "temps": {
     "title": "Teploty",
@@ -126,7 +202,11 @@
     "y": "Teplota [°C]"
   },
   "unit": {
+    "b": "B",
+    "gb": "GB",
     "h": "h",
+    "kb": "KB",
+    "mb": "MB",
     "min": "min",
     "minute": "minuta",
     "minute_plural": "minut",
@@ -134,8 +214,45 @@
     "rpm": "RPM"
   },
   "upld": {
-    "loading": "Nahrává se...",
-    "open": "Vyberte {{file}} nebo jej přetáhněte sem.",
+    "direct": {
+      "choose": "Vyberte {{file}} nebo jej přetáhněte sem.",
+      "description": "Nahrajte projekt do PrusaLink prostřednictvím místní sítě",
+      "title": "Přímé nahrání"
+    },
+    "remote": {
+      "description": "Nahrajte projekt ze vzdálené adresy URL přímo do tiskárny/PrusaLink",
+      "hint-fdm": "Zadejte URL souboru projektu G-CODE",
+      "hint-sla": "Zadejte URL souboru projektu SL1",
+      "source": "URL zdroje",
+      "title": "Vzdálené URL"
+    },
+    "slicer": {
+      "description": "Nahrajte projekt přímo z PrusaSlicer na PrusaLink prostřednictvím místní sítě",
+      "guide": {
+        "1": "Pomocí nástroje Prusa Slicer nahrajte soubory s tiskovými daty. Pokyny, jak to provést, najdete",
+        "1-link": "zde",
+        "2": "Budete muset vyplnit IP adresu {{ip_address}} a API klíč {{api_key}}"
+      },
+      "title": "Prusa Slicer"
+    },
+    "start-pt": "po přenosu zahájit tisk",
     "title": "nahrát projekt"
+  },
+  "user": {
+    "new-password": "nové heslo",
+    "password": "heslo",
+    "re-password": "zopakujte heslo",
+    "title": "uživatel",
+    "username": "uživatelské jméno"
+  },
+  "version": {
+    "api": "api",
+    "fe": "frontend",
+    "firmware": "firmware",
+    "hostname": "hostname",
+    "sdk": "sdk",
+    "server": "server",
+    "text": "text",
+    "title": "verze"
   }
 }

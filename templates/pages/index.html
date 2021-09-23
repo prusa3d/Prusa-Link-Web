@@ -1,59 +1,16 @@
 <!-- prettier-ignore -->
 {#
-  # This file is part of the Prusa Connect Local
+  # This file is part of the Prusa Link Web
   # Copyright (C) 2021 Prusa Research a.s. - www.prusa3d.com
   # SPDX-License-Identifier: GPL-3.0-or-later
- #}
+#}
 
 <!DOCTYPE html>
 <html>
   <head>
     <meta charset="utf-8" />
-    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
-    {% if env.type != "mini" %}
-    <link rel="apple-touch-icon" sizes="57x57" href="/apple-icon-57x57.png" />
-    <link rel="apple-touch-icon" sizes="60x60" href="/apple-icon-60x60.png" />
-    <link rel="apple-touch-icon" sizes="72x72" href="/apple-icon-72x72.png" />
-    <link rel="apple-touch-icon" sizes="76x76" href="/apple-icon-76x76.png" />
-    <link
-      rel="apple-touch-icon"
-      sizes="114x114"
-      href="/apple-icon-114x114.png"
-    />
-    <link
-      rel="apple-touch-icon"
-      sizes="120x120"
-      href="/apple-icon-120x120.png"
-    />
-    <link
-      rel="apple-touch-icon"
-      sizes="144x144"
-      href="/apple-icon-144x144.png"
-    />
-    <link
-      rel="apple-touch-icon"
-      sizes="152x152"
-      href="/apple-icon-152x152.png"
-    />
-    <link
-      rel="apple-touch-icon"
-      sizes="180x180"
-      href="/apple-icon-180x180.png"
-    />
-    <link
-      rel="icon"
-      type="image/png"
-      sizes="192x192"
-      href="/android-icon-192x192.png"
-    />
-    <link rel="icon" type="image/png" sizes="96x96" href="/favicon-96x96.png" />
-    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
-    <link rel="manifest" href="/manifest.json" />
-    <meta name="msapplication-TileColor" content="#ffffff" />
-    <meta name="msapplication-TileImage" content="/ms-icon-144x144.png" />
-    {% endif %}
-    <meta name="theme-color" content="#ffffff" />
-    <title>{{ env.title }} - {{ env.appName }}</title>
+    <meta name="theme-color" content="#fff" />
+    <title>{{ env.APP_TITLE }} - {{ env.APP_NAME }}</title>
   </head>
 
   <body>
@@ -93,7 +50,7 @@
     {% include "components/toast.html" %}
 
     <!-- prettier-ignore -->
-    {% if env.printerFamily == "sla" %}
+    {% if env.PRINTER_TYPE == "sla" %}
       {% include "components/temperature_graph_sla.html" %}
       {% include "components/exposure.html" %}
     {% else %}

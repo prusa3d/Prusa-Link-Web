@@ -1,4 +1,4 @@
-// This file is part of the Prusa Connect Local
+// This file is part of the Prusa Link Web
 // Copyright (C) 2021 Prusa Research a.s. - www.prusa3d.com
 // SPDX-License-Identifier: GPL-3.0-or-later
 
@@ -27,6 +27,8 @@ router.post("/", async (req, res, next) => {
     result = printer.print();
   } else if (command == "cancel") {
     result = printer.stop();
+  } else if (command == "pause" && action == "pause") {
+    result = printer.pause();
   } else if (command == "pause" && action == "resume") {
     result = printer.pauseResume();
   }

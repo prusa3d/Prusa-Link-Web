@@ -1,4 +1,4 @@
-// This file is part of the Prusa Connect Local
+// This file is part of the Prusa Link Web
 // Copyright (C) 2021 Prusa Research a.s. - www.prusa3d.com
 // SPDX-License-Identifier: GPL-3.0-or-later
 
@@ -62,6 +62,18 @@ router.get("/error", async (req, res, next) => {
   } else {
     res.json({});
   }
+});
+
+router.post("/printhead", async (req, res, next) => {
+  res.status(204).send();
+});
+
+router.post("/tool", async (req, res, next) => {
+  res.status(204).send();
+});
+
+router.post("/bed", async (req, res, next) => {
+  res.status(204).send();
 });
 
 module.exports = router;

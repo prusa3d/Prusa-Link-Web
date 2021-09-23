@@ -1,6 +1,6 @@
 <!-- prettier-ignore -->
 {#
-  # This file is part of the Prusa Connect Local
+  # This file is part of the Prusa Link Web
   # Copyright (C) 2021 Prusa Research a.s. - www.prusa3d.com
   # SPDX-License-Identifier: GPL-3.0-or-later
 #}
@@ -9,10 +9,12 @@
 {% include "components/title_default.html" %}
 
 <div class="main-wrapper center">
-  <div class="component proj-upload">
-    <p data-label="upld.title" class="txt-bold txt-grey txt-size-2">
-      upload project
-    </p>
+  <!-- prettier-ignore -->
+  {% set to_hidden = "hidden" %}
+  {% include "components/job.html" %}
+
+  <div class="component">
+    <p data-label="upld.title" class="txt-bold txt-grey txt-size-2">upload project</p>
     {% include "components/upload.html" %}
   </div>
 

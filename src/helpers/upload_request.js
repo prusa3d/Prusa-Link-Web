@@ -1,10 +1,14 @@
+// This file is part of the Prusa Link Web
+// Copyright (C) 2021 Prusa Research a.s. - www.prusa3d.com
+// SPDX-License-Identifier: GPL-3.0-or-later
+
 /**
  * Upload content using XMLHttpRequest
  * @param {string} url
  * @param {FormData} data file(s) packed in FormData
  * @param {{onProgress(progress): void}} opt options
  */
-function uploadRequest(url, data, opt) {
+ function uploadRequest(url, data, opt) {
   return new Promise((resolve, reject) => {
     var request = new XMLHttpRequest();
 
@@ -15,11 +19,11 @@ function uploadRequest(url, data, opt) {
       } else {
         reject(response);
       }
-    };
+    }
 
     const errorHandler = () => {
       reject(undefined);
-    };
+    }
 
     initProgressHandler(request, opt.onProgress);
     request.addEventListener("load", completeHandler, false);
@@ -27,10 +31,6 @@ function uploadRequest(url, data, opt) {
     request.addEventListener("abort", errorHandler, false);
 
     request.open("POST", url);
-    request.setRequestHeader("Accept", "application/json");
-    if (sessionStorage.getItem("authType") == "ApiKey") {
-      request.setRequestHeader("X-Api-Key", sessionStorage.getItem("apiKey"));
-    }
     request.send(data);
   });
 }
@@ -38,12 +38,17 @@ function uploadRequest(url, data, opt) {
 function initProgressHandler(request, callback) {
   if (callback) {
     const progressHandler = (event) => {
+      if (!event.lengthComputable) {
+        return;
+      }
+      let percentage = Math.round((event.loaded / event.total) * 100);
+      // if (percentage > 99) percentage = 99;
       callback({
         loaded: event.loaded,
         total: event.total,
-        percentage: Math.round((event.loaded / event.total) * 100),
+        percentage,
       });
-    };
+    }
     request.upload.addEventListener("progress", progressHandler, false);
   }
 }
@@ -55,13 +60,13 @@ function toResponse(target) {
       return JSON.parse(response);
     } catch {
       return undefined;
-    }
+    };
   }
 
   return {
     status: target.status,
     statusText: target.statusText,
-    ok: target.status >= 200 && target.status <= 299,
+    ok: (target.status >= 200 && target.status <= 299),
     data: toJson(target.response),
   };
 }

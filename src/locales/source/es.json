@@ -36,7 +36,7 @@
     "title": "Estado de la impresora"
   },
   "msg": {
-    "api-key-1": "Bienvenido a la interfaz web de Prusa Connect Local.",
+    "api-key-1": "Bienvenido a la interfaz web de Prusa Link Web.",
     "api-key-2": "Por favor introduce la clave API.",
     "api-key-3": "Puedes encontrarla en Ajustes -> Red -> Credenciales de acceso.",
     "cancel": "¿Realmente quieres cancelar la impresión?",
@@ -65,11 +65,13 @@
     "upld-unsuc": "El envío del proyecto {{file_name}} ha fallado."
   },
   "print": {
-    "1": "Estás a punto de empezar una impresión remota usando la interefaz de la web. Por favor, asegúrate de que la impresora 3D está configurada correctamente y está lista para la impresión.",
-    "2": "La plataforma de impresión está limpia e instalada en la impresora",
-    "3": "Una cantidad suficiente de resina está en el tanque",
-    "4": "La cubierta naranja acrílica está cerrada",
-    "5": "El depósito de resina está limpio e instalado en la impresora"
+    "sla": {
+      "1": "Estás a punto de empezar una impresión remota usando la interefaz de la web. Por favor, asegúrate de que la impresora 3D está configurada correctamente y está lista para la impresión.",
+      "2": "La plataforma de impresión está limpia e instalada en la impresora",
+      "3": "Una cantidad suficiente de resina está en el tanque",
+      "4": "La cubierta naranja acrílica está cerrada",
+      "5": "El depósito de resina está limpio e instalado en la impresora"
+    }
   },
   "proj": {
     "del": "Borrar archivo",

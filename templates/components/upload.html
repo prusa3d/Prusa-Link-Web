@@ -1,24 +1,75 @@
 <!-- prettier-ignore -->
 {#
-  # This file is part of the Prusa Connect Local
+  # This file is part of the Prusa Link Web
   # Copyright (C) 2021 Prusa Research a.s. - www.prusa3d.com
   # SPDX-License-Identifier: GPL-3.0-or-later
 #}
 
-<div id="upload" data-state="choose">
-  <input type="file" />
-  <div class="state-choose">
-    <img
-      class="icon"
-      src="{{ pre.countOrRenderAssets('download.svg') | safe }}"
-    />
-    <p>Choose a *.sl1 or drop it here.</p>
+<div id="upld">
+  <div class="tab" data-tab="direct" opened="false">
+    <div class="tab-header" data-tab="direct">
+      <img class="icon" src="{{ pre.countOrRenderAssets('prusalink_favicon.svg') | safe }}"/>
+      <p
+        class="txt-black txt-size-2 txt-bold txt-uppercase"
+        data-label="upld.direct.title"
+      >
+        DIRECT UPLOAD
+      </p>
+      <div class="separator"></div>
+      <p
+        class="txt-size-3 txt-italic"
+        data-label="upld.direct.description"
+      >
+        Upload project directly to the PrusaLink via local network
+      </p>
+    </div>
+    <div class="tab-body">
+      {% include "components/upload/direct.html" %}
+    </div>
   </div>
-  <div class="abs-center state-uploading">
-    <img
-      class="icon abs-center"
-      src="{{ pre.countOrRenderAssets('dual-ring-1s-200px.svg') | safe }}"
-    />
-    <p id="upload-progress" class="abs-center"></p>
+
+  <div class="tab" data-tab="remote" opened="false">
+    <div class="tab-header" data-tab="remote">
+      <img class="icon" src="{{ pre.countOrRenderAssets('remote_url.svg') | safe }}"/>
+      <p
+        class="txt-black txt-size-2 txt-bold txt-uppercase"
+        data-label="upld.remote.title"
+      >
+        REMOTE URL
+      </p>
+      <div class="separator"></div>
+      <p
+        class="txt-size-3 txt-italic"
+        data-label="upld.remote.description"
+      >
+        Upload project from remote URL directly to the printer/PrusaLink
+      </p>
+    </div>
+    <div class="tab-body">
+      {% include "components/upload/remote.html" %}
+    </div>
   </div>
+
+  <div class="tab" data-tab="slicer" opened="false">
+    <div class="tab-header" data-tab="slicer">
+      <img class="icon" src="{{ pre.countOrRenderAssets('prusaslicer.svg') | safe }}"/>
+      <p
+        class="txt-black txt-size-2 txt-bold txt-uppercase"
+        data-label="upld.slicer.title"
+      >
+        PRUSA SLICER
+      </p>
+      <div class="separator"></div>
+      <p
+        class="txt-size-3 txt-italic"
+        data-label="upld.slicer.description"
+      >
+        Upload project directly from PrusaSlicer to the PrusaLink via local network
+      </p>
+    </div>
+    <div class="tab-body">
+      {% include "components/upload/slicer.html" %}
+    </div>
+  </div>
+
 </div>

@@ -1,21 +1,29 @@
-// This file is part of the Prusa Connect Local
+// This file is part of the Prusa Link Web
 // Copyright (C) 2021 Prusa Research a.s. - www.prusa3d.com
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-import { getJson, getImage } from "../../auth.js";
-import { navigate } from "../../router.js";
-import { handleError } from "./errors";
-import { getValue } from "./updateProperties.js";
 import formatData from "./dataFormat.js";
+import joinPaths from "../../helpers/join_paths";
 import upload from "../components/upload";
+import { getJson, getImage } from "../../auth.js";
+import { getValue } from "./updateProperties.js";
+import { handleError } from "./errors";
+import { navigate } from "../../router.js";
 import { translate, translateLabels } from "../../locale_provider.js";
-import { setBusy, clearBusy } from "./busy";
-import { states, to_page } from "./state";
+import { deleteProject, downloadProject } from "./projectActions.js";
+import printer from "../index";
+import { error } from "./toast.js";
+import { cancelPreview } from "./jobActions";
+import scrollIntoViewIfNeeded from "../../helpers/scroll_into_view_if_needed.js";
+import * as job from "./job";
+
+let lastData = null;
 
 /**
  * project context
  */
 const metadata = {
+  origin: "",
   current_path: [],
   files: {},
   eTag: null,
@@ -24,21 +32,28 @@ const metadata = {
   firstTime: true,
 };
 
-/**
- * Sort projects by type and name
- * @param {object} a
- * @param {object} b
- */
-const sortByType = (a, b) => {
-  if (a.type == "folder" && b.type == "folder") {
-    return b.date - a.date;
-  } else if (a.type == "folder") {
-    return -1;
-  } else if (b.type == "folder") {
-    return 1;
+const getInitialMetadataFiles = (data) => {
+  if (process.env.PRINTER_TYPE === "fdm") {
+    return data.files;
+  } else {
+    return [
+      {
+        name: "local",
+        origin: "local",
+        path: "/local",
+        type: "folder",
+        children: data.files.filter((elm) => elm.origin === "local"),
+      },
+      {
+        name: "sdcard",
+        origin: "sdcard",
+        path: "/sdcard",
+        type: "folder",
+        children: data.files.filter((elm) => elm.origin === "sdcard"),
+      },
+    ];
   }
-  return b.date - a.date;
-};
+}
 
 /**
  * callback for update the project context
@@ -51,16 +66,17 @@ const updateData = () => {
   })
     .then((result) => {
       const data = result.data;
-      if (data) {
-        metadata.files = data.files;
+      const newData = JSON.stringify(data);
+      if (data && lastData !== newData) {
+        lastData = newData;
+        metadata.files = getInitialMetadataFiles(data);
         metadata.free = data.free;
         metadata.total = data.total;
         metadata.eTag = result.eTag;
-        if (metadata.firstTime) {
-          metadata.firstTime = false;
-          clearBusy();
+        metadata.firstTime = false;
+        if (window.location.hash === "#projects") {
+          navigate("#projects");
         }
-        load();
       }
     })
     .catch((result) => handleError(result));
@@ -71,56 +87,64 @@ const updateData = () => {
  * @param {object} context
  */
 export const update = (context) => {
-  if ([states.READY, states.ERROR].indexOf(context.state) < 0) {
-    to_page(context.state);
-    return;
-  }
   if (metadata.firstTime) {
-    setBusy();
+    navigate("#loading");
   }
   updateData();
+  job.update(context);
+  upload.update();
 };
+
+function initUpload() {
+  const origin = metadata.origin;
+  const path = joinPaths(getCurrentPath());
+  upload.init(origin, path);
+}
 
 /**
  * load projects page
  */
-export function load() {
-  upload.init();
+export function load(context) {
+  if (context)
+    job.update(context);
+
   const projects = document.getElementById("projects");
   while (projects.firstChild) {
     projects.removeChild(projects.firstChild);
   }
 
-  let view = metadata.files;
-  if (metadata.current_path.length > 1) {
-    const origin = metadata.current_path[0];
+  if (metadata.current_path.length === 0)
+    metadata.origin = "local";
+  initUpload();
+
+  if (metadata.current_path.length > 0) {
+    let view = metadata.files.find((elm) => elm.name === metadata.current_path[0]).children;
     for (let i = 1; i < metadata.current_path.length; i++) {
       let path = metadata.current_path[i];
-      view = view.find((elm) => elm.name == path && elm.origin == origin)
-        .children;
+      view = view.find((elm) => elm.name === path).children;
     }
+
     document.getElementById(
       "title-status-label"
     ).innerHTML = metadata.current_path.join(" > ");
-    projects.appendChild(createUp());
-  } else {
-    document.getElementById("title-status-label").innerHTML = translate(
-      "proj.title"
-    );
-  }
 
-  if (view.length > 0) {
-    for (let node of view.sort(sortByType)) {
-      if (node.type == "folder") {
-        projects.appendChild(createFolder(node));
+    projects.appendChild(createUp());
+    for (let node of view) {
+      if (node.type === "folder") {
+        projects.appendChild(createFolder(node.display || node.name, node.path));
       } else {
         projects.appendChild(createFile(node));
-        // update medatada in backend
-        getJson(node.refs.resource, {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        });
+      }
+    }
+  } else {
+    document.getElementById("title-status-label").innerHTML = translate("proj.title");
+    if (metadata.files.length) {
+      for (let file of metadata.files) {
+        if (file.type === "folder") {
+          projects.appendChild(createFolder(file.name, joinPaths(file.path), file.origin));
+        } else {
+          projects.appendChild(createFile(file));
+        }
       }
     }
   }
@@ -146,13 +170,19 @@ function createElement(templateName, name, cb) {
 /**
  * Create a folder element
  * @param {string} name
+ * @param {string} path
+ * @param {string|undefined} origin (optimal)
  */
-function createFolder(node) {
-  return createElement("node-folder", node.name, () => {
-    if (metadata.current_path.length == 0) {
-      metadata.current_path.push(node.origin);
+function createFolder(name, path, origin) {
+  return createElement("node-folder", name, () => {
+    if (origin)
+      metadata.origin = origin;
+
+    if (!origin && process.env.PRINTER_TYPE === "sla") {
+      metadata.current_path = [metadata.origin, ...path.split("/").filter(str => str !== "")];
+    } else {
+      metadata.current_path = path.split("/").filter(str => str !== "");
     }
-    metadata.current_path.push(node.name);
     load();
   });
 }
@@ -161,13 +191,9 @@ function createFolder(node) {
  * create a up button element
  */
 function createUp() {
-  const title =
-    metadata.current_path.length == 1 ? translate("proj.main") : "..";
+  const title = metadata.current_path.length === 1 ? translate("proj.main") : "..";
   return createElement("node-up", title, () => {
     metadata.current_path.pop();
-    if (metadata.current_path.length == 1) {
-      metadata.current_path.pop();
-    }
     load();
   });
 }
@@ -177,27 +203,48 @@ function createUp() {
  * @param {object} node
  */
 const onClickFile = (node) => {
-  setBusy();
-  getJson(node.refs.resource, {
+  const paths = getNodeFilePaths(node.name);
+  const url = joinPaths("api/files", paths);
+
+  const flags = printer.getContext().printer.state.flags;
+  if (flags.printing) {
+    if (flags.ready) {
+      cancelPreview().then(() => selectPreview(url));
+    } else {
+      error("Can't preview project", "Printer is printing!");
+    }
+  } else {
+    selectPreview(url);
+  }
+};
+
+function selectPreview(url) {
+  console.log("Select preview");
+  return getJson(url, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({ command: "select" }),
   })
-    .then((result) => clearBusy())
+    .then((result) => {
+      job.update(printer.getContext());
+      const jobElement = document.getElementById("job");
+      if (jobElement) {
+        scrollIntoViewIfNeeded(jobElement);
+      }
+    })
     .catch((result) => {
-      clearBusy();
       handleError(result);
     });
-};
+}
 
 /**
  * Create a file element
  * @param {object} node
  */
 function createFile(node) {
-  const elm = createElement("node-project", node.name, (e) =>
+  const elm = createElement("node-project", node.display || node.name, (e) =>
     onClickFile(node)
   );
   const nodeDetails = elm.querySelector(".node-details");
@@ -205,64 +252,69 @@ function createFile(node) {
     translateLabels(element);
     const value = getValue(element.dataset.where, node);
     if (value) {
-      const data = formatData(element.dataset.format, value);
-      element.querySelector("p").innerHTML += ` <span>${data}</span>`;
+      const data = formatData(
+        element.dataset.format,
+        value
+      );
+      element.querySelector("p").innerHTML += ` <span>${data}</span>`
     } else {
       nodeDetails.removeChild(element);
     }
   });
-  if (node.refs.thumbnailBig) {
+  if (node.refs && node.refs.thumbnailBig) {
     const img = elm.querySelector("img.node-img");
     getImage(node.refs.thumbnailBig).then((url) => {
       img.src = url;
     });
   }
+
+  setupFileButtons(node, elm);
   return elm;
 }
 
-export const navigateToProjects = () => {
-  document.title = process.env.TITLE + " - " + translate("proj.link");
-  history.pushState(null, document.title, "#projects");
-  navigate("#projects");
-};
+function setupFileButtons(node, elm) {
+  // Setup buttons
+  const paths = getNodeFilePaths(node.name);
+  const fileUrl = joinPaths("/api/files/", ...paths);
 
-export const findNode = (origin, path) => {
-  const current_path = path.split("/");
-  let view = metadata.files;
-  let parent = view;
-  let index = -1;
+  const deleteBtn = elm.querySelector("#delete");
+  const downloadBtn = elm.querySelector("#download");
+  getJson(fileUrl).then((result) => {
+    const file = result.data;
 
-  if (Object.keys(view).length === 0) {
-    return [parent, index];
-  }
-
-  for (let i = 0; i < current_path.length; i++) {
-    let _path = current_path[i];
-    index = view.findIndex((elm) => elm.name == _path && elm.origin == origin);
-    if (i < current_path.length - 1) {
-      parent = view[index];
-      view = parent.children;
+    if (deleteBtn) {
+      deleteBtn.disabled = !(file.refs && file.refs.resource);
+      deleteBtn.onclick = (e) => {
+        deleteProject(file);
+        e.stopPropagation();
+      }
     }
-  }
-
-  return [parent, index];
-};
-
-export const removeProject = (origin, path) => {
-  const [parent, index] = findNode(origin, path);
-  if (index < 0) {
-    return;
-  }
-
-  if (Array.isArray(parent)) {
-    parent.splice(index, 1);
-  } else {
-    parent.children.splice(index, 1);
-    if (!parent.children.length) {
-      removeProject(origin, parent.path);
-      metadata.current_path.pop();
+    if (downloadBtn) {
+      downloadBtn.disabled = !(file.refs && file.refs.download);
+      downloadBtn.onclick = (e) => {
+        downloadProject(file);
+        e.stopPropagation();
+      }
     }
-  }
-};
+  }).catch(() => { });
+}
+
+/**
+ * Get current path. Not include origin.
+ * For SlA without "local" or "sdcard"
+ * For FDM without "Prusa Link gcodes" or "SD Card"
+ */
+function getCurrentPath() {
+  return metadata.current_path.slice(1, metadata.current_path.length);
+}
+
+function getNodeFilePaths(nodeName) {
+  const paths = [
+    metadata.origin,
+    ...(process.env.PRINTER_TYPE === "fdm" ? metadata.current_path : getCurrentPath()),
+    nodeName
+  ];
+  return paths;
+}
 
 export default { load, update };

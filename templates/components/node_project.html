@@ -1,26 +1,29 @@
 <!-- prettier-ignore -->
 {#
-  # This file is part of the Prusa Connect Local
+  # This file is part of the Prusa Link Web
   # Copyright (C) 2021 Prusa Research a.s. - www.prusa3d.com
   # SPDX-License-Identifier: GPL-3.0-or-later
 #}
 
 <!-- prettier-ignore -->
-{% if env.printerFamily == "sla" %}
-  {%
-      set project_list = [
-        {"text": "Printing time", "label": "prop.time-est", "format": "est-time", "location": "gcodeAnalysis.estimatedPrintTime", "icon": "time_color.svg" },
-        {"text": "Material", "label": "prop.material", "format": "material", "location": "gcodeAnalysis.material", "icon": "status_filament.svg" },
-        {"text": "Layer Height", "label": "prop.layer-ht", "format": "layer", "location": "gcodeAnalysis.layerHeight", "icon": "quality_medium.svg" }
-      ]
-  %}
+{% if env.PRINTER_TYPE == "sla" %}
+    {%
+        set project_list = [
+          {"text": "Printing time", "label": "prop.pnt-time", "format": "time", "location": "gcodeAnalysis.estimatedPrintTime", "icon": "time_color.svg" },
+          {"text": "Printing time", "label": "prop.est-pnt-time", "format": "est-time", "location": "gcodeAnalysis.estimatedPrintTime", "icon": "time_color.svg" },
+          {"text": "Material", "label": "prop.material", "format": "material", "location": "gcodeAnalysis.material", "icon": "status_filament.svg" },
+          {"text": "Layer Height", "label": "prop.layer-ht", "format": "layer", "location": "gcodeAnalysis.layerHeight", "icon": "quality_medium.svg" },
+          {"text": "File Size", "label": "prop.size", "format": "size", "location": "size", "icon": "" }
+        ]
+    %}
 {% else %}
-  {%
-      set project_list = [
-        {"text": "Printing time", "label": "prop.pnt-time", "format": "time", "location": "gcodeAnalysis.estimatedPrintTime", "icon": "time_color.svg" },
-        {"text": "Material", "label": "prop.material", "format": "material", "location": "gcodeAnalysis.material", "icon": "status_filament.svg" }
-      ]
-  %}
+    {%
+        set project_list = [
+          {"text": "Printing time", "label": "prop.pnt-time", "format": "time", "location": "gcodeAnalysis.estimatedPrintTime", "icon": "time_color.svg" },
+          {"text": "Material", "label": "prop.material", "format": "material", "location": "gcodeAnalysis.material", "icon": "status_filament.svg" },
+          {"text": "File Size", "label": "prop.size", "format": "size", "location": "size", "icon": "" }
+        ]
+    %}
 {% endif %}
 
 <template id="node-project">
@@ -37,16 +40,31 @@
           data-format="{{ values.format }}"
           data-where="{{ values.location }}"
         >
-          <img
-            class="icon"
-            src="{{ pre.countOrRenderAssets(values.icon) | safe }}"
-          />
+          <div class="icon">
+            {% if values.icon %}
+              <img src="{{ pre.countOrRenderAssets(values.icon) | safe }}" />
+            {% endif%}
+          </div>
           <p data-label="{{ values.label }}" class="txt-grey">
             {{ values.text }}
             <span></span>
           </p>
         </div>
         {% endfor %}
+      </div>
+      <div class="buttons-wrapper">
+        <button class="no" id="delete">
+          <img
+            src="{{ pre.countOrRenderAssets('delete_small_white.svg') | safe }}"
+          />
+          <p data-label="btn.del">delete</p>
+        </button>
+        <button class="btn action" id="download">
+          <img
+            src="{{ pre.countOrRenderAssets('download.svg') | safe }}"
+          />
+          <p data-label="btn.download">download</p>
+        </button>
       </div>
     </div>
   </div>

@@ -1,15 +1,46 @@
-// This file is part of the Prusa Connect Local
+// This file is part of the Prusa Link Web
 // Copyright (C) 2021 Prusa Research a.s. - www.prusa3d.com
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 const express = require("express");
+const { ApiError } = require("./mock/errors");
 const router = new express.Router();
 
 /**
  * version informations
  */
 router.get("/version", async (req, res, next) => {
-  res.json(req.app.get("printer").version());
+  res.json(req.app.get("printer").version(req.query["system"]));
+});
+
+/**
+ * Return available logs
+ */
+router.get("/logs", async (req, res, next) => {
+  logs = req.app.get("printer").logs();
+
+  if (logs instanceof ApiError) {
+    logs.handleError(res);
+    return;
+  }
+
+  res.json(logs);
+});
+
+/**
+ * Return the content of the log file
+ */
+router.get("/logs/:filename", async (req, res, next) => {
+  logs = req.app.get("printer").logs(req.params.filename);
+
+  if (logs instanceof ApiError) {
+    logs.handleError(res);
+    return;
+  }
+
+  res.format({
+    "text/plain": () => res.send(logs),
+  });
 });
 
 // app.get("/api/version", function (req, res) {

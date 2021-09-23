@@ -1,0 +1,107 @@
+<!-- prettier-ignore -->
+{#
+  # This file is part of the Prusa Link Web
+  # Copyright (C) 2021 Prusa Research a.s. - www.prusa3d.com
+  # SPDX-License-Identifier: GPL-3.0-or-later
+#}
+
+<!-- prettier-ignore -->
+{%
+  set buttons_left = {
+    'delete': {
+      text: 'delete',
+      label: 'btn.del',
+      icon: 'delete_small_white.svg',
+      class: 'no'
+    },
+    'download': {
+      text: 'download',
+      label: 'btn.download',
+      icon: 'download.svg',
+      class: 'btn action'
+    },
+    'exposure': {
+      text: 'change exposure times',
+      label: 'btn.chg-exp',
+      icon: 'exposure_times_color.svg',
+      class: 'action',
+      printerType: 'sla'
+    },
+    'refill': {
+      text: 'refill resin',
+      label: 'btn.sla-refill',
+      icon: 'refill_color.svg',
+      class: 'action',
+      printerType: 'sla'
+    }
+  }
+%}
+
+<!-- prettier-ignore -->
+{%
+  set buttons_right = {
+    'pause': {
+      text: 'pause print',
+      label: 'btn.pause-pt',
+      icon: 'cancel.svg',
+      class: 'action'
+    },
+    'pausing': {
+      text: 'pausing',
+      label: 'prop.st-pausing',
+      class: 'action',
+      disabled: true
+    },
+    'resume': {
+      text: 'resume',
+      label: 'btn.resume-pt',
+      icon: 'yes_color.svg',
+      class: 'yes'
+    },
+    'start': {
+      text: 'start print',
+      label: 'btn.start-pt',
+      icon: 'yes_color.svg',
+      class: 'yes'
+    },
+    'cancel': {
+      text: 'cancel',
+      label: 'btn.cancel',
+      icon: 'cancel.svg',
+      class: 'no'
+    }
+  }
+%}
+
+<!-- prettier-ignore -->
+{%
+  set wrappers = {
+    'job-buttons-first': buttons_left,
+    'buttons-wrapper': buttons_right
+  }
+%}
+
+<!-- prettier-ignore -->
+{% for wrapperKey, current_buttons in wrappers %}
+  <div class="{{ wrapperKey }}">
+    {% for key, values in current_buttons %}
+      {% if not values.printerType or values.printerType == env.PRINTER_TYPE %}
+        <button id="{{ key }}" class="{{ values.class }}"
+          {% if values.hidden %}
+            hidden
+          {% endif %}
+          {% if values.disabled %}
+            disabled
+          {% endif %}
+        >
+          {% if values.icon %}
+            <img src="{{ pre.countOrRenderAssets(values.icon) | safe }}" />
+          {% endif %}
+          <p data-label="{{ values.label }}">
+            {{ values.text }}
+          </p>
+        </button>
+      {% endif %}
+    {% endfor %}
+  </div>
+{% endfor %}

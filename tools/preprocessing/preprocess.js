@@ -1,4 +1,4 @@
-// This file is part of the Prusa Connect Local
+// This file is part of the Prusa Link Web
 // Copyright (C) 2021 Prusa Research a.s. - www.prusa3d.com
 // SPDX-License-Identifier: GPL-3.0-or-later
 
@@ -9,8 +9,8 @@ const nunjucks = require("nunjucks");
 const svgToMiniDataURI = require("mini-svg-data-uri");
 
 class Preprocess {
-  constructor({ printer_conf, templates_dir, output_dir, assets_dir }) {
-    this.printer_conf = printer_conf;
+  constructor({ config, templates_dir, output_dir, assets_dir }) {
+    this.config = config;
     this.templates_dir = templates_dir;
     this.assets_dir = assets_dir;
     this.output_dir = output_dir;
@@ -40,7 +40,7 @@ class Preprocess {
     const path_to_printer_templates = path.join(
       this.templates_dir,
       "printer",
-      this.printer_conf.type
+      this.config.PRINTER_TYPE
     );
     fs.readdirSync(path_to_printer_templates).forEach((filename) => {
       paths_to_parse.push({
@@ -96,7 +96,7 @@ class Preprocess {
       this.render_again = false;
       let data = nunjucks.render(metadata.template_path, {
         pre: this,
-        env: this.printer_conf,
+        env: this.config,
       });
       metadata.data = data;
       metadata.render_again = this.render_again;
@@ -109,7 +109,7 @@ class Preprocess {
 
     // Render the data if needed and save
     parse.forEach((metadata) => {
-      console.log(` ${metadata.template_path} -> ${metadata.output_path}`);
+      process.stdout.write(` ${metadata.template_path} -> `)
       let data;
       if (metadata.render_again) {
         data = nunjucks.renderString(metadata.data, { pre: this });
@@ -117,7 +117,12 @@ class Preprocess {
         data = metadata.data;
       }
 
-      fs.writeFileSync(metadata.output_path, data);
+      if (data) {
+        fs.writeFileSync(metadata.output_path, data);
+        console.log(metadata.output_path);
+      } else {
+        console.log("SKIP (EMPTY)");
+      }
     });
   }
 

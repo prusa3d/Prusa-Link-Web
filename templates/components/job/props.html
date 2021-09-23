@@ -1,0 +1,170 @@
+<!-- prettier-ignore -->
+{#
+  # This file is part of the Prusa Link Web
+  # Copyright (C) 2021 Prusa Research a.s. - www.prusa3d.com
+  # SPDX-License-Identifier: GPL-3.0-or-later
+#}
+
+<!-- prettier-ignore -->
+{%
+  set props = [
+    {
+      icon: 'time_color.svg',
+      data: [
+        {
+          id: "rem-time",
+          text: "Remaining Time",
+          label: "prop.rem-time",
+          format: "time",
+          location: "progress.printTimeLeft",
+          type: "job"
+        },
+        {
+          text: "Print Time Estimate",
+          label: "prop.time-est",
+          format: "time",
+          location: "gcodeAnalysis.estimatedPrintTime",
+          type: "file"
+        },
+        {
+          id: "est-end",
+          text: "Estimated end",
+          label: "prop.est-end",
+          format: "timeEst"
+        },
+        {
+          id: "pnt-time",
+          text: "Printing Time",
+          label: "prop.pnt-time",
+          format: "time",
+          location: "progress.printTime",
+          type: "job"
+        }
+      ]
+    },
+    {
+      icon: 'quality_medium.svg',
+      printerType: 'sla',
+      data: [
+        {
+          text: "Layer",
+          label: "prop.layers",
+          format: "int",
+          location: "job.file.layers",
+          type: "job"
+        },
+        {
+          text: "Layer Height",
+          label: "prop.layer-ht",
+          format: "layer",
+          location: "job.file.layerHeight",
+          type: "job"
+        }
+      ]
+    },
+    {
+      icon: 'refill_color.svg',
+      printerType: 'sla',
+      data: [
+        {
+          text: "Remaining Resin",
+          label: "prop.sla-rmn-mt",
+          format: "resin",
+          location: "resin.remaining",
+          type: "job"
+        },
+        {
+          text: "Consumed Resin",
+          label: "prop.sla-csm-mt",
+          format: "resin",
+          location: "resin.consumed",
+          type: "job"
+        }
+      ]
+    },
+    {
+      icon: 'exposure_times_color.svg',
+      printerType: 'sla',
+      data: [
+        {
+          text: 'Exposure times',
+          label: 'prop.exp-times',
+          format: 'expo',
+          location: 'job.file',
+          type: 'job'
+        }
+      ]
+    },
+    {
+      icon: 'calendar.svg',
+      data: [
+        {
+          text: 'Last Modified',
+          label: 'prop.last-mod',
+          format: 'date',
+          location: 'date',
+          type: 'file'
+        }
+      ]
+    },
+    {
+      icon: 'status_filament.svg',
+      data: [
+        {
+          text: 'Material',
+          label: 'prop.material',
+          format: 'material',
+          location: 'gcodeAnalysis.material',
+          type:'file'
+        }
+      ]
+    },
+    {
+      icon: '',
+      data: [
+        {
+          text: "File Size",
+          label: "prop.size",
+          format: "size",
+          location: "size",
+          type: "file"
+        }
+      ]
+    }
+  ]
+%}
+
+{% for prop in props %}
+  {% if not prop.printerType or prop.printerType == env.PRINTER_TYPE %}
+    <div class="job-prop">
+      <div class="icon">
+        {% if prop.icon %}
+          <img src="{{ pre.countOrRenderAssets(prop.icon) | safe }}" />
+        {% endif %}
+      </div>
+      <div class="job-prop-grid">
+        {% for values in prop.data %}
+          {% if not values.printerType or values.printerType == env.PRINTER_TYPE %}
+            <div
+              {% if values.id %}
+                id="{{values.id}}"
+              {% endif %}
+            >
+              <p data-label="{{ values.label }}" class="txt-size-2 txt-grey">
+                {{ values.text }}
+              </p>
+              <p
+                data-format="{{ values.format }}"
+                data-type="{{ values.type }}"
+                data-where="{{ values.location }}"
+                class="txt-bold txt-size-2"
+              >
+                NA
+              </p>
+            </div>
+          {% endif %}
+        {% endfor %}
+      </div>
+    </div>
+  {% endif %}
+{% endfor %}

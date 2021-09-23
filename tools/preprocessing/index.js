@@ -1,4 +1,4 @@
-// This file is part of the Prusa Connect Local
+// This file is part of the Prusa Link Web
 // Copyright (C) 2021 Prusa Research a.s. - www.prusa3d.com
 // SPDX-License-Identifier: GPL-3.0-or-later
 
@@ -10,7 +10,7 @@ class PreprocessingPlugin {
    * PreprocessingPlugin
    *
    *  options = {
-   *    printer: "sl1",
+   *    config: {},
    *    templates_dir: "templates",
    *    assets_dir: "src/assets",
    *    output_dir: "src/views",

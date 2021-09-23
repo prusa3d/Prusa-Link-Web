@@ -1,4 +1,4 @@
-// This file is part of the Prusa Connect Local
+// This file is part of the Prusa Link Web
 // Copyright (C) 2021 Prusa Research a.s. - www.prusa3d.com
 // SPDX-License-Identifier: GPL-3.0-or-later
 
@@ -10,9 +10,8 @@ const getNestedValue = require("../../src/helpers/get_nested_value");
 const output_file = path.resolve(__dirname, "../../src/locales/locales.json");
 const source_dir = path.resolve(__dirname, "../../src/locales/source");
 
-const languages = fs
-  .readdirSync(source_dir)
-  .map((fileName) => fileName.replace(".json", "")); // => [ 'cs', 'de', 'it' ]
+const languages = fs.readdirSync(source_dir)
+  .map(fileName => fileName.replace('.json', '')); // => [ 'cs', 'de', 'it' ]
 
 let count = 0;
 
@@ -24,7 +23,8 @@ const loader_module = {
 function createHierarchy(object, keys) {
   if (keys.length > 0) {
     let o = object[keys[0]];
-    if (o === undefined) o = object[keys[0]] = new Object();
+    if (o === undefined)
+      o = object[keys[0]] = new Object();
 
     keys.shift();
     return createHierarchy(o, keys);
@@ -42,7 +42,7 @@ function getContent() {
     content = {
       langs: languages,
       texts: {},
-    };
+    }
   }
 
   return content;
@@ -53,7 +53,8 @@ function writeJson(path, data) {
 }
 
 function removeFile(path) {
-  if (fs.existsSync(path)) fs.unlinkSync(path);
+  if (fs.existsSync(path))
+    fs.unlinkSync(path);
 }
 
 function saveWords(words) {
@@ -63,7 +64,7 @@ function saveWords(words) {
       console.log(colors.yellow.bold("remove: " + output_file));
       removeFile(output_file);
     }
-    count++;
+    count ++;
 
     let content = getContent();
 
@@ -85,11 +86,13 @@ function saveWords(words) {
         let translations = languages.map((lang) => {
           const file = require(path.resolve(source_dir, `${lang}.json`));
           const translation = getNestedValue(file, word);
-          if (translation === undefined) missing.push(lang);
+          if (translation === undefined)
+            missing.push(lang);
           return translation;
         });
 
-        if (missing.length > 0) logMissingTranslation(word, missing, languages);
+        if (missing.length > 0)
+          logMissingTranslation(word, missing, languages);
 
         ref[lastKey] = translations;
       }
@@ -110,9 +113,9 @@ function logMissingTranslation(word, missing, languages) {
 
   // for example: [cs, de, en, es, fr, it, pl] missing translation for "btn.cancel"
   console.log(
-    `\n[${m.join(", ")}]` +
-      colors.red(" missing translation for ") +
-      colors.red.bold(`"${word.split("\n").join("\\n")}"`)
+    `\n[${m.join(", ")}]`
+    + colors.red(" missing translation for ")
+    + colors.red.bold(`"${word.split('\n').join('\\n')}"`)
   );
 }
 
