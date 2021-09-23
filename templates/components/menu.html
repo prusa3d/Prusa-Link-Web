@@ -1,35 +1,28 @@
 <!-- prettier-ignore -->
 {#
-    # This file is part of the Prusa Connect Local
-    # Copyright (C) 2021 Prusa Research a.s. - www.prusa3d.com
-    # SPDX-License-Identifier: GPL-3.0-or-later
+  # This file is part of the Prusa Link Web
+  # Copyright (C) 2021 Prusa Research a.s. - www.prusa3d.com
+  # SPDX-License-Identifier: GPL-3.0-or-later
 #}
 
 <!-- prettier-ignore -->
-{% if env.type == "mini" %}
-    {%
-        set menu_dict = {
-            'link-home': {'text': 'Dashboard', label: 'home.link', path: '#dashboard' },
-            'link-temp': {'text': 'Temperatures', label: 'temps.title', path: '#temperature' }
-        }
-    %}
-{% else %}
-    {%
-        set menu_dict = {
-            'link-home': {'text': 'Dashboard', label: 'home.link', path: '#dashboard' },
-            'link-proj': {'text': 'Projects', label: 'proj.link', path: '#projects' },
-            'link-temp': {'text': 'Temperatures', label: 'temps.title', path: '#temperature' }
-        }
-    %}
-{% endif %}
+{%
+  set menu_dict = {
+    "link-home": {"text": "Dashboard", label: "home.link", path: "#dashboard" },
+    "link-proj": {"text": "Projects", label: "proj.link", path: "#projects" },
+    "link-temp": {"text": "Temperatures", label: "temps.title", path: "#temperature" },
+    "link-ctrl": {"text": "Control", label: "control.link", path: "#control", condition: env.WITH_CONTROLS },
+    "link-sett": {"text": "Settings", label: "settings.title", path: "#settings", condition: env.WITH_SETTINGS }
+  }
+%}
 
 <ul class="burger-menu txt-bold" id="navbar">
   {% for key, values in menu_dict %}
-  <li>
-    <a href="{{ values.path }}" data-label="{{ values.label }}"
-      >{{ values.text }}</a
-    >
-  </li>
+    {% if not "condition" in values or values.condition %}
+      <li>
+        <a href="{{ values.path }}" data-label="{{ values.label }}">{{ values.text }}</a>
+      </li>
+    {% endif %}
   {% endfor %}
   <select data-type="dropdown"></select>
 </ul>

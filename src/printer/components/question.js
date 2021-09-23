@@ -1,10 +1,9 @@
-// This file is part of the Prusa Connect Local
+// This file is part of the Prusa Link Web
 // Copyright (C) 2021 Prusa Research a.s. - www.prusa3d.com
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import { translate } from "../../locale_provider.js";
 import { navigate } from "../../router.js";
-import { setBusy, clearBusy } from "./busy";
 
 const question = {};
 
@@ -16,10 +15,7 @@ const cleanQuestion = () => {
   question.questionChildren = null;
   question.yes = null;
   question.no = null;
-  clearBusy();
-  if (question.next) {
-    navigate(question.next);
-  }
+  navigate(question.next);
 };
 
 /**
@@ -69,9 +65,8 @@ export const load = () => {
     const func = question[actionName];
     action.querySelector("p").innerHTML = question[actionName + "Text"];
     action.addEventListener("click", (e) => {
-      e.preventDefault();
       e.stopPropagation();
-      setBusy();
+      navigate("#loading");
       func(cleanQuestion);
     });
   }

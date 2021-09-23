@@ -1,4 +1,4 @@
-/*This file is part of the Prusa Connect Local
+/*This file is part of the Prusa Link Web
 * Copyright (C) 2021 Prusa Research a.s. - www.prusa3d.com
 * SPDX-License-Identifier: GPL-3.0-or-later
 */
@@ -9,8 +9,8 @@ html,
 nav > ul a {
   color: #fff;
 }
-
-#upload p,
+.progress > p,
+#upld-direct p,
 nav > ul a {
   text-align: center;
 }
@@ -23,6 +23,8 @@ html {
 }
 body {
   margin: 0;
+}
+body, body > .header{
   background-color: #0a0a0a;
 }
 a {
@@ -83,15 +85,6 @@ progress {
   vertical-align: baseline;
 }
 
-.preview-prop div:first-of-type,
-.progress {
-  min-width: 50%;
-}
-
-.preview-prop div:first-of-type {
-  max-width: 50%;
-}
-
 ::-webkit-file-upload-button {
   -webkit-appearance: button;
   font: inherit;
@@ -102,7 +95,7 @@ progress {
 }
 
 .node:hover,
-.upload:hover {
+.upld:hover {
   background-color: #313131;
   cursor: pointer;
 }
@@ -140,8 +133,8 @@ nav .brand-logo {
 }
 
 nav .brand-logo img {
-  width: 100%;
-  height: auto;
+  width: auto;
+  height: 42px;
 }
 nav > ul {
   padding-left: 0;
@@ -149,30 +142,29 @@ nav > ul {
   align-items: center;
   flex-direction: column;
   width: 100%;
-  margin-bottom: 0px;
+  margin-bottom: 0;
 }
 nav > ul > li {
   display: flex;
   list-style-type: none;
   padding: 16px;
   width: 100%;
-  margin-bottom: 0px;
 }
 nav > ul > li.active {
   border-bottom: 1px solid #f8651b;
-  margin-bottom: -1px;
 }
 nav > ul > li:hover {
   border-bottom: 1px solid #ffffff;
-  margin-bottom: -1px;
 }
-nav ul a {
+nav > ul a {
   list-style: none;
   text-decoration: none;
   width: 100%;
 }
 nav > ul > .dropdown {
-  align-self: flex-start;
+    align-self: center;
+    padding: 16px 0;
+    text-transform: uppercase;
 }
 nav .navbar-burger {
   display: flex;
@@ -267,12 +259,59 @@ nav .burger-icon.burger-open {
 .main-wrapper {
   display: flex;
   flex-grow: 1;
-  margin: 0.75rem 0;
+  margin: 0 0 0.75rem 0;
   flex-direction: column;
   justify-content: space-between;
 }
 
 /* ===================================== UPLOAD ======================================= */
+.tab-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  background-color: #5b5b5b;
+  padding: 12px 8px;
+  cursor: pointer;
+}
+.tab-header > div {
+  display: flex;
+}
+.tab-header > p:first-of-type {
+  margin: 0px 6px;
+}
+.tab-header > img {
+  padding: 0;
+  margin: auto 0;
+}
+.tab-header[locked="true"] {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+.tab-body {
+  padding: 25px;
+  border-left: 1px solid #5b5b5b;
+  border-right: 1px solid #5b5b5b;
+  overflow: hidden;
+  transition: 0.5s;
+  margin-bottom: 1px;
+}
+.tab[opened="false"] .tab-body {
+  height: 0;
+  padding-top: 0;
+  padding-bottom: 0;
+}
+.tab-body a {
+  text-decoration: none;
+}
+.tab-body a:hover {
+  text-decoration: underline;
+}
+#upld > div:last-child > .tab-body {
+  border-bottom: 1px solid #5b5b5b;
+}
+.separator {
+  flex-grow: 1;
+}
 .center {
   align-items: center;
 }
@@ -280,7 +319,7 @@ nav .burger-icon.burger-open {
   flex-grow: 1;
   flex-wrap: wrap;
   width: 100%;
-  padding-top: 16px;
+  padding-top: 64px;
   line-height: 1.5;
 }
 .abs-center {
@@ -289,27 +328,22 @@ nav .burger-icon.burger-open {
   top: 50%;
   transform: translate(-50%, -50%);
 }
-#upload,
-#upload .state-choose img {
+#upld-direct-frame,
+#upld-direct .state-choose img {
   padding-bottom: 20px;
 }
-
-.proj-upload {
-  width: 90%;
-}
-#upload {
+#upld-direct-frame {
   position: relative;
   border-style: dashed;
   border-color: #f8651b;
-  margin-top: 12px;
   padding-top: 20px;
 }
-#upload div {
+#upld-direct-frame div {
   display: flex;
   flex-flow: column nowrap;
   align-items: center;
 }
-#upload input {
+#upld-direct input[type="file"] {
   position: absolute;
   opacity: 0;
   width: 100%;
@@ -318,26 +352,63 @@ nav .burger-icon.burger-open {
   left: -2.4px;
   padding: 2.4px;
 }
-#upload input:hover {
+#upld-direct input[type="file"]:hover {
   cursor: pointer;
 }
-#upload .state-choose {
+#upld-direct .state-choose {
   opacity: 0;
 }
-#upload .state-uploading {
+#upld-direct .state-uploading {
   display: none;
   width: 100%;
   height: 100%;
 }
-#upload .state-uploading img {
+#upld-direct .state-uploading img {
   width: 100%;
   height: 100%;
 }
-#upload[data-state="choose"] .state-choose {
+#upld-direct[data-state="choose"] .state-choose {
   opacity: 1;
 }
-#upload[data-state="uploading"] .state-uploading {
+#upld-direct[data-state="uploading"] .state-uploading {
   display: block;
+}
+#upld-remote .wrapper {
+  display: flex;
+}
+#upld-remote button {
+  white-space: nowrap;
+  margin-left: 12px;
+}
+#upld-remote input[type="text"] {
+  width: 100%;
+}
+#upld-remote .upld-details {
+  display: flex;
+  flex-wrap: wrap;
+  margin-top: 1rem;
+}
+#upld-remote .upld-details > div {
+  margin-right: 1rem;
+}
+#upld-remote .progress-bar {
+  height: 36px;
+  background-color: white;
+  overflow: hidden;
+}
+#upld-remote .progress-bar p {
+  position: absolute;
+  left: 0;
+  right: 0;
+  padding: 2px;
+  line-height: 2rem;
+  overflow: auto;
+}
+#upld-remote[data-state="choose"] .state-uploading {
+  display: none;
+}
+#upld-remote[data-state="uploading"] .state-choose {
+  display: none;
 }
 
 .temp {
@@ -439,7 +510,7 @@ nav .burger-icon.burger-open {
   width: 100%;
   margin-top: 16px;
 }
-.details > img,
+.details > img, .details > .icon,
 .node-icon,
 .node-img-box,
 .node-wrapper {
@@ -490,16 +561,6 @@ nav .burger-icon.burger-open {
   flex-grow: 1;
   align-items: center;
 }
-.preview {
-  display: flex;
-  width: 100%;
-  flex-direction: column;
-}
-.preview > p {
-  -ms-word-break: break-all;
-  word-break: break-all;
-  padding: 0.2rem;
-}
 .preview-wrapper {
   display: flex;
   flex-grow: 1;
@@ -508,48 +569,58 @@ nav .burger-icon.burger-open {
 .preview-img {
   width: 100%;
   margin-bottom: 16px;
+  height: fit-content;
+  position: relative;
 }
 .preview-img > img {
   height: auto;
   max-width: 100%;
 }
-.preview-details {
-  display: flex;
+.loading-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+.loading-overlay > img {
+  width: 20%;
+  height: 20%;
+}
+.job-details {
   width: 100%;
-  flex-direction: column;
-  justify-content: space-between;
   margin-left: 1rem;
 }
-.preview-prop {
+.job-prop {
   display: flex;
-  align-items: center;
+  padding-bottom: 12px;
 }
-.preview-prop > div {
-  display: flex;
-  flex-direction: column;
-  flex-grow: 1;
-  padding: 0.5rem;
+.job-prop > .icon {
+  margin: 12px 6px 6px 6px;
 }
-.preview-prop > img {
-  margin: 6px;
-}
-.preview-prop > div > p {
+.job-prop p {
   padding: 0.2rem;
 }
-.preview-buttons {
+.job-prop-grid {
+  display: grid;
+  grid-template-columns: repeat(2,1fr);
+  flex-grow: 1;
+}
+.job-buttons {
   display: flex;
   margin-top: 16px;
   flex-wrap: wrap;
   justify-content: flex-end;
 }
-.preview-buttons-first {
+.job-buttons-first {
   display: flex;
   flex-grow: 1;
   justify-content: flex-end;
   margin-bottom: 12px;
   width: 100%;
 }
-.preview-buttons-first > button {
+.job-buttons-first > button {
   flex-grow: unset;
 }
 .buttons-wrapper {
@@ -557,7 +628,8 @@ nav .burger-icon.burger-open {
   justify-content: flex-end;
   flex-grow: 1;
 }
-.buttons-wrapper button:not(:first-child) {
+.buttons-wrapper button:not(:first-child),
+.job-buttons-first button {
   margin-left: 12px;
 }
 button > p {
@@ -621,9 +693,13 @@ button:disabled {
 .refill {
   margin-bottom: 16px;
 }
-.job {
+#job {
   width: 100%;
   margin-top: 1rem;
+  position: relative;
+}
+#job .progress {
+  width: 100%;
 }
 .job-stats {
   display: flex;
@@ -632,36 +708,57 @@ button:disabled {
 .force-column {
   flex-direction: column !important;
 }
-progress[value] {
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  appearance: none;
-  border: none;
-  width: 250px;
+.progress-bar {
+  background: #242526;
+  position: relative;
+}
+.progress-bar > .fill {
+  background: #f8651b;
+  position: absolute;
+}
+.progress-img {
+  position: relative;
+  height: 100%;
+}
+.progress-img > .background {
+  filter: grayscale(1);
+  background: #363636;
+  height: 100%;
+}
+.progress-img > .foreground {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+}
+.progress-with-img > div {
+  display: flex;
+}
+.progress-with-img .progress-img-wrapper {
+  flex-grow: 1;
+}
+.progress-with-img .progress-pct {
+  display: flex;
+  min-width: 20rem;
+  align-items: center;
+  justify-content: center;
+}
+.progress-with-img .progress-bar {
+  width: 20px;
+  flex-shrink: 0;
+}
+.progress-without-img {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.progress-without-img p {
+  margin-bottom: 15px;
+}
+.progress-without-img .progress-bar {
   height: 20px;
-}
-progress::-webkit-progress-value {
-  background: #f8651b;
-}
-progress::-webkit-progress-bar {
-  background: 707070;
-}
-progress::-moz-progress-bar {
-  background: #f8651b;
-}
-.progress {
-  padding-top: 0.75rem;
-}
-.progress > progress {
   width: 100%;
-  border: none;
-  border-radius: 0;
-  height: 20px;
-  color: #f8651b;
-  margin-top: 3px;
-}
-.progress > p:last-child {
-  text-align: center;
 }
 .stats {
   display: grid;
@@ -679,7 +776,7 @@ progress::-moz-progress-bar {
 .refill {
   display: flex;
 }
-.refill {
+.refill, .refill-text {
   margin-top: 16px;
 }
 .refill div:first-child {
@@ -693,6 +790,91 @@ progress::-moz-progress-bar {
   flex-basis: 0;
   flex-grow: 1;
   flex-shrink: 1;
+}
+
+/* ===================================== CONTROL ======================================= */
+#control .row {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+}
+#control .col {
+  display: flex;
+  flex-direction: column;
+}
+#control .resp-row {
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  flex-wrap: wrap;
+}
+#control .txt-underline {
+  border-bottom: 1px solid #707070;
+  padding-bottom: .25rem;
+}
+#control .title {
+  margin: 1rem 0;
+}
+
+#control img {
+  -webkit-user-drag: none;
+}
+#control .square, #control .rectangle {
+  min-width: 6rem;
+  width: 6rem;
+  height: 6rem;
+  margin: 0.5rem;
+  border-radius: 8px;
+  padding: 0;
+}
+#control .square {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+#control .rectangle {
+  width: 100%;
+}
+#control .input-wrapper {
+  display: flex;
+  margin: 0.25rem;
+  border-radius: 12px;
+  background: white;
+}
+#control .input-wrapper > .square {
+  margin: 0;
+  width: auto;
+}
+#control .input-wrapper > .square:first-child {
+  border-radius: 8px 0 0 8px;
+  background-color: #5b5b5b;
+}
+#control .input-wrapper > .square:last-child {
+  border-radius: 0 8px 8px 0;
+}
+#control input[type="text"] {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  width: 150px;
+  flex-grow: 1;
+  text-align: center;
+}
+#control .grid-container {
+  display: grid;
+  grid-template-columns: auto auto;
+}
+#control .grid-item:nth-child(even) {
+  text-align: right;
+}
+#control .separator {
+  display: flex;
+  flex-grow: 1;
+}
+#control button[selected], #control button[selected]:disabled {
+  border: 0;
+  background: #f8651b;
+  opacity: 1;
 }
 
 /* ===================================== MODAL ======================================= */
@@ -813,6 +995,12 @@ progress::-moz-progress-bar {
   float: right;
 }
 
+/* ===================================== MODAL CONFIRM ======================================= */
+
+.modal-confirm > div > div {
+  margin: 15px 15px 15px 0;
+}
+
 /* ===================================== MODAL DELETE ======================================= */
 
 .modal-delete > p {
@@ -866,8 +1054,8 @@ progress::-moz-progress-bar {
   line-height: 1.5;
   display: flex;
   flex-direction: column;
-  z-index: 1;
-  position: absolute;
+  z-index: 2;
+  position: fixed;
   right: 0;
   bottom: 0;
 }
@@ -1020,7 +1208,6 @@ $toast-success-title-color: $text-white;
 
 .dropdown {
   position: relative;
-  text-transform: uppercase;
   width: max-content;
 }
 .dropdown .open {
@@ -1031,6 +1218,7 @@ $toast-success-title-color: $text-white;
   border: 1px solid #707070;
   list-style: none;
   padding: 0;
+  margin: 0;
 }
 
 .dropdown-btn,
@@ -1043,8 +1231,8 @@ $toast-success-title-color: $text-white;
 }
 
 .dropdown-btn img {
-  height: 0.7em;
-  width: 0.7em;
+  height: .7em;
+  width: .7em;
   max-width: none;
   padding: 0;
 }
@@ -1053,6 +1241,7 @@ $toast-success-title-color: $text-white;
   min-width: 100%;
   position: absolute;
   visibility: collapse;
+  z-index: 1;
 }
 
 /* ===================================== LOADING ======================================= */
@@ -1070,9 +1259,91 @@ $toast-success-title-color: $text-white;
   height: auto;
 }
 
+/* ===================================== EDITABLE INPUTS ======================================= */
+input[type="text"]:disabled,
+input[type="password"]:disabled {
+  background: transparent;
+  border: 0;
+  color: white;
+}
+input .autoresize {
+  display: block;
+  overflow: hidden;
+}
+.edit {
+  cursor: pointer;
+}
+
+/* ===================================== SETTINGS ======================================= */
+#settings input[type="text"],
+#settings input[type="password"] {
+  line-height: 1.5;
+  width: 100%;
+}
+#settings .table {
+  padding: 7px 0 7px 0;
+}
+#settings .row {
+  display: flex;
+  flex-wrap: wrap;
+}
+#settings .col {
+  overflow-wrap: break-word;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  padding-bottom: 7px;
+}
+#settings .col:nth-child(1) {
+  width: 30%;
+  justify-content: flex-end;
+  text-align: right;
+}
+#settings .col:nth-child(2) {
+  width: 70%;
+  flex-grow: 1;
+}
+#settings .col:nth-child(3) {
+  width: 70%;
+  margin-left: 30%;
+}
+#settings .col .buttons-wrapper {
+  justify-content: flex-start;
+}
+#settings .col:nth-child(1), #settings .col:nth-child(2) {
+  padding-right: 15px;
+}
+#settings .logs {
+  background: white;
+  color: black;
+  height: 12rem;
+  overflow-y: auto;
+  line-height: 1.5;
+  list-style: none;
+  padding: 10px;
+}
+
+/* ===================================== CONNECTION STATUS ======================================= */
+.connection-status[ok=true] *[ok]:not([ok=true]),
+.connection-status[ok=false] *[ok]:not([ok=false]) {
+  display: none;
+}
+.connection-status p {
+  display: flex;
+}
+.connection-status img {
+  margin-left: 7px;
+}
+#conn-prusa-connect-status-msg, #conn-printer-status-msg {
+  margin: -7px 0 7px 0;
+}
+
 @media only screen and (min-width: 992px) {
   .header {
     padding-bottom: 0;
+    position: sticky;
+    top: 0;
+    z-index: 1;
   }
   .content {
     width: 75%;
@@ -1082,6 +1353,10 @@ $toast-success-title-color: $text-white;
     flex-direction: row;
     width: inherit;
   }
+  nav > ul > li,
+  nav > ul .dropdown {
+  margin-bottom: -3px;
+}
   nav .dropdown {
     padding: 0;
     align-self: unset !important;
@@ -1100,9 +1375,11 @@ $toast-success-title-color: $text-white;
   nav .navbar-burger {
     display: none;
   }
+  #telemetry-wrapper {
+    width: 20%;
+  }
   .telemetry {
     flex-direction: column;
-    width: 20%;
   }
   .tel-prop {
     width: 100%;
@@ -1156,7 +1433,7 @@ $toast-success-title-color: $text-white;
   .button-yes {
     border-radius: 5px;
   }
-  .preview-buttons-first {
+  .job-buttons-first {
     margin-right: auto;
     justify-content: flex-start;
     margin-bottom: unset;
@@ -1174,5 +1451,42 @@ $toast-success-title-color: $text-white;
   }
   #lang {
     margin-top: 0px;
+  }
+  #settings .col:nth-child(1) {
+    width: 25%;
+  }
+  #settings .col:nth-child(2) {
+    width: 45%;
+  }
+  #settings .col:nth-child(3) {
+    width: 30%;
+    margin-left: 0;
+  }
+  .progress-with-img .progress-pct {
+    min-width: 10rem;
+  }
+  #control {
+    max-width: 750px;
+  }
+  #control .square, #control .rectangle {
+    min-width: 3.5rem;
+    height: 3.5rem;
+    margin: 0.25rem;
+    border-radius: 4px;
+  }
+  #control .square {
+    width: 3.5rem;
+  }
+  #control .resp-row {
+    flex-direction: column;
+    flex-direction: row;
+    justify-content: space-between;
+  }
+  #control .input-wrapper > .square:first-child {
+    border-radius: 4px 0 0 4px;
+    background-color: #5b5b5b;
+  }
+  #control .input-wrapper > .square:last-child {
+    border-radius: 0 4px 4px 0;
   }
 }

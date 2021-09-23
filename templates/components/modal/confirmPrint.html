@@ -1,26 +1,29 @@
 <!-- prettier-ignore -->
 {#
-  # This file is part of the Prusa Connect Local
+  # This file is part of the Prusa Link Web
   # Copyright (C) 2021 Prusa Research a.s. - www.prusa3d.com
   # SPDX-License-Identifier: GPL-3.0-or-later
 #}
 
 <template id="modal-confirm">
   <div class="modal-confirm">
+    {% if env.PRINTER_TYPE == "fdm" %}
     <div>
-      <span data-label="print.1"
-        >You are about to start a remote print using the web UI. Please, make
-        sure your 3D printer is set up correctly and ready for the print.</span
-      >
+      <span data-label="print.fdm.1">Is the printer ready?</span>
+      <div data-label="print.fdm.2">Is printing sheet is empty and clean?</div>
+    </div>
+    {% else %}
+    <div>
+      <span data-label="print.sla.1">You are about to start a remote print using the web UI. Please, make sure
+        your 3D printer is set up correctly and ready for the print.</span>
       <ul>
-        <li data-label="print.2">
-          The printing platform is clean and installed in the printer
-        </li>
-        <li data-label="print.3">
-          The resin tank is clean and installed in the printer
-        </li>
+        <li data-label="print.sla.2">The printing platform is clean and installed in the printer</li>
+        <li data-label="print.sla.3">A sufficient amount of resin is in the tank</li>
+        <li data-label="print.sla.4">The orange acrylic lid is closed</li>
+        <li data-label="print.sla.5">The resin tank is clean and installed in the printer</li>
       </ul>
     </div>
+    {% endif %}
     <div class="buttons-wrapper">
       <button class="yes" id="yes">
         <img src="{{ pre.countOrRenderAssets('yes_color.svg') | safe }}" />

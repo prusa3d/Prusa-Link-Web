@@ -36,7 +36,7 @@
     "title": "Druckerstatus"
   },
   "msg": {
-    "api-key-1": "Willkommen auf der Web-Oberfläche von Prusa Connect Local.",
+    "api-key-1": "Willkommen auf der Web-Oberfläche von Prusa Link Web.",
     "api-key-2": "Bitte geben Sie den API-Schlüssel ein.",
     "api-key-3": "Sie finden ihn in Einstellungen -> Netzwerk -> Anmeldedaten.",
     "cancel": "Wollen Sie den Druck wirklich abbrechen?",
@@ -65,11 +65,13 @@
     "upld-unsuc": "Das Hochladen des Projekts {{file_name}} war nicht erfolgreich."
   },
   "print": {
-    "1": "Sie sind dabei, einen Remote-Druck über die Web-Benutzeroberfläche zu starten. Bitte stellen Sie sicher, dass Ihr 3D-Drucker korrekt eingerichtet und für den Druck bereit ist.",
-    "2": "Die Druckplattform ist sauber und im Drucker installiert",
-    "3": "Eine ausreichende Menge Harz befindet sich im Tank",
-    "4": "Der orangefarbene Acryldeckel ist geschlossen",
-    "5": "Der Harzbehälter ist sauber und im Drucker installiert."
+    "sla": {
+      "1": "Sie sind dabei, einen Remote-Druck über die Web-Benutzeroberfläche zu starten. Bitte stellen Sie sicher, dass Ihr 3D-Drucker korrekt eingerichtet und für den Druck bereit ist.",
+      "2": "Die Druckplattform ist sauber und im Drucker installiert",
+      "3": "Eine ausreichende Menge Harz befindet sich im Tank",
+      "4": "Der orangefarbene Acryldeckel ist geschlossen",
+      "5": "Der Harzbehälter ist sauber und im Drucker installiert."
+    }
   },
   "proj": {
     "del": "Datei löschen",

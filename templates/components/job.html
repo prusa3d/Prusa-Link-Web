@@ -1,85 +1,37 @@
 <!-- prettier-ignore -->
 {#
-  # This file is part of the Prusa Connect Local
+  # This file is part of the Prusa Link Web
   # Copyright (C) 2021 Prusa Research a.s. - www.prusa3d.com
   # SPDX-License-Identifier: GPL-3.0-or-later
 #}
 
-<!-- prettier-ignore -->
-{% if env.printerFamily == "sla" %}
-  {%
-    set job_dict = {
-        'remaining-time': {'text': 'remaining time', 'label': 'prop.rem-time', "format": "time", "location": "progress.printTimeLeft" },
-        'estimated-end': {'text': 'estimated end', 'label': 'prop.est-end', "location": "progress.printTimeLeft", "format": "timeEst" },
-        'printing-time': {'text': 'printing time', 'label': 'prop.pnt-time', "format": "time", "location": "progress.printTime" },
-        'layers': {'text': 'layers', 'label': 'prop.layers', "format": "totalLayer" },
-        'remaining resin': {'text': 'remaining resin', 'label': 'prop.sla-rmn-mt', "format": "resin", "location": "resin.remaining" },
-        'consumed resin': {'text': 'consumed resin', 'label': 'prop.sla-csm-mt', "format": "resin", "location": "resin.consumed" }
-    }
-  %}
-  {%
-    set job_buttons = {
-        'exposure': {'text': 'change exposure times', 'label': 'btn.chg-exp', icon: 'exposure_times_color.svg', class: 'action' },
-        'refill': {'text': 'refill resin', 'label': 'btn.sla-refill', icon: 'refill_color.svg', class: 'action' },
-        'no': {'text': 'cancel print', 'label': 'btn.cancel-pt', icon: 'cancel.svg', class: 'no' }
-    }
-  %}
-{% else %}
-  {%
-      set job_dict = {
-          'pos_z_mm': {'text': 'Z-Height', 'label': 'prop.z-height', "location": "progress.pos_z_mm", 'format': 'pos' },
-          'printing_speed': {'text': 'Printing Speed', 'label': 'prop.speed', 'format': 'print', "location": "progress.printSpeed" },
-          'flow_factor': {'text': 'Printing Flow', 'label': 'prop.flow', "location": "progress.flow_factor", 'format': 'print' },
-          'estimated-end': {'text': 'Estimated end', 'label': 'prop.est-end', "location": "progress.printTimeLeft", "format": "timeEst" },
-          'print_dur': {'text': 'Printing time', 'label': 'prop.pnt-time', "format": "time", "location": "progress.printTime" }
-      }
-  %}
-{% endif %}
+<div id="job" {{ to_hidden }}>
+  <p
+    data-type="job"
+    data-where="job.file.name"
+    class="txt-bold txt-size-2"
+  ></p>
+  <div class="preview-wrapper">
+    <div class="preview-img">
+      <img id="preview-img" src="../assets/thumbnail.png" />
+    </div>
+      <!-- prettier-ignore -->
+      {% include "components/job/progress.html" %}
+    <div class="job-details">
+      <!-- prettier-ignore -->
+      {% set current_stats = props %}
+      {% include "components/job/props.html" %}
+    </div>
+  </div>
+
+  <div class="job-buttons">
+    <!-- prettier-ignore -->
+    {% include "components/job/buttons.html" %}
+  </div>
+
+    <!-- prettier-ignore -->
+  {% include "components/job/loading-overlay.html" %}
+</div>
 
 <!-- prettier-ignore -->
-<div class="job" {{ to_hidden }}>
-  <div class="job-stats{{ add_classes }}">
-    <div class="progress">
-      <p data-type="job" data-where="job.file.name" class="txt-white txt-size-2"></p>
-      <progress value="0" max="1"></progress>
-      <p
-        data-format="progress"
-        data-type="job"
-        data-where="progress.completion"
-      >
-        0%
-      </p>
-    </div>
-    <div class="stats" id="job-stats">
-      {% for key, values in job_dict %}
-      <div>
-        <p data-label="{{ values.label }}" class="txt-size-2 txt-grey">{{ values.text }}</p>
-        <p
-          class="txt-bold txt-size-2"
-          data-format="{{ values.format }}"
-          data-type="job"
-          {%
-          if
-          values.location
-          %}
-          data-where="{{ values.location }}"
-          {%
-          endif
-          %}
-        ></p>
-      </div>
-      {% endfor %}
-    </div>
-  </div>
-  <!-- prettier-ignore -->
-  {% if job_buttons %}
-  <div class="buttons-wrapper">
-    {% for key, values in job_buttons %}
-    <button id="{{ key }}" class="{{ values.class }}">
-      <img src="{{ pre.countOrRenderAssets(values.icon) | safe }}" />
-      <p data-label="{{ values.label }}">{{ values.text }}</p>
-    </button>
-    {% endfor %}
-  </div>
-  {% endif %}
-</div>
+{% include "components/modal/confirmPrint.html" %}

@@ -3,17 +3,57 @@
     "back": "Back",
     "cancel": "Cancel",
     "cancel-pt": "Cancel print",
+    "chg": "change",
     "chg-exp": "Change exposure times",
     "confirm": "Confirm",
     "continue": "Continue",
     "del": "delete",
+    "disable-steppers": "disable steppers",
+    "download": "download",
+    "extrude": "extrude",
     "login": "Login",
     "no": "No",
+    "pause-pt": "Pause print",
+    "resume-pt": "Resume print",
+    "retract": "retract",
     "save-chgs": "Save changes",
+    "set": "SET",
     "sla-refill": "Refill resin",
     "sla-refilled": "Resin fully refilled",
     "start-pt": "Start print",
+    "upld-proj": "Upload project",
     "yes": "Yes"
+  },
+  "conn": {
+    "printer-status" : "3D printer connection status",
+    "prusa-connect-status": "PRUSA CONNECT connection status",
+    "suc": "Successfully connected",
+    "title": "connection",
+    "unsuc": "Connection failed"
+  },
+  "control": {
+    "axis": {
+      "x": "X axis",
+      "y": "Y axis",
+      "z": "Z axis"
+    },
+    "coordinates": "printer coordinates",
+    "extrude-retract-step": "extrude/retract step [mm]",
+    "extruder": "extruder",
+    "flow": "flow",
+    "heated-bed-move": "heated bed x and y move",
+    "heated-bed-temp": "heated bed temperature",
+    "link": "Control",
+    "move-step": "move step [mm]",
+    "nozzle-temp": "nozzle temperature",
+    "nozzle-z-move": "nozzle z move",
+    "speed": "speed",
+    "stepper-motors": "stepper motors",
+    "title": "Printer control"
+  },
+  "download": {
+    "start-pt": "Autostart",
+    "dl-started": "Download Started"
   },
   "error": {
     "401-title": "Login failed"
@@ -35,8 +75,16 @@
     "link": "Dashboard",
     "title": "Printer status"
   },
+  "logs": {
+    "empty-file": "Log file is empty!",
+    "file-too-large": "Log files of size larger than {{size}} are available only for downloading.",
+    "not-selected": "No log file is selected!",
+    "select-file": "select file",
+    "select-file-placeholder": "Select log file",
+    "title": "logs"
+  },
   "msg": {
-    "api-key-1": "Welcome to the Prusa Connect Local web interface.",
+    "api-key-1": "Welcome to the Prusa Link Web web interface.",
     "api-key-2": "Please insert the API key.",
     "api-key-3": "You can find it in Settings -> Network -> Login credentials.",
     "cancel": "Do you really want to cancel print?",
@@ -57,19 +105,31 @@
     "error": "Error",
     "n-calibrated": "Printer is not calibrated!",
     "not-idle": "Printer is not idle!",
+    "settings-suc": "Settings was changed successfully.",
     "start-print": "The printer is getting ready.",
-    "success": "Success",
+    "success": "The request was successful",
     "upld-exists": "The project {{file_name}} already exists.",
     "upld-not-sup": "The project {{file_name}} is not supported.",
-    "upld-suc": "The project {{file_name}} uploaded successfully.",
+    "upld-suc": "The project {{file_name}} was uploaded successfully.",
     "upld-unsuc": "The project {{file_name}} upload was unsuccessful."
   },
   "print": {
-    "1": "You are about to start a remote print using the web UI. Please, make sure your 3D printer is set up correctly and ready for the print.",
-    "2": "The printing platform is clean and installed in the printer",
-    "3": "A sufficient amount of resin is in the tank",
-    "4": "The orange acrylic lid is closed",
-    "5": "The resin tank is clean and installed in the printer"
+    "fdm": {
+      "1": "Is the printer ready?",
+      "2": "Is printing sheet empty and clean?"
+    },
+    "sla": {
+      "1": "You are about to start a remote print using the web UI. Please, make sure your 3D printer is set up correctly and ready for the print.",
+      "2": "The printing platform is clean and installed in the printer",
+      "3": "A sufficient amount of resin is in the tank",
+      "4": "The orange acrylic lid is closed",
+      "5": "The resin tank is clean and installed in the printer"
+    }
+  },
+  "printer": {
+    "location": "printer location",
+    "name": "printer name",
+    "title": "printer"
   },
   "proj": {
     "del": "Delete File",
@@ -84,8 +144,10 @@
     "cover-opened": "Opened",
     "d+": "D+",
     "est-end": "Estimated end",
+    "est-pnt-time": "Est. Printing Time",
     "exp-time": "exposure time",
     "exp-times": "Exposure times",
+    "false": "No",
     "fan-blower": "Blower fan",
     "fan-led": "UV LED fan",
     "fan-rear": "Rear fan",
@@ -99,11 +161,15 @@
     "material": "Material",
     "na": "NA",
     "pnt-time": "Printing time",
+    "progress": "Progress",
     "rem-time": "Remaining time",
+    "size": "File size",
     "sla-csm-mt": "Consumed resin",
     "sla-rmn-mt": "Remaining resin",
     "speed": "Printing Speed",
     "st-idle": "Idle",
+    "st-paused": "Paused",
+    "st-pausing": "Pausing",
     "st-printing": "Printing",
     "temp-amb": "Ambient temperature",
     "temp-bed": "Heatbed",
@@ -114,11 +180,22 @@
     "tmw": "Tomorrow",
     "tmw-at": "Tomorrow at",
     "today-at": "Today at",
+    "true": "Yes",
     "z-height": "Z-Height"
   },
   "refill": {
     "title": "Refill resin",
     "title-pour-resin": "Fill resin"
+  },
+  "settings": {
+    "title": "Settings"
+  },
+  "sys-version": {
+    "description": "description",
+    "id": "ID",
+    "os": "OS",
+    "python": "python",
+    "title": "system version"
   },
   "temps": {
     "title": "Temperatures",
@@ -126,7 +203,11 @@
     "y": "Temperature [°C]"
   },
   "unit": {
+    "b": "B",
+    "gb": "GB",
     "h": "h",
+    "kb": "KB",
+    "mb": "MB",
     "min": "min",
     "minute": "minute",
     "minute_plural": "minutes",
@@ -134,8 +215,45 @@
     "rpm": "RPM"
   },
   "upld": {
-    "loading": "Uploading...",
-    "open": "Choose a {{file}} or drop it here.",
+    "direct": {
+      "choose": "Choose a {{file}} or drop it here.",
+      "description": "Upload project directly to the PrusaLink via local network",
+      "title": "Direct upload"
+    },
+    "remote": {
+      "description": "Upload project from remote URL directly to the printer/PrusaLink",
+      "hint-fdm": "Type URL of G-CODE project file",
+      "hint-sla": "Type URL of SL1 project file",
+      "source": "source URL",
+      "title": "Remote url"
+    },
+    "slicer": {
+      "description": "Upload project directly from PrusaSlicer to the PrusaLink via local network",
+      "guide": {
+        "1": "Use Prusa Slicer to upload files with print data, instructions on how to do this can be found",
+        "1-link": "here",
+        "2": "You will have to fill it out IP address {{ip_address}} and API key {{api_key}}"
+      },
+      "title": "Prusa Slicer"
+    },
+    "start-pt": "start print after transfer",
     "title": "upload project"
+  },
+  "user": {
+    "new-password": "new password",
+    "password": "password",
+    "re-password": "repeat password",
+    "title": "user",
+    "username": "username"
+  },
+  "version": {
+    "api": "api",
+    "fe": "frontend",
+    "firmware": "firmware",
+    "hostname": "hostname",
+    "sdk": "sdk",
+    "server": "server",
+    "text": "text",
+    "title": "version"
   }
 }

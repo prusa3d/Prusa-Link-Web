@@ -1,4 +1,4 @@
-// This file is part of the Prusa Connect Local
+// This file is part of the Prusa Link Web
 // Copyright (C) 2021 Prusa Research a.s. - www.prusa3d.com
 // SPDX-License-Identifier: GPL-3.0-or-later
 
@@ -8,7 +8,7 @@
  * @param {String} path Path to key. For example "nodes.for.specific.key"
  */
 
-// module.exports format is due to compatibility with webpack loader
+ // module.exports format is due to compatibility with webpack loader
 
 module.exports = function (object, path) {
   let keys = path.split(".");

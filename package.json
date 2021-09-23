@@ -1,36 +1,38 @@
 {
-  "name": "prusa-connect-local",
-  "version": "2.0.0",
-  "description": "This is a printer connect webservice. It is compatible with another 3D printer services, so many applications which use this service.",
+  "name": "prusa-link-web",
+  "version": "3.0.0",
+  "description": "This is a printer connect webservice. It is compatible with other 3D printer services, so many applications can use this service.",
   "private": false,
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "format": "npx prettier . --write",
-    "dev": "webpack --env dev",
+    "postinstall": "husky install",
     "start": "webpack serve --env dev",
-    "dev:sl1": "npm run dev --env PRINTER=SL1 locales && npm run dev --env PRINTER=SL1",
-    "start:sl1": "npm run start --env PRINTER=SL1 locales",
-    "build:sl1": "webpack --env PRINTER=SL1 locales && webpack --env PRINTER=SL1",
-    "dev:mini": "npm run dev --env PRINTER=Mini locales && npm run dev --env PRINTER=Mini",
-    "start:mini": "npm run start --env PRINTER=Mini locales",
-    "build:mini": "webpack --env PRINTER=Mini locales && webpack --env PRINTER=Mini"
+    "build": "webpack --env locales && webpack",
+    "start:sl1": "webpack --config config.sl1.js --env locales dev && webpack serve --config config.sl1.js --env dev",
+    "build:sl1": "webpack --config config.sl1.js --env locales && webpack --config config.sl1.js",
+    "start:mini": "webpack --config config.mini.js --env locales dev && webpack serve --config config.mini.js --env dev",
+    "build:mini": "webpack --config config.mini.js --env locales && webpack --config config.mini.js",
+    "start:custom": "webpack --config config.custom.js --env locales dev && webpack serve --config config.custom.js --env dev",
+    "build:custom": "webpack --config config.custom.js --env locales && webpack --config config.custom.js"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/prusa3d/Prusa-Connect-Local.git"
+    "url": "git+https://github.com/prusa3d/Prusa-Link-Web.git"
   },
   "author": "Bruno Carvalho",
   "license": "GPL-3.0",
   "bugs": {
-    "url": "https://github.com/prusa3d/Prusa-Connect-Local/issues"
+    "url": "https://github.com/prusa3d/Prusa-Link-Web/issues"
   },
-  "homepage": "https://github.com/prusa3d/Prusa-Connect-Local#readme",
+  "homepage": "https://github.com/prusa3d/Prusa-Link-Web#readme",
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
   "lint-staged": {
     "**/*": "prettier --write --ignore-unknown"
   },
-  "pre-commit": [
-    "format"
-  ],
   "devDependencies": {
     "@fullhuman/postcss-purgecss": "^4.0.0",
     "@webpack-cli/init": "^1.0.2",
@@ -39,12 +41,13 @@
     "body-parser": "^1.19.0",
     "chokidar": "^3.5.1",
     "clean-webpack-plugin": "^3.0.0",
-    "copy-webpack-plugin": "^8.1.0",
     "css-loader": "^5.0.0",
     "express-basic-auth": "^1.2.0",
     "file-loader": "^6.2.0",
+    "html-inline-css-webpack-plugin": "^1.9.0",
     "html-loader": "^1.3.2",
     "html-webpack-plugin": "^5.0.0-alpha.7",
+    "husky": "^5.0.6",
     "mini-css-extract-plugin": "^1.2.1",
     "mini-svg-data-uri": "^1.2.3",
     "multer": "^1.4.2",
@@ -54,7 +57,6 @@
     "postcss-csso": "^5.0.0",
     "postcss-loader": "^4.0.4",
     "postcss-nested": "^5.0.1",
-    "pre-commit": "^1.2.2",
     "precss": "^4.0.0",
     "prettier": "2.2.1",
     "svgo": "^1.3.2",

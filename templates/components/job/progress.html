@@ -1,0 +1,38 @@
+<!-- prettier-ignore -->
+{#
+  # This file is part of the Prusa Link Web
+  # Copyright (C) 2021 Prusa Research a.s. - www.prusa3d.com
+  # SPDX-License-Identifier: GPL-3.0-or-later
+#}
+
+<div class="progress progress-with-img" hidden>
+  <div>
+    <div class="progress-img-wrapper"></div>
+    <div class="progress-bar" role="status">
+      <div class="fill"></div>
+    </div>
+    <div class="progress-pct">
+      <p
+        class="txt-size-h1"
+        data-format="progress"
+        data-type="job"
+        data-where="progress.completion"
+      >
+        0%
+    </p>
+    </div>
+  </div>
+</div>
+<div class="progress progress-without-img" hidden>
+  <p
+    class="txt-size-h1"
+    data-format="progress"
+    data-type="job"
+    data-where="progress.completion"
+  >
+    0%
+  </p>
+  <div class="progress-bar" role="status">
+    <div class="fill"></div>
+  </div>
+</div>

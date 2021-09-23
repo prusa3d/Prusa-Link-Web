@@ -1,0 +1,124 @@
+<!-- prettier-ignore -->
+{#
+	# This file is part of the Prusa Link Web
+	# Copyright (C) 2021 Prusa Research a.s. - www.prusa3d.com
+	# SPDX-License-Identifier: GPL-3.0-or-later
+#}
+
+{%
+  set props = [
+    {
+      text: "Progress",
+      label: "prop.progress",
+      format: "progress",
+      location: "progress",
+      type: "download"
+    },
+    {
+      text: "Size",
+      label: "prop.size",
+      format: "size",
+      location: "size",
+      type: "download"
+    },
+    {
+      text: "Download Started",
+      label: "download.dl-started",
+      format: "date",
+      location: "start_time",
+      type: "download"
+    },
+    {
+      text: "Remaining Time",
+      label: "prop.rem-time",
+      format: "time",
+      location: "remaining_time",
+      type: "download"
+    },
+    {
+      text: "Autostart",
+      label: "download.start-pt",
+      format: "boolean",
+      location: "to_print",
+      type: "download"
+    }
+  ]
+%}
+
+<div id="upld-remote" data-state="choose">
+  <div class="state-choose">
+    <p data-label="upld.remote.source">source URL</p>
+    <div class="wrapper">
+      <input
+        id="remote-url"
+        type="text"
+        placeholder="http://"
+      />
+      <button id="upld-proj" class="yes">
+        <p
+          class="txt-uppercase"
+          data-label="btn.upld-proj"
+        >
+          UPLOAD PROJECT
+        </p>
+      </button>
+    </div>
+    {% if env.PRINTER_TYPE == "fdm" %}
+      <p
+        class="txt-grey txt-italic"
+        data-label="upld.remote.hint-fdm"
+      >
+        Type URL of G-CODE project file
+      </p>
+    {% else %}
+      <p
+        class="txt-grey txt-italic"
+        data-label="upld.remote.hint-sla"
+      >
+        Type URL of SL1 project file
+      </p>
+    {% endif %}
+
+    <div>
+      <input type="checkbox" id="upld-remote-start-pt" />
+      <label
+        data-label="upld.start-pt"
+        for="upld-remote-start-pt"
+      >
+        start print after transfer
+      </label>
+    </div>
+  </div>
+
+  <div class="state-uploading">
+    <div class="progress-bar">
+      <div class="fill"></div>
+      <p class="txt-black"
+        data-where="url"
+        data-type="download"
+      >
+      </p>
+    </div>
+
+    <div class="upld-details">
+      {% for values in props %}
+        <div>
+          <p
+            data-label="{{ values.label }}"
+            class="txt-grey"
+          >
+            {{ values.text }}
+          </p>
+          <p
+            data-format="{{ values.format }}"
+            data-type="{{ values.type }}"
+            data-where="{{ values.location }}"
+            class="txt-bold"
+          >
+            NA
+          </p>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>

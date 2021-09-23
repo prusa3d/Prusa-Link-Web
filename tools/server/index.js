@@ -1,17 +1,17 @@
-// This file is part of the Prusa Connect Local
+// This file is part of the Prusa Link Web
 // Copyright (C) 2021 Prusa Research a.s. - www.prusa3d.com
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 const basicAuth = require("express-basic-auth");
 const bodyParser = require("body-parser");
-const { PrinterSL1, PrinterFDM } = require("./mock");
+const { PrinterSLA, PrinterFDM } = require("./mock");
 const { Unauthorized, ApiKeyMissing } = require("./mock/errors");
 
 const devServer = (app, conf) => {
   /*
    * api key middleware
    */
-  if (conf["http-apikey"]) {
+  if (conf["HTTP_APIKEY"]) {
     app.use("/api/", (req, res, next) => {
       if (req.header("X-Api-Key") == "developer") {
         next();
@@ -26,7 +26,7 @@ const devServer = (app, conf) => {
   /*
    * http basic middleware
    */
-  if (conf["http-basic"]) {
+  if (conf["HTTP_BASIC"]) {
     const unauthorizedResponse = new Unauthorized().error;
     app.use(
       "/api/",
@@ -43,21 +43,23 @@ const devServer = (app, conf) => {
    */
   app.use(bodyParser.urlencoded({ extended: false }));
   app.use(bodyParser.json());
-  if (conf.type == "sl1") {
-    app.set("printer", new PrinterSL1());
+  if (conf.PRINTER_TYPE == "sla") {
+    app.set("printer", new PrinterSLA(conf.PRINTER_NAME));
   } else {
-    app.set("printer", new PrinterFDM());
+    app.set("printer", new PrinterFDM(conf.PRINTER_NAME));
   }
 
   /*
    * Routes
    */
-  app.use("/api/files", require("./files"));
-  app.use("/api/printer", require("./printer"));
-  app.use("/api/job", require("./job"));
-  app.use("/api/thumbnails", require("./thumbnails"));
-  app.use("/api/system", require("./system"));
   app.use("/api/", require("./miscellaneous"));
+  app.use("/api/download", require("./download"));
+  app.use("/api/files", require("./files"));
+  app.use("/api/job", require("./job"));
+  app.use("/api/printer", require("./printer"));
+  app.use("/api/settings", require("./settings"));
+  app.use("/api/system", require("./system"));
+  app.use("/api/thumbnails", require("./thumbnails"));
   app.use("/error", require("./error"));
 };
 

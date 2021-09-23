@@ -5,3 +5,4 @@ dist/
 src/views/
 .husky/
 src/locales/locales.json
+config.custom.js

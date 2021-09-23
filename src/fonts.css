@@ -1,45 +1,48 @@
+/*This file is part of the Prusa Link Web
+* Copyright (C) 2021 Prusa Research a.s. - www.prusa3d.com
+* SPDX-License-Identifier: GPL-3.0-or-later
+*/
+
 /*  font size */
 $font-size-1-mobile: 2.5rem;
 $font-size-1-desktop: 1.15rem;
 $font-size-2-mobile: 1.8rem;
 $font-size-2-desktop: 1rem;
+$font-size-3-mobile: 1.2rem;
+$font-size-3-desktop: 0.75rem;
+$font-size-h1-mobile: 5rem;
+$font-size-h1-desktop: 2.5rem;
 $text-white: #ffffff;
 $text-grey: #707070;
 $text-orange: #f8651b;
+$text-black: #000000;
 
-@font-face {
-  font-family: "Atlas Grotesk Regular Web";
-  src: url("./assets/fonts/AtlasGrotesk-Regular-Web.woff2") format("woff2"),
-    url("./assets/fonts/AtlasGrotesk-Regular-Web.woff") format("woff");
-  font-weight: 400;
-  font-style: normal;
-  font-stretch: normal;
-}
-
-@font-face {
-  font-family: "Atlas Grotesk Bold Web";
-  src: url("./assets/fonts/AtlasGrotesk-Bold-Web.woff2") format("woff2"),
-    url("./assets/fonts/AtlasGrotesk-Bold-Web.woff") format("woff");
-  font-weight: 700;
-  font-style: normal;
-  font-stretch: normal;
-}
 
 html {
   line-height: 1.15;
   font-size: 16px;
   -webkit-text-size-adjust: 100%;
-  font-family: "Atlas Grotesk Regular Web";
+  font-family: "Atlas Grotesk Regular Web", Helvetica, sans-serif;
   color: $text-white;
 }
 
 select {
-  font-family: "Atlas Grotesk Bold Web";
+  font-family: "Atlas Grotesk Bold Web", Helvetica, sans-serif;
+  font-weight: bold;
   color: $text-white;
 }
 
 .txt-bold {
-  font-family: "Atlas Grotesk Bold Web";
+  font-family: "Atlas Grotesk Bold Web", Helvetica, sans-serif;
+  font-weight: bold;
+}
+
+.txt-italic {
+  font-style: italic;
+}
+
+.txt-uppercase {
+  text-transform: uppercase;
 }
 
 .txt-orange {
@@ -54,6 +57,10 @@ select {
   color: $text-white !important;
 }
 
+.txt-black {
+  color: $text-black !important;
+}
+
 .txt-size-1 {
   font-size: $font-size-1-mobile;
 }
@@ -62,13 +69,23 @@ select {
   font-size: $font-size-2-mobile;
 }
 
+.txt-size-3 {
+  font-size: $font-size-3-mobile;
+}
+
+.txt-size-h1 {
+  font-size: $font-size-h1-mobile;
+}
+
 button > p {
-  font-family: "Atlas Grotesk Bold Web";
+  font-family: "Atlas Grotesk Bold Web", Helvetica, sans-serif;
+  font-weight: bold;
   font-size: $font-size-2-mobile;
 }
 
 select {
-  font-family: "Atlas Grotesk Bold Web";
+  font-family: "Atlas Grotesk Bold Web", Helvetica, sans-serif;
+  font-weight: bold;
 }
 
 @media only screen and (min-width: 992px) {
@@ -77,6 +94,12 @@ select {
   }
   .txt-size-2 {
     font-size: $font-size-2-desktop;
+  }
+  .txt-size-3 {
+    font-size: $font-size-3-desktop;
+  }
+  .txt-size-h1 {
+    font-size: $font-size-h1-desktop;
   }
   button > p {
     font-size: $font-size-2-desktop;

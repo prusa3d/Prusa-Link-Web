@@ -1,4 +1,4 @@
-# Prusa-Connect-Local
+# Prusa-Link-Web
 
 This is a printer connect webservice. It is compatible with other 3D printer services, so many applications can use this service.
 
@@ -8,31 +8,42 @@ This is a printer connect webservice. It is compatible with other 3D printer ser
 npm install
 ```
 
-## UI
+## Commands
 
-`npm run {build_type}:{printer_type}`
+```
+npm run {command}[:{config}] [option]
 
-build type:
+```
+Where `{command}` is one of the following:
 
-- dev -> build mode developer
-- build -> build mode production
-- start -> run a dev server (Should run dev/build first for generate preprocessing code)
-- start [http-*] -> run a dev server with authentication
+* `build` -> build static files with production 
+* `start` -> run a dev server, including virtual printer mockup
+* start [http-*] -> run a dev server with authentication
 
-printer types:
+`{config}` is one of the following:
 
-- sl1
-- mini
+* `sl1` -> Prusa SL1 printer configuration (see `config.sl1.js`)
+* `mini` -> Prusa Mini printer configuration (see `config.mini.js`)
+* `custom` -> Tries to use custom configuration file `config.custom.js` (not a part of the git repository)
+* if not set, default configuration from `webpack.config.js` is being used
 
-Example:
+`option` is one of the following:
+
+* ` http-basic` -> enables Basic authentication on virtual printer
+* ` http-apikey` -> enables API-KEY authentication on virtual printer
+
+Examples:
 
 ```bash
-npm run dev:mini
+npm run build
 npm run build:mini
-npm run start:mini
-npm run start:mini http-basic
-npm run start:mini http-apikey
+npm run start
+npm run start http-basic
+npm run start http-apikey
+npm run start:sl1
+
 ```
+
 
 ## Translations
 

@@ -1,300 +1,2792 @@
-// This file is part of the Prusa Connect Local
+// This file is part of the Prusa Link Web
 // Copyright (C) 2021 Prusa Research a.s. - www.prusa3d.com
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-module.exports = {
-  sdcard: [
-    {
-      origin: "sdcard",
-      path: "examples",
-      display: "examples",
-      name: "examples",
-      type: "folder",
-      date: 25,
-      typePath: ["folder"],
-      children: [
+module.exports = JSON.parse(`
+{
+    "files":[
         {
-          origin: "sdcard",
-          path:
-            "examples/Prusa_SL1_Calibration_test_2H_40M_50um_Prusa_Orange.gcode",
-          display: "Prusa_SL1_Calibration_test_2H_40M_50um_Prusa_Orange.gcode",
-          name: "Prusa_SL1_Calibration_test_2H_40M_50um_Prusa_Orange.gcode",
-          size: 3636012,
-          date: 1597667691,
-          type: "machinecode",
-          typePath: ["machinecode", "gcode"],
-          hash: "03d25853d6fcbc3b221111743b11aa84d0580298",
-          refs: {
-            resource:
-              "http://localhost:9000/api/files/sdcard/examples/Prusa_SL1_Calibration_test_2H_40M_50um_Prusa_Orange.gcode",
-            download:
-              "http://localhost:9000/api/downloads/sdcard/examples/Prusa_SL1_Calibration_test_2H_40M_50um_Prusa_Orange.gcode",
-          },
-          gcodeAnalysis: {
-            estimatedPrintTime: 0,
-            layerHeight: 0.05,
-            material: "",
-          },
-        },
-        {
-          origin: "sdcard",
-          path: "examples/Petrin_Tower_10H_50um_Prusa_Orange.gcode",
-          display: "Petrin_Tower_10H_50um_Prusa_Orange.gcode",
-          name: "Petrin_Tower_10H_50um_Prusa_Orange.gcode",
-          size: 21008282,
-          date: 1597667806,
-          type: "machinecode",
-          typePath: ["machinecode", "gcode"],
-          hash: "c49fa4b9fb5cc7a623df2a211c241355ca1a1db7",
-          refs: {
-            resource:
-              "http://localhost:9000/api/files/sdcard/examples/Petrin_Tower_10H_50um_Prusa_Orange.gcode",
-            download:
-              "http://localhost:9000/api/downloads/sdcard/examples/Petrin_Tower_10H_50um_Prusa_Orange.gcode",
-          },
-          gcodeAnalysis: {
-            estimatedPrintTime: 0,
-            layerHeight: 0.05,
-            material: "",
-          },
-        },
-        {
-          origin: "sdcard",
-          path: "examples/Calibration objects",
-          display: "Calibration objects",
-          name: "Calibration objects",
-          type: "folder",
-          date: 10,
-          typePath: ["folder"],
-          children: [
-            {
-              origin: "sdcard",
-              path:
-                "examples/Calibration objects/Resin_Calibration_Object_0.025.gcode",
-              display: "Resin_Calibration_Object_0.025.gcode",
-              name: "Resin_Calibration_Object_0.025.gcode",
-              size: 4930590,
-              date: 1593158488,
-              type: "machinecode",
-              typePath: ["machinecode", "gcode"],
-              hash: "40abd18023555863b7699a8817c7ce711728446e",
-              refs: {
-                resource:
-                  "http://localhost:9000/api/files/sdcard/examples/Calibration objects/Resin_Calibration_Object_0.025.gcode",
-                download:
-                  "http://localhost:9000/api/downloads/sdcard/examples/Calibration objects/Resin_Calibration_Object_0.025.gcode",
-              },
-              gcodeAnalysis: {
-                estimatedPrintTime: 7292000.0,
-                layerHeight: 0.025,
-                material: "Prusa Orange Tough @0.025",
-              },
+            "name":"Prusa Link gcodes",
+            "path":"/Prusa Link gcodes",
+            "display":"Prusa Link gcodes",
+            "date":1614179557,
+            "size":96647907,
+            "type":"folder",
+            "typePath":[
+                "folder"
+            ],
+            "origin":"local",
+            "refs":{
+                "resource":null
             },
-            {
-              origin: "sdcard",
-              path:
-                "examples/Calibration objects/Resin_Calibration_Object_0.100.gcode",
-              display: "Resin_Calibration_Object_0.100.gcode",
-              name: "Resin_Calibration_Object_0.100.gcode",
-              size: 1333934,
-              date: 1593158490,
-              type: "machinecode",
-              typePath: ["machinecode", "gcode"],
-              hash: "3a2f5617bb008daf766def29ee79762674d5afd3",
-              refs: {
-                resource:
-                  "http://localhost:9000/api/files/sdcard/examples/Calibration objects/Resin_Calibration_Object_0.100.gcode",
-                download:
-                  "http://localhost:9000/api/downloads/sdcard/examples/Calibration objects/Resin_Calibration_Object_0.100.gcode",
-              },
-              gcodeAnalysis: {
-                estimatedPrintTime: 3559000.0,
-                layerHeight: 0.1,
-                material: "Prusa Orange Tough @0.1",
-              },
+            "children":[
+                {
+                    "name":"examples",
+                    "path":"/Prusa Link gcodes/examples",
+                    "display":"examples",
+                    "date":1614156517,
+                    "size":32585152,
+                    "type":"folder",
+                    "typePath":[
+                        "folder"
+                    ],
+                    "origin":"local",
+                    "refs":{
+                        "resource":null
+                    },
+                    "children":[
+                        {
+                            "name":"buddy_0.15mm_PLA_2h10m.gcode",
+                            "path":"/Prusa Link gcodes/examples/buddy_0.15mm_PLA_2h10m.gcode",
+                            "display":"buddy_0.15mm_PLA_2h10m.gcode",
+                            "date":null,
+                            "size":8737703,
+                            "origin":"local",
+                            "type":"machinecode",
+                            "typePath":[
+                                "machinecode",
+                                "gcode"
+                            ],
+                            "hash":null,
+                            "refs":{
+                                "resource":null,
+                                "download":null,
+                                "thumbnailSmall":null,
+                                "thumbnailBig":null
+                            },
+                            "gcodeAnalysis":{
+                                "estimatedPrintTime":null,
+                                "material":null,
+                                "layerHeight":null
+                            }
+                        },
+                        {
+                            "name":"3dbenchy_0.15mm_PLA_2h4m.gcode",
+                            "path":"/Prusa Link gcodes/examples/3dbenchy_0.15mm_PLA_2h4m.gcode",
+                            "display":"3dbenchy_0.15mm_PLA_2h4m.gcode",
+                            "date":null,
+                            "size":4785582,
+                            "origin":"local",
+                            "type":"machinecode",
+                            "typePath":[
+                                "machinecode",
+                                "gcode"
+                            ],
+                            "hash":null,
+                            "refs":{
+                                "resource":null,
+                                "download":null,
+                                "thumbnailSmall":null,
+                                "thumbnailBig":null
+                            },
+                            "gcodeAnalysis":{
+                                "estimatedPrintTime":null,
+                                "material":null,
+                                "layerHeight":null
+                            }
+                        },
+                        {
+                            "name":"prusa_0.2mm_PLA_21m.gcode",
+                            "path":"/Prusa Link gcodes/examples/prusa_0.2mm_PLA_21m.gcode",
+                            "display":"prusa_0.2mm_PLA_21m.gcode",
+                            "date":null,
+                            "size":406622,
+                            "origin":"local",
+                            "type":"machinecode",
+                            "typePath":[
+                                "machinecode",
+                                "gcode"
+                            ],
+                            "hash":null,
+                            "refs":{
+                                "resource":null,
+                                "download":null,
+                                "thumbnailSmall":null,
+                                "thumbnailBig":null
+                            },
+                            "gcodeAnalysis":{
+                                "estimatedPrintTime":null,
+                                "material":null,
+                                "layerHeight":null
+                            }
+                        },
+                        {
+                            "name":"Treefrog_0.1mm_PLA_1h47m.gcode",
+                            "path":"/Prusa Link gcodes/examples/Treefrog_0.1mm_PLA_1h47m.gcode",
+                            "display":"Treefrog_0.1mm_PLA_1h47m.gcode",
+                            "date":null,
+                            "size":6379515,
+                            "origin":"local",
+                            "type":"machinecode",
+                            "typePath":[
+                                "machinecode",
+                                "gcode"
+                            ],
+                            "hash":null,
+                            "refs":{
+                                "resource":null,
+                                "download":null,
+                                "thumbnailSmall":null,
+                                "thumbnailBig":null
+                            },
+                            "gcodeAnalysis":{
+                                "estimatedPrintTime":null,
+                                "material":null,
+                                "layerHeight":null
+                            }
+                        },
+                        {
+                            "name":"Gear_Bearing_0.2mm_PLA_2h35m.gcode",
+                            "path":"/Prusa Link gcodes/examples/Gear_Bearing_0.2mm_PLA_2h35m.gcode",
+                            "display":"Gear_Bearing_0.2mm_PLA_2h35m.gcode",
+                            "date":null,
+                            "size":10920946,
+                            "origin":"local",
+                            "type":"machinecode",
+                            "typePath":[
+                                "machinecode",
+                                "gcode"
+                            ],
+                            "hash":null,
+                            "refs":{
+                                "resource":null,
+                                "download":null,
+                                "thumbnailSmall":null,
+                                "thumbnailBig":null
+                            },
+                            "gcodeAnalysis":{
+                                "estimatedPrintTime":null,
+                                "material":null,
+                                "layerHeight":null
+                            }
+                        },
+                        {
+                            "name":"whistle_0.2mm_PLA_33m.gcode",
+                            "path":"/Prusa Link gcodes/examples/whistle_0.2mm_PLA_33m.gcode",
+                            "display":"whistle_0.2mm_PLA_33m.gcode",
+                            "date":null,
+                            "size":943680,
+                            "origin":"local",
+                            "type":"machinecode",
+                            "typePath":[
+                                "machinecode",
+                                "gcode"
+                            ],
+                            "hash":null,
+                            "refs":{
+                                "resource":null,
+                                "download":null,
+                                "thumbnailSmall":null,
+                                "thumbnailBig":null
+                            },
+                            "gcodeAnalysis":{
+                                "estimatedPrintTime":null,
+                                "material":null,
+                                "layerHeight":null
+                            }
+                        },
+                        {
+                            "name":"Batman_0.2mm_PLA_23m.gcode",
+                            "path":"/Prusa Link gcodes/examples/Batman_0.2mm_PLA_23m.gcode",
+                            "display":"Batman_0.2mm_PLA_23m.gcode",
+                            "date":null,
+                            "size":411104,
+                            "origin":"local",
+                            "type":"machinecode",
+                            "typePath":[
+                                "machinecode",
+                                "gcode"
+                            ],
+                            "hash":null,
+                            "refs":{
+                                "resource":null,
+                                "download":null,
+                                "thumbnailSmall":null,
+                                "thumbnailBig":null
+                            },
+                            "gcodeAnalysis":{
+                                "estimatedPrintTime":null,
+                                "material":null,
+                                "layerHeight":null
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name":"roh_policka_0.2mm_PLA_1h25m.gcode",
+                    "path":"/Prusa Link gcodes/roh_policka_0.2mm_PLA_1h25m.gcode",
+                    "display":"roh_policka_0.2mm_PLA_1h25m.gcode",
+                    "date":null,
+                    "size":2780459,
+                    "origin":"local",
+                    "type":"machinecode",
+                    "typePath":[
+                        "machinecode",
+                        "gcode"
+                    ],
+                    "hash":null,
+                    "refs":{
+                        "resource":null,
+                        "download":null,
+                        "thumbnailSmall":null,
+                        "thumbnailBig":null
+                    },
+                    "gcodeAnalysis":{
+                        "estimatedPrintTime": 2040,
+                        "material": "PLA",
+                        "layerHeight": 0.2
+                    }
+                },
+                {
+                    "name":"Headphone_Rest_0.15mm_PLA_1h34m.gcode",
+                    "path":"/Prusa Link gcodes/Headphone_Rest_0.15mm_PLA_1h34m.gcode",
+                    "display":"Headphone_Rest_0.15mm_PLA_1h34m.gcode",
+                    "date":null,
+                    "size":2819798,
+                    "origin":"local",
+                    "type":"machinecode",
+                    "typePath":[
+                        "machinecode",
+                        "gcode"
+                    ],
+                    "hash":null,
+                    "refs":{
+                        "resource":null,
+                        "download":null,
+                        "thumbnailSmall":null,
+                        "thumbnailBig":null
+                    },
+                    "gcodeAnalysis":{
+                        "estimatedPrintTime":null,
+                        "material":null,
+                        "layerHeight":null
+                    }
+                },
+                {
+                    "name":"Brawlstars_Spike_hollow_0.15mm_PETG_3h18m.gcode",
+                    "path":"/Prusa Link gcodes/Brawlstars_Spike_hollow_0.15mm_PETG_3h18m.gcode",
+                    "display":"Brawlstars_Spike_hollow_0.15mm_PETG_3h18m.gcode",
+                    "date":null,
+                    "size":11178438,
+                    "origin":"local",
+                    "type":"machinecode",
+                    "typePath":[
+                        "machinecode",
+                        "gcode"
+                    ],
+                    "hash":null,
+                    "refs":{
+                        "resource":null,
+                        "download":null,
+                        "thumbnailSmall":null,
+                        "thumbnailBig":null
+                    },
+                    "gcodeAnalysis":{
+                        "estimatedPrintTime":null,
+                        "material":null,
+                        "layerHeight":null
+                    }
+                },
+                {
+                    "name":"stojanek_budky_pro_ptaky_0.15mm_PLA_6h27m.gcode",
+                    "path":"/Prusa Link gcodes/stojanek_budky_pro_ptaky_0.15mm_PLA_6h27m.gcode",
+                    "display":"stojanek_budky_pro_ptaky_0.15mm_PLA_6h27m.gcode",
+                    "date":null,
+                    "size":16287368,
+                    "origin":"local",
+                    "type":"machinecode",
+                    "typePath":[
+                        "machinecode",
+                        "gcode"
+                    ],
+                    "hash":null,
+                    "refs":{
+                        "resource":null,
+                        "download":null,
+                        "thumbnailSmall":null,
+                        "thumbnailBig":null
+                    },
+                    "gcodeAnalysis":{
+                        "estimatedPrintTime":null,
+                        "material":null,
+                        "layerHeight":null
+                    }
+                },
+                {
+                    "name":"spool_fixer_0.2mm_PLA_2h13m.gcode",
+                    "path":"/Prusa Link gcodes/spool_fixer_0.2mm_PLA_2h13m.gcode",
+                    "display":"spool_fixer_0.2mm_PLA_2h13m.gcode",
+                    "date":null,
+                    "size":2130598,
+                    "origin":"local",
+                    "type":"machinecode",
+                    "typePath":[
+                        "machinecode",
+                        "gcode"
+                    ],
+                    "hash":null,
+                    "refs":{
+                        "resource":null,
+                        "download":null,
+                        "thumbnailSmall":null,
+                        "thumbnailBig":null
+                    },
+                    "gcodeAnalysis":{
+                        "estimatedPrintTime":null,
+                        "material":null,
+                        "layerHeight":null
+                    }
+                },
+                {
+                    "name":"radek_budka_puzzle_0.2mm_PETG_26m.gcode",
+                    "path":"/Prusa Link gcodes/radek_budka_puzzle_0.2mm_PETG_26m.gcode",
+                    "display":"radek_budka_puzzle_0.2mm_PETG_26m.gcode",
+                    "date":null,
+                    "size":565908,
+                    "origin":"local",
+                    "type":"machinecode",
+                    "typePath":[
+                        "machinecode",
+                        "gcode"
+                    ],
+                    "hash":null,
+                    "refs":{
+                        "resource":null,
+                        "download":null,
+                        "thumbnailSmall":null,
+                        "thumbnailBig":null
+                    },
+                    "gcodeAnalysis":{
+                        "estimatedPrintTime":null,
+                        "material":null,
+                        "layerHeight":null
+                    }
+                },
+                {
+                    "name":"Brawlstars_Spike_hollow_0.15mm_PETG_3h25m.noimg.gcode",
+                    "path":"/Prusa Link gcodes/Brawlstars_Spike_hollow_0.15mm_PETG_3h25m.noimg.gcode",
+                    "display":"Brawlstars_Spike_hollow_0.15mm_PETG_3h25m.noimg.gcode",
+                    "date":null,
+                    "size":10624770,
+                    "origin":"local",
+                    "type":"machinecode",
+                    "typePath":[
+                        "machinecode",
+                        "gcode"
+                    ],
+                    "hash":null,
+                    "refs":{
+                        "resource":null,
+                        "download":null,
+                        "thumbnailSmall":null,
+                        "thumbnailBig":null
+                    },
+                    "gcodeAnalysis":{
+                        "estimatedPrintTime":null,
+                        "material":null,
+                        "layerHeight":null
+                    }
+                },
+                {
+                    "name":"cabel_mount_7_0.2mm_PETG_13m.gcode",
+                    "path":"/Prusa Link gcodes/cabel_mount_7_0.2mm_PETG_13m.gcode",
+                    "display":"cabel_mount_7_0.2mm_PETG_13m.gcode",
+                    "date":null,
+                    "size":386826,
+                    "origin":"local",
+                    "type":"machinecode",
+                    "typePath":[
+                        "machinecode",
+                        "gcode"
+                    ],
+                    "hash":null,
+                    "refs":{
+                        "resource":null,
+                        "download":null,
+                        "thumbnailSmall":null,
+                        "thumbnailBig":null
+                    },
+                    "gcodeAnalysis":{
+                        "estimatedPrintTime":null,
+                        "material":null,
+                        "layerHeight":null
+                    }
+                },
+                {
+                    "name":"Brawlstars_Spike_hollow_0.15mm_PLA_1h59m.gcode",
+                    "path":"/Prusa Link gcodes/Brawlstars_Spike_hollow_0.15mm_PLA_1h59m.gcode",
+                    "display":"Brawlstars_Spike_hollow_0.15mm_PLA_1h59m.gcode",
+                    "date":null,
+                    "size":5623655,
+                    "origin":"local",
+                    "type":"machinecode",
+                    "typePath":[
+                        "machinecode",
+                        "gcode"
+                    ],
+                    "hash":null,
+                    "refs":{
+                        "resource":null,
+                        "download":null,
+                        "thumbnailSmall":null,
+                        "thumbnailBig":null
+                    },
+                    "gcodeAnalysis":{
+                        "estimatedPrintTime":null,
+                        "material":null,
+                        "layerHeight":null
+                    }
+                },
+                {
+                    "name":"radek_traktor_baterka_0.3mm_PLA_3h32m.gcode",
+                    "path":"/Prusa Link gcodes/radek_traktor_baterka_0.3mm_PLA_3h32m.gcode",
+                    "display":"radek_traktor_baterka_0.3mm_PLA_3h32m.gcode",
+                    "date":null,
+                    "size":1445885,
+                    "origin":"local",
+                    "type":"machinecode",
+                    "typePath":[
+                        "machinecode",
+                        "gcode"
+                    ],
+                    "hash":null,
+                    "refs":{
+                        "resource":null,
+                        "download":null,
+                        "thumbnailSmall":null,
+                        "thumbnailBig":null
+                    },
+                    "gcodeAnalysis":{
+                        "estimatedPrintTime":null,
+                        "material":null,
+                        "layerHeight":null
+                    }
+                },
+                {
+                    "name":"figurka_0.15mm_PLA_20m.gcode",
+                    "path":"/Prusa Link gcodes/figurka_0.15mm_PLA_20m.gcode",
+                    "display":"figurka_0.15mm_PLA_20m.gcode",
+                    "date":null,
+                    "size":934449,
+                    "origin":"local",
+                    "type":"machinecode",
+                    "typePath":[
+                        "machinecode",
+                        "gcode"
+                    ],
+                    "hash":null,
+                    "refs":{
+                        "resource":null,
+                        "download":null,
+                        "thumbnailSmall":null,
+                        "thumbnailBig":null
+                    },
+                    "gcodeAnalysis":{
+                        "estimatedPrintTime":null,
+                        "material":null,
+                        "layerHeight":null
+                    }
+                },
+                {
+                    "name":"radek_budka_puzzle-spojka_0.2mm_PETG_13m.gcode",
+                    "path":"/Prusa Link gcodes/radek_budka_puzzle-spojka_0.2mm_PETG_13m.gcode",
+                    "display":"radek_budka_puzzle-spojka_0.2mm_PETG_13m.gcode",
+                    "date":null,
+                    "size":325452,
+                    "origin":"local",
+                    "type":"machinecode",
+                    "typePath":[
+                        "machinecode",
+                        "gcode"
+                    ],
+                    "hash":null,
+                    "refs":{
+                        "resource":null,
+                        "download":null,
+                        "thumbnailSmall":null,
+                        "thumbnailBig":null
+                    },
+                    "gcodeAnalysis":{
+                        "estimatedPrintTime":null,
+                        "material":null,
+                        "layerHeight":null
+                    }
+                },
+                {
+                    "name":"cabel_mount_7_0.15mm_PETG_16m.gcode",
+                    "path":"/Prusa Link gcodes/cabel_mount_7_0.15mm_PETG_16m.gcode",
+                    "display":"cabel_mount_7_0.15mm_PETG_16m.gcode",
+                    "date":null,
+                    "size":474069,
+                    "origin":"local",
+                    "type":"machinecode",
+                    "typePath":[
+                        "machinecode",
+                        "gcode"
+                    ],
+                    "hash":null,
+                    "refs":{
+                        "resource":null,
+                        "download":null,
+                        "thumbnailSmall":null,
+                        "thumbnailBig":null
+                    },
+                    "gcodeAnalysis":{
+                        "estimatedPrintTime":null,
+                        "material":null,
+                        "layerHeight":null
+                    }
+                },
+                {
+                    "name":"box_in_4x0.2mm_PLA_17h38m.gcode",
+                    "path":"/Prusa Link gcodes/box_in_4x0.2mm_PLA_17h38m.gcode",
+                    "display":"box_in_4x0.2mm_PLA_17h38m.gcode",
+                    "date":null,
+                    "size":4880600,
+                    "origin":"local",
+                    "type":"machinecode",
+                    "typePath":[
+                        "machinecode",
+                        "gcode"
+                    ],
+                    "hash":null,
+                    "refs":{
+                        "resource":null,
+                        "download":null,
+                        "thumbnailSmall":null,
+                        "thumbnailBig":null
+                    },
+                    "gcodeAnalysis":{
+                        "estimatedPrintTime":null,
+                        "material":null,
+                        "layerHeight":null
+                    }
+                },
+                {
+                    "name":"figurka_0.3mm_PETG_11m.gcode",
+                    "path":"/Prusa Link gcodes/figurka_0.3mm_PETG_11m.gcode",
+                    "display":"figurka_0.3mm_PETG_11m.gcode",
+                    "date":null,
+                    "size":454830,
+                    "origin":"local",
+                    "type":"machinecode",
+                    "typePath":[
+                        "machinecode",
+                        "gcode"
+                    ],
+                    "hash":null,
+                    "refs":{
+                        "resource":null,
+                        "download":null,
+                        "thumbnailSmall":null,
+                        "thumbnailBig":null
+                    },
+                    "gcodeAnalysis":{
+                        "estimatedPrintTime":null,
+                        "material":null,
+                        "layerHeight":null
+                    }
+                },
+                {
+                    "name":"box_in_0.2mm_PLA_8h50m.gcode",
+                    "path":"/Prusa Link gcodes/box_in_0.2mm_PLA_8h50m.gcode",
+                    "display":"box_in_0.2mm_PLA_8h50m.gcode",
+                    "date":null,
+                    "size":2488525,
+                    "origin":"local",
+                    "type":"machinecode",
+                    "typePath":[
+                        "machinecode",
+                        "gcode"
+                    ],
+                    "hash":null,
+                    "refs":{
+                        "resource":null,
+                        "download":null,
+                        "thumbnailSmall":null,
+                        "thumbnailBig":null
+                    },
+                    "gcodeAnalysis":{
+                        "estimatedPrintTime":null,
+                        "material":null,
+                        "layerHeight":null
+                    }
+                },
+                {
+                    "name":"y-carriage_idler_cover_0.3mm_PETG_19m.gcode",
+                    "path":"/Prusa Link gcodes/y-carriage_idler_cover_0.3mm_PETG_19m.gcode",
+                    "display":"y-carriage_idler_cover_0.3mm_PETG_19m.gcode",
+                    "date":null,
+                    "size":354083,
+                    "origin":"local",
+                    "type":"machinecode",
+                    "typePath":[
+                        "machinecode",
+                        "gcode"
+                    ],
+                    "hash":null,
+                    "refs":{
+                        "resource":null,
+                        "download":null,
+                        "thumbnailSmall":null,
+                        "thumbnailBig":null
+                    },
+                    "gcodeAnalysis":{
+                        "estimatedPrintTime":null,
+                        "material":null,
+                        "layerHeight":null
+                    }
+                },
+                {
+                    "name":"radek_budka_puzzle_0.2mm_PETG_19m.gcode",
+                    "path":"/Prusa Link gcodes/radek_budka_puzzle_0.2mm_PETG_19m.gcode",
+                    "display":"radek_budka_puzzle_0.2mm_PETG_19m.gcode",
+                    "date":null,
+                    "size":307042,
+                    "origin":"local",
+                    "type":"machinecode",
+                    "typePath":[
+                        "machinecode",
+                        "gcode"
+                    ],
+                    "hash":null,
+                    "refs":{
+                        "resource":null,
+                        "download":null,
+                        "thumbnailSmall":null,
+                        "thumbnailBig":null
+                    },
+                    "gcodeAnalysis":{
+                        "estimatedPrintTime":null,
+                        "material":null,
+                        "layerHeight":null
+                    }
+                }
+            ]
+        },
+        {
+            "name":"SD Card",
+            "path":"/SD Card",
+            "display":"SD Card",
+            "size":557336228,
+            "type":"folder",
+            "typePath":[
+                "folder"
+            ],
+            "origin":"sdcard",
+            "refs":{
+                "resource":null
             },
-            {
-              origin: "sdcard",
-              path:
-                "examples/Calibration objects/Resin_Calibration_Object_0.035.gcode",
-              display: "Resin_Calibration_Object_0.035.gcode",
-              name: "Resin_Calibration_Object_0.035.gcode",
-              size: 3557227,
-              date: 1593158489,
-              type: "machinecode",
-              typePath: ["machinecode", "gcode"],
-              hash: "5ee3147fd73cc3db6b358b099a7f04cda52f68a0",
-              refs: {
-                resource:
-                  "http://localhost:9000/api/files/sdcard/examples/Calibration objects/Resin_Calibration_Object_0.035.gcode",
-                download:
-                  "http://localhost:9000/api/downloads/sdcard/examples/Calibration objects/Resin_Calibration_Object_0.035.gcode",
-              },
-              gcodeAnalysis: {
-                estimatedPrintTime: 5992000.0,
-                layerHeight: 0.035,
-                material: "Prusa Orange Tough @0.035",
-              },
-            },
-            {
-              origin: "sdcard",
-              path:
-                "examples/Calibration objects/Resin_Calibration_Object_0.050.gcode",
-              display: "Resin_Calibration_Object_0.050.gcode",
-              name: "Resin_Calibration_Object_0.050.gcode",
-              size: 4304037,
-              date: 1597665858,
-              type: "machinecode",
-              typePath: ["machinecode", "gcode"],
-              hash: "e4acf2901f5f2cc5669b0371e75f6713bffe4826",
-              refs: {
-                resource:
-                  "http://localhost:9000/api/files/sdcard/examples/Calibration objects/Resin_Calibration_Object_0.050.gcode",
-                download:
-                  "http://localhost:9000/api/downloads/sdcard/examples/Calibration objects/Resin_Calibration_Object_0.050.gcode",
-              },
-              gcodeAnalysis: {
-                estimatedPrintTime: 5257272.727,
-                layerHeight: 0.05,
-                material: "Prusa Orange Tough 0.05",
-              },
-            },
-          ],
-          refs: {
-            resource:
-              "http://localhost:9000/api/files/sdcard/examples/Calibration objects",
-          },
-          size: 14125788,
-        },
-        {
-          origin: "sdcard",
-          path: "examples/Prusacek_Clay_Army_1H_50um_Prusa_Orange.gcode",
-          display: "Prusacek_Clay_Army_1H_50um_Prusa_Orange.gcode",
-          name: "Prusacek_Clay_Army_1H_50um_Prusa_Orange.gcode",
-          size: 22627184,
-          date: 1597667620,
-          type: "machinecode",
-          typePath: ["machinecode", "gcode"],
-          hash: "9fc1a59b9b8cd59460e00682d48abbb8b5df6fce",
-          refs: {
-            resource:
-              "http://localhost:9000/api/files/sdcard/examples/Prusacek_Clay_Army_1H_50um_Prusa_Orange.gcode",
-            download:
-              "http://localhost:9000/api/downloads/sdcard/examples/Prusacek_Clay_Army_1H_50um_Prusa_Orange.gcode",
-          },
-          gcodeAnalysis: {
-            estimatedPrintTime: 3705000.0,
-            layerHeight: 0.05,
-            material: "Prusa Orange Tough 0.05",
-          },
-        },
-      ],
-      refs: { resource: "http://localhost:9000/api/files/sdcard/examples" },
-      size: 61397266,
-    },
-  ],
-  local: [
-    {
-      origin: "local",
-      path: "Petrin_Tower_10H_50um_Prusa_Orange.gcode",
-      display: "Petrin_Tower_10H_50um_Prusa_Orange.gcode",
-      name: "Petrin_Tower_10H_50um_Prusa_Orange.gcode",
-      size: 21008282,
-      date: 1597667806,
-      type: "machinecode",
-      typePath: ["machinecode", "gcode"],
-      hash: "c49fa4b9fb5cc7a623df2a211c241355ca1a1db7",
-      refs: {
-        resource:
-          "http://localhost:9000/api/files/local/Petrin_Tower_10H_50um_Prusa_Orange.gcode",
-        download:
-          "http://localhost:9000/api/downloads/local/Petrin_Tower_10H_50um_Prusa_Orange.gcode",
-      },
-      gcodeAnalysis: {
-        estimatedPrintTime: 0,
-        layerHeight: 0.05,
-        material: "",
-      },
-    },
-    {
-      origin: "local",
-      path: "examples",
-      display: "examples",
-      name: "examples",
-      type: "folder",
-      date: 80,
-      typePath: ["folder"],
-      children: [
-        {
-          origin: "local",
-          path:
-            "examples/Prusa_SL1_Calibration_test_2H_40M_50um_Prusa_Orange.gcode",
-          display: "Prusa_SL1_Calibration_test_2H_40M_50um_Prusa_Orange.gcode",
-          name: "Prusa_SL1_Calibration_test_2H_40M_50um_Prusa_Orange.gcode",
-          size: 3636012,
-          date: 1597667691,
-          type: "machinecode",
-          typePath: ["machinecode", "gcode"],
-          hash: "03d25853d6fcbc3b221111743b11aa84d0580298",
-          refs: {
-            resource:
-              "http://localhost:9000/api/files/local/examples/Prusa_SL1_Calibration_test_2H_40M_50um_Prusa_Orange.gcode",
-            download:
-              "http://localhost:9000/api/downloads/local/examples/Prusa_SL1_Calibration_test_2H_40M_50um_Prusa_Orange.gcode",
-          },
-          gcodeAnalysis: {
-            estimatedPrintTime: 0,
-            layerHeight: 0.05,
-            material: "",
-          },
-        },
-        {
-          origin: "local",
-          path: "examples/Petrin_Tower_10H_50um_Prusa_Orange.gcode",
-          display: "Petrin_Tower_10H_50um_Prusa_Orange.gcode",
-          name: "Petrin_Tower_10H_50um_Prusa_Orange.gcode",
-          size: 21008282,
-          date: 1597667806,
-          type: "machinecode",
-          typePath: ["machinecode", "gcode"],
-          hash: "c49fa4b9fb5cc7a623df2a211c241355ca1a1db7",
-          refs: {
-            resource:
-              "http://localhost:9000/api/files/local/examples/Petrin_Tower_10H_50um_Prusa_Orange.gcode",
-            download:
-              "http://localhost:9000/api/downloads/local/examples/Petrin_Tower_10H_50um_Prusa_Orange.gcode",
-          },
-          gcodeAnalysis: {
-            estimatedPrintTime: 0,
-            layerHeight: 0.05,
-            material: "",
-          },
-        },
-        {
-          origin: "local",
-          path: "examples/Prusacek_Clay_Army_1H_50um_Prusa_Orange.gcode",
-          display: "Prusacek_Clay_Army_1H_50um_Prusa_Orange.gcode",
-          name: "Prusacek_Clay_Army_1H_50um_Prusa_Orange.gcode",
-          size: 22627184,
-          date: 1597667620,
-          type: "machinecode",
-          typePath: ["machinecode", "gcode"],
-          hash: "9fc1a59b9b8cd59460e00682d48abbb8b5df6fce",
-          refs: {
-            resource:
-              "http://localhost:9000/api/files/local/examples/Prusacek_Clay_Army_1H_50um_Prusa_Orange.gcode",
-            download:
-              "http://localhost:9000/api/downloads/local/examples/Prusacek_Clay_Army_1H_50um_Prusa_Orange.gcode",
-          },
-          gcodeAnalysis: {
-            estimatedPrintTime: 3705000.0,
-            layerHeight: 0.05,
-            material: "Prusa Orange Tough 0.05",
-          },
-        },
-      ],
-      refs: { resource: "http://localhost:9000/api/files/local/examples" },
-      size: 61397266,
-    },
-  ],
-};
+            "children":[
+                {
+                    "name":"bitbeam",
+                    "path":"/SD Card/bitbeam",
+                    "display":"bitbeam",
+                    "size":87954949,
+                    "type":"folder",
+                    "typePath":[
+                        "folder"
+                    ],
+                    "origin":"sdcard",
+                    "refs":{
+                        "resource":null
+                    },
+                    "children":[
+                        {
+                            "name":"bb-mot-nema17_0.3mm_PLA_1h49m.gcode",
+                            "path":"/SD Card/bitbeam/bb-mot-nema17_0.3mm_PLA_1h49m.gcode",
+                            "display":"bb-mot-nema17_0.3mm_PLA_1h49m.gcode",
+                            "size":2213091,
+                            "origin":"sdcard",
+                            "type":"machinecode",
+                            "typePath":[
+                                "machinecode",
+                                "gcode"
+                            ],
+                            "date":null,
+                            "hash":null,
+                            "refs":{
+                                "resource":null,
+                                "download":null,
+                                "thumbnailSmall":null,
+                                "thumbnailBig":null
+                            },
+                            "gcodeAnalysis":{
+                                "estimatedPrintTime":null,
+                                "material":null,
+                                "layerHeight":null
+                            }
+                        },
+                        {
+                            "name":"bb-base-7x14_0.3mm_PETG_9h22m.gcode",
+                            "path":"/SD Card/bitbeam/bb-base-7x14_0.3mm_PETG_9h22m.gcode",
+                            "display":"bb-base-7x14_0.3mm_PETG_9h22m.gcode",
+                            "size":26742201,
+                            "origin":"sdcard",
+                            "type":"machinecode",
+                            "typePath":[
+                                "machinecode",
+                                "gcode"
+                            ],
+                            "date":null,
+                            "hash":null,
+                            "refs":{
+                                "resource":null,
+                                "download":null,
+                                "thumbnailSmall":null,
+                                "thumbnailBig":null
+                            },
+                            "gcodeAnalysis":{
+                                "estimatedPrintTime":null,
+                                "material":null,
+                                "layerHeight":null
+                            }
+                        },
+                        {
+                            "name":"bb-a60-5x5_0.3mm_PLA_2h36m.gcode",
+                            "path":"/SD Card/bitbeam/bb-a60-5x5_0.3mm_PLA_2h36m.gcode",
+                            "display":"bb-a60-5x5_0.3mm_PLA_2h36m.gcode",
+                            "size":5982591,
+                            "origin":"sdcard",
+                            "type":"machinecode",
+                            "typePath":[
+                                "machinecode",
+                                "gcode"
+                            ],
+                            "date":null,
+                            "hash":null,
+                            "refs":{
+                                "resource":null,
+                                "download":null,
+                                "thumbnailSmall":null,
+                                "thumbnailBig":null
+                            },
+                            "gcodeAnalysis":{
+                                "estimatedPrintTime":null,
+                                "material":null,
+                                "layerHeight":null
+                            }
+                        },
+                        {
+                            "name":"baseplate_30x25_0.15mm_PLA_10h48m.gcode",
+                            "path":"/SD Card/bitbeam/baseplate_30x25_0.15mm_PLA_10h48m.gcode",
+                            "display":"baseplate_30x25_0.15mm_PLA_10h48m.gcode",
+                            "size":25267017,
+                            "origin":"sdcard",
+                            "type":"machinecode",
+                            "typePath":[
+                                "machinecode",
+                                "gcode"
+                            ],
+                            "date":null,
+                            "hash":null,
+                            "refs":{
+                                "resource":null,
+                                "download":null,
+                                "thumbnailSmall":null,
+                                "thumbnailBig":null
+                            },
+                            "gcodeAnalysis":{
+                                "estimatedPrintTime":null,
+                                "material":null,
+                                "layerHeight":null
+                            }
+                        },
+                        {
+                            "name":"baseplate_30x25_0.15mm_PETG_10h51m.gcode",
+                            "path":"/SD Card/bitbeam/baseplate_30x25_0.15mm_PETG_10h51m.gcode",
+                            "display":"baseplate_30x25_0.15mm_PETG_10h51m.gcode",
+                            "size":26456254,
+                            "origin":"sdcard",
+                            "type":"machinecode",
+                            "typePath":[
+                                "machinecode",
+                                "gcode"
+                            ],
+                            "date":null,
+                            "hash":null,
+                            "refs":{
+                                "resource":null,
+                                "download":null,
+                                "thumbnailSmall":null,
+                                "thumbnailBig":null
+                            },
+                            "gcodeAnalysis":{
+                                "estimatedPrintTime":null,
+                                "material":null,
+                                "layerHeight":null
+                            }
+                        },
+                        {
+                            "name":"bb-mot-28BYJ-cube_0.3mm_PLA_58m.gcode",
+                            "path":"/SD Card/bitbeam/bb-mot-28BYJ-cube_0.3mm_PLA_58m.gcode",
+                            "display":"bb-mot-28BYJ-cube_0.3mm_PLA_58m.gcode",
+                            "size":1293795,
+                            "origin":"sdcard",
+                            "type":"machinecode",
+                            "typePath":[
+                                "machinecode",
+                                "gcode"
+                            ],
+                            "date":null,
+                            "hash":null,
+                            "refs":{
+                                "resource":null,
+                                "download":null,
+                                "thumbnailSmall":null,
+                                "thumbnailBig":null
+                            },
+                            "gcodeAnalysis":{
+                                "estimatedPrintTime":null,
+                                "material":null,
+                                "layerHeight":null
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name":"MK23S",
+                    "path":"/SD Card/MK23S",
+                    "display":"MK23S",
+                    "size":110587649,
+                    "type":"folder",
+                    "typePath":[
+                        "folder"
+                    ],
+                    "origin":"sdcard",
+                    "refs":{
+                        "resource":null
+                    },
+                    "children":[
+                        {
+                            "name":"y-corners_0.15mm_PETG.gcode",
+                            "path":"/SD Card/MK23S/y-corners_0.15mm_PETG.gcode",
+                            "display":"y-corners_0.15mm_PETG.gcode",
+                            "size":12024299,
+                            "origin":"sdcard",
+                            "type":"machinecode",
+                            "typePath":[
+                                "machinecode",
+                                "gcode"
+                            ],
+                            "date":null,
+                            "hash":null,
+                            "refs":{
+                                "resource":null,
+                                "download":null,
+                                "thumbnailSmall":null,
+                                "thumbnailBig":null
+                            },
+                            "gcodeAnalysis":{
+                                "estimatedPrintTime":null,
+                                "material":null,
+                                "layerHeight":null
+                            }
+                        },
+                        {
+                            "name":"z-axis-MK2_0.15mm_PETG.gcode",
+                            "path":"/SD Card/MK23S/z-axis-MK2_0.15mm_PETG.gcode",
+                            "display":"z-axis-MK2_0.15mm_PETG.gcode",
+                            "size":10505277,
+                            "origin":"sdcard",
+                            "type":"machinecode",
+                            "typePath":[
+                                "machinecode",
+                                "gcode"
+                            ],
+                            "date":null,
+                            "hash":null,
+                            "refs":{
+                                "resource":null,
+                                "download":null,
+                                "thumbnailSmall":null,
+                                "thumbnailBig":null
+                            },
+                            "gcodeAnalysis":{
+                                "estimatedPrintTime":null,
+                                "material":null,
+                                "layerHeight":null
+                            }
+                        },
+                        {
+                            "name":"x-end-idler_0.15mm_PETG.gcode",
+                            "path":"/SD Card/MK23S/x-end-idler_0.15mm_PETG.gcode",
+                            "display":"x-end-idler_0.15mm_PETG.gcode",
+                            "size":27518032,
+                            "origin":"sdcard",
+                            "type":"machinecode",
+                            "typePath":[
+                                "machinecode",
+                                "gcode"
+                            ],
+                            "date":null,
+                            "hash":null,
+                            "refs":{
+                                "resource":null,
+                                "download":null,
+                                "thumbnailSmall":null,
+                                "thumbnailBig":null
+                            },
+                            "gcodeAnalysis":{
+                                "estimatedPrintTime":null,
+                                "material":null,
+                                "layerHeight":null
+                            }
+                        },
+                        {
+                            "name":"y-motor_0.15mm_PETG.gcode",
+                            "path":"/SD Card/MK23S/y-motor_0.15mm_PETG.gcode",
+                            "display":"y-motor_0.15mm_PETG.gcode",
+                            "size":7009515,
+                            "origin":"sdcard",
+                            "type":"machinecode",
+                            "typePath":[
+                                "machinecode",
+                                "gcode"
+                            ],
+                            "date":null,
+                            "hash":null,
+                            "refs":{
+                                "resource":null,
+                                "download":null,
+                                "thumbnailSmall":null,
+                                "thumbnailBig":null
+                            },
+                            "gcodeAnalysis":{
+                                "estimatedPrintTime":null,
+                                "material":null,
+                                "layerHeight":null
+                            }
+                        },
+                        {
+                            "name":"PSU-Y-part_0.15mm_PETG.gcode",
+                            "path":"/SD Card/MK23S/PSU-Y-part_0.15mm_PETG.gcode",
+                            "display":"PSU-Y-part_0.15mm_PETG.gcode",
+                            "size":4923392,
+                            "origin":"sdcard",
+                            "type":"machinecode",
+                            "typePath":[
+                                "machinecode",
+                                "gcode"
+                            ],
+                            "date":null,
+                            "hash":null,
+                            "refs":{
+                                "resource":null,
+                                "download":null,
+                                "thumbnailSmall":null,
+                                "thumbnailBig":null
+                            },
+                            "gcodeAnalysis":{
+                                "estimatedPrintTime":null,
+                                "material":null,
+                                "layerHeight":null
+                            }
+                        },
+                        {
+                            "name":"Extruder_0.15mm_PETG.gcode",
+                            "path":"/SD Card/MK23S/Extruder_0.15mm_PETG.gcode",
+                            "display":"Extruder_0.15mm_PETG.gcode",
+                            "size":37758549,
+                            "origin":"sdcard",
+                            "type":"machinecode",
+                            "typePath":[
+                                "machinecode",
+                                "gcode"
+                            ],
+                            "date":null,
+                            "hash":null,
+                            "refs":{
+                                "resource":null,
+                                "download":null,
+                                "thumbnailSmall":null,
+                                "thumbnailBig":null
+                            },
+                            "gcodeAnalysis":{
+                                "estimatedPrintTime":null,
+                                "material":null,
+                                "layerHeight":null
+                            }
+                        },
+                        {
+                            "name":"PSU-cover-0.15mm_PETG.gcode",
+                            "path":"/SD Card/MK23S/PSU-cover-0.15mm_PETG.gcode",
+                            "display":"PSU-cover-0.15mm_PETG.gcode",
+                            "size":10848585,
+                            "origin":"sdcard",
+                            "type":"machinecode",
+                            "typePath":[
+                                "machinecode",
+                                "gcode"
+                            ],
+                            "date":null,
+                            "hash":null,
+                            "refs":{
+                                "resource":null,
+                                "download":null,
+                                "thumbnailSmall":null,
+                                "thumbnailBig":null
+                            },
+                            "gcodeAnalysis":{
+                                "estimatedPrintTime":null,
+                                "material":null,
+                                "layerHeight":null
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name":"Samples",
+                    "path":"/SD Card/Samples",
+                    "display":"Samples",
+                    "size":3974827,
+                    "type":"folder",
+                    "typePath":[
+                        "folder"
+                    ],
+                    "origin":"sdcard",
+                    "refs":{
+                        "resource":null
+                    },
+                    "children":[
+                        {
+                            "name":"filament_sample_0.1mm_PETG_37m.gcode",
+                            "path":"/SD Card/Samples/filament_sample_0.1mm_PETG_37m.gcode",
+                            "display":"filament_sample_0.1mm_PETG_37m.gcode",
+                            "size":806273,
+                            "origin":"sdcard",
+                            "type":"machinecode",
+                            "typePath":[
+                                "machinecode",
+                                "gcode"
+                            ],
+                            "date":null,
+                            "hash":null,
+                            "refs":{
+                                "resource":null,
+                                "download":null,
+                                "thumbnailSmall":null,
+                                "thumbnailBig":null
+                            },
+                            "gcodeAnalysis":{
+                                "estimatedPrintTime":null,
+                                "material":null,
+                                "layerHeight":null
+                            }
+                        },
+                        {
+                            "name":"filament_sample_0.1mm_XT_38m.gcode",
+                            "path":"/SD Card/Samples/filament_sample_0.1mm_XT_38m.gcode",
+                            "display":"filament_sample_0.1mm_XT_38m.gcode",
+                            "size":826874,
+                            "origin":"sdcard",
+                            "type":"machinecode",
+                            "typePath":[
+                                "machinecode",
+                                "gcode"
+                            ],
+                            "date":null,
+                            "hash":null,
+                            "refs":{
+                                "resource":null,
+                                "download":null,
+                                "thumbnailSmall":null,
+                                "thumbnailBig":null
+                            },
+                            "gcodeAnalysis":{
+                                "estimatedPrintTime":null,
+                                "material":null,
+                                "layerHeight":null
+                            }
+                        },
+                        {
+                            "name":"filament_sample_0.1mm_PLA_37m.gcode",
+                            "path":"/SD Card/Samples/filament_sample_0.1mm_PLA_37m.gcode",
+                            "display":"filament_sample_0.1mm_PLA_37m.gcode",
+                            "size":806052,
+                            "origin":"sdcard",
+                            "type":"machinecode",
+                            "typePath":[
+                                "machinecode",
+                                "gcode"
+                            ],
+                            "date":null,
+                            "hash":null,
+                            "refs":{
+                                "resource":null,
+                                "download":null,
+                                "thumbnailSmall":null,
+                                "thumbnailBig":null
+                            },
+                            "gcodeAnalysis":{
+                                "estimatedPrintTime":null,
+                                "material":null,
+                                "layerHeight":null
+                            }
+                        },
+                        {
+                            "name":"filament_sample_0.1mm_ASA_37m.gcode",
+                            "path":"/SD Card/Samples/filament_sample_0.1mm_ASA_37m.gcode",
+                            "display":"filament_sample_0.1mm_ASA_37m.gcode",
+                            "size":806196,
+                            "origin":"sdcard",
+                            "type":"machinecode",
+                            "typePath":[
+                                "machinecode",
+                                "gcode"
+                            ],
+                            "date":null,
+                            "hash":null,
+                            "refs":{
+                                "resource":null,
+                                "download":null,
+                                "thumbnailSmall":null,
+                                "thumbnailBig":null
+                            },
+                            "gcodeAnalysis":{
+                                "estimatedPrintTime":null,
+                                "material":null,
+                                "layerHeight":null
+                            }
+                        },
+                        {
+                            "name":"filament_sample_0.1mm_ABS_35m.gcode",
+                            "path":"/SD Card/Samples/filament_sample_0.1mm_ABS_35m.gcode",
+                            "display":"filament_sample_0.1mm_ABS_35m.gcode",
+                            "size":729432,
+                            "origin":"sdcard",
+                            "type":"machinecode",
+                            "typePath":[
+                                "machinecode",
+                                "gcode"
+                            ],
+                            "date":null,
+                            "hash":null,
+                            "refs":{
+                                "resource":null,
+                                "download":null,
+                                "thumbnailSmall":null,
+                                "thumbnailBig":null
+                            },
+                            "gcodeAnalysis":{
+                                "estimatedPrintTime":null,
+                                "material":null,
+                                "layerHeight":null
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name":"merkur",
+                    "path":"/SD Card/merkur",
+                    "display":"merkur",
+                    "size":22893712,
+                    "type":"folder",
+                    "typePath":[
+                        "folder"
+                    ],
+                    "origin":"sdcard",
+                    "refs":{
+                        "resource":null
+                    },
+                    "children":[
+                        {
+                            "name":"merkur-base-5x10_0.3mm_PLA_5h24m.gcode",
+                            "path":"/SD Card/merkur/merkur-base-5x10_0.3mm_PLA_5h24m.gcode",
+                            "display":"merkur-base-5x10_0.3mm_PLA_5h24m.gcode",
+                            "size":9441586,
+                            "origin":"sdcard",
+                            "type":"machinecode",
+                            "typePath":[
+                                "machinecode",
+                                "gcode"
+                            ],
+                            "date":null,
+                            "hash":null,
+                            "refs":{
+                                "resource":null,
+                                "download":null,
+                                "thumbnailSmall":null,
+                                "thumbnailBig":null
+                            },
+                            "gcodeAnalysis":{
+                                "estimatedPrintTime":null,
+                                "material":null,
+                                "layerHeight":null
+                            }
+                        },
+                        {
+                            "name":"merkur-a60-5x5_0.3mm_PLA_6h33m.gcode",
+                            "path":"/SD Card/merkur/merkur-a60-5x5_0.3mm_PLA_6h33m.gcode",
+                            "display":"merkur-a60-5x5_0.3mm_PLA_6h33m.gcode",
+                            "size":13452126,
+                            "origin":"sdcard",
+                            "type":"machinecode",
+                            "typePath":[
+                                "machinecode",
+                                "gcode"
+                            ],
+                            "date":null,
+                            "hash":null,
+                            "refs":{
+                                "resource":null,
+                                "download":null,
+                                "thumbnailSmall":null,
+                                "thumbnailBig":null
+                            },
+                            "gcodeAnalysis":{
+                                "estimatedPrintTime":null,
+                                "material":null,
+                                "layerHeight":null
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name":"6130008_0.15mm_PLA_21m.gcode",
+                    "path":"/SD Card/6130008_0.15mm_PLA_21m.gcode",
+                    "display":"6130008_0.15mm_PLA_21m.gcode",
+                    "size":354984,
+                    "origin":"sdcard",
+                    "type":"machinecode",
+                    "typePath":[
+                        "machinecode",
+                        "gcode"
+                    ],
+                    "date":null,
+                    "hash":null,
+                    "refs":{
+                        "resource":null,
+                        "download":null,
+                        "thumbnailSmall":null,
+                        "thumbnailBig":null
+                    },
+                    "gcodeAnalysis":{
+                        "estimatedPrintTime":null,
+                        "material":null,
+                        "layerHeight":null
+                    }
+                },
+                {
+                    "name":"6130008_0.15mm_PETG_21m.gcode",
+                    "path":"/SD Card/6130008_0.15mm_PETG_21m.gcode",
+                    "display":"6130008_0.15mm_PETG_21m.gcode",
+                    "size":361308,
+                    "origin":"sdcard",
+                    "type":"machinecode",
+                    "typePath":[
+                        "machinecode",
+                        "gcode"
+                    ],
+                    "date":null,
+                    "hash":null,
+                    "refs":{
+                        "resource":null,
+                        "download":null,
+                        "thumbnailSmall":null,
+                        "thumbnailBig":null
+                    },
+                    "gcodeAnalysis":{
+                        "estimatedPrintTime":null,
+                        "material":null,
+                        "layerHeight":null
+                    }
+                },
+                {
+                    "name":"4121667_0.15mm_PLA_2h38m.gcode",
+                    "path":"/SD Card/4121667_0.15mm_PLA_2h38m.gcode",
+                    "display":"4121667_0.15mm_PLA_2h38m.gcode",
+                    "size":5537009,
+                    "origin":"sdcard",
+                    "type":"machinecode",
+                    "typePath":[
+                        "machinecode",
+                        "gcode"
+                    ],
+                    "date":null,
+                    "hash":null,
+                    "refs":{
+                        "resource":null,
+                        "download":null,
+                        "thumbnailSmall":null,
+                        "thumbnailBig":null
+                    },
+                    "gcodeAnalysis":{
+                        "estimatedPrintTime":null,
+                        "material":null,
+                        "layerHeight":null
+                    }
+                },
+                {
+                    "name":"branka_radek_0.3mm_PLA_2h21m.gcode",
+                    "path":"/SD Card/branka_radek_0.3mm_PLA_2h21m.gcode",
+                    "display":"branka_radek_0.3mm_PLA_2h21m.gcode",
+                    "size":1278617,
+                    "origin":"sdcard",
+                    "type":"machinecode",
+                    "typePath":[
+                        "machinecode",
+                        "gcode"
+                    ],
+                    "date":null,
+                    "hash":null,
+                    "refs":{
+                        "resource":null,
+                        "download":null,
+                        "thumbnailSmall":null,
+                        "thumbnailBig":null
+                    },
+                    "gcodeAnalysis":{
+                        "estimatedPrintTime":null,
+                        "material":null,
+                        "layerHeight":null
+                    }
+                },
+                {
+                    "name":"4121667_0.15mm_PLA_1h34m.gcode",
+                    "path":"/SD Card/4121667_0.15mm_PLA_1h34m.gcode",
+                    "display":"4121667_0.15mm_PLA_1h34m.gcode",
+                    "size":3339626,
+                    "origin":"sdcard",
+                    "type":"machinecode",
+                    "typePath":[
+                        "machinecode",
+                        "gcode"
+                    ],
+                    "date":null,
+                    "hash":null,
+                    "refs":{
+                        "resource":null,
+                        "download":null,
+                        "thumbnailSmall":null,
+                        "thumbnailBig":null
+                    },
+                    "gcodeAnalysis":{
+                        "estimatedPrintTime":null,
+                        "material":null,
+                        "layerHeight":null
+                    }
+                },
+                {
+                    "name":"55mmLensCapHolderDSLR_0.15mm_PLA_2h23m.gcode",
+                    "path":"/SD Card/55mmLensCapHolderDSLR_0.15mm_PLA_2h23m.gcode",
+                    "display":"55mmLensCapHolderDSLR_0.15mm_PLA_2h23m.gcode",
+                    "size":4723752,
+                    "origin":"sdcard",
+                    "type":"machinecode",
+                    "typePath":[
+                        "machinecode",
+                        "gcode"
+                    ],
+                    "date":null,
+                    "hash":null,
+                    "refs":{
+                        "resource":null,
+                        "download":null,
+                        "thumbnailSmall":null,
+                        "thumbnailBig":null
+                    },
+                    "gcodeAnalysis":{
+                        "estimatedPrintTime":null,
+                        "material":null,
+                        "layerHeight":null
+                    }
+                },
+                {
+                    "name":"nikon_LC67_holder_0.15mm_PLA_3h21m.gcode",
+                    "path":"/SD Card/nikon_LC67_holder_0.15mm_PLA_3h21m.gcode",
+                    "display":"nikon_LC67_holder_0.15mm_PLA_3h21m.gcode",
+                    "size":6132537,
+                    "origin":"sdcard",
+                    "type":"machinecode",
+                    "typePath":[
+                        "machinecode",
+                        "gcode"
+                    ],
+                    "date":null,
+                    "hash":null,
+                    "refs":{
+                        "resource":null,
+                        "download":null,
+                        "thumbnailSmall":null,
+                        "thumbnailBig":null
+                    },
+                    "gcodeAnalysis":{
+                        "estimatedPrintTime":null,
+                        "material":null,
+                        "layerHeight":null
+                    }
+                },
+                {
+                    "name":"maska_0.3mm_PLA_1h24m.gcode",
+                    "path":"/SD Card/maska_0.3mm_PLA_1h24m.gcode",
+                    "display":"maska_0.3mm_PLA_1h24m.gcode",
+                    "size":179409,
+                    "origin":"sdcard",
+                    "type":"machinecode",
+                    "typePath":[
+                        "machinecode",
+                        "gcode"
+                    ],
+                    "date":null,
+                    "hash":null,
+                    "refs":{
+                        "resource":null,
+                        "download":null,
+                        "thumbnailSmall":null,
+                        "thumbnailBig":null
+                    },
+                    "gcodeAnalysis":{
+                        "estimatedPrintTime":null,
+                        "material":null,
+                        "layerHeight":null
+                    }
+                },
+                {
+                    "name":"maska_0.3mm_PLA_53m.gcode",
+                    "path":"/SD Card/maska_0.3mm_PLA_53m.gcode",
+                    "display":"maska_0.3mm_PLA_53m.gcode",
+                    "size":309269,
+                    "origin":"sdcard",
+                    "type":"machinecode",
+                    "typePath":[
+                        "machinecode",
+                        "gcode"
+                    ],
+                    "date":null,
+                    "hash":null,
+                    "refs":{
+                        "resource":null,
+                        "download":null,
+                        "thumbnailSmall":null,
+                        "thumbnailBig":null
+                    },
+                    "gcodeAnalysis":{
+                        "estimatedPrintTime":null,
+                        "material":null,
+                        "layerHeight":null
+                    }
+                },
+                {
+                    "name":"wall_0.15mm_PETG_MINI_17m.gcode",
+                    "path":"/SD Card/wall_0.15mm_PETG_MINI_17m.gcode",
+                    "display":"wall_0.15mm_PETG_MINI_17m.gcode",
+                    "size":296209,
+                    "origin":"sdcard",
+                    "type":"machinecode",
+                    "typePath":[
+                        "machinecode",
+                        "gcode"
+                    ],
+                    "date":null,
+                    "hash":null,
+                    "refs":{
+                        "resource":null,
+                        "download":null,
+                        "thumbnailSmall":null,
+                        "thumbnailBig":null
+                    },
+                    "gcodeAnalysis":{
+                        "estimatedPrintTime":null,
+                        "material":null,
+                        "layerHeight":null
+                    }
+                },
+                {
+                    "name":"wall_0.15mm_PLA_17m.gcode",
+                    "path":"/SD Card/wall_0.15mm_PLA_17m.gcode",
+                    "display":"wall_0.15mm_PLA_17m.gcode",
+                    "size":284939,
+                    "origin":"sdcard",
+                    "type":"machinecode",
+                    "typePath":[
+                        "machinecode",
+                        "gcode"
+                    ],
+                    "date":null,
+                    "hash":null,
+                    "refs":{
+                        "resource":null,
+                        "download":null,
+                        "thumbnailSmall":null,
+                        "thumbnailBig":null
+                    },
+                    "gcodeAnalysis":{
+                        "estimatedPrintTime":null,
+                        "material":null,
+                        "layerHeight":null
+                    }
+                },
+                {
+                    "name":"KRYT_Z~1.GCO - kryt_zamek_branka_horackovi_0.3mm_PLA_18m.gcode",
+                    "path":"/SD Card/KRYT_Z~1.GCO - kryt_zamek_branka_horackovi_0.3mm_PLA_18m.gcode",
+                    "display":"KRYT_Z~1.GCO - kryt_zamek_branka_horackovi_0.3mm_PLA_18m.gcode",
+                    "size":103038,
+                    "origin":"sdcard",
+                    "type":"machinecode",
+                    "typePath":[
+                        "machinecode",
+                        "gcode"
+                    ],
+                    "date":null,
+                    "hash":null,
+                    "refs":{
+                        "resource":null,
+                        "download":null,
+                        "thumbnailSmall":null,
+                        "thumbnailBig":null
+                    },
+                    "gcodeAnalysis":{
+                        "estimatedPrintTime":null,
+                        "material":null,
+                        "layerHeight":null
+                    }
+                },
+                {
+                    "name":"wood_drill_bit_box_0.3mm_PLA_2h10m.gcode",
+                    "path":"/SD Card/wood_drill_bit_box_0.3mm_PLA_2h10m.gcode",
+                    "display":"wood_drill_bit_box_0.3mm_PLA_2h10m.gcode",
+                    "size":1743349,
+                    "origin":"sdcard",
+                    "type":"machinecode",
+                    "typePath":[
+                        "machinecode",
+                        "gcode"
+                    ],
+                    "date":null,
+                    "hash":null,
+                    "refs":{
+                        "resource":null,
+                        "download":null,
+                        "thumbnailSmall":null,
+                        "thumbnailBig":null
+                    },
+                    "gcodeAnalysis":{
+                        "estimatedPrintTime":null,
+                        "material":null,
+                        "layerHeight":null
+                    }
+                },
+                {
+                    "name":"wood_drill_bit_box_0.3mm_PLA_30m.gcode",
+                    "path":"/SD Card/wood_drill_bit_box_0.3mm_PLA_30m.gcode",
+                    "display":"wood_drill_bit_box_0.3mm_PLA_30m.gcode",
+                    "size":260427,
+                    "origin":"sdcard",
+                    "type":"machinecode",
+                    "typePath":[
+                        "machinecode",
+                        "gcode"
+                    ],
+                    "date":null,
+                    "hash":null,
+                    "refs":{
+                        "resource":null,
+                        "download":null,
+                        "thumbnailSmall":null,
+                        "thumbnailBig":null
+                    },
+                    "gcodeAnalysis":{
+                        "estimatedPrintTime":null,
+                        "material":null,
+                        "layerHeight":null
+                    }
+                },
+                {
+                    "name":"branka_radek_0.2mm_PETG_10h36m.gcode",
+                    "path":"/SD Card/branka_radek_0.2mm_PETG_10h36m.gcode",
+                    "display":"branka_radek_0.2mm_PETG_10h36m.gcode",
+                    "size":48510043,
+                    "origin":"sdcard",
+                    "type":"machinecode",
+                    "typePath":[
+                        "machinecode",
+                        "gcode"
+                    ],
+                    "date":null,
+                    "hash":null,
+                    "refs":{
+                        "resource":null,
+                        "download":null,
+                        "thumbnailSmall":null,
+                        "thumbnailBig":null
+                    },
+                    "gcodeAnalysis":{
+                        "estimatedPrintTime":null,
+                        "material":null,
+                        "layerHeight":null
+                    }
+                },
+                {
+                    "name":"corner_70x70x10dec_0.3mm_PETG_2h44m.gcode",
+                    "path":"/SD Card/corner_70x70x10dec_0.3mm_PETG_2h44m.gcode",
+                    "display":"corner_70x70x10dec_0.3mm_PETG_2h44m.gcode",
+                    "size":1385491,
+                    "origin":"sdcard",
+                    "type":"machinecode",
+                    "typePath":[
+                        "machinecode",
+                        "gcode"
+                    ],
+                    "date":null,
+                    "hash":null,
+                    "refs":{
+                        "resource":null,
+                        "download":null,
+                        "thumbnailSmall":null,
+                        "thumbnailBig":null
+                    },
+                    "gcodeAnalysis":{
+                        "estimatedPrintTime":null,
+                        "material":null,
+                        "layerHeight":null
+                    }
+                },
+                {
+                    "name":"ZAKLAD~1.GCO - zakladac_sikmeho_prouzku_18_0.2mm_PLA_5h4m.gcode",
+                    "path":"/SD Card/ZAKLAD~1.GCO - zakladac_sikmeho_prouzku_18_0.2mm_PLA_5h4m.gcode",
+                    "display":"ZAKLAD~1.GCO - zakladac_sikmeho_prouzku_18_0.2mm_PLA_5h4m.gcode",
+                    "size":8429487,
+                    "origin":"sdcard",
+                    "type":"machinecode",
+                    "typePath":[
+                        "machinecode",
+                        "gcode"
+                    ],
+                    "date":null,
+                    "hash":null,
+                    "refs":{
+                        "resource":null,
+                        "download":null,
+                        "thumbnailSmall":null,
+                        "thumbnailBig":null
+                    },
+                    "gcodeAnalysis":{
+                        "estimatedPrintTime":null,
+                        "material":null,
+                        "layerHeight":null
+                    }
+                },
+                {
+                    "name":"ZAKLAD~2.GCO - zakladac_sikmeho_prouzku_18_0.2mm_PETG_5h1m.gcode",
+                    "path":"/SD Card/ZAKLAD~2.GCO - zakladac_sikmeho_prouzku_18_0.2mm_PETG_5h1m.gcode",
+                    "display":"ZAKLAD~2.GCO - zakladac_sikmeho_prouzku_18_0.2mm_PETG_5h1m.gcode",
+                    "size":8719285,
+                    "origin":"sdcard",
+                    "type":"machinecode",
+                    "typePath":[
+                        "machinecode",
+                        "gcode"
+                    ],
+                    "date":null,
+                    "hash":null,
+                    "refs":{
+                        "resource":null,
+                        "download":null,
+                        "thumbnailSmall":null,
+                        "thumbnailBig":null
+                    },
+                    "gcodeAnalysis":{
+                        "estimatedPrintTime":null,
+                        "material":null,
+                        "layerHeight":null
+                    }
+                },
+                {
+                    "name":"svod_100_0.2mm_ASA_6h53m.gcode",
+                    "path":"/SD Card/svod_100_0.2mm_ASA_6h53m.gcode",
+                    "display":"svod_100_0.2mm_ASA_6h53m.gcode",
+                    "size":6864221,
+                    "origin":"sdcard",
+                    "type":"machinecode",
+                    "typePath":[
+                        "machinecode",
+                        "gcode"
+                    ],
+                    "date":null,
+                    "hash":null,
+                    "refs":{
+                        "resource":null,
+                        "download":null,
+                        "thumbnailSmall":null,
+                        "thumbnailBig":null
+                    },
+                    "gcodeAnalysis":{
+                        "estimatedPrintTime":null,
+                        "material":null,
+                        "layerHeight":null
+                    }
+                },
+                {
+                    "name":"svod_100_0.2mm_ASA_5h37m.gcode",
+                    "path":"/SD Card/svod_100_0.2mm_ASA_5h37m.gcode",
+                    "display":"svod_100_0.2mm_ASA_5h37m.gcode",
+                    "size":7672125,
+                    "origin":"sdcard",
+                    "type":"machinecode",
+                    "typePath":[
+                        "machinecode",
+                        "gcode"
+                    ],
+                    "date":null,
+                    "hash":null,
+                    "refs":{
+                        "resource":null,
+                        "download":null,
+                        "thumbnailSmall":null,
+                        "thumbnailBig":null
+                    },
+                    "gcodeAnalysis":{
+                        "estimatedPrintTime":null,
+                        "material":null,
+                        "layerHeight":null
+                    }
+                },
+                {
+                    "name":"radek_krytka_vrata_0.2mm_PETG_1h32m.gcode",
+                    "path":"/SD Card/radek_krytka_vrata_0.2mm_PETG_1h32m.gcode",
+                    "display":"radek_krytka_vrata_0.2mm_PETG_1h32m.gcode",
+                    "size":672548,
+                    "origin":"sdcard",
+                    "type":"machinecode",
+                    "typePath":[
+                        "machinecode",
+                        "gcode"
+                    ],
+                    "date":null,
+                    "hash":null,
+                    "refs":{
+                        "resource":null,
+                        "download":null,
+                        "thumbnailSmall":null,
+                        "thumbnailBig":null
+                    },
+                    "gcodeAnalysis":{
+                        "estimatedPrintTime":null,
+                        "material":null,
+                        "layerHeight":null
+                    }
+                },
+                {
+                    "name":"drzak_na_roletu_0.15mm_ABS_54m.gcode",
+                    "path":"/SD Card/drzak_na_roletu_0.15mm_ABS_54m.gcode",
+                    "display":"drzak_na_roletu_0.15mm_ABS_54m.gcode",
+                    "size":988372,
+                    "origin":"sdcard",
+                    "type":"machinecode",
+                    "typePath":[
+                        "machinecode",
+                        "gcode"
+                    ],
+                    "date":null,
+                    "hash":null,
+                    "refs":{
+                        "resource":null,
+                        "download":null,
+                        "thumbnailSmall":null,
+                        "thumbnailBig":null
+                    },
+                    "gcodeAnalysis":{
+                        "estimatedPrintTime":null,
+                        "material":null,
+                        "layerHeight":null
+                    }
+                },
+                {
+                    "name":"radek_krytka_vrata_0.2mm_PETG_2h8m.gcode",
+                    "path":"/SD Card/radek_krytka_vrata_0.2mm_PETG_2h8m.gcode",
+                    "display":"radek_krytka_vrata_0.2mm_PETG_2h8m.gcode",
+                    "size":820840,
+                    "origin":"sdcard",
+                    "type":"machinecode",
+                    "typePath":[
+                        "machinecode",
+                        "gcode"
+                    ],
+                    "date":null,
+                    "hash":null,
+                    "refs":{
+                        "resource":null,
+                        "download":null,
+                        "thumbnailSmall":null,
+                        "thumbnailBig":null
+                    },
+                    "gcodeAnalysis":{
+                        "estimatedPrintTime":null,
+                        "material":null,
+                        "layerHeight":null
+                    }
+                },
+                {
+                    "name":"branka_radek_0.2mm_PETG_4h34m.gcode",
+                    "path":"/SD Card/branka_radek_0.2mm_PETG_4h34m.gcode",
+                    "display":"branka_radek_0.2mm_PETG_4h34m.gcode",
+                    "size":12121002,
+                    "origin":"sdcard",
+                    "type":"machinecode",
+                    "typePath":[
+                        "machinecode",
+                        "gcode"
+                    ],
+                    "date":null,
+                    "hash":null,
+                    "refs":{
+                        "resource":null,
+                        "download":null,
+                        "thumbnailSmall":null,
+                        "thumbnailBig":null
+                    },
+                    "gcodeAnalysis":{
+                        "estimatedPrintTime":null,
+                        "material":null,
+                        "layerHeight":null
+                    }
+                },
+                {
+                    "name":"branka_radek_0.2mm_PETG_6h15m.gcode",
+                    "path":"/SD Card/branka_radek_0.2mm_PETG_6h15m.gcode",
+                    "display":"branka_radek_0.2mm_PETG_6h15m.gcode",
+                    "size":4305093,
+                    "origin":"sdcard",
+                    "type":"machinecode",
+                    "typePath":[
+                        "machinecode",
+                        "gcode"
+                    ],
+                    "date":null,
+                    "hash":null,
+                    "refs":{
+                        "resource":null,
+                        "download":null,
+                        "thumbnailSmall":null,
+                        "thumbnailBig":null
+                    },
+                    "gcodeAnalysis":{
+                        "estimatedPrintTime":null,
+                        "material":null,
+                        "layerHeight":null
+                    }
+                },
+                {
+                    "name":"Prusa",
+                    "path":"/SD Card/Prusa",
+                    "display":"Prusa",
+                    "size":132068922,
+                    "type":"folder",
+                    "typePath":[
+                        "folder"
+                    ],
+                    "origin":"sdcard",
+                    "refs":{
+                        "resource":null
+                    },
+                    "children":[
+                        {
+                            "name":"PLA_Whistle_200um_30M.gcode",
+                            "path":"/SD Card/Prusa/PLA_Whistle_200um_30M.gcode",
+                            "display":"PLA_Whistle_200um_30M.gcode",
+                            "size":796054,
+                            "origin":"sdcard",
+                            "type":"machinecode",
+                            "typePath":[
+                                "machinecode",
+                                "gcode"
+                            ],
+                            "date":null,
+                            "hash":null,
+                            "refs":{
+                                "resource":null,
+                                "download":null,
+                                "thumbnailSmall":null,
+                                "thumbnailBig":null
+                            },
+                            "gcodeAnalysis":{
+                                "estimatedPrintTime":null,
+                                "material":null,
+                                "layerHeight":null
+                            }
+                        },
+                        {
+                            "name":"PLA_Vase_200um_6H_25M.gcode",
+                            "path":"/SD Card/Prusa/PLA_Vase_200um_6H_25M.gcode",
+                            "display":"PLA_Vase_200um_6H_25M.gcode",
+                            "size":7550751,
+                            "origin":"sdcard",
+                            "type":"machinecode",
+                            "typePath":[
+                                "machinecode",
+                                "gcode"
+                            ],
+                            "date":null,
+                            "hash":null,
+                            "refs":{
+                                "resource":null,
+                                "download":null,
+                                "thumbnailSmall":null,
+                                "thumbnailBig":null
+                            },
+                            "gcodeAnalysis":{
+                                "estimatedPrintTime":null,
+                                "material":null,
+                                "layerHeight":null
+                            }
+                        },
+                        {
+                            "name":"PLA_Triceratops_Skull_150um_5H.gcode",
+                            "path":"/SD Card/Prusa/PLA_Triceratops_Skull_150um_5H.gcode",
+                            "display":"PLA_Triceratops_Skull_150um_5H.gcode",
+                            "size":18235410,
+                            "origin":"sdcard",
+                            "type":"machinecode",
+                            "typePath":[
+                                "machinecode",
+                                "gcode"
+                            ],
+                            "date":null,
+                            "hash":null,
+                            "refs":{
+                                "resource":null,
+                                "download":null,
+                                "thumbnailSmall":null,
+                                "thumbnailBig":null
+                            },
+                            "gcodeAnalysis":{
+                                "estimatedPrintTime":null,
+                                "material":null,
+                                "layerHeight":null
+                            }
+                        },
+                        {
+                            "name":"PLA_Treefrog_150um_variable_1H_25M.gcode",
+                            "path":"/SD Card/Prusa/PLA_Treefrog_150um_variable_1H_25M.gcode",
+                            "display":"PLA_Treefrog_150um_variable_1H_25M.gcode",
+                            "size":4042561,
+                            "origin":"sdcard",
+                            "type":"machinecode",
+                            "typePath":[
+                                "machinecode",
+                                "gcode"
+                            ],
+                            "date":null,
+                            "hash":null,
+                            "refs":{
+                                "resource":null,
+                                "download":null,
+                                "thumbnailSmall":null,
+                                "thumbnailBig":null
+                            },
+                            "gcodeAnalysis":{
+                                "estimatedPrintTime":null,
+                                "material":null,
+                                "layerHeight":null
+                            }
+                        },
+                        {
+                            "name":"PLA_Treefrog_50um_3H_40M.gcode",
+                            "path":"/SD Card/Prusa/PLA_Treefrog_50um_3H_40M.gcode",
+                            "display":"PLA_Treefrog_50um_3H_40M.gcode",
+                            "size":10370557,
+                            "origin":"sdcard",
+                            "type":"machinecode",
+                            "typePath":[
+                                "machinecode",
+                                "gcode"
+                            ],
+                            "date":null,
+                            "hash":null,
+                            "refs":{
+                                "resource":null,
+                                "download":null,
+                                "thumbnailSmall":null,
+                                "thumbnailBig":null
+                            },
+                            "gcodeAnalysis":{
+                                "estimatedPrintTime":null,
+                                "material":null,
+                                "layerHeight":null
+                            }
+                        },
+                        {
+                            "name":"PLA_PrusaBeerOpener_ColorPrint_200um_50M.gcode",
+                            "path":"/SD Card/Prusa/PLA_PrusaBeerOpener_ColorPrint_200um_50M.gcode",
+                            "display":"PLA_PrusaBeerOpener_ColorPrint_200um_50M.gcode",
+                            "size":1169490,
+                            "origin":"sdcard",
+                            "type":"machinecode",
+                            "typePath":[
+                                "machinecode",
+                                "gcode"
+                            ],
+                            "date":null,
+                            "hash":null,
+                            "refs":{
+                                "resource":null,
+                                "download":null,
+                                "thumbnailSmall":null,
+                                "thumbnailBig":null
+                            },
+                            "gcodeAnalysis":{
+                                "estimatedPrintTime":null,
+                                "material":null,
+                                "layerHeight":null
+                            }
+                        },
+                        {
+                            "name":"PLA_Prusa_200um_20M.gcode",
+                            "path":"/SD Card/Prusa/PLA_Prusa_200um_20M.gcode",
+                            "display":"PLA_Prusa_200um_20M.gcode",
+                            "size":320939,
+                            "origin":"sdcard",
+                            "type":"machinecode",
+                            "typePath":[
+                                "machinecode",
+                                "gcode"
+                            ],
+                            "date":null,
+                            "hash":null,
+                            "refs":{
+                                "resource":null,
+                                "download":null,
+                                "thumbnailSmall":null,
+                                "thumbnailBig":null
+                            },
+                            "gcodeAnalysis":{
+                                "estimatedPrintTime":null,
+                                "material":null,
+                                "layerHeight":null
+                            }
+                        },
+                        {
+                            "name":"PLA_Nefertiti_150um_7H.gcode",
+                            "path":"/SD Card/Prusa/PLA_Nefertiti_150um_7H.gcode",
+                            "display":"PLA_Nefertiti_150um_7H.gcode",
+                            "size":19928963,
+                            "origin":"sdcard",
+                            "type":"machinecode",
+                            "typePath":[
+                                "machinecode",
+                                "gcode"
+                            ],
+                            "date":null,
+                            "hash":null,
+                            "refs":{
+                                "resource":null,
+                                "download":null,
+                                "thumbnailSmall":null,
+                                "thumbnailBig":null
+                            },
+                            "gcodeAnalysis":{
+                                "estimatedPrintTime":null,
+                                "material":null,
+                                "layerHeight":null
+                            }
+                        },
+                        {
+                            "name":"PLA_Gear_Bearing_150um_2H.gcode",
+                            "path":"/SD Card/Prusa/PLA_Gear_Bearing_150um_2H.gcode",
+                            "display":"PLA_Gear_Bearing_150um_2H.gcode",
+                            "size":7839966,
+                            "origin":"sdcard",
+                            "type":"machinecode",
+                            "typePath":[
+                                "machinecode",
+                                "gcode"
+                            ],
+                            "date":null,
+                            "hash":null,
+                            "refs":{
+                                "resource":null,
+                                "download":null,
+                                "thumbnailSmall":null,
+                                "thumbnailBig":null
+                            },
+                            "gcodeAnalysis":{
+                                "estimatedPrintTime":null,
+                                "material":null,
+                                "layerHeight":null
+                            }
+                        },
+                        {
+                            "name":"PLA_Castle_100um_12H_30M.gcode",
+                            "path":"/SD Card/Prusa/PLA_Castle_100um_12H_30M.gcode",
+                            "display":"PLA_Castle_100um_12H_30M.gcode",
+                            "size":25035842,
+                            "origin":"sdcard",
+                            "type":"machinecode",
+                            "typePath":[
+                                "machinecode",
+                                "gcode"
+                            ],
+                            "date":null,
+                            "hash":null,
+                            "refs":{
+                                "resource":null,
+                                "download":null,
+                                "thumbnailSmall":null,
+                                "thumbnailBig":null
+                            },
+                            "gcodeAnalysis":{
+                                "estimatedPrintTime":null,
+                                "material":null,
+                                "layerHeight":null
+                            }
+                        },
+                        {
+                            "name":"PLA_Buddy_150um_2H.gcode",
+                            "path":"/SD Card/Prusa/PLA_Buddy_150um_2H.gcode",
+                            "display":"PLA_Buddy_150um_2H.gcode",
+                            "size":6136347,
+                            "origin":"sdcard",
+                            "type":"machinecode",
+                            "typePath":[
+                                "machinecode",
+                                "gcode"
+                            ],
+                            "date":null,
+                            "hash":null,
+                            "refs":{
+                                "resource":null,
+                                "download":null,
+                                "thumbnailSmall":null,
+                                "thumbnailBig":null
+                            },
+                            "gcodeAnalysis":{
+                                "estimatedPrintTime":null,
+                                "material":null,
+                                "layerHeight":null
+                            }
+                        },
+                        {
+                            "name":"PLA_Batman_200um_18M.gcode",
+                            "path":"/SD Card/Prusa/PLA_Batman_200um_18M.gcode",
+                            "display":"PLA_Batman_200um_18M.gcode",
+                            "size":239362,
+                            "origin":"sdcard",
+                            "type":"machinecode",
+                            "typePath":[
+                                "machinecode",
+                                "gcode"
+                            ],
+                            "date":null,
+                            "hash":null,
+                            "refs":{
+                                "resource":null,
+                                "download":null,
+                                "thumbnailSmall":null,
+                                "thumbnailBig":null
+                            },
+                            "gcodeAnalysis":{
+                                "estimatedPrintTime":null,
+                                "material":null,
+                                "layerHeight":null
+                            }
+                        },
+                        {
+                            "name":"PLA_Adalinda_200um_7H_30M.gcode",
+                            "path":"/SD Card/Prusa/PLA_Adalinda_200um_7H_30M.gcode",
+                            "display":"PLA_Adalinda_200um_7H_30M.gcode",
+                            "size":23835763,
+                            "origin":"sdcard",
+                            "type":"machinecode",
+                            "typePath":[
+                                "machinecode",
+                                "gcode"
+                            ],
+                            "date":null,
+                            "hash":null,
+                            "refs":{
+                                "resource":null,
+                                "download":null,
+                                "thumbnailSmall":null,
+                                "thumbnailBig":null
+                            },
+                            "gcodeAnalysis":{
+                                "estimatedPrintTime":null,
+                                "material":null,
+                                "layerHeight":null
+                            }
+                        },
+                        {
+                            "name":"PLA_3DHubs_Marvin_100um_1H_7M.gcode",
+                            "path":"/SD Card/Prusa/PLA_3DHubs_Marvin_100um_1H_7M.gcode",
+                            "display":"PLA_3DHubs_Marvin_100um_1H_7M.gcode",
+                            "size":2313309,
+                            "origin":"sdcard",
+                            "type":"machinecode",
+                            "typePath":[
+                                "machinecode",
+                                "gcode"
+                            ],
+                            "date":null,
+                            "hash":null,
+                            "refs":{
+                                "resource":null,
+                                "download":null,
+                                "thumbnailSmall":null,
+                                "thumbnailBig":null
+                            },
+                            "gcodeAnalysis":{
+                                "estimatedPrintTime":null,
+                                "material":null,
+                                "layerHeight":null
+                            }
+                        },
+                        {
+                            "name":"PLA_3DBenchy_150um_2H.gcode",
+                            "path":"/SD Card/Prusa/PLA_3DBenchy_150um_2H.gcode",
+                            "display":"PLA_3DBenchy_150um_2H.gcode",
+                            "size":3844567,
+                            "origin":"sdcard",
+                            "type":"machinecode",
+                            "typePath":[
+                                "machinecode",
+                                "gcode"
+                            ],
+                            "date":null,
+                            "hash":null,
+                            "refs":{
+                                "resource":null,
+                                "download":null,
+                                "thumbnailSmall":null,
+                                "thumbnailBig":null
+                            },
+                            "gcodeAnalysis":{
+                                "estimatedPrintTime":null,
+                                "material":null,
+                                "layerHeight":null
+                            }
+                        },
+                        {
+                            "name":"PRUSA_dual_color.gcode",
+                            "path":"/SD Card/Prusa/PRUSA_dual_color.gcode",
+                            "display":"PRUSA_dual_color.gcode",
+                            "size":409041,
+                            "origin":"sdcard",
+                            "type":"machinecode",
+                            "typePath":[
+                                "machinecode",
+                                "gcode"
+                            ],
+                            "date":null,
+                            "hash":null,
+                            "refs":{
+                                "resource":null,
+                                "download":null,
+                                "thumbnailSmall":null,
+                                "thumbnailBig":null
+                            },
+                            "gcodeAnalysis":{
+                                "estimatedPrintTime":null,
+                                "material":null,
+                                "layerHeight":null
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name":"maska2_0.3mm_PETG_1h23m.gcode",
+                    "path":"/SD Card/maska2_0.3mm_PETG_1h23m.gcode",
+                    "display":"maska2_0.3mm_PETG_1h23m.gcode",
+                    "size":196147,
+                    "origin":"sdcard",
+                    "type":"machinecode",
+                    "typePath":[
+                        "machinecode",
+                        "gcode"
+                    ],
+                    "date":null,
+                    "hash":null,
+                    "refs":{
+                        "resource":null,
+                        "download":null,
+                        "thumbnailSmall":null,
+                        "thumbnailBig":null
+                    },
+                    "gcodeAnalysis":{
+                        "estimatedPrintTime":null,
+                        "material":null,
+                        "layerHeight":null
+                    }
+                },
+                {
+                    "name":"redukce_vysavace_0.2mm_ASA_3h20m.gcode",
+                    "path":"/SD Card/redukce_vysavace_0.2mm_ASA_3h20m.gcode",
+                    "display":"redukce_vysavace_0.2mm_ASA_3h20m.gcode",
+                    "size":7949930,
+                    "origin":"sdcard",
+                    "type":"machinecode",
+                    "typePath":[
+                        "machinecode",
+                        "gcode"
+                    ],
+                    "date":null,
+                    "hash":null,
+                    "refs":{
+                        "resource":null,
+                        "download":null,
+                        "thumbnailSmall":null,
+                        "thumbnailBig":null
+                    },
+                    "gcodeAnalysis":{
+                        "estimatedPrintTime":null,
+                        "material":null,
+                        "layerHeight":null
+                    }
+                },
+                {
+                    "name":"lego_pistolka_hlaven_0.2mm_PLA_1h12m.gcode",
+                    "path":"/SD Card/lego_pistolka_hlaven_0.2mm_PLA_1h12m.gcode",
+                    "display":"lego_pistolka_hlaven_0.2mm_PLA_1h12m.gcode",
+                    "size":1968581,
+                    "origin":"sdcard",
+                    "type":"machinecode",
+                    "typePath":[
+                        "machinecode",
+                        "gcode"
+                    ],
+                    "date":null,
+                    "hash":null,
+                    "refs":{
+                        "resource":null,
+                        "download":null,
+                        "thumbnailSmall":null,
+                        "thumbnailBig":null
+                    },
+                    "gcodeAnalysis":{
+                        "estimatedPrintTime":null,
+                        "material":null,
+                        "layerHeight":null
+                    }
+                },
+                {
+                    "name":"lego_pistolka_hlaven_0.2mm_PLA_1h42m.gcode",
+                    "path":"/SD Card/lego_pistolka_hlaven_0.2mm_PLA_1h42m.gcode",
+                    "display":"lego_pistolka_hlaven_0.2mm_PLA_1h42m.gcode",
+                    "size":2415558,
+                    "origin":"sdcard",
+                    "type":"machinecode",
+                    "typePath":[
+                        "machinecode",
+                        "gcode"
+                    ],
+                    "date":null,
+                    "hash":null,
+                    "refs":{
+                        "resource":null,
+                        "download":null,
+                        "thumbnailSmall":null,
+                        "thumbnailBig":null
+                    },
+                    "gcodeAnalysis":{
+                        "estimatedPrintTime":null,
+                        "material":null,
+                        "layerHeight":null
+                    }
+                },
+                {
+                    "name":"lego_pistolka_hlaven_0.2mm_PLA_1h41m.gcode",
+                    "path":"/SD Card/lego_pistolka_hlaven_0.2mm_PLA_1h41m.gcode",
+                    "display":"lego_pistolka_hlaven_0.2mm_PLA_1h41m.gcode",
+                    "size":2362385,
+                    "origin":"sdcard",
+                    "type":"machinecode",
+                    "typePath":[
+                        "machinecode",
+                        "gcode"
+                    ],
+                    "date":null,
+                    "hash":null,
+                    "refs":{
+                        "resource":null,
+                        "download":null,
+                        "thumbnailSmall":null,
+                        "thumbnailBig":null
+                    },
+                    "gcodeAnalysis":{
+                        "estimatedPrintTime":null,
+                        "material":null,
+                        "layerHeight":null
+                    }
+                },
+                {
+                    "name":"lego_pistolka_hlaven_0.2mm_PLA_1h45m.gcode",
+                    "path":"/SD Card/lego_pistolka_hlaven_0.2mm_PLA_1h45m.gcode",
+                    "display":"lego_pistolka_hlaven_0.2mm_PLA_1h45m.gcode",
+                    "size":2379454,
+                    "origin":"sdcard",
+                    "type":"machinecode",
+                    "typePath":[
+                        "machinecode",
+                        "gcode"
+                    ],
+                    "date":null,
+                    "hash":null,
+                    "refs":{
+                        "resource":null,
+                        "download":null,
+                        "thumbnailSmall":null,
+                        "thumbnailBig":null
+                    },
+                    "gcodeAnalysis":{
+                        "estimatedPrintTime":null,
+                        "material":null,
+                        "layerHeight":null
+                    }
+                },
+                {
+                    "name":"lego_pistolka_hlaven_0.2mm_PLA_1h46m.gcode",
+                    "path":"/SD Card/lego_pistolka_hlaven_0.2mm_PLA_1h46m.gcode",
+                    "display":"lego_pistolka_hlaven_0.2mm_PLA_1h46m.gcode",
+                    "size":2385623,
+                    "origin":"sdcard",
+                    "type":"machinecode",
+                    "typePath":[
+                        "machinecode",
+                        "gcode"
+                    ],
+                    "date":null,
+                    "hash":null,
+                    "refs":{
+                        "resource":null,
+                        "download":null,
+                        "thumbnailSmall":null,
+                        "thumbnailBig":null
+                    },
+                    "gcodeAnalysis":{
+                        "estimatedPrintTime":null,
+                        "material":null,
+                        "layerHeight":null
+                    }
+                },
+                {
+                    "name":"radek_budka_puzzle_C_0.2mm_PETG_8h23m.gcode",
+                    "path":"/SD Card/radek_budka_puzzle_C_0.2mm_PETG_8h23m.gcode",
+                    "display":"radek_budka_puzzle_C_0.2mm_PETG_8h23m.gcode",
+                    "size":2436448,
+                    "origin":"sdcard",
+                    "type":"machinecode",
+                    "typePath":[
+                        "machinecode",
+                        "gcode"
+                    ],
+                    "date":null,
+                    "hash":null,
+                    "refs":{
+                        "resource":null,
+                        "download":null,
+                        "thumbnailSmall":null,
+                        "thumbnailBig":null
+                    },
+                    "gcodeAnalysis":{
+                        "estimatedPrintTime":null,
+                        "material":null,
+                        "layerHeight":null
+                    }
+                },
+                {
+                    "name":"KRYT_Z~2.GCO - kryt_zamek_branka_horackovi_0.15mm_PLA_2h35m.gcode",
+                    "path":"/SD Card/KRYT_Z~2.GCO - kryt_zamek_branka_horackovi_0.15mm_PLA_2h35m.gcode",
+                    "display":"KRYT_Z~2.GCO - kryt_zamek_branka_horackovi_0.15mm_PLA_2h35m.gcode",
+                    "size":3288769,
+                    "origin":"sdcard",
+                    "type":"machinecode",
+                    "typePath":[
+                        "machinecode",
+                        "gcode"
+                    ],
+                    "date":null,
+                    "hash":null,
+                    "refs":{
+                        "resource":null,
+                        "download":null,
+                        "thumbnailSmall":null,
+                        "thumbnailBig":null
+                    },
+                    "gcodeAnalysis":{
+                        "estimatedPrintTime":null,
+                        "material":null,
+                        "layerHeight":null
+                    }
+                },
+                {
+                    "name":"bb-crbch-8_0.3mm_PLA_1h10m.gcode",
+                    "path":"/SD Card/bb-crbch-8_0.3mm_PLA_1h10m.gcode",
+                    "display":"bb-crbch-8_0.3mm_PLA_1h10m.gcode",
+                    "size":973765,
+                    "origin":"sdcard",
+                    "type":"machinecode",
+                    "typePath":[
+                        "machinecode",
+                        "gcode"
+                    ],
+                    "date":null,
+                    "hash":null,
+                    "refs":{
+                        "resource":null,
+                        "download":null,
+                        "thumbnailSmall":null,
+                        "thumbnailBig":null
+                    },
+                    "gcodeAnalysis":{
+                        "estimatedPrintTime":null,
+                        "material":null,
+                        "layerHeight":null
+                    }
+                },
+                {
+                    "name":"drzak_na_roletu_0.15mm_ABS_1h48m.gcode",
+                    "path":"/SD Card/drzak_na_roletu_0.15mm_ABS_1h48m.gcode",
+                    "display":"drzak_na_roletu_0.15mm_ABS_1h48m.gcode",
+                    "size":1980283,
+                    "origin":"sdcard",
+                    "type":"machinecode",
+                    "typePath":[
+                        "machinecode",
+                        "gcode"
+                    ],
+                    "date":null,
+                    "hash":null,
+                    "refs":{
+                        "resource":null,
+                        "download":null,
+                        "thumbnailSmall":null,
+                        "thumbnailBig":null
+                    },
+                    "gcodeAnalysis":{
+                        "estimatedPrintTime":null,
+                        "material":null,
+                        "layerHeight":null
+                    }
+                },
+                {
+                    "name":"krmitko_0.2mm_PETG_8h2m.gcode",
+                    "path":"/SD Card/krmitko_0.2mm_PETG_8h2m.gcode",
+                    "display":"krmitko_0.2mm_PETG_8h2m.gcode",
+                    "size":4569225,
+                    "origin":"sdcard",
+                    "type":"machinecode",
+                    "typePath":[
+                        "machinecode",
+                        "gcode"
+                    ],
+                    "date":null,
+                    "hash":null,
+                    "refs":{
+                        "resource":null,
+                        "download":null,
+                        "thumbnailSmall":null,
+                        "thumbnailBig":null
+                    },
+                    "gcodeAnalysis":{
+                        "estimatedPrintTime":null,
+                        "material":null,
+                        "layerHeight":null
+                    }
+                },
+                {
+                    "name":"krmitko_130_0.2mm_PLA_4h50m.gcode",
+                    "path":"/SD Card/krmitko_130_0.2mm_PLA_4h50m.gcode",
+                    "display":"krmitko_130_0.2mm_PLA_4h50m.gcode",
+                    "size":2654334,
+                    "origin":"sdcard",
+                    "type":"machinecode",
+                    "typePath":[
+                        "machinecode",
+                        "gcode"
+                    ],
+                    "date":null,
+                    "hash":null,
+                    "refs":{
+                        "resource":null,
+                        "download":null,
+                        "thumbnailSmall":null,
+                        "thumbnailBig":null
+                    },
+                    "gcodeAnalysis":{
+                        "estimatedPrintTime":null,
+                        "material":null,
+                        "layerHeight":null
+                    }
+                },
+                {
+                    "name":"rc2_covid19__2pcs_025mm_petg_5h54m.gcode",
+                    "path":"/SD Card/rc2_covid19__2pcs_025mm_petg_5h54m.gcode",
+                    "display":"rc2_covid19__2pcs_025mm_petg_5h54m.gcode",
+                    "size":11380725,
+                    "origin":"sdcard",
+                    "type":"machinecode",
+                    "typePath":[
+                        "machinecode",
+                        "gcode"
+                    ],
+                    "date":null,
+                    "hash":null,
+                    "refs":{
+                        "resource":null,
+                        "download":null,
+                        "thumbnailSmall":null,
+                        "thumbnailBig":null
+                    },
+                    "gcodeAnalysis":{
+                        "estimatedPrintTime":null,
+                        "material":null,
+                        "layerHeight":null
+                    }
+                },
+                {
+                    "name":"krmitko_130_0.2mm_PETG_4h56m.gcode",
+                    "path":"/SD Card/krmitko_130_0.2mm_PETG_4h56m.gcode",
+                    "display":"krmitko_130_0.2mm_PETG_4h56m.gcode",
+                    "size":2673300,
+                    "origin":"sdcard",
+                    "type":"machinecode",
+                    "typePath":[
+                        "machinecode",
+                        "gcode"
+                    ],
+                    "date":null,
+                    "hash":null,
+                    "refs":{
+                        "resource":null,
+                        "download":null,
+                        "thumbnailSmall":null,
+                        "thumbnailBig":null
+                    },
+                    "gcodeAnalysis":{
+                        "estimatedPrintTime":null,
+                        "material":null,
+                        "layerHeight":null
+                    }
+                },
+                {
+                    "name":"box_police_90_0.2mm_PLA_12h58m.gcode",
+                    "path":"/SD Card/box_police_90_0.2mm_PLA_12h58m.gcode",
+                    "display":"box_police_90_0.2mm_PLA_12h58m.gcode",
+                    "size":3565698,
+                    "origin":"sdcard",
+                    "type":"machinecode",
+                    "typePath":[
+                        "machinecode",
+                        "gcode"
+                    ],
+                    "date":null,
+                    "hash":null,
+                    "refs":{
+                        "resource":null,
+                        "download":null,
+                        "thumbnailSmall":null,
+                        "thumbnailBig":null
+                    },
+                    "gcodeAnalysis":{
+                        "estimatedPrintTime":null,
+                        "material":null,
+                        "layerHeight":null
+                    }
+                },
+                {
+                    "name":"trychtyr_0.15mm_PLA_1h59m.gcode",
+                    "path":"/SD Card/trychtyr_0.15mm_PLA_1h59m.gcode",
+                    "display":"trychtyr_0.15mm_PLA_1h59m.gcode",
+                    "size":3588727,
+                    "origin":"sdcard",
+                    "type":"machinecode",
+                    "typePath":[
+                        "machinecode",
+                        "gcode"
+                    ],
+                    "date":null,
+                    "hash":null,
+                    "refs":{
+                        "resource":null,
+                        "download":null,
+                        "thumbnailSmall":null,
+                        "thumbnailBig":null
+                    },
+                    "gcodeAnalysis":{
+                        "estimatedPrintTime":null,
+                        "material":null,
+                        "layerHeight":null
+                    }
+                },
+                {
+                    "name":"prusa_pro_complete_025mm_pet__1h24m.gcode",
+                    "path":"/SD Card/prusa_pro_complete_025mm_pet__1h24m.gcode",
+                    "display":"prusa_pro_complete_025mm_pet__1h24m.gcode",
+                    "size":4604506,
+                    "origin":"sdcard",
+                    "type":"machinecode",
+                    "typePath":[
+                        "machinecode",
+                        "gcode"
+                    ],
+                    "date":null,
+                    "hash":null,
+                    "refs":{
+                        "resource":null,
+                        "download":null,
+                        "thumbnailSmall":null,
+                        "thumbnailBig":null
+                    },
+                    "gcodeAnalysis":{
+                        "estimatedPrintTime":null,
+                        "material":null,
+                        "layerHeight":null
+                    }
+                },
+                {
+                    "name":"prusa_pro_complete_0.3mm_PETG_4h36m.gcode",
+                    "path":"/SD Card/prusa_pro_complete_0.3mm_PETG_4h36m.gcode",
+                    "display":"prusa_pro_complete_0.3mm_PETG_4h36m.gcode",
+                    "size":8854946,
+                    "origin":"sdcard",
+                    "type":"machinecode",
+                    "typePath":[
+                        "machinecode",
+                        "gcode"
+                    ],
+                    "date":null,
+                    "hash":null,
+                    "refs":{
+                        "resource":null,
+                        "download":null,
+                        "thumbnailSmall":null,
+                        "thumbnailBig":null
+                    },
+                    "gcodeAnalysis":{
+                        "estimatedPrintTime":null,
+                        "material":null,
+                        "layerHeight":null
+                    }
+                },
+                {
+                    "name":"stojanek_budky_pro_ptaky_0.2mm_PLA_3h35m.gcode",
+                    "path":"/SD Card/stojanek_budky_pro_ptaky_0.2mm_PLA_3h35m.gcode",
+                    "display":"stojanek_budky_pro_ptaky_0.2mm_PLA_3h35m.gcode",
+                    "size":4234785,
+                    "origin":"sdcard",
+                    "type":"machinecode",
+                    "typePath":[
+                        "machinecode",
+                        "gcode"
+                    ],
+                    "date":null,
+                    "hash":null,
+                    "refs":{
+                        "resource":null,
+                        "download":null,
+                        "thumbnailSmall":null,
+                        "thumbnailBig":null
+                    },
+                    "gcodeAnalysis":{
+                        "estimatedPrintTime":null,
+                        "material":null,
+                        "layerHeight":null
+                    }
+                }
+            ]
+        }
+    ],
+    "free":0,
+    "total":0
+}
+`);
