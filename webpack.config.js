@@ -26,7 +26,7 @@ module.exports = (env, args) => {
   let icons;
 
   if (printer_conf.type == "sl1") {
-    printer_conf["title"] = "Original Prusa SL1";
+    printer_conf["title"] = "Original Prusa SL1/S";
     printer_conf["printerFamily"] = "sla";
     icons = { from: "./src/assets/icons", to: "./" };
   } else if (printer_conf.type == "m1") {
