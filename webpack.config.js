@@ -22,7 +22,7 @@ module.exports = (env, args) => {
     PRINTER_CODE: env["PRINTER_NAME"].split(" ").slice(-1)[0].toLowerCase(),
     PRINTER_TYPE: env["PRINTER_TYPE"] || "fdm", // "fdm" | "sla"
 
-    APP_NAME: env["APP_NAME"] || "Prusa-Link-Web",
+    APP_NAME: env["APP_NAME"] || "PrusaLink",
     APP_TITLE: env["APP_TITLE"] || env["PRINTER_NAME"] || DEFAULT_NAME,
     APP_VERSION: packageFile.version,
 
