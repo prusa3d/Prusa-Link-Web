@@ -26,6 +26,14 @@ progress.print-progress::-webkit-progress-value {
   background: $green;
 }
 
+progress.print-progress::-moz-progress-bar {
+  background-color: $green;
+}
+
+.progress > progress {
+  color: $green;
+}
+
 .temp-legend-orange {
   fill: $green;
 }
