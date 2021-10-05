@@ -40,9 +40,9 @@ const formatData = (format, value) => {
  * ex: 123.456 => 123.4
  * @param {number} value
  */
-function numberFormat(value) {
+function numberFormat(value, toFixed=1) {
   if (value > 0) {
-    return value.toFixed(1);
+    return value.toFixed(toFixed);
   } else {
     return 0;
   }
@@ -253,6 +253,8 @@ const fdmFormatData = (format, value) => {
       return formatEstimatedTime(value);
     case "progress":
       return numberFormat((value || 0) * 100) + "%";
+    case "percent":
+      return `${numberFormat((value || 0), 0)}%`;
     case "material":
       return value || translate("prop.na");
     case "size":
