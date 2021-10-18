@@ -71,7 +71,7 @@ class Preprocess {
       if (filename.endsWith(".svg")) {
         let assets_path = path.join(this.assets_dir, filename);
         let svg = await this.optimizeSVG(assets_path);
-        if (this.countAssets[filename] > 1) {
+        if (!this.config.WITH_EMBEDDED_SVGS && this.countAssets[filename] > 1) {
           // more than 1: save in /views/{filename}
           let assets_view_path = path.join(this.output_dir, filename);
           fs.writeFileSync(assets_view_path, svg);

@@ -2,10 +2,9 @@
 // Copyright (C) 2021 Prusa Research a.s. - www.prusa3d.com
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-import changeExposureTimesQuestion from "../sla/exposure";
-import fallbackThumbnail from "../../assets/thumbnail.png";
 import joinPaths from "../../helpers/join_paths";
 import updateProperties from "./updateProperties";
+import fallbackThumbnail from "../../assets/thumbnail.png";
 import { cancelJob, cancelPreview, pauseJob, resumeJob, startJob } from "./jobActions";
 import { deleteProject, downloadProject } from "./projectActions";
 import { getImage, getJson } from "../../auth";
@@ -296,9 +295,10 @@ function setupButtons(context, jobResult) {
   }
 
   if (process.env.PRINTER_TYPE === "sla") {
+    const changeExposureTimesQuestion = require("../sla/exposure");
     const jobFile = jobResult.job?.file;
     if (jobFile)
-      setupExposureButton(state, jobFile);
+      setupExposureButton(state, jobFile, changeExposureTimesQuestion);
     setupRefillButton(jobState);
   }
 }
@@ -361,7 +361,7 @@ function setupDownloadButton(jobState, file) {
     btn.onclick = () => downloadProject(file);;
 }
 
-function setupExposureButton(state, jobFile) {
+function setupExposureButton(state, jobFile, changeExposureTimesQuestion) {
   const btn = document.querySelector("#job #exposure");
   setEnabled(btn, state.flags.operational);
 

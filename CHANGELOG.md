@@ -1,5 +1,9 @@
 # Changelog
 
+## 2021-10-15 (3.1.0)
+
+* Add possibility to build-in all SVG files
+
 ## 2021-09-23 (3.0.0)
 
 * Add configuration based build system

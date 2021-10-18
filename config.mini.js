@@ -5,10 +5,11 @@ module.exports = (env, args) => {
         PRINTER_NAME: "Original Prusa Mini",
         PRINTER_TYPE: "fdm",
     
-        WITH_SETTINGS: false,
-        WITH_CONTROLS: false,
-        WITH_LOGS: false,
+        WITH_SETTINGS: true,
+        WITH_CONTROLS: true,
+        WITH_LOGS: true,
         WITH_FONT: false,
+        WITH_EMBEDDED_SVGS: true,
         ...env,
     };
     return webpackConfig(config, args);

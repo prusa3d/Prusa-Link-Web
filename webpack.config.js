@@ -34,6 +34,7 @@ module.exports = (env, args) => {
     WITH_CONTROLS: env["WITH_CONTROLS"] || false,
     WITH_LOGS: env["WITH_LOGS"] || false,
     WITH_FONT: env["WITH_FONT"] || false,
+    WITH_EMBEDDED_SVGS: env["WITH_EMBEDDED_SVGS"] || false,
   };
 
   const env_variables = Object.fromEntries(
