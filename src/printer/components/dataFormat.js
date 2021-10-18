@@ -34,9 +34,13 @@ const formatData = (format, value) => {
  * ex: 123.456 => 123.4
  * @param {number} value
  */
-function numberFormat(value) {
+function numberFormat(value, toFixed = true) {
   if (value > 0) {
-    return value.toFixed(1);
+    if (toFixed) {
+      return value.toFixed(1);
+    } else {
+      return value;
+    }
   } else {
     return 0;
   }
@@ -154,7 +158,7 @@ const slaFormatData = (format, value) => {
     case "number":
       return numberFormat(value);
     case "layer":
-      return numberFormat(value) + " mm";
+      return numberFormat(value, false) + " mm";
     case "temp":
       return numberFormat(value) + " °C";
     case "fan":
@@ -168,7 +172,7 @@ const slaFormatData = (format, value) => {
     case "date":
       return dateFormat(value);
     case "progress":
-      return numberFormat(value * 100) + " %";
+      return numberFormat(value * 100, true, 0) + " %";
     case "timeEst":
       return formatEstimatedTime(value);
     case "time":
