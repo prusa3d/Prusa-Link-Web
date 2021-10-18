@@ -34,10 +34,10 @@ const formatData = (format, value) => {
  * ex: 123.456 => 123.4
  * @param {number} value
  */
-function numberFormat(value, toFixed = true) {
+function numberFormat(value, toFixed = true, decimal = 1) {
   if (value > 0) {
     if (toFixed) {
-      return value.toFixed(1);
+      return value.toFixed(decimal);
     } else {
       return value;
     }
@@ -52,7 +52,15 @@ function numberFormat(value, toFixed = true) {
  */
 function dateFormat(value) {
   const date = new Date(value * 1000);
-  const dateFormatted = date.toDateString() + " " + date.toTimeString();
+  var lang = localStorage.getItem("lang");
+  const dateFormatted =
+    date.toLocaleDateString(lang, {
+      year: "numeric",
+      month: "numeric",
+      day: "numeric",
+    }) +
+    " " +
+    date.toLocaleTimeString(lang, { hour: "numeric", minute: "numeric" });
   return dateFormatted.substring(0, 25);
 }
 
@@ -122,12 +130,12 @@ function formatExposure(expo) {
     return translate("prop.na");
   }
   let expo_times = `${numberFormat(
-    expo.exposureTimeFirst / 1000
-  )}/${numberFormat(expo.exposureTime / 1000)}/${numberFormat(
-    expo.exposureUserProfile
-  )}`;
+    expo.exposureTimeFirst / 1000,
+    true,
+    0
+  )} / ${numberFormat(expo.exposureTime / 1000)}`;
   if (expo.exposureTimeCalibration !== undefined) {
-    expo_times = `${expo_times}/${numberFormat(
+    expo_times = `${expo_times} / ${numberFormat(
       expo.exposureTimeCalibration / 1000
     )}`;
   }
