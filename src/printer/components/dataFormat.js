@@ -9,8 +9,6 @@ const str_at = translate("prop.at");
 const str_h = translate("unit.h");
 const str_less_than_a_minute = translate("prop.less-than");
 const str_min = translate("unit.min");
-const str_minute = translate("unit.minute");
-const str_minute_plural = translate("unit.minute_plural");
 const str_ml = translate("unit.ml");
 const str_rpm = translate("unit.rpm");
 const str_today_at = translate("prop.today-at");
@@ -113,12 +111,12 @@ function formatTime(value) {
   }
   const minutes = Math.floor((value / 60) % 60);
   const hours = Math.floor(value / 3600);
-  if (hours > 0) {
-    return hours + ` ${str_h}` + (minutes > 0 ? ` ${minutes} ${str_min}` : "");
-    // return hours + " h" + (minutes > 0 ? ` ${minutes} min` : "");
-  }
-  return minutes + " " + (minutes > 1 ? str_minute_plural : str_minute);
-  // return minutes + " minute" + (minutes > 1 ? "s" : "");
+  return (
+    (hours > 0 ? `${hours} ${str_h}` : "") +
+    (minutes > 0 ? ` ${minutes} ${str_min}` : "")
+  );
+  // return short format X h Y min
+  // TODO: lack of proper pluralization (czech - 1 minuta, 2 minuty, 5 minut)
 }
 
 /**
