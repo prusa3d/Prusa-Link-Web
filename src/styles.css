@@ -125,6 +125,7 @@ nav {
   flex-wrap: wrap;
   justify-content: space-between;
   min-width: 685px;
+  font-size: 40px;
 }
 nav .brand-logo {
   flex-grow: 10;
@@ -700,6 +701,7 @@ button:disabled {
 }
 #job .progress {
   width: 100%;
+  font-size: 40px;
 }
 .job-stats {
   display: flex;
@@ -914,11 +916,11 @@ button:disabled {
   flex-grow: 0;
   flex-shrink: 0;
   font-size: 0;
-  height: 20px;
-  max-height: 20px;
-  max-width: 20px;
-  min-height: 20px;
-  min-width: 20px;
+  height: 40px;
+  max-height: 40px;
+  max-width: 40px;
+  min-height: 40px;
+  min-width: 40px;
   outline: none;
   position: relative;
   vertical-align: top;
@@ -987,7 +989,7 @@ button:disabled {
   box-sizing: border-box;
   margin-bottom: 5px;
   border-radius: 4px;
-  height: 2.2rem;
+  min-height: 2.2rem;
   margin-top: 5px;
 }
 
@@ -1063,6 +1065,7 @@ button:disabled {
   position: fixed;
   right: 0;
   bottom: 0;
+  font-size: 24px;
 }
 
 $toast-delay: 10s;
@@ -1357,6 +1360,9 @@ input .autoresize {
   .content {
     width: 75%;
   }
+  nav {
+    font-size: 16px;
+  }
   nav > ul {
     flex-wrap: nowrap;
     flex-direction: row;
@@ -1497,5 +1503,18 @@ input .autoresize {
   }
   #control .input-wrapper > .square:last-child {
     border-radius: 0 4px 4px 0;
+  }
+  #prusa-toast {
+    font-size: 16px;
+  }
+  .close-button {
+    height: 20px;
+    max-height: 20px;
+    max-width: 20px;
+    min-height: 20px;
+    min-width: 20px;
+  }
+  #job .progress {
+    font-size: 16px;
   }
 }
