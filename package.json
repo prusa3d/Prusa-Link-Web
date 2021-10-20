@@ -1,6 +1,6 @@
 {
   "name": "prusa-link-web",
-  "version": "3.0.0",
+  "version": "3.1.0",
   "description": "This is a printer connect webservice. It is compatible with other 3D printer services, so many applications can use this service.",
   "private": false,
   "scripts": {
