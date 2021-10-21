@@ -149,3 +149,17 @@ export const setSpeed = (target) =>
 
     }),
   });
+
+/**
+ * Disable steppers
+ */
+export const disableSteppers = () =>
+  getJson("/api/printer/printhead", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      command: "disable_steppers",
+    }),
+  });
