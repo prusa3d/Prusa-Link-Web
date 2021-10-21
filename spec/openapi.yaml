@@ -250,16 +250,32 @@ paths:
                       type: array
                       items:
                         type: string
-                        example: ["x", "y"]
+                        example: "X"
+                speed:
+                  type: object
+                  properties:
+                    command:
+                      type: string
+                      example: "speed"
+                    factor:
+                      type: number
+                      example: 105
                 feedrate:
                   type: object
                   properties:
                     command:
                       type: string
-                      example: "home"
+                      example: "feedrate"
                     factor:
                       type: number
                       example: 105
+                disable_steppers:
+                  type: object
+                  properties:
+                    command:
+                      type: string
+                      example: "disable_steppers"
+
       responses:
         204:
           description: No error

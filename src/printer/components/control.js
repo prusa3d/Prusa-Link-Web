@@ -5,7 +5,7 @@
 import { translate } from "../../locale_provider";
 import { setDisabled, setEnabled } from "../../helpers/element";
 import updateProperties from "./updateProperties";
-import { extrude, homePrinthead, movePrinthead, retract, setBedTemperature, setFlowRate, setNozzleTemperature, setSpeed } from "./controlActions";
+import { disableSteppers, extrude, homePrinthead, movePrinthead, retract, setBedTemperature, setFlowRate, setNozzleTemperature, setSpeed } from "./controlActions";
 import { handleError } from "./errors";
 
 let moveStep = 1;
@@ -48,7 +48,10 @@ function initButtons() {
 function initDisableSteppersBtn() {
   const btn = document.querySelector("#control #disable-steppers");
   if (btn)
-    btn.onclick = () => console.log("disable steppers");
+    btn.onclick = () => {
+      disableSteppers()
+        .catch((result) => handleError(result));
+    };
 }
 
 function initExtrudeBtn() {
