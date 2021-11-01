@@ -732,6 +732,25 @@ paths:
           description: No Content
         403:
           $ref: "#/components/responses/Unauthorized"
+    delete:
+      summary: Terminate the current file download process.
+      responses:
+        204:
+          description: No Content
+                       No Error
+
+  /api/download/{target}:
+    parameters:
+      - in: path
+        name: target
+        required: true
+        description: The target location to which to download the file (local, sdcard).
+        schema:
+          type: string
+          default: local
+          enum:
+            - local
+            - sdcard
     post:
       summary: Download file from url to intended location.
       requestBody:
@@ -742,9 +761,6 @@ paths:
               properties:
                   url:
                     type: string
-                  target:
-                    type: string
-                    default: "local"
                   destination:
                     type: string
                   to_select:
@@ -755,7 +771,6 @@ paths:
                     default: false
               required:
                 - url
-                - target
                 - destination
       responses:
         201:
@@ -765,12 +780,6 @@ paths:
         409:
           $ref: "#/components/responses/Conflict"
           description: Another file is being downloaded or same file is currently being printed.
-    delete:
-      summary: Terminate the current file download process.
-      responses:
-        204:
-          description: No Content
-                       No Error
 
   /api/files:
     get:
