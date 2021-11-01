@@ -1,5 +1,10 @@
 # Changelog
 
+## 2021-11-01 (3.3.0)
+
+* Add target temperatures to the left sidebar
+* Add possibility to send control values by Enter key press
+
 ## 2021-11-09 (3.2.0)
 
 * Add serial number setting
