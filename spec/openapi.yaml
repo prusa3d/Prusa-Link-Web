@@ -650,6 +650,39 @@ paths:
                           same_digest:
                             type: boolean
 
+  /api/settings/apikey:
+    get:
+      summary: Regenerate api key and save it to settings and config file
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+
+  /api/settings/sn:
+    post:
+      summary: If printer is in SN error, user can insert new SN
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                serial:
+                  type: string
+                  example: "CZPX4242X042XC42042"
+      responses:
+        200:
+          description: OK
+        400:
+          description: Bad Request
+        409:
+          description: Conflict
+        507:
+          description: Insufficient Storage
+
   /api/downloads/{target}/{filename}:
     parameters:
       - in: path
