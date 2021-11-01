@@ -146,9 +146,9 @@ function initInputs(root) {
     root.querySelectorAll(".input-wrapper").forEach((wrapper) => {
       const input = wrapper.querySelector("input");
       const btn = wrapper.querySelector("button");
-      if (input && btn) {
-        btn.onclick = () => {
-          const property = btn.getAttribute("data-action");
+      if (input) {
+        const submit = () => {
+          const property = input.getAttribute("data-action");
           const value = Number.parseFloat(input.value);
           if (isNaN(value))
             return; // TODO: Display error or something when value is not a number
@@ -156,6 +156,16 @@ function initInputs(root) {
           setPrinterProperty(property, value).then((result) => {
             input.value = "";
           }).catch((result) => handleError(result));
+        }
+
+        input.onkeyup = (event) => {
+          if (event.key === "Enter") {
+            submit();
+            input.blur(); // unfocus
+          }
+        }
+        if (btn) {
+          btn.onclick = submit;
         }
       }
     })
