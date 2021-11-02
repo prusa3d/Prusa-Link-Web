@@ -8,6 +8,9 @@
  * @param {FormData} data file(s) packed in FormData
  * @param {{onProgress(progress): void}} opt options
  */
+
+ import { getHeaders } from "../auth";
+
  function uploadRequest(url, data, opt) {
   return new Promise((resolve, reject) => {
     var request = new XMLHttpRequest();
@@ -31,6 +34,9 @@
     request.addEventListener("abort", errorHandler, false);
 
     request.open("POST", url);
+    for (const [key, value] of Object.entries(getHeaders())) {
+      request.setRequestHeader(key, value);
+    }
     request.send(data);
   });
 }

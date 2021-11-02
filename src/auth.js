@@ -45,14 +45,14 @@ export const askApiKey = () =>
  * Create the readers with apiKey if exist and Accept keys
  * @param {string?} accept Accept header, default is `application/json`
  */
-const getHeaders = (accept) => {
+const getHeaders = (accept = "application/json") => {
   if (sessionStorage.getItem("authType") == "ApiKey") {
     return {
       "X-Api-Key": sessionStorage.getItem("apiKey"),
-      Accept: accept || "application/json",
+      Accept: accept,
     };
   }
-  return { Accept: accept || "application/json" };
+  return { Accept: accept };
 };
 
 /**
@@ -217,4 +217,4 @@ const initAuth = () => {
   }
 };
 
-export { getJson, initAuth, getImage, getFile, getPlainText };
+export { getJson, initAuth, getImage, getFile, getPlainText, getHeaders };

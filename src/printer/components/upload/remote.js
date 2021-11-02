@@ -21,8 +21,8 @@ function init(origin, path) {
 
     uploadBtn.onclick = () => startUpload(
       urlInput.value,
-      origin || "local",
-      path || "",
+      origin,
+      path,
       { to_print: startPtCheckbox.checked },
     );
 
@@ -75,12 +75,14 @@ function handleResult(result) {
  * }} options
  */
 const startUpload = (url, target, destination, options) => {
-  if (target !== "local") {
-    // TODO: Implement remote upload for SD Card when firmware will be ready
-    error("Can't upload to " + target, "You can upload only to local storage via remote upload!");
-    return;
+  if (process.env.PRINTER_TYPE === "fdm") {
+    if (target !== "local") {
+      // TODO: Implement remote upload for SD Card when firmware will be ready
+      error("Can't upload to " + target, "You can upload only to local storage via remote upload!");
+      return;
+    }
   }
-
+  url = url.split('?')[0].split('&')[0].split('#')[0] // strip URL from parameters
   return getJson(`/api/download/${target}`, {
     method: "POST",
     headers: {

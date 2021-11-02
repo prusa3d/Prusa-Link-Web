@@ -9,7 +9,7 @@ import TabsController from "./tabs";
 
 const tabs = new TabsController();
 
-function init(origin, path) {
+function init(origin="local", path="") {
   direct.init(origin, path);
   remote.init(origin, path);
   slicer.init();

@@ -278,7 +278,7 @@ nav .burger-icon.burger-open {
   display: flex;
 }
 .tab-header > p:first-of-type {
-  margin: 0px 6px;
+  margin: 0 30px 0 6px;
 }
 .tab-header > img {
   padding: 0;

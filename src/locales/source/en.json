@@ -217,18 +217,18 @@
   "upld": {
     "direct": {
       "choose": "Choose a {{file}} or drop it here.",
-      "description": "Upload project directly to the PrusaLink via local network",
+      "description": "Upload project directly to the printer via local network",
       "title": "Direct upload"
     },
     "remote": {
-      "description": "Upload project from remote URL directly to the printer/PrusaLink",
+      "description": "Upload project from remote URL directly to the printer",
       "hint-fdm": "Type URL of G-CODE project file",
-      "hint-sla": "Type URL of SL1 project file",
+      "hint-sla": "Type URL of compatible project file",
       "source": "source URL",
       "title": "Remote url"
     },
     "slicer": {
-      "description": "Upload project directly from PrusaSlicer to the PrusaLink via local network",
+      "description": "Upload project from PrusaSlicer to the printer via local network",
       "guide": {
         "1": "Use Prusa Slicer to upload files with print data, instructions on how to do this can be found",
         "1-link": "here",
