@@ -3,6 +3,9 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import "./styles.css";
+if (process.env.PRINTER_TYPE == "sla") {
+  import("./sla-styles.css");
+}
 if (process.env.PRINTER_CODE == "m1") {
   import("./m1-styles.css");
 }

@@ -216,18 +216,18 @@
   "upld": {
     "direct": {
       "choose": "Vyberte {{file}} nebo jej přetáhněte sem.",
-      "description": "Nahrajte projekt do PrusaLink prostřednictvím místní sítě",
+      "description": "Nahrajte projekt do tiskárny prostřednictvím místní sítě",
       "title": "Přímé nahrání"
     },
     "remote": {
-      "description": "Nahrajte projekt ze vzdálené adresy URL přímo do tiskárny/PrusaLink",
+      "description": "Nahrajte projekt ze vzdálené adresy URL přímo do tiskárny",
       "hint-fdm": "Zadejte URL souboru projektu G-CODE",
-      "hint-sla": "Zadejte URL souboru projektu SL1",
+      "hint-sla": "Zadejte URL adresu kompatibilního projektu",
       "source": "URL zdroje",
       "title": "Vzdálené URL"
     },
     "slicer": {
-      "description": "Nahrajte projekt přímo z PrusaSlicer na PrusaLink prostřednictvím místní sítě",
+      "description": "Nahrajte projekt z PrusaSlicer do tiskárny prostřednictvím místní sítě",
       "guide": {
         "1": "Pomocí nástroje Prusa Slicer nahrajte soubory s tiskovými daty. Pokyny, jak to provést, najdete",
         "1-link": "zde",

@@ -15,7 +15,7 @@ let progress = 0;
 
 function init(origin, path) {
   translate("upld.direct.choose", { query: "#upld-direct p", file: `${fileType}` });
-  initInput(origin || "local", "/" + path);
+  initInput(origin, path);
   if (isUploading) {
     setState("uploading");
     setProgress(progress);
@@ -59,9 +59,9 @@ function setProgress(pct) {
 }
 
 const uploadFile = (file, origin, path, print) => {
-  let url = `/api/files/${origin || "local"}`;
+  let url = `/api/files/${origin}`;
   var data = new FormData()
-  data.append('path', path || "/");
+  data.append('path', path);
   data.append('file', file);
   data.append('print', print);
 
