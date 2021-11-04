@@ -166,8 +166,8 @@ function formatSize(size) {
 
   for (let i = 0; i < units.length; i++) {
     if (value < 1000 || i == units.length - 1)
-      return value.toLocaleString("cs-CZ", { maximumFractionDigits: 2 }) + " " + units[i];
-    value /= 1000;
+      return value.toLocaleString(localStorage.getItem("lang"), { maximumFractionDigits: 2 }) + " " + units[i];
+    value /= 1024;
   }
 }
 
