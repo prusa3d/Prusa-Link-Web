@@ -1361,7 +1361,7 @@ input .autoresize {
   }
   nav > ul > li,
   nav > ul .dropdown {
-  margin-bottom: -3px;
+  margin-bottom: -2px;
 }
   nav .dropdown {
     padding: 0;
