@@ -549,14 +549,7 @@ paths:
 
   /api/system/commands/custom/resinrefill:
     post:
-      summary: After that printer is ready to refill, state should change to "paused".
-      responses:
-        204:
-          description: No error.
-
-  /api/system/commands/custom/resinrefilled:
-    post:
-      summary: Printer should update the resin volume in tank.
+      summary: Update remaining resing in the printer.
       responses:
         204:
           description: No error.
@@ -1150,16 +1143,10 @@ components:
           type: string
       default: [
         {
-          "action": "resinrefill", # after sending this command, printer should change its state to "busy" (PCL will show "wait until layer finishes"). After printer is ready to refill, state should change to "paused"
+          "action": "resinrefill", # Updates remaining resin in the printer
           "name": "Refill resin",
           "source": "custom",
           "resource": "http://localhost/api/system/commands/custom/resinrefill"
-        },
-        {
-          "action": "resinrefilled", # after sending this command, printer should update the resin volume in tank. PCL will then send /api/job with command: pause, action: resume
-          "name": "Resin fully refilled",
-          "source": "custom",
-          "resource": "http://localhost/api/system/commands/custom/resinrefilled"
         },
         {
           "action": "changeexposure",

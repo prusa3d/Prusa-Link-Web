@@ -5,16 +5,15 @@
 import { doQuestion } from "./question";
 import { getJson } from "../../auth";
 import { handleError } from "./errors";
-import { info } from "./toast";
 import { modal } from "./modal";
 import { navigate } from "../../router.js";
 import { translate } from "../../locale_provider";
+
 
 /**
  * Start printing.
  */
 const confirmJob = () => {
-  info(translate("btn.start-pt"), translate("ntf.start-print"));
   return getJson("/api/job", {
     method: "POST",
     headers: {
@@ -83,11 +82,12 @@ export const pauseJob = () => {
   const yesButton = node.getElementById("yes");
   yesButton.addEventListener("click", (event) => {
     event.preventDefault();
-    navigate("#loading");
     confirmJob().then(() => {
       close();
-      if (navigate("#dashboard"))
-        history.pushState(null, document.title, "#dashboard");
+      if (process.env.PRINTER_TYPE === "fdm") {
+        if (navigate("#dashboard"))
+          history.pushState(null, document.title, "#dashboard");
+      }
     });
   });
   const noButton = node.getElementById("no");

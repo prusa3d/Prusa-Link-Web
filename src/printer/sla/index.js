@@ -10,6 +10,7 @@ import refill from "./refill.js";
 import temperature from "./temperature.js";
 import { updateProperties } from "../components/updateProperties.js";
 import { translate } from "../../locale_provider";
+import { showLoading, hideLoading } from "../../helpers/element";
 
 const context = {
   /** Result of `api/version`. */
@@ -94,6 +95,10 @@ const sla = {
   update: (printerData, jobData) => {
     context.printer = printerData;
     context.current = jobData;
+    if (printerData.state.flags.operational)
+      hideLoading();
+    else
+      showLoading();
     updateProperties("telemetry", printerData);
     updateTemperatureGraph(printerData);
     updateModule();

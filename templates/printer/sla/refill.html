@@ -1,31 +1,16 @@
 <!-- prettier-ignore -->
 {#
-  # This file is part of the Prusa Link Web
-  # Copyright (C) 2021 Prusa Research a.s. - www.prusa3d.com
-  # SPDX-License-Identifier: GPL-3.0-or-later
-#}
+    # This file is part of the Prusa Link Web
+    # Copyright (C) 2021 Prusa Research a.s. - www.prusa3d.com
+    # SPDX-License-Identifier: GPL-3.0-or-later
+  #}
 
-<!-- prettier-ignore -->
-{% include "../../components/title_default.html" %}
-<div class="main-wrapper">
-  <div class="refill-text" data-label="msg.sla-fly-fill">Please fully refill resin tank.</div>
-  <div class="refill">
+<div id="sla-refill-text" data-label="msg.sla-refill"></div>
+<div class="refill">
     <div class="refill-images">
-      <img src="{{ env.TPL_ASSETS_PATH }}/refill.jpg" />
+    <img src="{{ env.TPL_ASSETS_PATH }}/refill.jpg" />
     </div>
     <div class="refill-images">
-      <img src="{{ env.TPL_ASSETS_PATH }}/tank.jpg" />
+    <img src="{{ env.TPL_ASSETS_PATH }}/tank.jpg" />
     </div>
-  </div>
-
-  <div class="buttons-wrapper">
-    <button class="yes" id="yes" disabled>
-      <img src="{{ pre.countOrRenderAssets('yes_color.svg') | safe }}" />
-      <p data-label="btn.sla-refilled">resin fully refilled</p>
-    </button>
-    <button class="no" id="no" disabled>
-      <img src="{{ pre.countOrRenderAssets('cancel.svg') | safe }}" />
-      <p data-label="btn.no">no</p>
-    </button>
-  </div>
 </div>

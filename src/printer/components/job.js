@@ -10,10 +10,11 @@ import { deleteProject, downloadProject } from "./projectActions";
 import { getImage, getJson } from "../../auth";
 import { handleError } from "./errors";
 import { renderProgressImg, updateProgressImg } from "./progressImage";
-import { setEnabled, setHidden, setVisible } from "../../helpers/element";
-import { setUpRefill } from "../sla/refill";
+import { setEnabled, setHidden, setVisible, showLoading, hideLoading } from "../../helpers/element";
 import { updateProgressBar } from "./progressBar";
 import { translate } from "../../locale_provider";
+import changeExposureTimesQuestion from "../sla/exposure";
+import { resinRefill } from "../sla/refill";
 
 let metadata = getDefaultMetadata();
 
@@ -89,8 +90,7 @@ function updateJob(context) {
 
   const jobFile = context.current.job.file;
   const path = joinPaths(jobFile.origin, jobFile.path);
-
-  if (path !== metadata.path) {
+  if (path && path !== metadata.path) {
     console.log(`File Path was changed\nold path: ${metadata.path}\nnew path: ${path}`)
     metadata = getDefaultMetadata();
     metadata.path = path;
@@ -103,14 +103,6 @@ function updateJob(context) {
     : metadata.lastPrintingResult;
 
   updateComponent(context);
-}
-
-function showLoading() {
-  setVisible(document.querySelector("#job .loading-overlay"));
-}
-
-function hideLoading() {
-  setHidden(document.querySelector("#job .loading-overlay"));
 }
 
 function reFetch(path) {
@@ -154,7 +146,6 @@ function updateComponent(context) {
     console.warn("No job result was provided!");
     return;
   }
-  console.log("update component");
 
   const {
     file,
@@ -162,6 +153,11 @@ function updateComponent(context) {
   } = metadata;
 
   const state = context.printer.state;
+
+  if (process.env.PRINTER_TYPE === "sla") {
+    setupRefill(state.text);
+  }
+
   setupProperties(state);
   updateProperties("job", jobResult);
   const progressIsVisible = state.flags.printing || state.flags.pausing || state.flags.paused;
@@ -174,11 +170,14 @@ function updateComponent(context) {
   setupButtons(context, jobResult);
 
   if (thumbnail.ready) {
-    hideLoading();
     setupThumbnail(thumbnail.url);
   }
 
-  hideNaProperties();
+  hideNaProperties(state);
+
+  if (state.flags.operational) {
+    hideLoading();
+  }
 }
 
 async function getThumbnailImgUrl(url) {
@@ -195,12 +194,27 @@ async function getThumbnailImgUrl(url) {
   }
 }
 
+function setupRefill(stateText) {
+  const preview = document.getElementById("preview-wrapper")
+  const refill = document.getElementById("refill-wrapper")
+  if (stateText == "Feed me" || stateText == "Pour in resin") {
+    if (stateText == "Pour in resin") {
+      translate("msg.sla-pour-resin", { query: "#sla-refill-text" });
+    }
+    setHidden(preview);
+    setVisible(refill);
+  }
+  else {
+    setHidden(refill);
+    setVisible(preview);
+  }
+}
+
 function setupThumbnail(url) {
   const img = document.getElementById("preview-img");
   if (!img)
     console.error("Thumbnail element was not found!");
   if (img && (url || fallbackThumbnail)) {
-    console.log("img src: " + (url || "fallback"));
     img.src = url || fallbackThumbnail;
   } else {
     console.error("url || fallbackThumbnail are both null!")
@@ -256,7 +270,7 @@ function setupProperties(state) {
   }
 }
 
-function hideNaProperties() {
+function hideNaProperties(state) {
   const naValue = translate("prop.na");
 
   document.getElementById("job").querySelectorAll(".job-details .job-prop").forEach(section => {
@@ -264,7 +278,9 @@ function hideNaProperties() {
     let hidden = true;
 
     for (const prop of group) {
-      const isNa = prop.querySelector("[data-type]")?.innerHTML === naValue;
+      var isNa = prop.querySelector("[data-type]")?.innerHTML.trim() === naValue;
+      if (state.flags.printing && prop.querySelector("[data-label]").getAttribute("data-label") == "prop.time-est")
+        isNa = true
       setHidden(prop, isNa);
       if (!isNa)
         hidden = false;
@@ -283,29 +299,35 @@ function setupButtons(context, jobResult) {
   const state = context.printer.state;
   const jobState = context.current.state;
 
-  setupCancelButton(state);
-  setupPauseButton(state);
-  setupPausingButton(state);
-  setupResumeButton(state);
   setupStartButton(state);
+  setupCancelButton(state);
 
   if (file.ready) {
     setupDeleteButton(jobState, file.data);
     setupDownloadButton(jobState, file.data);
   }
 
+  if (process.env.PRINTER_TYPE === "fdm") {
+    setupPausingButton(state);
+    setupResumeButton(state);
+  }
+
   if (process.env.PRINTER_TYPE === "sla") {
-    const changeExposureTimesQuestion = require("../sla/exposure");
     const jobFile = jobResult.job?.file;
     if (jobFile)
       setupExposureButton(state, jobFile, changeExposureTimesQuestion);
-    setupRefillButton(jobState);
+    setupPauseButton(state, "#job #refill");
+    setupSlaResumeButton(state, "#job #continue");
+    setupSlaResumeButton(state, "#job #back");
   }
 }
 
 function setupCancelButton(state) {
   const btn = document.querySelector("#job #cancel");
   const isPreview = state.flags.ready && state.flags.operational;
+
+  if (process.env.PRINTER_TYPE === "sla")
+    setVisible(btn, !state.flags.paused);
 
   if (btn)
     btn.onclick = isPreview ? cancelPreview : cancelJob;
@@ -320,9 +342,9 @@ function setupStartButton(state) {
     btn.onclick = () => startJob(!state.flags.checked);
 }
 
-function setupPauseButton(state) {
-  const btn = document.querySelector("#job #pause");
-  setVisible(btn, state.flags.printing);
+function setupPauseButton(state, selector) {
+  const btn = document.querySelector(selector);
+  setVisible(btn, state.flags.printing && !state.flags.paused);
   setEnabled(btn, state.flags.printing);
 
   if (btn && !btn.onclick)
@@ -342,6 +364,23 @@ function setupResumeButton(state) {
   if (btn && !btn.onclick)
     btn.onclick = resumeJob;
 }
+
+function setupSlaResumeButton(state, selector) {
+  const btn = document.querySelector(selector);
+  if (selector.includes("#back"))
+    setVisible(btn, state.flags.paused && state.text === "Feed me");
+  else
+    setVisible(btn, state.flags.paused);
+
+
+  if (btn && !btn.onclick) {
+    if (state.text == "Feed me" && !selector.includes("#back"))
+      btn.onclick = resinRefill;
+    else
+      btn.onclick = resumeJob;
+  }
+}
+
 
 function setupDeleteButton(jobState, file) {
   const btn = document.querySelector("#job #delete");
@@ -363,19 +402,19 @@ function setupDownloadButton(jobState, file) {
 
 function setupExposureButton(state, jobFile, changeExposureTimesQuestion) {
   const btn = document.querySelector("#job #exposure");
+  setVisible(btn, state.text === "Pour in resin" || state.text === "Printing");
   setEnabled(btn, state.flags.operational);
 
   if (btn)
     btn.onclick = () => changeExposureTimesQuestion(jobFile);
 }
 
-function setupRefillButton(jobState) {
-  const btn = document.querySelector("#job #refill");
-  setHidden(btn, jobState === "Operational");
+function setupBackButton(state) {
+  const btn = document.querySelector("#job #back");
+  setVisible(btn, state.flags.paused && state.text === "Feed me");
 
-  if (btn && !btn.onclick) {
-    btn.onclick = setUpRefill;
-  }
+  if (btn)
+    btn.onclick = resumeJob;
 }
 
-export default { render, update };
+export default { render, update, showLoading, hideLoading };

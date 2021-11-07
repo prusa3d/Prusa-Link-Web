@@ -19,7 +19,7 @@
     "save-chgs": "Save changes",
     "set": "SET",
     "sla-refill": "Refill resin",
-    "sla-refilled": "Resin fully refilled",
+    "sla-refilled": "Resin refilled",
     "start-pt": "Start print",
     "upld-proj": "Upload project",
     "yes": "Yes"
@@ -95,9 +95,8 @@
     "modal-p1": "Welcome to the web interface of your",
     "modal-p2": "Please note that values are shown only when the printer is printing.",
     "modal-p3": "ORIGINAL PRUSA 3D PRINTER",
-    "pour-resin": "Fill enough resin for selected project into the tank and close the lid.",
-    "sla-fill": "Please fill the resin tank and close the cover.",
-    "sla-fly-fill": "Please fully refill resin tank."
+    "sla-pour-resin": "Pour enough resin for selected project into the tank and close the lid. Minimal amount of the resin is displayed on the touchscreen.",
+    "sla-refill": "Refill the tank to 100 % and close the lid."
   },
   "ntf": {
     "actn-pending": "Action will be executed after layer finish.",
@@ -121,9 +120,7 @@
     "sla": {
       "1": "You are about to start a remote print using the web UI. Please, make sure your 3D printer is set up correctly and ready for the print.",
       "2": "The printing platform is clean and installed in the printer",
-      "3": "A sufficient amount of resin is in the tank",
-      "4": "The orange acrylic lid is closed",
-      "5": "The resin tank is clean and installed in the printer"
+      "3": "A sufficient amount of resin is in the tank"
     }
   },
   "printer": {
@@ -157,6 +154,7 @@
     "layer-1st": "first layer",
     "layer-ht": "Layer Height",
     "layers": "Layers",
+    "current-layer": "Current layer",
     "less-than": "Less than a minute",
     "material": "Material",
     "na": "NA",
@@ -182,10 +180,6 @@
     "today-at": "Today at",
     "true": "Yes",
     "z-height": "Z-Height"
-  },
-  "refill": {
-    "title": "Refill resin",
-    "title-pour-resin": "Fill resin"
   },
   "settings": {
     "title": "Settings"

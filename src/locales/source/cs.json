@@ -19,7 +19,7 @@
     "save-chgs": "Uložit změny",
     "set": "NASTAVIT",
     "sla-refill": "Doplnit resin",
-    "sla-refilled": "Resin zcela doplněn",
+    "sla-refilled": "Resin doplněn",
     "start-pt": "Start tisku",
     "upld-proj": "Upload project",
     "yes": "Ano"
@@ -95,9 +95,8 @@
     "modal-p1": "Vítejte na webovém rozhraní vaší",
     "modal-p2": "Upozornění: některé hodnoty jsou zobrazeny pouze v průběhu tisku.",
     "modal-p3": "3D TISKÁRNA ORIGINAL PRUSA",
-    "pour-resin": "Do vaničky přidejte dostatečné množství resinu pro tento projekt a zavřete víko.",
-    "sla-fill": "Naplňte prosím vaničku na resin a zavřete víko.",
-    "sla-fly-fill": "Naplňte vaničku na resin."
+    "sla-pour-resin": "Nalijte do vaničky dostatečné množství resinu pro vybraný projekt a zavřete víko. Minimální objem resinu je zobrazen na dotykovém displeji tiskárny.",
+    "sla-refill": "Dolijte vaničku do 100 % a zavřete víko."
   },
   "ntf": {
     "actn-pending": "Akce se vykoná po dokončení vytvrzení vrstvy.",
@@ -121,9 +120,7 @@
     "sla": {
       "1": "Spouštíte vzdálený tisk pomocí webového rozhraní. Ujistěte se, že vaše 3D tiskárna je správně nastavena a je připravena k tisku.",
       "2": "Tisková platforma je čistá a správně nainstalovaná.",
-      "3": "Ve vaničce je dostatečné množství resinu",
-      "4": "Oranžový kryt je zavřený",
-      "5": "Vanička na resin je čistá a zajištěná v tiskárně."
+      "3": "Ve vaničce je dostatečné množství resinu"
     }
   },
   "printer": {
@@ -144,6 +141,7 @@
     "cover-opened": "Otevřené",
     "d+": "D+",
     "est-end": "Odhadovaný konec",
+    "est-pnt-time": "Odhad doby tisku",
     "exp-time": "doba expozice",
     "exp-times": "Doba expozice",
     "false": "Ne",
@@ -156,6 +154,7 @@
     "layer-1st": "první vrstva",
     "layer-ht": "Výška vrstvy",
     "layers": "Vrstvy",
+    "current-layer": "Aktuální vrstva",
     "less-than": "Méně než minuta",
     "material": "Materiál",
     "na": "N/A",
@@ -181,10 +180,6 @@
     "today-at": "Dnes v",
     "true": "Ano",
     "z-height": "Výška Z"
-  },
-  "refill": {
-    "title": "Doplnit resin",
-    "title-pour-resin": "Doplňte resin"
   },
   "settings": {
     "title": "Nastavení"

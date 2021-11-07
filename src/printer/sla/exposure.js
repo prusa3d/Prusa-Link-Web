@@ -122,7 +122,7 @@ const setUpElements = (file, elements, div) => {
  * Create a question for set up the exposure times
  * @param {object} file - job file information
  */
-const changeExposureTimesQuestion = (jobFile, /*next = "#pour_resin"*/) => {
+const changeExposureTimesQuestion = (jobFile) => {
   const page = window.location.hash;
   history.pushState(null, document.title, page);
   const elements = {};
