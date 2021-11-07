@@ -562,7 +562,7 @@ nav .burger-icon.burger-open {
   flex-grow: 1;
   align-items: center;
 }
-.preview-wrapper {
+#preview-wrapper {
   display: flex;
   flex-grow: 1;
   flex-wrap: wrap;
@@ -690,14 +690,16 @@ button:disabled {
   margin-bottom: 15%;
 }
 .job-stats,
-.progress,
-.refill {
+.progress {
   margin-bottom: 16px;
 }
 #job {
   width: 100%;
   margin-top: 1rem;
   position: relative;
+}
+#job .project-name {
+  margin-bottom: 20px;
 }
 #job .progress {
   width: 100%;
@@ -777,8 +779,8 @@ button:disabled {
 .refill {
   display: flex;
 }
-.refill, .refill-text {
-  margin-top: 16px;
+.refill {
+  margin: 10px 0 20px 0;
 }
 .refill div:first-child {
   padding-right: 6px;
@@ -1427,7 +1429,7 @@ input .autoresize {
     height: 24px;
     min-width: 24px;
   }
-  .preview-wrapper {
+  #preview-wrapper {
     flex-wrap: nowrap;
   }
   .preview-img {

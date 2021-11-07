@@ -22,21 +22,6 @@ router.post("/commands/custom/resinrefill", async (req, res, next) => {
 });
 
 /**
- * after sending this command, printer should update the resin volume in tank.
- * PCL will then send /api/job with command: pause, action: resume
- * only for sla printers
- */
-router.post("/commands/custom/resinrefilled", async (req, res, next) => {
-  const printer = req.app.get("printer");
-  const result = printer.pauseResume();
-  if (result instanceof errors.ApiError) {
-    result.handleError(res);
-  } else {
-    res.sendStatus(204);
-  }
-});
-
-/**
  * Change exposure times
  * only for sla printers
  */

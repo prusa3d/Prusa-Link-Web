@@ -9,9 +9,9 @@
   <p
     data-type="job"
     data-where="job.file.name"
-    class="txt-bold txt-size-2"
+    class="txt-bold txt-size-2 project-name"
   ></p>
-  <div class="preview-wrapper">
+  <div id="preview-wrapper">
     <div class="preview-img">
       <img id="preview-img" src="../assets/thumbnail.png" />
     </div>
@@ -23,6 +23,13 @@
       {% include "components/job/props.html" %}
     </div>
   </div>
+  <!-- prettier-ignore -->
+  {% if env.PRINTER_TYPE == "sla" %}
+    <div id="refill-wrapper" hidden>
+      <!-- prettier-ignore -->
+      {% include "printer/sla/refill.html" %}
+    </div>
+  {% endif %}
 
   <div class="job-buttons">
     <!-- prettier-ignore -->

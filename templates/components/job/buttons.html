@@ -12,27 +12,31 @@
       text: 'delete',
       label: 'btn.del',
       icon: 'delete_small_white.svg',
-      class: 'no'
+      class: 'no',
+      hidden: true
     },
     'download': {
       text: 'download',
       label: 'btn.download',
       icon: 'download.svg',
-      class: 'btn action'
+      class: 'btn action',
+      hidden: true
     },
     'exposure': {
       text: 'print settings',
       label: 'btn.chg-exp',
       icon: 'exposure_times_color.svg',
       class: 'action',
-      printerType: 'sla'
+      printerType: 'sla',
+      hidden: true
     },
     'refill': {
       text: 'refill resin',
       label: 'btn.sla-refill',
       icon: 'refill_color.svg',
       class: 'action',
-      printerType: 'sla'
+      printerType: 'sla',
+      hidden: true
     }
   }
 %}
@@ -44,29 +48,48 @@
       text: 'pause print',
       label: 'btn.pause-pt',
       icon: 'cancel.svg',
-      class: 'action'
+      class: 'action',
+      hidden: true
     },
     'pausing': {
       text: 'pausing',
       label: 'prop.st-pausing',
       class: 'action',
-      disabled: true
+      disabled: true,
+      hidden: true
     },
     'resume': {
       text: 'resume',
       label: 'btn.resume-pt',
       icon: 'yes_color.svg',
-      class: 'yes'
+      class: 'yes',
+      hidden: true
+    },
+    'continue': {
+      text: 'continue',
+      label: 'btn.continue',
+      icon: 'yes_color.svg',
+      class: 'yes',
+      printerType: 'sla',
+      hidden: true
+    },
+    'back': {
+      text: 'back',
+      label: 'btn.back',
+      class: 'action',
+      printerType: 'sla',
+      hidden: true
     },
     'start': {
       text: 'start print',
       label: 'btn.start-pt',
       icon: 'yes_color.svg',
-      class: 'yes'
+      class: 'yes',
+      hidden: true
     },
     'cancel': {
       text: 'cancel',
-      label: 'btn.cancel',
+      label: 'btn.cancel-pt',
       icon: 'cancel.svg',
       class: 'no'
     }

@@ -57,3 +57,11 @@ export function setDisabled(element, disabled = true) {
 export function isHidden(elem) {
   return elem && elem.hasAttribute("hidden");
 }
+
+export function showLoading() {
+  setVisible(document.querySelector("#job .loading-overlay"));
+}
+
+export function hideLoading() {
+  setHidden(document.querySelector("#job .loading-overlay"));
+}

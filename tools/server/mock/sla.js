@@ -31,12 +31,6 @@ class PrinterSLA extends Printer {
         resource: url + "/custom/resinrefill",
       },
       {
-        action: "resinrefilled", // after sending this command, printer should update the resin volume in tank. PCL will then send /api/job with command: pause, action: resume
-        name: "Resin Refilled",
-        source: "custom",
-        resource: url + "/custom/resinrefilled",
-      },
-      {
         action: "changeexposure",
         name: "Print Settings",
         source: "custom",
