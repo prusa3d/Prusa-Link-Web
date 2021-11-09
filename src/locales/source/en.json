@@ -184,6 +184,10 @@
     "true": "Yes",
     "z-height": "Z-Height"
   },
+  "serial": {
+    "title": "serial number",
+    "label": "serial number"
+  },
   "settings": {
     "title": "Settings"
   },

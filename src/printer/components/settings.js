@@ -5,11 +5,12 @@
 import { translate } from "../../locale_provider";
 import updateProperties from "./updateProperties";
 import { getJson } from "../../auth";
-import { setEnabled } from "../../helpers/element";
-import { editPrinter, editUser } from "./settingsActions";
+import { setEnabled, setVisible } from "../../helpers/element";
+import { editPrinter, editSerialNumber, editUser, getSerialNumber } from "./settingsActions";
 import { handleError } from "./errors";
 import { success } from "./toast";
 
+let serialNumber = null;
 const logsModule = process.env.WITH_LOGS ? require("./settings/logs").default : null;
 const displaySuccess = () => success(translate("ntf.success"), translate("ntf.settings-suc"));
 
@@ -19,6 +20,7 @@ const load = () => {
   initConnectionSettings();
   initPrinterSettings();
   initUserSettings();
+  initSerialSettings();
   logsModule?.load();
 };
 
@@ -99,6 +101,50 @@ function initUserSettings() {
           .catch((result) => handleError(result));
       }
     });
+}
+
+function initSerialSettings() {
+  const input = document.querySelector("#settings #serial");
+  const btn = document.querySelector("#settings #edit-serial");
+
+  const updateSerialControls = () => {
+    if (input && btn) {
+      if (serialNumber)
+        input.value = `${serialNumber}`;
+
+      const updateBtn = () => {
+        setEnabled(btn, !serialNumber && input.value.length > 0)
+        setVisible(btn, !serialNumber);
+      };
+
+      updateBtn();
+      input.oninput = updateBtn;
+      setEnabled(input, !serialNumber);
+
+      const submit = () => {
+        editSerialNumber(input.value)
+          .then((result) => {
+            serialNumber = result.data.serial;
+            displaySuccess();
+          })
+          .catch((result) => handleError(result))
+          .finally(() => updateSerialControls());
+      }
+
+      input.onkeyup = (event) => {
+        if (event.key === "Enter") {
+          submit();
+          input.blur(); // unfocus
+        }
+      }
+      btn.onclick = submit;
+    }
+  }
+
+  getSerialNumber().then((result) => {
+    serialNumber = result.data.serial;
+  }).catch((result) => handleError(result))
+    .finally(() => updateSerialControls());
 }
 
 function updateConnectionStatus(statusElm, msgElm, ok, message, customMessage) {

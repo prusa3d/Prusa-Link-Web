@@ -6,6 +6,15 @@ import { getJson } from "../../auth";
 import { error, warning } from "./toast";
 
 let last_error = [null, null];
+let paused = false;
+
+export function pauseErrorHandling() {
+  paused = true;
+}
+
+export function unpauseErrorHandling() {
+  paused = false;
+}
 
 /**
  * common interface for handling errors from requests
@@ -16,6 +25,8 @@ export function handleError(result, options) {
   if (process.env.MODE == "development") {
     console.error("Handle error", result);
   }
+  if (paused)
+    return;
 
   let title = result?.data?.title
     || options?.fallbackMessage?.title

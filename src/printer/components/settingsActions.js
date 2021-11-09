@@ -42,3 +42,29 @@ export const editPrinter = (name, location) => {
     }),
   });
 }
+
+/**
+ * Get serial number. Serial can be null or "".
+ */
+export const getSerialNumber = () => {
+  return getJson("/api/settings/sn", {
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+}
+
+/**
+ * If printer is in SN error, user can insert new SN
+ */
+export const editSerialNumber = (serial) => {
+  return getJson("/api/settings/sn", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      serial,
+    }),
+  });
+}

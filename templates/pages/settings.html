@@ -72,12 +72,21 @@
 
 <!-- prettier-ignore -->
 {%
+  set section_serial = [
+    {text: 'serial number', label: 'serial.label', id: 'serial', type: 'text', placeholder: 'CZPX4242X042XC42042', editable: true, spacer: true,
+      button: {id: 'edit-serial', text: 'set', label: 'btn.chg', disabled: true} }
+  ]
+%}
+
+<!-- prettier-ignore -->
+{%
   set settings = [
     {'text': 'version', 'label': 'version.title', 'settings': version_section },
     {'text': 'system version', 'label': 'sys-version.title', 'settings': [], 'id': 'sys-version' },
     {'text': 'connection', 'label': 'conn.title', 'settings': section_connection },
     {'text': 'printer', 'label': 'printer.title', 'settings': section_printer },
     {'text': 'user', 'label': 'user.title', 'settings': section_user },
+    {'text': 'serial number', 'label': 'serial.title', 'settings': section_serial },
     {'text': 'logs', 'label': 'logs.title', 'settings': section_logs, 'condition': env.WITH_LOGS }
   ]
 %}
@@ -108,7 +117,11 @@
                     {% if values.type == "dropdown" %}
                       <select data-type="dropdown"></select>
                     {% else %}
-                      <input id="{{values.id}}" type="{{values.type}}" value="{{values.value}}" />
+                      <input id="{{values.id}}"
+                        type="{{values.type}}"
+                        value="{{values.value}}"
+                        placeholder="{{values.placeholder}}"
+                      />
                     {% endif %}
                   {% elif values.component == "conn-status" %}
                     {% set add_id = values.id %}
@@ -135,7 +148,7 @@
               {% if values.button %}
                 <div class="col">
                   <button class="action" id="{{values.button.id}}"
-                    {% if values.disabled %}
+                    {% if values.button.disabled %}
                       disabled
                     {% endif %}
                   >
