@@ -8,19 +8,26 @@ import { translate } from "../../locale_provider";
 import * as job from "../components/job";
 
 const updateTitles = (context) => {
-  const flags = context.printer?.state?.flags;
-  if (context && flags) {
-    if (flags.printing && !flags.ready) {
-      if (flags.paused) {
+  const state = context.printer?.state;
+  if (context && state) {
+    console.log(state)
+    if (state.flags.error || state.flags.closedOrError)
+      translate("ntf.error", { query: "#title-status" });
+    else if (!state.flags.operational)
+      translate("prop.st-busy", { query: "#title-status" });
+    else if (state.flags.paused) {
+      if (state.text === "Pour in resin")
+        translate("prop.st-pour-resin", { query: "#title-status" });
+      else if (state.text === "Feed me")
+        translate("prop.st-feedme", { query: "#title-status" });
+      else
         translate("prop.st-paused", { query: "#title-status" });
-      } else {
-        translate("prop.st-printing", { query: "#title-status" });
-      }
-      return true;
     }
+    else if (state.flags.printing)
+      translate("prop.st-printing", { query: "#title-status" });
+    else
+      translate("prop.st-idle", { query: "#title-status" });
   }
-  translate("prop.st-idle", { query: "#title-status" });
-  return false;
 };
 
 const load = (context) => {
