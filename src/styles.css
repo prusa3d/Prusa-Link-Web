@@ -147,7 +147,6 @@ nav > ul {
 nav > ul > li {
   display: flex;
   list-style-type: none;
-  padding: 16px;
   width: 100%;
   border-bottom: 1px solid #707070;
 }
@@ -161,11 +160,7 @@ nav > ul a {
   list-style: none;
   text-decoration: none;
   width: 100%;
-}
-nav > ul > .dropdown {
-    align-self: center;
-    padding: 16px 0;
-    text-transform: uppercase;
+  padding: 16px;
 }
 nav .navbar-burger {
   display: flex;
@@ -1215,6 +1210,8 @@ $toast-success-title-color: $text-white;
 /* ===================================== DROPDOWN ======================================= */
 
 .dropdown {
+  align-self: center;
+  text-transform: uppercase;
   position: relative;
   width: max-content;
 }
@@ -1228,8 +1225,10 @@ $toast-success-title-color: $text-white;
   padding: 0;
   margin: 0;
 }
-
-.dropdown-btn,
+.dropdown-btn {
+  cursor: pointer;
+  padding: 16px 0;
+}
 .dropdown li {
   cursor: pointer;
   padding: 2px 4px;
@@ -1363,7 +1362,7 @@ input .autoresize {
   }
   nav > ul > li,
   nav > ul .dropdown {
-  margin-bottom: -2px;
+  margin-bottom: -1px;
 }
   nav .dropdown {
     padding: 0;
