@@ -173,7 +173,7 @@ function updateComponent(context) {
     setupThumbnail(thumbnail.url);
   }
 
-  hideNaProperties(state);
+  hideNaProperties();
 
   if (state.flags.operational) {
     hideLoading();
@@ -270,7 +270,7 @@ function setupProperties(state) {
   }
 }
 
-function hideNaProperties(state) {
+function hideNaProperties() {
   const naValue = translate("prop.na");
 
   document.getElementById("job").querySelectorAll(".job-details .job-prop").forEach(section => {
@@ -279,12 +279,13 @@ function hideNaProperties(state) {
 
     for (const prop of group) {
       var isNa = prop.querySelector("[data-type]")?.innerHTML.trim() === naValue;
-      if (state.flags.printing && prop.querySelector("[data-label]").getAttribute("data-label") == "prop.time-est")
-        isNa = true
       setHidden(prop, isNa);
       if (!isNa)
         hidden = false;
     }
+
+    if (process.env.PRINTER_TYPE === "sla")
+      setHidden(document.getElementById("pnt-time-est"), true)
 
     setHidden(section, hidden);
   })
