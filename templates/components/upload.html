@@ -30,7 +30,7 @@
 
   <div class="tab" data-tab="remote" opened="false">
     <div class="tab-header" data-tab="remote">
-      <img class="icon" src="{{ pre.countOrRenderAssets('remote_url.svg') | safe }}"/>
+      <img class="icon" src="{{ env.TPL_ASSETS_PATH }}/remote_url.png"/>
       <p
         class="txt-black txt-size-2 txt-bold txt-uppercase"
         data-label="upld.remote.title"
@@ -52,7 +52,7 @@
 
   <div class="tab" data-tab="slicer" opened="false">
     <div class="tab-header" data-tab="slicer">
-      <img class="icon" src="{{ pre.countOrRenderAssets('prusaslicer.svg') | safe }}"/>
+      <img class="icon" src="{{ env.TPL_ASSETS_PATH }}/prusaslicer.png"/>
       <p
         class="txt-black txt-size-2 txt-bold txt-uppercase"
         data-label="upld.slicer.title"

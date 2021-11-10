@@ -18,20 +18,8 @@ nav > ul > li.active {
   color: $green;
 }
 
-progress.print-progress {
-  -webkit-appearance: none;
-  appearance: none;
-}
-progress.print-progress::-webkit-progress-value {
-  background: $green;
-}
-
-progress.print-progress::-moz-progress-bar {
+.progress-bar>.fill {
   background-color: $green;
-}
-
-.progress > progress {
-  color: $green;
 }
 
 .temp-legend-orange {
