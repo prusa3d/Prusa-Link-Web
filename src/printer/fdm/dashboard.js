@@ -7,30 +7,14 @@ import upload from "../components/upload";
 import { translate } from "../../locale_provider";
 import * as job from "../components/job";
 
-const updateTitles = (context) => {
-  const flags = context.printer?.state?.flags;
-  if (context && flags) {
-    if (flags.printing && !flags.ready) {
-      if (flags.paused) {
-        translate("prop.st-paused", { query: "#title-status" });
-      } else {
-        translate("prop.st-printing", { query: "#title-status" });
-      }
-      return true;
-    }
-  }
-  translate("prop.st-idle", { query: "#title-status" });
-  return false;
-};
-
 const load = (context) => {
+  translate("home.link", { query: "#title-status-label" });
   upload.init();
   graph.render();
   update(context);
 };
 
 const update = (context) => {
-  updateTitles(context);
   job.update(context);
   upload.update();
 };

@@ -71,8 +71,12 @@ function setComponentVisibility(context) {
   if (!element)
     return false;
 
+  const page = window.location.hash
+  const isPreview = context?.printer?.state?.flags?.ready &&
+    context?.printer?.state?.flags?.operational;
   const visible = Boolean(
-    context?.printer?.state?.flags?.printing || context?.current?.job?.file?.name
+    (!isPreview && page === "#dashboard") ||
+    (isPreview && context?.current?.job?.file?.name && page === "#projects")
   );
   setVisible(element, visible);
   return visible;
@@ -328,7 +332,7 @@ function setupCancelButton(state) {
   const isPreview = state.flags.ready && state.flags.operational;
 
   if (process.env.PRINTER_TYPE === "sla")
-    setVisible(btn, !state.flags.paused);
+    setVisible(btn, state.text != "Feed me");
 
   if (btn)
     btn.onclick = isPreview ? cancelPreview : cancelJob;

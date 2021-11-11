@@ -36,6 +36,20 @@ const updateHostname = (obj) => {
   return obj;
 };
 
+const updatePrinterStatus = (state) => {
+  const query = { query: "#printer-status" };
+  if (state) {
+    if (state.flags.printing && !state.flags.ready) {
+      if (state.flags.paused) {
+        translate("prop.st-paused", query);
+      } else {
+        translate("prop.st-printing", query);
+      }
+    }
+  }
+  translate("prop.st-idle", query);
+};
+
 let currentModule = dashboard;
 const fdm = {
   routes: [
@@ -89,6 +103,7 @@ const fdm = {
     context.printer = printerData;
     context.current = jobData;
     updateProperties("telemetry", printerData);
+    updatePrinterStatus(printerData.state);
     updateTemperatureGraph(printerData);
     updateModule();
   },
