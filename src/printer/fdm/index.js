@@ -97,6 +97,7 @@ const fdm = {
   init: (version, printerData) => {
     context.version = version;
     context.printer = printerData;
+    document.title = version.hostname + " - " + process.env.APP_NAME;
     initTemperatureGraph();
   },
   update: (printerData, jobData) => {
