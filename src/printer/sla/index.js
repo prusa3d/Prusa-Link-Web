@@ -25,9 +25,7 @@ const updateHostname = (obj) => {
   const newHostname = () => {
     const hostnameLabel = document.getElementById("title-hostname");
     if (hostnameLabel) {
-      hostnameLabel.innerHTML = translate("glob.hostname") + ":";
-      document.getElementById("title-hostname").innerHTML =
-        context.version?.hostname || "localhost";
+      hostnameLabel.innerHTML = (context.version?.hostname || "localhost");
     }
   };
   const load = obj.load;
@@ -112,6 +110,7 @@ const sla = {
   init: (version, printerData) => {
     context.version = version;
     context.printer = printerData;
+    document.title = version.hostname + " - " + process.env.APP_NAME;
     initTemperatureGraph();
   },
   update: (printerData, jobData) => {

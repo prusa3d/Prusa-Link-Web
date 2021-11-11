@@ -29,7 +29,11 @@ window.onload = () => {
   document.querySelectorAll("a[href]").forEach((link) => {
     link.addEventListener("click", (e) => {
       if (navigate(link.href)) {
-        document.title = process.env.APP_TITLE + " - " + (link.innerText || translate("home.link"));
+        const hostnameLabel = document.getElementById("title-hostname").innerHTML;
+        document.title =
+          hostnameLabel + " - " +
+          (link.innerText.trim() || process.env.APP_NAME) +
+          " - " + process.env.APP_NAME;
         history.pushState(null, document.title, link.href);
         e.preventDefault();
       }
