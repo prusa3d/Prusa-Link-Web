@@ -38,6 +38,28 @@ const updateHostname = (obj) => {
   return obj;
 };
 
+const updatePrinterStatus = (state) => {
+  if (state) {
+    const query = { query: "#printer-status" };
+    if (state.flags.error || state.flags.closedOrError)
+      translate("ntf.error", query);
+    else if (!state.flags.operational)
+      translate("prop.st-busy", query);
+    else if (state.flags.paused) {
+      if (state.text === "Pour in resin")
+        translate("prop.st-pour-resin", query);
+      else if (state.text === "Feed me")
+        translate("prop.st-feedme", query);
+      else
+        translate("prop.st-paused", query);
+    }
+    else if (state.flags.printing)
+      translate("prop.st-printing", query);
+    else
+      translate("prop.st-idle", query);
+  }
+};
+
 let currentModule = dashboard;
 const sla = {
   routes: [
@@ -100,6 +122,7 @@ const sla = {
     else
       showLoading();
     updateProperties("telemetry", printerData);
+    updatePrinterStatus(printerData.state);
     updateTemperatureGraph(printerData);
     updateModule();
   },

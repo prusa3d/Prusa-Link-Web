@@ -84,10 +84,8 @@ export const pauseJob = () => {
     event.preventDefault();
     confirmJob().then(() => {
       close();
-      if (process.env.PRINTER_TYPE === "fdm") {
-        if (navigate("#dashboard"))
-          history.pushState(null, document.title, "#dashboard");
-      }
+      if (navigate("#dashboard"))
+        history.pushState(null, document.title, "#dashboard");
     });
   });
   const noButton = node.getElementById("no");

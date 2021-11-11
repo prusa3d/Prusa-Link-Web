@@ -624,8 +624,10 @@ nav .burger-icon.burger-open {
   justify-content: flex-end;
   flex-grow: 1;
 }
-.buttons-wrapper button:not(:first-child),
 .job-buttons-first button {
+  margin-right: 12px;
+}
+.buttons-wrapper button {
   margin-left: 12px;
 }
 button > p {
