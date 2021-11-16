@@ -184,6 +184,10 @@
     "true": "Ano",
     "z-height": "Výška Z"
   },
+  "serial": {
+    "title": "sériové číslo",
+    "label": "sériové číslo"
+  },
   "settings": {
     "title": "Nastavení"
   },

@@ -22,7 +22,7 @@ router.get("/", async (req, res, next) => {
   }
 
   if (!(include.temperature || include.state || include.sd)) {
-    res.status(400).json({ error: "Bad request" });
+    res.status(400).json({ message: "Bad request" });
     return;
   }
 

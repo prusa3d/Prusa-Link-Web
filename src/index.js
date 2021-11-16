@@ -15,12 +15,12 @@ import printer from "./printer";
 import { getJson, initAuth } from "./auth.js";
 import { initMenu } from "./printer/components/menu";
 import { translate, translateLabels } from "./locale_provider";
-import { handleError } from "./printer/components/errors";
+import { handleError, pauseErrorHandling, unpauseErrorHandling } from "./printer/components/errors";
 
 const UPDATE_INTERVAL = process.env.UPDATE_INTERVAL;
-
-let apiErrorTimestamp = 0;
-const API_ERROR_INTERVAL = 60_000; // ms
+let appErrorTimestamp = 0;
+const APP_ERROR_INTERVAL = 60_000; // ms
+let connectionProblem = false;
 
 window.onload = () => {
   initMenu();
@@ -46,37 +46,60 @@ window.onload = () => {
 
     getJson("/api/printer").then((printerData) => {
       printer.init(version, printerData.data);
-      setInterval(
-        () =>
-            Promise.all([
-              getJson("/api/printer"),
-              getJson("/api/job"),
-            ]).then(([printerResponse, jobResponse]) => {
-              printer.update(printerResponse.data, jobResponse.data);
-            })
-            .catch((result) => {
-              if (result.code == 401) {
-                const auth = sessionStorage.getItem("auth") || "false";
-                if (auth == "false") {
-                  initAuth();
-                }
-              } else {
-                const timestamp = new Date().getTime();
-                if (timestamp > apiErrorTimestamp) {
-                  apiErrorTimestamp = timestamp + API_ERROR_INTERVAL;
-                  handleError(result, {
-                    fallbackMessage: {
-                      title: "API error",
-                      message: "Something bad happened on printer's side",
-                    },
-                  });
-                }
-              }
-            }),
-        UPDATE_INTERVAL
-      );
+      appLoop();
       window.onpopstate = (e) => e && navigate(e.currentTarget.location.hash);
       navigate(window.location.hash || "#dashboard");
     });
   });
 };
+
+async function appLoop() {
+  while (true) {
+    await new Promise(resolve => setTimeout(resolve, UPDATE_INTERVAL));
+
+    try {
+      const [printerResponse, jobResponse] = await Promise.all([
+        getJson("/api/printer"),
+        getJson("/api/job"),
+      ]);
+      unpauseErrorHandling();
+      connectionProblem = false;
+      update(printerResponse, jobResponse)
+    } catch (result) {
+      if (result.code == 401) {
+        const auth = sessionStorage.getItem("auth") || "false";
+        if (auth == "false") {
+          initAuth();
+        }
+      } else {
+        if (!connectionProblem) {
+          handleError(result, {
+            fallbackMessage: {
+              title: "API error",
+              message: "Cannot connect to printer",
+            },
+          });
+        }
+        pauseErrorHandling();
+        connectionProblem = true;
+      }
+    }
+  }
+}
+
+function update(printerResponse, jobResponse) {
+  try {
+    printer.update(printerResponse.data, jobResponse.data);
+  } catch (error) {
+    const timestamp = new Date().getTime();
+    if (timestamp > appErrorTimestamp) {
+      appErrorTimestamp = timestamp + APP_ERROR_INTERVAL;
+      handleError(error, {
+        fallbackMessage: {
+          title: "Application error",
+          message: "Something bad happened on application side",
+        },
+      });
+    }
+  }
+}

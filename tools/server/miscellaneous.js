@@ -79,7 +79,7 @@ router.get("/system/commands", async (req, res, next) => {
  */
 router.get("/system/commands/custom/:command", async (req, res, next) => {
   console.log(`- ${req.method} ${req.originalUrl} - ${req.params} => 501`);
-  res.status(501).json({ error: "Not Implemented" });
+  res.status(501).json({ message: "Not Implemented" });
 });
 
 /**
@@ -106,7 +106,7 @@ router.get("/access/users", async (req, res, next) => {
  */
 router.get("/downloads/:target/:filename(*)", async (req, res, next) => {
   console.log(`- ${req.method} ${req.originalUrl} - ${req.params} => 501`);
-  res.status(501).json({ error: "Not Implemented" });
+  res.status(501).json({ message: "Not Implemented" });
 });
 
 module.exports = router;

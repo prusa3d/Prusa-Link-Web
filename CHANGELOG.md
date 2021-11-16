@@ -1,5 +1,12 @@
 # Changelog
 
+## 2021-11-09 (3.2.0)
+
+* Add serial number setting
+* Add initial 0% to upload process (to be shown even before printer responds)
+* Prevent api polling when previous requests were not handled
+* Prevent error messages flood in case of a connection problem
+
 ## 2021-10-15 (3.1.0)
 
 * Add possibility to build-in all SVG files
