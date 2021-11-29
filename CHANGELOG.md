@@ -1,5 +1,10 @@
 # Changelog
 
+## 2021-11-24 (3.4.0)
+
+* Fix state displaying in the left menu
+* Fix loading spinner behavior when printing
+
 ## 2021-11-01 (3.3.0)
 
 * Add target temperatures to the left sidebar
