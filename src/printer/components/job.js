@@ -94,14 +94,20 @@ function updateJob(context) {
 
   const jobFile = context.current.job.file;
   const path = joinPaths(jobFile.origin, jobFile.path);
+  let loading = (context.current.state === "Busy");
+
   if (path && path !== metadata.path) {
     console.log(`File Path was changed\nold path: ${metadata.path}\nnew path: ${path}`)
     metadata = getDefaultMetadata();
     metadata.path = path;
-    showLoading();
+    loading = true;
     reFetch(path);
   }
 
+  if (loading) {
+    showLoading();
+  }
+  
   metadata.lastPrintingResult = context.current.state === "Printing"
     ? context.current
     : metadata.lastPrintingResult;
@@ -179,7 +185,7 @@ function updateComponent(context) {
 
   hideNaProperties();
 
-  if (state.flags.operational) {
+  if (thumbnail.ready && state.text !== "Busy") {
     hideLoading();
   }
 }

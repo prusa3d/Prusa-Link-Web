@@ -45,6 +45,7 @@ const updatePrinterStatus = (state) => {
       } else {
         translate("prop.st-printing", query);
       }
+      return;
     }
   }
   translate("prop.st-idle", query);
