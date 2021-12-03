@@ -14,10 +14,10 @@ let serialNumber = null;
 const logsModule = process.env.WITH_LOGS ? require("./settings/logs").default : null;
 const displaySuccess = () => success(translate("ntf.success"), translate("ntf.settings-suc"));
 
-const load = () => {
+const load = (context) => {
   translate("settings.title", { query: "#title-status-label" });
   initBaseSettings();
-  initConnectionSettings();
+  initConnectionSettings(context);
   initPrinterSettings();
   initUserSettings();
   initSerialSettings();
@@ -34,13 +34,11 @@ function initBaseSettings() {
   }).catch((result) => handleError(result));
 }
 
-function initConnectionSettings() {
-  getJson("api/connection").then(result => {
-    const data = result.data;
-    updateProperties("con-settings", data);
-    updatePrusaConnectStatus(data);
-    updatePrinterStatus(data);
-  }).catch((result) => handleError(result));
+function initConnectionSettings(context) {
+  const { connection } = context;
+  updateProperties("con-settings", connection);
+  updatePrusaConnectStatus(connection);
+  updatePrinterStatus(connection);
 }
 
 function initPrinterSettings() {
@@ -155,6 +153,7 @@ function updateConnectionStatus(statusElm, msgElm, ok, message, customMessage) {
 }
 
 function updatePrusaConnectStatus(data) {
+  console.log(data);
   const statusElm = document.getElementById("conn-prusa-connect-status");
   const msgElm = document.getElementById("conn-prusa-connect-status-msg");
 

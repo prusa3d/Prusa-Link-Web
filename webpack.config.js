@@ -28,6 +28,7 @@ module.exports = (env, args) => {
 
     MODE: env.dev ? "development" : "production",
     UPDATE_INTERVAL: env["UPDATE_INTERVAL"] || 1000,
+    CONNECTION_UPDATE_INTERVAL: env["CONNECTION_UPDATE_INTERVAL"] || 5000,
     HTTP_APIKEY: env["HTTP_APIKEY"] || env["http-apikey"] || false,
     HTTP_BASIC: env["HTTP_BASIC"] || env["http-basic"] || false,
 

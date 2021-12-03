@@ -1127,7 +1127,7 @@ components:
               example: false
             message:
               type: string
-              example: "Serial number cannot be obtained"
+              example: "Serial port cannot be obtained"
         connect:
           type: object
           properties:

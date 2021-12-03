@@ -1,11 +1,19 @@
 # Changelog
 
+## 2021-12-03 (3.5.0)
+
+* Add serial, CONNECT and communication state to the left side bar
+* Fix mockup server
+* Fix openapi.yml
+* Fix N/A values when start file downloading from URL
+* Optimize application loop
+
 ## 2021-11-24 (3.4.0)
 
 * Fix state displaying in the left menu
 * Fix loading spinner behavior when printing
 
-## 2021-11-01 (3.3.0)
+## 2021-11-16 (3.3.0)
 
 * Add target temperatures to the left sidebar
 * Add possibility to send control values by Enter key press

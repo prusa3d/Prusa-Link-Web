@@ -11,6 +11,7 @@ import temperature from "./temperature.js";
 import { updateProperties } from "../components/updateProperties.js";
 import { translate } from "../../locale_provider";
 import { showLoading, hideLoading } from "../../helpers/element";
+import updateConnectionStatus from "../components/updateConnectionStatus";
 
 const context = {
   /** Result of `api/version`. */
@@ -19,6 +20,8 @@ const context = {
   printer: undefined,
   /** Result of `api/job`.job */
   current: undefined,
+  /** Result of `api/connection`. */
+  connection: undefined,
 };
 
 const updateHostname = (obj) => {
@@ -107,23 +110,31 @@ const sla = {
         module: updateHostname(require("../components/control.js").default),
       } : null,
   ].filter(route => route != null),
-  init: (version, printerData) => {
+  init: ({ version, printer, connection }) => {
     context.version = version;
-    context.printer = printerData;
+    context.printer = printer?.data;
+    context.connection = connection?.data;
     document.title = version.hostname + " - " + process.env.APP_NAME;
     initTemperatureGraph();
   },
-  update: (printerData, jobData) => {
-    context.printer = printerData;
-    context.current = jobData;
-    if (printerData.state.flags.operational)
+  update: ({ printer, job, connection }) => {
+    context.printer = printer?.data;
+    context.current = job?.data;
+    context.connection = connection?.data || context.connection;
+    if (context.printer.state.flags.operational)
       hideLoading();
     else
       showLoading();
-    updateProperties("telemetry", printerData);
-    updatePrinterStatus(printerData.state);
-    updateTemperatureGraph(printerData);
+    updateProperties("telemetry", context.printer);
+    updatePrinterStatus(context.printer.state);
+    updateTemperatureGraph(context.printer);
     updateModule();
+  },
+  setConnected: (isConnected) => {
+    updateConnectionStatus({
+      connection: context.connection,
+      isConnected,
+    });
   },
   setModule: (module) => {
     currentModule = module;
