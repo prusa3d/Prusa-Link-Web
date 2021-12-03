@@ -9,6 +9,7 @@ import question from "../components/question.js";
 import temperature from "./temperature.js";
 import { updateProperties } from "../components/updateProperties.js";
 import { translate } from "../../locale_provider";
+import updateConnectionStatus from "../components/updateConnectionStatus";
 
 const context = {
   /** Result of `api/version`. */
@@ -17,6 +18,8 @@ const context = {
   printer: undefined,
   /** Result of `api/job`.job. */
   current: undefined,
+  /** Result of `api/connection`. */
+  connection: undefined,
 };
 
 const updateHostname = (obj) => {
@@ -95,19 +98,27 @@ const fdm = {
         module: updateHostname(require("../components/control.js").default),
       } : null,
   ].filter(route => route != null),
-  init: (version, printerData) => {
+  init: ({ version, printer, connection }) => {
     context.version = version;
-    context.printer = printerData;
+    context.printer = printer?.data;
+    context.connection = connection?.data;
     document.title = version.hostname + " - " + process.env.APP_NAME;
     initTemperatureGraph();
   },
-  update: (printerData, jobData) => {
-    context.printer = printerData;
-    context.current = jobData;
-    updateProperties("telemetry", printerData);
-    updatePrinterStatus(printerData.state);
-    updateTemperatureGraph(printerData);
+  update: ({ printer, job, connection }) => {
+    context.printer = printer?.data;
+    context.current = job?.data;
+    context.connection = connection?.data || context.connection;
+    updateProperties("telemetry", context.printer);
+    updatePrinterStatus(context.printer.state);
+    updateTemperatureGraph(context.printer);
     updateModule();
+  },
+  setConnected: (isConnected) => {
+    updateConnectionStatus({
+      connection: context.connection,
+      isConnected,
+    });
   },
   setModule: (module) => {
     currentModule = module;

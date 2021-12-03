@@ -30,8 +30,31 @@
   %}
 {% endif %}
 
+{%
+    set connection_status_list = [
+      {'text': 'PRUSA CONNECT connection status', 'label': 'conn.prusa-connect-status', 'id': 'conn-status-connect', 'id_msg': 'conn-status-connect-msg' },
+      {'text': 'PRINTER connection status', 'label': 'conn.printer-status', 'id': 'conn-status-printer', 'id_msg': 'conn-status-printer-msg' }
+    ]
+%}
+
 <div id="telemetry-wrapper">
   <div class="telemetry" id="telemetry-div">
+    {% for values in connection_status_list %}
+      <div class="tel-prop" id="{{ values.id }}" hidden="true">
+        <img class="icon" src="{{ pre.countOrRenderAssets('warning.svg') | safe }}" />
+        <div class="value">
+          <p
+            class="txt-size-2 txt-grey"
+            data-label="{{ values.label }}"
+          >{{ values.text }}</p>
+          <p
+            class="txt-bold txt-size-2"
+            id="{{ values.id_msg }}"
+          >NA</p>
+        </div>
+      </div>
+    {% endfor %}
+
     <div class="tel-prop">
       <img class="icon" src="{{ env.TPL_ASSETS_PATH }}/favicon.png">
       <div class="value">
@@ -39,6 +62,7 @@
         <p id="printer-status" class="txt-bold txt-size-2">NA</p>
       </div>
     </div>
+
     {% for values in telemetry_list %}
     <div class="tel-prop">
       <img class="icon" src="{{ pre.countOrRenderAssets(values.icon) | safe }}" />

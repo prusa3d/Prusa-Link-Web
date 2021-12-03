@@ -336,7 +336,7 @@ class Printer {
       states: {
         printer: {
           ok: false,
-          message: "Serial number cannot be obtained",
+          message: "Serial port cannot be obtained",
         },
         connect: {
           ok: true,

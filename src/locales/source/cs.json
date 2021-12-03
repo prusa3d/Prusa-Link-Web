@@ -25,6 +25,7 @@
     "yes": "Ano"
   },
   "conn": {
+    "err-conn": "Nelze se připojit k tiskárně",
     "printer-status" : "stav připojení 3D tiskárny",
     "prusa-connect-status": "stav připojení PRUSA CONNECT",
     "suc": "Úspěšně připojeno",

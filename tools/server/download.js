@@ -27,7 +27,7 @@ router.post("/:target", async (req, res, next) => {
   if (result instanceof errors.ApiError) {
     result.handleError(res);
   } else {
-    res.status(201).send(result);
+    res.status(201).send();
   }
 });
 

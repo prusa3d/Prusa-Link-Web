@@ -11,6 +11,7 @@ import { updateProgressBar } from "../progressBar";
 import updateProperties from "../updateProperties";
 
 let isUploading = false;
+let lastResult = null;
 
 function init(origin, path) {
   const elm = document.getElementById("upld-remote");
@@ -33,14 +34,18 @@ function init(origin, path) {
     urlInput.oninput = updateUploadBtn;
   }
 
-  if (isUploading)
+  if (isUploading) {
     setState("uploading");
+    if (lastResult)
+      handleResult(lastResult);
+  }
 
   update();
 }
 
 function update() {
   getJson("api/download").then(result => {
+    lastResult = result;
     handleResult(result);
   }).catch(result => {
     handleError(result);
@@ -93,8 +98,7 @@ const startUpload = (url, target, destination, options) => {
       destination,
       to_print: options.to_print,
     }),
-  }).then(result => handleResult(result))
-    .catch((result) => handleError(result));
+  }).catch((result) => handleError(result));
 }
 
 function displaySuccess() {
@@ -115,6 +119,7 @@ function reset() {
   setState("choose");
   updateProgress(0);
   updateProperties("download", {});
+  lastResult = null;
 }
 
 function setState(state) {
