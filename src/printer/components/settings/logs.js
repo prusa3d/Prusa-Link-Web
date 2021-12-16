@@ -11,7 +11,7 @@ import formatData from "../dataFormat";
 
 let selectedFileName = null;
 let selectedFileDate = null;
-const sizeLimit = 100_000_000;
+const sizeLimit = 1_000_000;
 
 const load = () => {
   initLogs();
