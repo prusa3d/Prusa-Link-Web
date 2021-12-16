@@ -48,7 +48,6 @@ function initProgressHandler(request, callback) {
         return;
       }
       let percentage = Math.round((event.loaded / event.total) * 100);
-      // if (percentage > 99) percentage = 99;
       callback({
         loaded: event.loaded,
         total: event.total,
