@@ -4,6 +4,7 @@
 
 * Fix big log files displaying
 * Decrease display log file size limit to 1M
+* Change temperature controls widget number format to display integers
 
 ## 2021-12-03 (3.5.0)
 

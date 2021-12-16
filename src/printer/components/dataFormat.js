@@ -258,6 +258,8 @@ const fdmFormatData = (format, value) => {
       return numberFormat(value);
     case "temp":
       return numberFormat(value) + " °C";
+    case "temp_int":
+        return numberFormat(value, 0) + "°C";
     case "fan":
       return numberFormat(value) + ` ${str_rpm}`;
     case "print":
