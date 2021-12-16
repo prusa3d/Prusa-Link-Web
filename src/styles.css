@@ -1326,10 +1326,11 @@ input .autoresize {
   background: white;
   color: black;
   height: 12rem;
-  overflow-y: auto;
+  overflow: auto;
   line-height: 1.5;
   list-style: none;
   padding: 10px;
+  max-width: 100%;
 }
 
 /* ===================================== CONNECTION STATUS ======================================= */

@@ -1,5 +1,10 @@
 # Changelog
 
+## 2021-12-16 (3.5.1)
+
+* Fix big log files displaying
+* Decrease display log file size limit to 1M
+
 ## 2021-12-03 (3.5.0)
 
 * Add serial, CONNECT and communication state to the left side bar
