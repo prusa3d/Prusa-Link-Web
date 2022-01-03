@@ -153,7 +153,6 @@ function updateConnectionStatus(statusElm, msgElm, ok, message, customMessage) {
 }
 
 function updatePrusaConnectStatus(data) {
-  console.log(data);
   const statusElm = document.getElementById("conn-prusa-connect-status");
   const msgElm = document.getElementById("conn-prusa-connect-status-msg");
 
