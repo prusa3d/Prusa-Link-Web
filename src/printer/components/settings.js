@@ -159,7 +159,9 @@ function updatePrusaConnectStatus(data) {
 
   const { hostname, port, tls } = data.connect;
   const { ok, message } = data.states.connect;
-  const customMessage =  `(http${tls ? 's' : ''}://${hostname}:${port || 8080})`;
+  const protocol = tls ? 'http' : 'https'
+  const port = port ? `:${port}` : '' // 0 = protocol default port
+  const customMessage =  `(${protocol}://${hostname}${port})`;
 
   updateConnectionStatus(statusElm, msgElm, ok, message, customMessage);
 }
