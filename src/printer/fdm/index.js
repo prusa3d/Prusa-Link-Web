@@ -63,11 +63,6 @@ const fdm = {
       module: updateHostname(dashboard),
     },
     {
-      path: "projects",
-      html: require("../../views/projects.html"),
-      module: updateHostname(projects),
-    },
-    {
       path: "temperature",
       html: require("../../views/temperature.html"),
       module: updateHostname(temperature),
@@ -84,6 +79,13 @@ const fdm = {
         load: () => translate("proj.title", { query: "#title-status-label" }),
       }),
     },
+    process.env.WITH_PROJECTS ?
+      {
+        path: "projects",
+        html: require("../../views/projects.html"),
+        module: updateHostname(projects),
+      }
+      : null,
     process.env.WITH_SETTINGS ?
       {
         path: "settings",

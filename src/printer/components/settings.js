@@ -17,10 +17,12 @@ const displaySuccess = () => success(translate("ntf.success"), translate("ntf.se
 const load = (context) => {
   translate("settings.title", { query: "#title-status-label" });
   initBaseSettings();
-  initConnectionSettings(context);
+  if (process.env.WITH_CONNECTION)
+    initConnectionSettings(context);
   initPrinterSettings();
   initUserSettings();
-  initSerialSettings();
+  if (process.env.WITH_SERIAL)
+    initSerialSettings();
   logsModule?.load();
 };
 
@@ -35,10 +37,11 @@ function initBaseSettings() {
 }
 
 function initConnectionSettings(context) {
-  const { connection } = context;
-  updateProperties("con-settings", connection);
-  updatePrusaConnectStatus(connection);
-  updatePrinterStatus(connection);
+  if (context.connection) {
+    updateProperties("con-settings", context.connection);
+    updatePrusaConnectStatus(context.connection);
+    updatePrinterStatus(context.connection);
+  }
 }
 
 function initPrinterSettings() {

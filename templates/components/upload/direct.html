@@ -25,6 +25,7 @@
       <p id="upld-progress" class="abs-center"></p>
     </div>
   </div>
+  {% if env.WITH_START_PRINT_AFTER_UPLOAD %}
   <div class="state-choose state-choose-checkbox">
     <input type="checkbox" id="upld-direct-start-pt" />
     <label
@@ -34,4 +35,5 @@
       start print after transfer
     </label>
   </div>
+  {% endif %}
 </div>

@@ -57,7 +57,7 @@ class TabsController {
    * Setup `ResizeObserver` to handle element's resizing.
    * @param {HTMLElement} tabBodyElm
    */
-  _setupObserver(tabBodyElm) {
+  _setupObserver(tabElm, tabBodyElm) {
     if (this.observer)
       this.observer.disconnect();
 
@@ -66,7 +66,8 @@ class TabsController {
 
     const contentElm = tabBodyElm.firstElementChild;
     this.observer = new ResizeObserver((e) => {
-      tabBodyElm.style.height = contentElm.scrollHeight + "px";
+      if (tabElm.getAttribute("opened") === "true")
+        tabBodyElm.style.height = contentElm.scrollHeight + "px";
     });
     this.observer.observe(tabBodyElm.firstElementChild);
   }
@@ -108,7 +109,7 @@ class TabsController {
         show();
       }
 
-      this._setupObserver(bodyElm);
+      this._setupObserver(tabElm, bodyElm);
       this._selected = tab;
     }
   }
