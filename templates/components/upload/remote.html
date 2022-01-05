@@ -78,15 +78,17 @@
         Type URL of compatible project file
       </p>
     {% endif %}
-    <div class="state-choose-checkbox">
-      <input type="checkbox" id="upld-remote-start-pt" />
-      <label
-        data-label="upld.start-pt"
-        for="upld-remote-start-pt"
-      >
-        start print after transfer
-      </label>
-    </div>
+    {% if env.WITH_START_PRINT_AFTER_UPLOAD %}
+      <div class="state-choose-checkbox">
+        <input type="checkbox" id="upld-remote-start-pt" />
+        <label
+          data-label="upld.start-pt"
+          for="upld-remote-start-pt"
+        >
+          start print after transfer
+        </label>
+      </div>
+    {% endif %}
   </div>
 
   <div class="state-uploading">

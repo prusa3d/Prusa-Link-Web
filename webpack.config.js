@@ -14,6 +14,10 @@ const devServer = require("./tools/server");
 
 const DEFAULT_NAME = "Original Prusa 3D Printer";
 
+function withDefault(value, defaultValue) {
+  return value === undefined ? defaultValue : value;
+}
+
 module.exports = (env, args) => {
   const buildLocales = env.locales;
 
@@ -32,8 +36,13 @@ module.exports = (env, args) => {
     HTTP_APIKEY: env["HTTP_APIKEY"] || env["http-apikey"] || false,
     HTTP_BASIC: env["HTTP_BASIC"] || env["http-basic"] || false,
 
+    WITH_PROJECTS: withDefault(env["WITH_PROJECTS"], true),
     WITH_SETTINGS: env["WITH_SETTINGS"] || false,
     WITH_CONTROLS: env["WITH_CONTROLS"] || false,
+    WITH_REMOTE_UPLOAD: withDefault(env["WITH_REMOTE_UPLOAD"], true),
+    WITH_START_PRINT_AFTER_UPLOAD: withDefault(env["WITH_START_PRINT_AFTER_UPLOAD"], true),
+    WITH_SERIAL: withDefault(env["WITH_SERIAL"], true),
+    WITH_CONNECTION: withDefault(env["WITH_CONNECTION"], true),
     WITH_LOGS: env["WITH_LOGS"] || false,
     WITH_FONT: env["WITH_FONT"] || false,
     WITH_EMBEDDED_SVGS: env["WITH_EMBEDDED_SVGS"] || false,

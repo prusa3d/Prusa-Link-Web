@@ -46,8 +46,8 @@ const requests = {
   },
   connection: {
     get: () => getJson("/api/connection"),
-    init: true,
-    update: true,
+    init: process.env.WITH_CONNECTION,
+    update: process.env.WITH_CONNECTION,
     updateInterval: process.env.CONNECTION_UPDATE_INTERVAL,
   },
   // version will be passed on init

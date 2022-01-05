@@ -8,7 +8,7 @@
 <div id="upld">
   <div class="tab" data-tab="direct" opened="false">
     <div class="tab-header" data-tab="direct">
-        <img class="icon" src="{{ env.TPL_ASSETS_PATH }}/favicon.png"/>
+        <img class="icon" src="{{ env.TPL_ASSETS_PATH }}/prusa-link-favicon.svg"/>
       <p
         class="txt-black txt-size-2 txt-bold txt-uppercase"
         data-label="upld.direct.title"
@@ -28,31 +28,33 @@
     </div>
   </div>
 
-  <div class="tab" data-tab="remote" opened="false">
-    <div class="tab-header" data-tab="remote">
-      <img class="icon" src="{{ env.TPL_ASSETS_PATH }}/remote_url.png"/>
-      <p
-        class="txt-black txt-size-2 txt-bold txt-uppercase"
-        data-label="upld.remote.title"
-      >
-        REMOTE URL
-      </p>
-      <div class="separator"></div>
-      <p
-        class="txt-size-3 txt-italic txt-description"
-        data-label="upld.remote.description"
-      >
-        Upload project from remote URL directly to the printer
-      </p>
+  {% if env.WITH_REMOTE_UPLOAD %}
+    <div class="tab" data-tab="remote" opened="false">
+      <div class="tab-header" data-tab="remote">
+        <img class="icon" src="{{ env.TPL_ASSETS_PATH }}/remote_url.svg"/>
+        <p
+          class="txt-black txt-size-2 txt-bold txt-uppercase"
+          data-label="upld.remote.title"
+        >
+          REMOTE URL
+        </p>
+        <div class="separator"></div>
+        <p
+          class="txt-size-3 txt-italic txt-description"
+          data-label="upld.remote.description"
+        >
+          Upload project from remote URL directly to the printer
+        </p>
+      </div>
+      <div class="tab-body">
+        {% include "components/upload/remote.html" %}
+      </div>
     </div>
-    <div class="tab-body">
-      {% include "components/upload/remote.html" %}
-    </div>
-  </div>
+  {% endif %}
 
   <div class="tab" data-tab="slicer" opened="false">
     <div class="tab-header" data-tab="slicer">
-      <img class="icon" src="{{ env.TPL_ASSETS_PATH }}/prusaslicer.png"/>
+      <img class="icon" src="{{ env.TPL_ASSETS_PATH }}/prusaslicer-logo.svg"/>
       <p
         class="txt-black txt-size-2 txt-bold txt-uppercase"
         data-label="upld.slicer.title"

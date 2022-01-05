@@ -1387,6 +1387,7 @@ input .autoresize {
   }
   #telemetry-wrapper {
     width: 20%;
+    min-width: 20%;
   }
   .telemetry {
     flex-direction: column;

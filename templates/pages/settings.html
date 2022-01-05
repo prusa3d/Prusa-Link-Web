@@ -83,10 +83,10 @@
   set settings = [
     {'text': 'version', 'label': 'version.title', 'settings': version_section },
     {'text': 'system version', 'label': 'sys-version.title', 'settings': [], 'id': 'sys-version' },
-    {'text': 'connection', 'label': 'conn.title', 'settings': section_connection },
+    {'text': 'connection', 'label': 'conn.title', 'settings': section_connection, 'condition': env.WITH_CONNECTION },
     {'text': 'printer', 'label': 'printer.title', 'settings': section_printer },
     {'text': 'user', 'label': 'user.title', 'settings': section_user },
-    {'text': 'serial number', 'label': 'serial.title', 'settings': section_serial },
+    {'text': 'serial number', 'label': 'serial.title', 'settings': section_serial, 'condition': env.WITH_SERIAL },
     {'text': 'logs', 'label': 'logs.title', 'settings': section_logs, 'condition': env.WITH_LOGS }
   ]
 %}

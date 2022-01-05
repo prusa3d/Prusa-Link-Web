@@ -9,7 +9,7 @@
 {%
   set menu_dict = {
     "link-home": {"text": "Dashboard", label: "home.link", path: "#dashboard" },
-    "link-proj": {"text": "Projects", label: "proj.link", path: "#projects" },
+    "link-proj": {"text": "Projects", label: "proj.link", path: "#projects", condition: env.WITH_PROJECTS },
     "link-temp": {"text": "Temperatures", label: "temps.title", path: "#temperature" },
     "link-ctrl": {"text": "Control", label: "control.link", path: "#control", condition: env.WITH_CONTROLS },
     "link-sett": {"text": "Settings", label: "settings.title", path: "#settings", condition: env.WITH_SETTINGS }
