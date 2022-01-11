@@ -10,7 +10,7 @@ if (process.env.PRINTER_CODE == "m1") {
   import("./m1-styles.css");
 }
 import "./layout";
-import { navigate } from "./router.js";
+import { navigate, navigateShallow } from "./router.js";
 import printer from "./printer";
 import { getJson, initAuth } from "./auth.js";
 import { initMenu } from "./printer/components/menu";
@@ -93,15 +93,8 @@ window.onload = () => {
 
   document.querySelectorAll("a[href]").forEach((link) => {
     link.addEventListener("click", (e) => {
-      if (navigate(link.href)) {
-        const hostnameLabel = document.getElementById("title-hostname").innerHTML;
-        document.title =
-          hostnameLabel + " - " +
-          (link.innerText.trim() || process.env.APP_NAME) +
-          " - " + process.env.APP_NAME;
-        history.pushState(null, document.title, link.href);
+      if (navigate(link.href))
         e.preventDefault();
-      }
     });
   });
 
@@ -153,8 +146,8 @@ async function appLoop(version) {
 
 function init(responses) {
   printer.init(responses);
-  window.onpopstate = (e) => e && navigate(e.currentTarget.location.hash);
-  navigate(window.location.hash || "#dashboard");
+  window.onpopstate = (e) => e && navigateShallow(e.currentTarget.location.hash || "#dashboard");
+  navigateShallow(window.location.hash || "#dashboard");
 }
 
 function update(responses) {

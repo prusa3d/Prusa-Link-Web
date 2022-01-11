@@ -1,6 +1,6 @@
 # Changelog
 
-## 2022-01-13 (3.7.0)
+## 2022-01-11 (3.7.0)
 
 * Fix upload widget toggles on interaction with projects list
 * Add `WITH_PROJECTS` config parameter
@@ -10,6 +10,7 @@
 * Add `WITH_SERIAL` config parameter
 * Fix sidebar width
 * Replace PNG icons with SVG
+* Fix router, telemetry graph dinmensions and page layout
 
 ## 2022-01-13 (3.6.0)
 

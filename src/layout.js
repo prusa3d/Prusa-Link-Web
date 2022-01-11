@@ -26,7 +26,7 @@ const updateTelemetryPosition = () => {
   }
 
   const rect = elm.getBoundingClientRect();
-  const topOffset = 100;
+  const topOffset = 87;
 
   if (window.innerHeight > (rect.height + topOffset)) {
     elm.style.position = "sticky";
