@@ -407,13 +407,13 @@ nav .burger-icon.burger-open {
   display: none;
 }
 
-.temp {
-  display: contents;
+#graph {
+  position: relative;
 }
 .temp-svg {
   pointer-events: all;
-  width: 95%;
-  height: auto;
+  position: absolute;
+  inset: 0 2.5%;
 }
 .temp-g-label {
   max-width: 100%;

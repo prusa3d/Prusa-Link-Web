@@ -3,7 +3,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import { translate } from "../../locale_provider.js";
-import { navigate } from "../../router.js";
+import { navigate, navigateShallow } from "../../router.js";
 
 const question = {};
 
@@ -15,7 +15,7 @@ const cleanQuestion = () => {
   question.questionChildren = null;
   question.yes = null;
   question.no = null;
-  navigate(question.next);
+  navigateShallow(question.next);
 };
 
 /**
@@ -38,7 +38,7 @@ export const doQuestion = (data) => {
   for (let q in newQuestion) {
     question[q] = newQuestion[q];
   }
-  navigate("#question");
+  navigateShallow("#question");
 };
 
 /**
@@ -66,7 +66,7 @@ export const load = () => {
     action.querySelector("p").innerHTML = question[actionName + "Text"];
     action.addEventListener("click", (e) => {
       e.stopPropagation();
-      navigate("#loading");
+      navigateShallow("#loading");
       func(cleanQuestion);
     });
   }

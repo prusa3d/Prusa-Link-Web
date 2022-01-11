@@ -8,7 +8,7 @@ import upload from "../components/upload";
 import { getJson, getImage } from "../../auth.js";
 import { getValue } from "./updateProperties.js";
 import { handleError } from "./errors";
-import { navigate } from "../../router.js";
+import { navigateShallow } from "../../router.js";
 import { translate, translateLabels } from "../../locale_provider.js";
 import { deleteProject, downloadProject } from "./projectActions.js";
 import printer from "../index";
@@ -75,7 +75,7 @@ const updateData = () => {
         metadata.eTag = result.eTag;
         metadata.firstTime = false;
         if (window.location.hash === "#projects") {
-          navigate("#projects");
+          navigateShallow("#projects");
         }
       }
     })
@@ -88,7 +88,7 @@ const updateData = () => {
  */
 export const update = (context) => {
   if (metadata.firstTime) {
-    navigate("#loading");
+    navigateShallow("#loading");
   }
   updateData();
   job.update(context);

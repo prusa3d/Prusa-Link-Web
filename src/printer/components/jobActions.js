@@ -6,7 +6,7 @@ import { doQuestion } from "./question";
 import { getJson } from "../../auth";
 import { handleError } from "./errors";
 import { modal } from "./modal";
-import { navigate } from "../../router.js";
+import { navigate, navigateShallow } from "../../router.js";
 import { translate } from "../../locale_provider";
 
 
@@ -54,7 +54,7 @@ export const pauseJob = () => {
  */
  export const cancelJob = () => {
   const page = window.location.hash;
-  navigate("#loading");
+  navigateShallow("#loading");
   doQuestion({
     title: translate("btn.cancel"),
     questionChildren: translate("msg.cancel"),
@@ -84,8 +84,7 @@ export const pauseJob = () => {
     event.preventDefault();
     confirmJob().then(() => {
       close();
-      if (navigate("#dashboard"))
-        history.pushState(null, document.title, "#dashboard");
+      navigate("#dashboard");
     });
   });
   const noButton = node.getElementById("no");

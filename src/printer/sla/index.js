@@ -28,7 +28,7 @@ const updateHostname = (obj) => {
   const newHostname = () => {
     const hostnameLabel = document.getElementById("title-hostname");
     if (hostnameLabel) {
-      hostnameLabel.innerHTML = (context.version?.hostname || "localhost");
+      hostnameLabel.innerHTML = getHostname();
     }
   };
   const load = obj.load;
@@ -38,6 +38,11 @@ const updateHostname = (obj) => {
   };
   return obj;
 };
+
+const getHostname = () => context.version?.hostname || "localhost";
+const buildTitle = (title) => getHostname() + " - " +
+  (title.trim() || process.env.APP_NAME) +
+  " - " + process.env.APP_NAME;
 
 const updatePrinterStatus = (state) => {
   if (state) {
@@ -68,11 +73,13 @@ const sla = {
       path: "dashboard",
       html: require("../../views/dashboard.html"),
       module: updateHostname(dashboard),
+      getTitle: () => buildTitle(translate("home.link")),
     },
     {
       path: "temperature",
       html: require("../../views/temperature.html"),
       module: updateHostname(temperature),
+      getTitle: () => buildTitle(translate("temps.title")),
     },
     {
       path: "question",
@@ -96,6 +103,7 @@ const sla = {
         path: "projects",
         html: require("../../views/projects.html"),
         module: updateHostname(projects),
+        getTitle: () => buildTitle(translate("proj.link")),
       }
       : null,
     process.env.WITH_SETTINGS ?
@@ -103,6 +111,7 @@ const sla = {
         path: "settings",
         html: require("../../views/settings.html"),
         module: updateHostname(require("../components/settings.js").default),
+        getTitle: () => buildTitle(translate("settings.title")),
       }
       : null,
     process.env.WITH_CONTROLS ?
@@ -110,6 +119,7 @@ const sla = {
         path: "control",
         html: require("../../views/control.html"),
         module: updateHostname(require("../components/control.js").default),
+        getTitle: () => buildTitle(translate("control.link")),
       } : null,
   ].filter(route => route != null),
   init: ({ version, printer, connection }) => {
