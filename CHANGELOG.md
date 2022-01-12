@@ -1,5 +1,10 @@
 # Changelog
 
+## 2022-01-13 (3.6.0)
+
+* Add stop/resume print button
+* Add protection from steppers disabling when printing
+
 ## 2021-12-16 (3.5.1)
 
 * Fix big log files displaying

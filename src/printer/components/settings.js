@@ -156,10 +156,10 @@ function updatePrusaConnectStatus(data) {
   const statusElm = document.getElementById("conn-prusa-connect-status");
   const msgElm = document.getElementById("conn-prusa-connect-status-msg");
 
-  const { hostname, port, tls } = data.connect;
+  const { hostname, tls } = data.connect;
   const { ok, message } = data.states.connect;
   const protocol = tls ? 'http' : 'https'
-  const port = port ? `:${port}` : '' // 0 = protocol default port
+  const port = data.connect.port ? `:${data.connect.port}` : '' // 0 = protocol default port
   const customMessage =  `(${protocol}://${hostname}${port})`;
 
   updateConnectionStatus(statusElm, msgElm, ok, message, customMessage);

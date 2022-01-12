@@ -37,6 +37,7 @@ const update = (context) => {
     telemetry: context.printer.telemetry,
     job: context.current,
   });
+  updateDisableSteppersBtn(context.printer.state);
 }
 
 function initButtons() {
@@ -52,6 +53,14 @@ function initDisableSteppersBtn() {
       disableSteppers()
         .catch((result) => handleError(result));
     };
+}
+
+function updateDisableSteppersBtn(state) {
+  const btn = document.querySelector("#control #disable-steppers");
+  if (btn) {
+    const disabled = state.flags.printing || state.flags.pausing || state.flags.paused;
+    setDisabled(btn, disabled);
+  }
 }
 
 function initExtrudeBtn() {
