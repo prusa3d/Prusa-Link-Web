@@ -8,7 +8,7 @@
 <div id="upld">
   <div class="tab" data-tab="direct" opened="false">
     <div class="tab-header" data-tab="direct">
-        <img class="icon" src="{{ env.TPL_ASSETS_PATH }}/prusa-link-favicon.svg"/>
+        <img class="icon" src="{{ pre.countOrRenderAssets('prusa-link-favicon.svg') | safe }}"/>
       <p
         class="txt-black txt-size-2 txt-bold txt-uppercase"
         data-label="upld.direct.title"
@@ -31,7 +31,7 @@
   {% if env.WITH_REMOTE_UPLOAD %}
     <div class="tab" data-tab="remote" opened="false">
       <div class="tab-header" data-tab="remote">
-        <img class="icon" src="{{ env.TPL_ASSETS_PATH }}/remote_url.svg"/>
+        <img class="icon" src="{{ pre.countOrRenderAssets('remote_url.svg') | safe }}"/>
         <p
           class="txt-black txt-size-2 txt-bold txt-uppercase"
           data-label="upld.remote.title"
@@ -54,7 +54,7 @@
 
   <div class="tab" data-tab="slicer" opened="false">
     <div class="tab-header" data-tab="slicer">
-      <img class="icon" src="{{ env.TPL_ASSETS_PATH }}/prusaslicer-logo.svg"/>
+      <img class="icon" src="{{ pre.countOrRenderAssets('prusaslicer-logo.svg') | safe }}"/>
       <p
         class="txt-black txt-size-2 txt-bold txt-uppercase"
         data-label="upld.slicer.title"

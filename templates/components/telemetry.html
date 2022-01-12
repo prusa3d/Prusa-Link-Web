@@ -56,7 +56,7 @@
     {% endfor %}
 
     <div class="tel-prop">
-      <img class="icon" src="{{ env.TPL_ASSETS_PATH }}/prusa-link-favicon.svg">
+      <img class="icon" src="{{ pre.countOrRenderAssets('prusa-link-favicon.svg') | safe }}">
       <div class="value">
         <p class="txt-size-2 txt-grey" data-label="home.title">Printer status</p>
         <p id="printer-status" class="txt-bold txt-size-2">NA</p>
