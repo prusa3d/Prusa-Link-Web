@@ -107,7 +107,7 @@ function updateJob(context) {
   if (loading) {
     showLoading();
   }
-  
+
   metadata.lastPrintingResult = context.current.state === "Printing"
     ? context.current
     : metadata.lastPrintingResult;
@@ -319,6 +319,7 @@ function setupButtons(context, jobResult) {
   }
 
   if (process.env.PRINTER_TYPE === "fdm") {
+    setupPauseButton(state, "#job #pause");
     setupPausingButton(state);
     setupResumeButton(state);
   }
