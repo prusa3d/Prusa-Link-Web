@@ -11,6 +11,7 @@
 * Fix sidebar width
 * Replace PNG icons with SVG
 * Fix router, telemetry graph dinmensions and page layout
+* Fix connection status restoration on Prusa Mini
 
 ## 2022-01-13 (3.6.0)
 
