@@ -4,7 +4,8 @@ import { translate } from "../../locale_provider";
 /** Updates connection status in telemetry. */
 const updateConnectionStatus = ({ connection, isConnected }) => {
   if (isConnected) {
-    const states = connection?.states;
+    const states = connection?.states || {"printer": {"ok": true, "message": ""}};
+
     for (const name in states) {
       const { ok, message } = states[name];
       const msgElm = document.getElementById(`conn-status-${name}-msg`);
