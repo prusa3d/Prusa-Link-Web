@@ -89,6 +89,7 @@ function canEditMetadata(path) {
 function updateJob(context) {
   if (!context?.current?.job?.file) {
     console.error("No job file was provided!");
+    hideLoading();
     return;
   }
 
