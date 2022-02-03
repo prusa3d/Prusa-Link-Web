@@ -15,11 +15,9 @@ import printer from "./printer";
 import { getJson, initAuth } from "./auth.js";
 import { initMenu } from "./printer/components/menu";
 import { translate, translateLabels } from "./locale_provider";
-import { handleError, pauseErrorHandling, unpauseErrorHandling } from "./printer/components/errors";
+import { handleError } from "./printer/components/errors";
 
 const UPDATE_INTERVAL = process.env.UPDATE_INTERVAL;
-let appErrorTimestamp = 0;
-const APP_ERROR_INTERVAL = 60_000; // ms
 let connectionProblem = false;
 
 /** Contains setup for global api requests.
@@ -88,6 +86,7 @@ async function getRequests(initialized) {
 }
 
 window.onload = () => {
+  console.log(`${process.env.APP_NAME} v.${process.env.APP_VERSION}`);
   initMenu();
   translateLabels(); // Translate menu and telemetry
 
@@ -110,7 +109,6 @@ async function appLoop(version) {
   while (true) {
     try {
       const responses = await getRequests(initialized);
-      unpauseErrorHandling();
       connectionProblem = false;
 
       if (initialized) {
@@ -127,15 +125,7 @@ async function appLoop(version) {
           initAuth();
         }
       } else {
-        if (!connectionProblem) {
-          handleError(result, {
-            fallbackMessage: {
-              title: "API error",
-              message: "Cannot connect to printer",
-            },
-          });
-        }
-        pauseErrorHandling();
+        handleApiError(result);
         connectionProblem = true;
       }
     }
@@ -145,24 +135,37 @@ async function appLoop(version) {
 }
 
 function init(responses) {
-  printer.init(responses);
-  window.onpopstate = (e) => e && navigateShallow(e.currentTarget.location.hash || "#dashboard");
-  navigateShallow(window.location.hash || "#dashboard");
+  try {
+    printer.init(responses);
+    window.onpopstate = (e) => e && navigateShallow(e.currentTarget.location.hash || "#dashboard");
+    navigateShallow(window.location.hash || "#dashboard");
+  } catch (error) {
+    handleAppError(error);
+  }
 }
 
 function update(responses) {
   try {
     printer.update(responses);
   } catch (error) {
-    const timestamp = new Date().getTime();
-    if (timestamp > appErrorTimestamp) {
-      appErrorTimestamp = timestamp + APP_ERROR_INTERVAL;
-      handleError(error, {
-        fallbackMessage: {
-          title: "Application error",
-          message: "Something bad happened on application side",
-        },
-      });
-    }
+    handleAppError(error);
   }
+}
+
+function handleApiError(result) {
+  handleError(result, {
+    fallbackMessage: {
+      title: "API error",
+      message: "Cannot connect to printer",
+    },
+  });
+}
+
+function handleAppError(result) {
+  handleError(result, {
+    fallbackMessage: {
+      title: "Application error",
+      message: "Something bad happened on application side",
+    },
+  });
 }

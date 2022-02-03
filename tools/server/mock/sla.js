@@ -79,7 +79,7 @@ class PrinterSLA extends Printer {
       fanUvLed: this.isPrinting ? Math.random() * 1000 : 0,
       fanBlower: this.isPrinting ? Math.random() * 1000 : 0,
       fanRear: this.isPrinting ? Math.random() * 1000 : 0,
-      coverClosed: false,
+      coverClosed: true,
     };
 
     return printerStatus;

@@ -3,6 +3,12 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 const toast_context = document.getElementById("prusa-toast");
+const timeouts = {
+  "info": 10_500,
+  "success": null,
+  "warning": 10_500,
+  "error": null,
+};
 
 /**
  * Create a toast element
@@ -21,54 +27,71 @@ export const createToast = (title, message, type) => {
 };
 
 /**
+ * Create and show toast
+ * @param {{
+ *  title: string,
+ *  message: string,
+ *  type: "info" | "success" | "warning" | "error",
+ *  onClose: () => void,
+ * }}
+ */
+function show({ title, message, type, onClose }) {
+  const article = createToast(title, message, type);
+  const close = () => {
+    toast_context.removeChild(article);
+    onClose?.();
+  };
+
+  article.querySelector("span").addEventListener("click", (e) => {
+    e.preventDefault();
+    close();
+  });
+
+  const timeout = timeouts[type];
+  if (timeout)
+    setTimeout(close, timeout);
+
+  toast_context.appendChild(article);
+}
+
+/**
  * Create and show a info toast
  * @param {string} title
  * @param {string} message
+ * @param {() => void | undefined} onClose
  */
-export function info(title, message, type = "") {
-  const article = createToast(title, message, type);
-  article.querySelector("span").addEventListener("click", (e) => {
-    e.preventDefault();
-    article.style.display = "none";
-  });
-
-  setTimeout(() => {
-    toast_context.removeChild(article);
-  }, 10500);
-  toast_context.appendChild(article);
+export function info(title, message, onClose) {
+  show({ type: "info", title, message, onClose });
 }
 
 /**
  * Create and show a warning toast
  * @param {string} title
  * @param {string} message
+ * @param {() => void | undefined} onClose
  */
-export function warning(title, message) {
-  info(title, message, "warning");
+export function warning(title, message, onClose) {
+  show({ type: "warning", title, message, onClose });
 }
 
 /**
  * Create and show a success toast
  * @param {string} title
  * @param {string} message
+ * @param {() => void | undefined} onClose
  */
-export function success(title, message) {
-  info(title, message, "success");
+export function success(title, message, onClose) {
+  show({ type: "success", title, message, onClose });
 }
 
 /**
  * Create and show a error toast
  * @param {string} title
  * @param {string} message
+ * @param {() => void | undefined} onClose
  */
-export function error(title, message) {
-  const article = createToast(title, message, "error");
-  article.querySelector("span").addEventListener("click", (e) => {
-    e.preventDefault();
-    toast_context.removeChild(article);
-  });
-
-  toast_context.appendChild(article);
+export function error(title, message, onClose) {
+  show({ type: "error", title, message, onClose });
 }
 
 export default { info, warning, success, error };

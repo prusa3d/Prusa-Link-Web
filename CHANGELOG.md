@@ -1,5 +1,11 @@
 # Changelog
 
+## 2022-02-03 (3.7.1)
+* Update error handling to avoid duplicates of popups
+* Fix remote upload for SL1
+* Fix inversed cover state for SL1
+* Add FE version output to console log
+
 ## 2022-01-11 (3.7.0)
 
 * Fix upload widget toggles on interaction with projects list

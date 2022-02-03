@@ -230,8 +230,7 @@ nav .burger-icon.burger-open {
 }
 .content-wrapper {
   display: flex;
-  flex-direction: row;
-  align-items: start;
+  flex-direction: column;
 }
 .main {
   display: block;

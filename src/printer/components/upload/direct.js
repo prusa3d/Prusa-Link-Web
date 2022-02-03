@@ -70,7 +70,7 @@ const uploadFile = (file, origin, path, print) => {
   uploadRequest(url, data, {
     onProgress: (progress) => onProgressChanged(progress.percentage)
   }).then(result => onUploadSuccess(file.name))
-    .catch(result => onUploadError(result))
+    .catch(result => onUploadError(file.name, result))
     .finally(() => reset());
 }
 
@@ -85,12 +85,12 @@ function onUploadSuccess(fileName) {
   success(title, message);
 }
 
-function onUploadError(result) {
+function onUploadError(fileName, result) {
   if (result) {
     handleError(result);
   } else {
     const title = translate("ntf.error");
-    const message = translate("ntf.upld-unsuc", { file_name: file.name });
+    const message = translate("ntf.upld-unsuc", { file_name: fileName });
     error(title, message);
   }
 }
