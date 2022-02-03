@@ -2,19 +2,9 @@
 // Copyright (C) 2021 Prusa Research a.s. - www.prusa3d.com
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-import { getJson } from "../../auth";
 import { error, warning } from "./toast";
 
-let last_error = [null, null];
-let paused = false;
-
-export function pauseErrorHandling() {
-  paused = true;
-}
-
-export function unpauseErrorHandling() {
-  paused = false;
-}
+let reports = {};
 
 /**
  * common interface for handling errors from requests
@@ -23,10 +13,8 @@ export function unpauseErrorHandling() {
  */
 export function handleError(result, options) {
   if (process.env.MODE == "development") {
-    console.error("Handle error", result);
+    console.warn("Handle error", result);
   }
-  if (paused)
-    return;
 
   let title = result?.data?.title
     || options?.fallbackMessage?.title
@@ -38,7 +26,6 @@ export function handleError(result, options) {
 
   if (result?.data) {
     const data = result.data;
-    last_error[0] = data.code || 0;
     if (data.code) {
       title += `- ${data.code}`;
       if (`${data.code}`[3] == "7")
@@ -48,28 +35,16 @@ export function handleError(result, options) {
       message += `<br/><a href="${data.url}" target="_blank">more info</a>`;
   }
 
+  const id = result?.data?.code || `${title}\n${message}`;
+  if (reports[id])
+    return;
+
+  reports[id] = true;
+  const onClose = () => reports[id] = false;
+
   if (isWarning) {
-    warning(title, message);
+    warning(title, message, onClose);
   } else {
-    error(title, message);
+    error(title, message, onClose);
   }
-}
-
-export function checkErrors() {
-  return getJson("/api/printer/error").then(({ data, ...others }) => {
-    const code = data.code;
-    if (
-      code &&
-      last_error.indexOf(code) < 0 &&
-      sessionStorage.getItem("error_seen") != code
-    ) {
-      last_error[1] = code;
-      sessionStorage.setItem("error_seen", code);
-      handleError({ data });
-    }
-
-    if (!code) {
-      sessionStorage.removeItem("error_seen");
-    }
-  });
 }
