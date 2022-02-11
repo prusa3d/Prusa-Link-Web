@@ -184,7 +184,7 @@ function updateComponent(context) {
     setupThumbnail(thumbnail.url);
   }
 
-  hideNaProperties();
+  hideNaProperties(state);
 
   if (thumbnail.ready && state.text !== "Busy") {
     hideLoading();
@@ -281,7 +281,7 @@ function setupProperties(state) {
   }
 }
 
-function hideNaProperties() {
+function hideNaProperties(state) {
   const naValue = translate("prop.na");
 
   document.getElementById("job").querySelectorAll(".job-details .job-prop").forEach(section => {
@@ -297,6 +297,11 @@ function hideNaProperties() {
 
     if (process.env.PRINTER_TYPE === "sla")
       setHidden(document.getElementById("pnt-time-est"), true)
+
+    if (process.env.PRINTER_TYPE === "sla" && section.id === "file-last-mod" && ["Busy", "Printing"].includes(state.text)) {
+      hidden = true;
+    }
+      
 
     setHidden(section, hidden);
   })
