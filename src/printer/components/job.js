@@ -386,11 +386,12 @@ function setupSlaResumeButton(state, selector) {
     setVisible(btn, state.flags.paused);
 
 
-  if (btn && !btn.onclick) {
-    if (state.text == "Feed me" && !selector.includes("#back"))
+  if (btn) {
+    if (state.text == "Feed me" && !selector.includes("#back")) {
       btn.onclick = resinRefill;
-    else
+    } else {
       btn.onclick = resumeJob;
+    }
   }
 }
 
