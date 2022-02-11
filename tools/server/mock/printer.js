@@ -356,6 +356,7 @@ class Printer {
           color: "default",
           current: true,
           default: true,
+          projectExtensions: this.projectExtensions(),
           resource:
             req.protocol +
             "://" +

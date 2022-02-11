@@ -44,6 +44,10 @@ class PrinterFDM extends Printer {
     return node;
   }
 
+  projectExtensions() {
+    return [".gcode"]
+  }
+
   uploadProject(options) {
     if (!options.path) {
       const root = this.files.files;
