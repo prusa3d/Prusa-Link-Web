@@ -1,5 +1,12 @@
 # Changelog
 
+## 2022-02-11 (3.8.0)
+* Add support for file extensions provided by printer profiles from API
+* Fix display names of origins
+* SLA: Hide USB when empty
+* SLA: Fix resinrefill command
+* SLA: Remove properties from job widget that are not on display
+
 ## 2022-02-03 (3.7.1)
 * Update error handling to avoid duplicates of popups
 * Fix remote upload for SL1
