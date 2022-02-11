@@ -105,6 +105,7 @@
     },
     {
       icon: 'calendar.svg',
+      id: "file-last-mod",
       data: [
         {
           text: 'Last Modified',
@@ -117,6 +118,7 @@
     },
     {
       icon: 'status_filament.svg',
+      printerType: 'fdm',
       data: [
         {
           text: 'Material',
@@ -129,6 +131,7 @@
     },
     {
       icon: '',
+      printerType: 'fdm',
       data: [
         {
           text: "File Size",
@@ -144,7 +147,12 @@
 
 {% for prop in props %}
   {% if not prop.printerType or prop.printerType == env.PRINTER_TYPE %}
-    <div class="job-prop">
+    <div
+      class="job-prop"
+      {% if prop.id %}
+        id="{{prop.id}}"
+      {% endif %}
+    >
       <div class="icon">
         {% if prop.icon %}
           <img src="{{ pre.countOrRenderAssets(prop.icon) | safe }}" />
