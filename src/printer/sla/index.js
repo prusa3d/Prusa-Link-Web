@@ -22,6 +22,8 @@ const context = {
   current: undefined,
   /** Result of `api/connection`. */
   connection: undefined,
+  /** Supported project file extensions*/
+  projectExtensions: [],
 };
 
 const updateHostname = (obj) => {
@@ -122,10 +124,11 @@ const sla = {
         getTitle: () => buildTitle(translate("control.link")),
       } : null,
   ].filter(route => route != null),
-  init: ({ version, printer, connection }) => {
+  init: ({ version, printer, profiles, connection }) => {
     context.version = version;
     context.printer = printer?.data;
     context.connection = connection?.data;
+    context.projectExtensions = profiles?.data.profiles[0]?.projectExtensions || process.env.PROJECT_EXTENSIONS
     document.title = version.hostname + " - " + process.env.APP_NAME;
     initTemperatureGraph();
   },

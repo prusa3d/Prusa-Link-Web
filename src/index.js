@@ -37,6 +37,11 @@ const requests = {
     init: true,
     update: true
   },
+  profiles: {
+    get: () => getJson("/api/printerprofiles"),
+    init: true,
+    update: false
+  },
   job: {
     get: () => getJson("/api/job"),
     init: false,

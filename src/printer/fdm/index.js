@@ -112,6 +112,7 @@ const fdm = {
     context.version = version;
     context.printer = printer?.data;
     context.connection = connection?.data;
+    context.projectExtensions = process.env.PROJECT_EXTENSIONS;
     document.title = version.hostname + " - " + process.env.APP_NAME;
     initTemperatureGraph();
   },
