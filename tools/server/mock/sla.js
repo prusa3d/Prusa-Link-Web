@@ -68,6 +68,10 @@ class PrinterSLA extends Printer {
     return jobSLA;
   }
 
+  projectExtensions() {
+    return [".sl1s"]
+  }
+
   onUpdate() {
     const printerStatus = super.onUpdate();
     const temperatures = printerStatus.temperature;
