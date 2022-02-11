@@ -35,24 +35,28 @@ const metadata = {
 const getInitialMetadataFiles = (data) => {
   if (process.env.PRINTER_TYPE === "fdm") {
     return data.files;
-  } else {
-    return [
-      {
-        name: "local",
-        origin: "local",
-        path: "/local",
-        type: "folder",
-        children: data.files.filter((elm) => elm.origin === "local"),
-      },
-      {
-        name: "sdcard",
-        origin: "sdcard",
-        path: "/sdcard",
-        type: "folder",
-        children: data.files.filter((elm) => elm.origin === "sdcard"),
-      },
-    ];
   }
+
+  let files = [{
+    name: "local",
+    display: "Local",
+    origin: "local",
+    path: "/local",
+    type: "folder",
+    children: data.files.filter((elm) => elm.origin === "local"),
+  }];
+  let usb_files = data.files.filter((elm) => elm.origin === "sdcard");
+  if (usb_files.length > 0) {
+    files.push({
+      name: "sdcard",
+      display: "USB",
+      origin: "sdcard",
+      path: "/sdcard",
+      type: "folder",
+      children: usb_files,
+    });
+  }
+  return files;
 }
 
 /**
@@ -120,7 +124,7 @@ export function load(context) {
     initUpload(context);
 
   if (metadata.current_path.length > 0) {
-    let view = metadata.files.find((elm) => elm.name === metadata.current_path[0]).children;
+    let view = metadata.files.find((elm) => elm.origin === metadata.current_path[0]).children;
     for (let i = 1; i < metadata.current_path.length; i++) {
       let path = metadata.current_path[i];
       view = view.find((elm) => elm.name === path).children;
@@ -143,7 +147,7 @@ export function load(context) {
     if (metadata.files.length) {
       for (let file of metadata.files) {
         if (file.type === "folder") {
-          projects.appendChild(createFolder(file.name, joinPaths(file.path), file.origin));
+          projects.appendChild(createFolder(file.display || file.name, joinPaths(file.path), file.origin));
         } else {
           projects.appendChild(createFile(file));
         }
