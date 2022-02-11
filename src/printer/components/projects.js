@@ -95,10 +95,10 @@ export const update = (context) => {
   upload.update();
 };
 
-function initUpload() {
+function initUpload(context) {
   const origin = metadata.origin;
   const path = joinPaths(getCurrentPath());
-  upload.init(origin, path);
+  upload.init(origin, path, context?.projectExtensions);
 }
 
 /**
@@ -115,7 +115,9 @@ export function load(context) {
 
   if (metadata.current_path.length === 0)
     metadata.origin = "local";
-  initUpload();
+
+  if (context)
+    initUpload(context);
 
   if (metadata.current_path.length > 0) {
     let view = metadata.files.find((elm) => elm.name === metadata.current_path[0]).children;

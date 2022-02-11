@@ -4,6 +4,7 @@ module.exports = (env, args) => {
     const config = {
         PRINTER_NAME: "Original Prusa SL1/S",
         PRINTER_TYPE: "sla",
+        PROJECT_EXTENSIONS: [".sl1", ".sl1s"],
 
         WITH_PROJECTS: true,
         WITH_SETTINGS: false,

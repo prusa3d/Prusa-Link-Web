@@ -9,8 +9,8 @@ import TabsController from "./tabs";
 const remote = process.env.WITH_REMOTE_UPLOAD ? require("./remote").default : null;
 const tabs = new TabsController();
 
-function init(origin="local", path="") {
-  direct.init(origin, path);
+function init(origin="local", path="", projectExtensions) {
+  direct.init(origin, path, projectExtensions);
   remote?.init(origin, path);
   slicer.init();
 
