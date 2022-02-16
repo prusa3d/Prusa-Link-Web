@@ -32,7 +32,7 @@ const config = {
   },
   exposureUserProfile: {
     text: translate("exp-times.profile"),
-    limit: [0, 1],
+    limit: [0, 2],
     step: 1,
   },
 };
@@ -45,11 +45,21 @@ const setValue = (item_name, value, min, max, step) => {
       const newValue = parseInt(value.dataset.value) + step;
       if (min <= newValue && newValue <= max) {
         value.dataset.value = newValue;
-        if (item_name == "exposureUserProfile")
-          value.innerHTML =
-            value.dataset.value == 1
-              ? translate("exp-times.slower")
-              : translate("exp-times.faster");
+        if (item_name == "exposureUserProfile") {
+            switch(parseInt(value.dataset.value)) {
+            case 0:
+                value.innerHTML = translate("exp-times.faster");
+                break;
+            case 1:
+                value.innerHTML = translate("exp-times.slower");
+                break;
+            case 2:
+                value.innerHTML = translate("exp-times.superslow")
+                break;
+            default:
+                value.innerHTML = translate("exp-times.faster")
+            }
+        }
         else value.innerHTML = (newValue / 1000).toFixed(1);
       }
     }
@@ -80,10 +90,19 @@ const setUpElements = (file, elements, div) => {
       const value = elm.getElementById("value");
       value.dataset.value = file[expo].toFixed(0);
       if (expo == "exposureUserProfile") {
-        value.innerHTML =
-          file[expo] == 1
-            ? translate("exp-times.slower")
-            : translate("exp-times.faster");
+        switch(parseInt(file[expo])) {
+            case 0:
+                value.innerHTML = translate("exp-times.faster");
+                break;
+            case 1:
+                value.innerHTML = translate("exp-times.slower");
+                break;
+            case 2:
+                value.innerHTML = translate("exp-times.superslow")
+                break;
+            default:
+                value.innerHTML = translate("exp-times.faster")
+            }
         minus.style.display = "none";
         plus.style.display = "none";
         minus = elm.getElementById("previous");
