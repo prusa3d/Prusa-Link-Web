@@ -21,7 +21,7 @@ echo "Target is ${target}@${ip}"
 
 echo "Building"
 rm -fr dist/*
-npm run dev:${target}
+npm run build:${target}
 
 echo "Removing remote web"
 ssh root@${ip} "find /srv/http/${target}/* -exec rm -fr {} \; 2>/dev/null"
