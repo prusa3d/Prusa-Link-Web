@@ -2,8 +2,7 @@ openapi: 3.0.1
 info:
   title: Prusa Link Web
   description:
-    This is a printer connect webservice. It is compatible with another 3D
-    printer services, so many applications which use this service
+    This is a printer connect webservice.
   contact:
     email: developer@prusa3d.cz
   license:
@@ -16,870 +15,64 @@ externalDocs:
 security:
   - ApiKeyAuth: [developer]
 paths:
-  /api/version:
+  /api/v1.0/info:
     get:
-      summary: version informations
-      parameters:
-        - in: query
-          name: system
-          required: false
-          description: If system versions must be returned.
-          schema:
-            type: boolean
-            default: false
+      summary: printer informations
       responses:
         200:
           description: OK
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  api:
-                    type: string
-                    example: "0.1"
-                  server:
-                    type: string
-                    example: "1.1.0"
-                    description: "Firmware on Prusa-Link version"
-                  text:
-                    type: string
-                    example: "Prusa SLA SL1 1.0.5"
-                  hostname:
-                    type: string
-                    example: "prusa-sl1"
-                  firmware:
-                    type: string
-                    description: "Firmaware version"
-                    example: "3.10.0"
-                  sdk:
-                    type: string
-                    example: "0.2.0"
-                  python:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        name:
-                          type: string
-                          example: "urllib3"
-                        version:
-                          type: string
-                          example: "1.26.1"
-                        path:
-                          type: string
-                          example: "/usr/lib/python3/dist-packages"
-                  system:
-                    type: object
-                    properties:
-                      python:
-                        type: string
-                      DESCRIPTION:
-                        type: string
-                      ID:
-                        type: string
-                        example: "Raspbian"
-                      OS:
-                        type: string
-                        example: "GNU/Linux"
-  /api/connection:
+                $ref: "#/components/schemas/Info"
+        403:
+          $ref: "#/components/responses/Unauthorized"
+  
+  /api/v1.0/telemetry:
     get:
-      summary: Retrieve a mock for current connection settings.
+      summary: printer telemetry
       responses:
         200:
           description: OK
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  current:
-                    $ref: "#/components/schemas/ConnCurrent"
-                  options:
-                    $ref: "#/components/schemas/ConnOptions"
-                  connect:
-                    $ref: "#/components/schemas/ConnConfig"
-                  states:
-                    $ref: "#/components/schemas/ConnStates"
-
+                $ref: "#/components/schemas/Telemetry"
         403:
           $ref: "#/components/responses/Unauthorized"
-    post:
-      summary: Issue a connection command
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                command:
-                  type: string
-                  default: connect
-                baudrate:
-                  type: integer
-                  default: 115200
-                port:
-                  type: string
-                  default: VIRTUAL
-                printerProfile:
-                  type: string
-                  default: _default
-                connect:
-                  type: object
-                  properties:
-                    hostname:
-                      type: string
-                      example: "dev.connect.prusa"
-                    port:
-                      type: integer
-                      default: 8080
-                    tls:
-                      type: boolean
-                      default: false
-      responses:
-        # Return 200 only, if connect is filled
-        200:
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  url:
-                    type: string
-                    example: "http://dev.connect.prusa:8080/add-printer/connect/1.3.1/AHWAXF7JZI/Shelf/Home"
-
-        204:
-          description: No Content
-        403:
-          $ref: "#/components/responses/Unauthorized"
-
-
-  /api/printerprofiles:
+                    
+  /api/v1.0/job:
     get:
-      summary: Retrive a mock of octoprinter printer profile
+      summary: information about current job
       responses:
         200:
           description: OK
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  profiles:
-                    $ref: "#/components/schemas/Profiles"
+                $ref: "#/components/schemas/Job"
         403:
           $ref: "#/components/responses/Unauthorized"
-
-  /api/printer:
-    get:
-      summary: Retrive the current printer state
-      parameters:
-        - in: query
-          name: exclude
-          description: A list of attributes to not return in the response.
-          schema:
-            type: array
-            items:
-              type: string
-      responses:
-        200:
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  temperature:
-                    $ref: "#/components/schemas/TemperatureState"
-                  sd:
-                    $ref: "#/components/schemas/SDState"
-                  state:
-                    $ref: "#/components/schemas/PrinterState"
-                  telemetry:
-                    oneOf:
-                      - $ref: "#/components/schemas/TelemetryMini"
-                      - $ref: "#/components/schemas/TelemetrySL1"
-        403:
-          $ref: "#/components/responses/Unauthorized"
-
-  /api/printer/sd:
-    get:
-      summary: Retrieves the current state of the printer’s SD card.
-      responses:
-        200:
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/SDState"
-        403:
-          $ref: "#/components/responses/Unauthorized"
-
-  /api/printer/printhead:
-    post:
-      summary: Control printhead movement in XYZ axes
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                jog:
-                  type: object
-                  properties:
-                    command:
-                      type: string
-                      example: "jog"
-                    x:
-                      type: number
-                      example: 10
-                    y:
-                      type: number
-                      example: -5
-                    z:
-                      type: number
-                      example: 0.02
-                home:
-                  type: object
-                  properties:
-                    command:
-                      type: string
-                      example: "home"
-                    axes:
-                      type: array
-                      items:
-                        type: string
-                        example: "X"
-                speed:
-                  type: object
-                  properties:
-                    command:
-                      type: string
-                      example: "speed"
-                    factor:
-                      type: number
-                      example: 105
-                feedrate:
-                  type: object
-                  properties:
-                    command:
-                      type: string
-                      example: "feedrate"
-                    factor:
-                      type: number
-                      example: 105
-                disable_steppers:
-                  type: object
-                  properties:
-                    command:
-                      type: string
-                      example: "disable_steppers"
-
-      responses:
-        204:
-          description: No error
-        400:
-          $ref: "#/components/responses/BadRequest"
-        409:
-          $ref: "#/components/responses/Conflict"
-
-  /api/printer/tool:
-    post:
-      summary: Control extruder
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                target:
-                  type: object
-                  properties:
-                    command:
-                      type: string
-                      example: "target"
-                    targets:
-                      type: object
-                      properties:
-                        tool0:
-                          type: number
-                          example: 220
-                offset:
-                  type: object
-                  properties:
-                    command:
-                      type: string
-                      example: "offset"
-                    offsets:
-                      type: object
-                      properties:
-                        tool0:
-                          type: number
-                          example: 10
-                select:
-                  type: object
-                  properties:
-                    command:
-                      type: string
-                      example: "select"
-                    tool:
-                      type: string
-                      example: "tool0"
-                extrude:
-                  type: object
-                  properties:
-                    command:
-                      type: string
-                      example: "extrude"
-                    amount:
-                      type: number
-                      example: 5
-                retract:
-                  type: object
-                  properties:
-                    command:
-                      type: string
-                      example: "extrude"
-                    amount:
-                      type: number
-                      example: -3
-                flowrate:
-                  type: object
-                  properties:
-                    command:
-                      type: string
-                      example: "flowrate"
-                    amount:
-                      type: number
-                      example: 95
-      responses:
-        204:
-          description: No error
-        400:
-          $ref: "#/components/responses/BadRequest"
-        409:
-          $ref: "#/components/responses/Conflict"
-
-  /api/printer/bed:
-    post:
-      summary: Control bed temperature
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                command:
-                  type: string
-                  example: "target"
-                target:
-                  type: number
-                  example: 75
-
-      responses:
-        204:
-          description: No error
-        400:
-          $ref: "#/components/responses/BadRequest"
-        409:
-          $ref: "#/components/responses/Conflict"
-
-  # MINI
-  # - will probably not support this endpoint.
-  # - On error sends plaintext error description in response body
-  # - On error possibly sends Content-Location header with URL to help.prusa3d.com.
-  # - PCL page /error will be ommited
-
-  # SL1
-  # - supports this endpoint
-  # - Response is dependent on Accept header in request
-  # - If no Accept header is present:
-  #   - sends plaintext error description in response body (compatibility with older slicer)
-  #   - sends Content-Location header with URL to <PCL IP>/error (in the future it may send URL to hlep.prusa3d.com)
-  # - if Accept header is present (currently supports only Accept: application/json):
-  #   - sends JSON with same content as this /api/printer/error endpoint (code, title, text, url)
-  #    sends Content-Location header with URL to <PCL IP>/error (in the future it may send URL to hlep.prusa3d.com)
-  /api/printer/error:
-    get:
-      summary: Retrive the error number and text. Not compatible with OctoPrint.
-      responses:
-        200:
-          description: Custom endpoint to get error details. Client can see if printer is in error state by polling /api/printer
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
-        403:
-          $ref: "#/components/responses/Unauthorized"
-
-  /api/job: # this should be used instead of /files/preview to determine if project was selected. If "file" object is not null, project was previously selected
-    get:
-      summary: Retrieve information about the current job (if there is one).
-      responses:
-        200:
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  job:
-                    $ref: "#/components/schemas/Job"
-                  progress:
-                    $ref: "#/components/schemas/Progress"
-                  state:
-                    $ref: "#/components/schemas/State"
-        403:
-          $ref: "#/components/responses/Unauthorized"
-        409:
-          $ref: "#/components/responses/Conflict"
-          description: File not found or wrong format.
-    post:
-      summary: Issue a job command.
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                command:
-                  type: string
-                  enum: ["start", "restart", "pause", "cancel"]
-                  default: start
-                action:
-                  type: string
-                  enum: [pause, resume]
-                  default: resume
-      responses:
-        204:
-          description: No error
-        403:
-          $ref: "#/components/responses/Unauthorized"
-        409:
-          $ref: "#/components/responses/Conflict"
-          description: If not is project, file not found or printer is printing.
-        501:
-          $ref: "#/components/responses/NotImplemented"
-          description: Unsupported command.
-
-  /api/system/commands:
-    get:
-      summary: Retrieves all configured system commands.
-      responses:
-        200:
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Commands"
-        403:
-          $ref: "#/components/responses/Unauthorized"
-
-  /api/system/commands/core/reboot:
-    post:
-      summary: Execute system reboot.
-      responses:
-        200:
-          description: OK
-          content: application/json
-        400:
-          description: BAD REQUEST
-          content: application/json
-        403:
-          $ref: "#/components/responses/Unauthorized"
-
-
-  /api/system/commands/core/restart:
-    post:
-      summary: Trigger restarting of Prusa-Link.
-      responses:
-        200:
-          description: OK
-          content: application/json
-        400:
-          description: BAD REQUEST
-          content: application/json
-        403:
-          $ref: "#/components/responses/Unauthorized"
-
-
-  /api/system/commands/core/shutdown:
-    post:
-      summary: Shutdown whole system.
-      responses:
-        200:
-          description: OK
-          content: application/json
-        400:
-          description: BAD REQUEST
-          content: application/json
-        403:
-          $ref: "#/components/responses/Unauthorized"
-
-
-  /api/system/commands/custom/changeexposure:
-    post:
-      summary: Change the exposure times
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                exposureTime: # [ms]
-                  type: integer
-                  example: 6000
-                  nullable: true
-                exposureTimeFirst: # [ms]
-                  type: number
-                  example: 30000
-                  nullable: true
-                exposureTimeCalibration: # [ms]
-                  type: number
-                  example: 30000
-                  nullable: true
-                exposureUserProfile: # [-]
-                  type: number
-                  example: 1
-                  nullable: true
-      responses:
-        204:
-          description: No error.
-
-  /api/system/commands/custom/resinrefill:
-    post:
-      summary: Update remaining resing in the printer.
-      responses:
-        204:
-          description: No error.
-
-  /api/access/users:
-    get:
-      summary: Retrieves a list of all registered users in OctoPrint. Currently just a mock.
-      responses:
-        200:
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  users:
-                    type: array
-                    items:
-                      $ref: "#/components/schemas/Users"
-        403:
-          $ref: "#/components/responses/Unauthorized"
-
-  /api/settings:
-    get:
-      summary: Returns printer settings info
-      responses:
-        200:
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  api-key:
-                    type: string
-                  printer:
-                    type: object
-                    properties:
-                      name:
-                        type: string
-                      location:
-                        type: string
-    post:
-      summary: Sets new printer and/or user settings and writes it to ini file
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                  printer:
-                    type: object
-                    properties:
-                      name:
-                        type: string
-                      location:
-                        type: string
-                  user:
-                    type: object
-                    properties:
-                      password:
-                        type: string
-                      username:
-                        type: string
-                      new_password:
-                        type: string
-                      new_repassword:
-                        type: string
-      responses:
-        200:
-          description: OK
-        400:
-          description: Bad Request
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  errors:
-                    type: object
-                    properties:
-                      printer:
-                        type: object
-                        properties:
-                          missing_credentials:
-                            type: boolean
-                      user:
-                        type: object
-                        properties:
-                          username:
-                            type: boolean
-                          password:
-                            type: boolean
-                          repassword:
-                            type: boolean
-                          old_digest:
-                            type: boolean
-                          same_digest:
-                            type: boolean
-
-  /api/settings/apikey:
-    get:
-      summary: Regenerate api key and save it to settings and config file
-      responses:
-        200:
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: object
-
-  /api/settings/sn:
-    post:
-      summary: If printer is in SN error, user can insert new SN
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                serial:
-                  type: string
-                  example: "CZPX4242X042XC42042"
-      responses:
-        200:
-          description: OK
-        400:
-          description: Bad Request
-        409:
-          description: Conflict
-        507:
-          description: Insufficient Storage
-
-  /api/downloads/{target}/{filename}:
+                  
+  /api/v1.0/files/<path>:
     parameters:
-      - in: path
-        name: target
-        required: true
-        description: The target location to which to download the file (local, sdcard).
+      - in: query
+        name: path
         schema:
           type: string
-          default: local
-          enum:
-            - local
-            - sdcard
-      - in: path
-        name: filename
-        required: true
-        description: The path within the location to download the file.
-        schema:
-          type: string
-    get:
-      summary: Download a file.
-      responses:
-        200:
-          description: OK
-          content:
-            application/octet-stream:
-              schema:
-                type: string
-                format: binary
-        403:
-          $ref: "#/components/responses/Unauthorized"
-        404:
-          $ref: "#/components/responses/NotFound"
-        415:
-          $ref: "#/components/responses/UnsupportedMediaType"
-
-  /api/download:
-    get:
-      summary: Get information about the file currently being downloaded.
-      responses:
-        200:
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  url:
-                    type: string
-                    example: "https://www.prusaprinters.org/castle.gcode"
-                  target:
-                    type: string
-                    example: "local"
-                  destination:
-                    type: string
-                    example: "/Prusa Link gcodes/castle.gcode"
-                  size:
-                    type: string
-                    example: "68073825"
-                  start_time:
-                    type: string
-                    example: "1620292282"
-                  progress:
-                    type: string
-                    example: "0.95"
-                  remaining_time:
-                    type: string
-                    example: "281.92677480085825"
-                  to_select:
-                    type: boolean
-                  to_print:
-                    type: boolean
-        204:
-          description: No Content
-        403:
-          $ref: "#/components/responses/Unauthorized"
-    delete:
-      summary: Terminate the current file download process.
-      responses:
-        204:
-          description: No Content
-                       No Error
-
-  /api/download/{target}:
-    parameters:
-      - in: path
-        name: target
-        required: true
-        description: The target location to which to download the file (local, sdcard).
-        schema:
-          type: string
-          default: local
-          enum:
-            - local
-            - sdcard
-    post:
-      summary: Download file from url to intended location.
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                  url:
-                    type: string
-                  destination:
-                    type: string
-                  to_select:
-                    type: boolean
-                    default: false
-                  to_print:
-                    type: boolean
-                    default: false
-              required:
-                - url
-                - destination
-      responses:
-        201:
-          description: Created
-        403:
-          $ref: "#/components/responses/Unauthorized"
-        409:
-          $ref: "#/components/responses/Conflict"
-          description: Another file is being downloaded or same file is currently being printed.
-
-  /api/files:
-    get:
-      summary: Retrieve all files’ and folders’ information.
-      parameters:
-        - in: header
-          name: If-None-Match
-          description: ETag
-          schema:
-            type: string
-            default: none
-        - in: query
-          name: recursive
-          schema:
-            type: boolean
-            default: false
-
-      responses:
-        200:
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/AllFilesInfo"
-          headers:
-            ETag:
-              schema:
-                type: string
-        403:
-          $ref: "#/components/responses/Unauthorized"
-
-  /api/files/{target}:
-    parameters:
-      - in: path
-        name: target
-        required: true
-        description: The target location to which to upload the file (local, sdcard).
-        schema:
-          type: string
-          default: local
-          enum:
-            - local
-            - sdcard
+          default: "root"
+        description: The path within the location to the file or folder.
     get:
       summary: Retrieve all files’ and folders’ information for the target location.
-      parameters:
-        - in: header
-          name: If-None-Match
-          description: ETag
-          schema:
-            type: string
-            default: none
-          required: false
-        - in: query
-          name: recursive
-          schema:
-            type: boolean
-            default: false
-          required: false
       responses:
         200:
           description: OK
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/AllFilesInfo"
-          headers:
-            ETag:
-              schema:
-                type: string
+                $ref: "#/components/schemas/Files"
         403:
           $ref: "#/components/responses/Unauthorized"
-        404:
-          $ref: "#/components/responses/NotFound"
     post:
       summary: Upload file or create folder.
       requestBody:
@@ -911,669 +104,151 @@ paths:
         500:
           $ref: "#/components/responses/InternalServerError"
           description: File is too big.
-
-  /api/files/{target}/{filename}:
-    parameters:
-      - in: path
-        name: target
-        required: true
-        description: The target location to which to upload the file (local, sdcard).
-        schema:
-          type: string
-          default: local
-          enum:
-            - local
-            - sdcard
-      - in: path
-        name: filename
-        required: true
-        description: The path within the location to the file or folder.
-        schema:
-          type: string
-          default: example.sl1
-    get:
-      summary: Retrieve a specific file’s or folder’s information.
-      parameters:
-        - in: header
-          name: If-None-Match
-          description: ETag
-          schema:
-            type: string
-            default: none
-          required: false
-        - in: query
-          name: recursive
-          schema:
-            type: boolean
-            default: false
-          required: false
-      responses:
-        200:
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/FileOrFolderInfo"
-          headers:
-            ETag:
-              schema:
-                type: string
-        304:
-          $ref: "#/components/responses/NotModified"
-        403:
-          $ref: "#/components/responses/Unauthorized"
-        404:
-          $ref: "#/components/responses/NotFound"
-    post:
-      summary: Issue a file command to an existing file.
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/FileCommand"
-      responses:
-        204:
-          description: No error.
-        400:
-          $ref: "#/components/responses/BadRequest"
-          description: Mandatory parameter is missing.
-        403:
-          $ref: "#/components/responses/Unauthorized"
-        404:
-          $ref: "#/components/responses/NotFound"
-        409:
-          $ref: "#/components/responses/Conflict"
-          description: If the file is currently being printed.
-        415:
-          $ref: "#/components/responses/UnsupportedMediaType"
-        501:
-          $ref: "#/components/responses/NotImplemented"
-          description: Unsupported command.
-    delete:
-      summary: Delete a file or folder.
-      responses:
-        204:
-          description: No error
-        403:
-          $ref: "#/components/responses/Unauthorized"
-        404:
-          $ref: "#/components/responses/NotFound"
-          description: If location is neither local nor sdcard or the requested file was not found
-        409:
-          $ref: "#/components/responses/Conflict"
-          description: If the file to be deleted is currently being printed
-
-  /api/logs:
-    get:
-      summary: Return available logs
-      responses:
-        200:
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  files:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        name:
-                          type: string
-                          description: File name
-                          example: system.log
-                        date:
-                          type: integer
-                          description: Last modified timestamp
-                        size:
-                          type: integer
-                        refs:
-                          type: object
-                          properties:
-                            download:
-                              type: string
-                              description: The download URL for the log file
-
-  /api/logs/{filename}:
-    parameters:
-      - in: path
-        name: filename
-        required: true
-        description: The name of the log
-        schema:
-          type: string
-          example: system.log
-    get:
-      summary: Return log content
-      responses:
-        200:
-          description: OK
-          content:
-            text/plain:
-              schema:
-                type: string
-        404:
-          description: Not Found
-
+  
 components:
   schemas:
-    ConnCurrent:
+    Info:
       type: object
       properties:
-        baudrate:
-          type: integer
-          example: 115200
-          nullable: true
-        port:
+        printer_type:
           type: string
-          example: VIRTUAL
-          nullable: true
-        printerProfile:
+          example: "1.3.1"
+        firmware:
           type: string
-          example: _default
-        state:
-          $ref: "#/components/schemas/State"
-
-    ConnOptions:
-      type: object
-      properties:
-        ports:
-          type: array
-          items:
-            type: string
-          example: ["VIRTUAL"]
-        baudrates:
-          type: array
-          items:
-            type: integer
-          example: [115200]
-        printerProfiles:
-          type: array
-          items:
-            type: object
-            properties:
-              id:
-                type: string
-                example: _default
-              name:
-                type: string
-                example: Prusa SL1
-
-    ConnConfig:
-      type: object
-      properties:
-          hostname:
-            type: string
-            example: "dev.connect.prusa"
-          port:
-            type: integer
-            default: 8080
-          tls:
-            type: boolean
-            default: false
-          registrated:
-            type: boolean
-            example: true
-
-    ConnStates:
-      type: object
-      properties:
-        printer:
-          type: object
-          properties:
-            ok:
-              type: boolean
-              example: false
-            message:
-              type: string
-              example: "Serial port cannot be obtained"
-        connect:
-          type: object
-          properties:
-            ok:
-              type: boolean
-              nullable: true
-              example: true
-            message:
-              type: string
-              example: "OK"
-
-    Commands:
-      type: object
-      properties:
-        core:
-          type: array
-          example: []
-          items:
-            type: object
-            nullable: true
-        custom:
-          oneOf:
-            #- $ref: "#/components/schemas/CommandsFDM"
-            - $ref: "#/components/schemas/CommandsSLA"
-
-    #CommandsFDM:
-
-    CommandsSLA:
-      type: array
-      items:
-        $ref: "#/components/schemas/SystemCommand"
-
-    SystemCommand:
-      type: object
-      properties:
-        action:
-          type: string
-        name:
-          type: string
-        confirm:
-          type: string
-          nullable: true
-        source:
-          type: string
-        resource:
-          type: string
-      default: [
-        {
-          "action": "resinrefill", # Updates remaining resin in the printer
-          "name": "Refill resin",
-          "source": "custom",
-          "resource": "http://localhost/api/system/commands/custom/resinrefill"
-        },
-        {
-          "action": "changeexposure",
-          "name": "Change exposure times",
-          "source": "custom",
-          "resource": "http://localhost/api/system/commands/custom/changeexposure"
-        },
-      ]
-
-    Profiles:
-      type: object
-      properties:
-        _default:
-          type: object
-          properties:
-            id:
-              type: string
-              example: _default
-            name:
-              type: string
-              example: Original Prusa SL1
-            model:
-              type: string
-              example: Original Prusa SL1
-            color:
-              type: string
-              example: default
-            current:
-              type: boolean
-              example: true
-            default:
-              type: boolean
-              example: true
-            heatedBed: # Original Prusa SL1 uses for CPU temperature
-              type: boolean
-              example: true
-            heatedChamber: # Original Prusa SL1 uses for ambient temp
-              type: boolean
-              example: true
-            extruder: # Original Prusa SL1 uses for UV LED temp
-              type: object
-              properties:
-                count:
-                  type: integer
-                  description: Number of print heads
-                  example: 1
-                offsets:
-                  type: array
-                  items:
-                    type: array
-                    items:
-                      type: number
-                    example: [0.0, 0.0]
-            resource:
-              type: string
-              example: http://localhost/api/printerprofiles/_default
-
-    TemperatureData:
-      type: object
-      properties:
-        actual:
-          type: number
-          description: Current temperature
-        target:
-          type: number
-          description: Target temperature
-          nullable: true
-        offset:
-          type: number
-          nullable: true
-          description: Currenntly configured temperature offset to apply.
-      example:
-        actual: 22.5
-        target: 50.0
-        offset: 1.0
-
-    TemperatureState:
-      type: object
-      properties:
-        tool0:
-          $ref: "#/components/schemas/TemperatureData"
-        bed:
-          $ref: "#/components/schemas/TemperatureData"
-        chamber:
-          $ref: "#/components/schemas/TemperatureData"
-
-    SDState:
-      type: object
-      properties:
-        ready:
+          example: "3.10.0-4586"
+        mmu:
           type: boolean
           example: false
-
-    PrinterState:
-      type: object
-      properties:
-        text:
-          $ref: "#/components/schemas/State"
-        flags:
-          type: object
-          properties:
-            operational:
-              type: boolean
-              example: false
-            paused:
-              type: boolean
-              example: false
-            printing:
-              type: boolean
-              example: true
-            cancelling:
-              type: boolean
-              example: false
-            pausing:
-              type: boolean
-              example: false
-            sdReady:
-              type: boolean
-              example: false
-            error: # this will indicate printer has an error to show in /api/priner/error
-              type: boolean
-              example: false
-            ready:
-              type: boolean
-              example: true
-            closedOrError:
-              type: boolean
-              example: false
-            busy:
-              type: boolean
-              example: false
-
-    Job:
-      oneOf:
-        - $ref: "#/components/schemas/JobFDM"
-        - $ref: "#/components/schemas/JobSLA"
-      type: object
-      properties:
-        estimatedPrintTime:
-          type: integer
-          description: Estimated print time for the file in seconds.
-          nullable: true
-        file:
-          oneOf:
-            #$ref: "#/components/schemas/JobFileFDM"
-            - $ref: "#/components/schemas/JobFileSLA"
-          type: object
-          properties:
-            name:
-              type: string
-              description: The name of the file without path.
-              example: "harry_potter_hogwarts_anthony_mohimont.sl1"
-              nullable: true
-            path:
-              type: string
-              description: The name of the file with path.
-              example: "internal/examples/harry_potter_hogwarts_anthony_mohimont.sl1"
-              nullable: true
-            origin:
-              enum: ["local", "sdcard"]
-              nullable: true
-            date:
-              type: integer
-              description: Unix timestamp.
-              example: 1574175255
-              nullable: true
-            size:
-              type: integer
-              description: The size of the file in bytes.
-              example: 873151
-              nullable: true
-            refs:
-              type: object
-              properties:
-                resource:
-                  type: string
-                thumbnailBig:
-                  type: string
-                  nullable: true
-
-    Progress:
-      oneOf:
-        - $ref: "#/components/schemas/ProgressMini"
-        - $ref: "#/components/schemas/ProgressSL1"
-      type: object
-      properties:
-        completion:
-          type: number
-          description: Percentage of completion of the current job.
-          nullable: true
-          example: 55.6349010
-        filepos:
-          type: integer
-          description: Current position in the file being printed, in bytes from the beginning. Not being used for SL1.
-          nullable: true
-          example: 12345
-        printTime:
-          type: integer
-          description: Time already spent printing in seconds.
-          nullable: true
-          example: 601
-        printTimeLeft:
-          type: integer
-          description: Estimate of time left to print in seconds.
-          nullable: true
-          example: 30495
-
-    ProgressMini:
-      type: object
-      properties:
-        pos_z_mm:
-          type: number
-        printSpeed:
-          type: number
-        flow_factor:
-          type: number
-        filament_status: # shouldn't it be filamentSensor?
+        printer_name:
           type: string
-
-    ProgressSL1:
+          example: "MuadDib"
+        location:
+          type: string
+          example: "Arrakis"
+        hostname:
+          type: string
+          example: "prusa-mini.lan"
+          
+    Telemetry:
       type: object
       properties:
-        currentLayer:
+        state:
+          type: string
+          example: "PRINTING"
+        temp_nozzle:
+          type: number
+          example: 242.2
+        target_nozzle:
+          type: number
+          example: 250.0
+        temp_bed:
+          type: number
+          example: 94.2
+        target_bed:
+          type: number
+          example: 100.0
+        axis_x:
+          type: number
+          example: 50.0
+        axis_y:
+          type: number
+          example: 190.0
+        axis_z:
+          type: number
+          example: 20.15
+        fan_extruder:
           type: integer
-          description: Number of current layer being printed.
-          nullable: true
+          example: 3820
+        target_fan_extruder:
+          type: integer
+          example: 3840
+        fan_print:
+          type: integer
+          example: 3180
+        target_fan_print:
+          type: integer
+          example: 3200
+        progress:
+          type: number
+          example: 0.42
+        time_printing:
+          type: integer
+          example: 20
+        time_estimated:
+          type: integer
+          example: 100
+        job_id:
+          type: integer
           example: 42
-
-    Users:
+          
+    Job:
       type: object
       properties:
-        active:
-          type: boolean
-          example: true
-        admin:
-          type: boolean
-          example: true
-        apikey:
+        name: 
           type: string
-          nullable: true
-        name:
-          type: string
-          example: prusa
-        settings:
-          type: object
-          example: null
-        user:
-          type: boolean
-          example: true
-
-    CommonFileInfo:
-      type: object
-      properties:
-        origin:
-          type: string
-          example: local
+          example: "Castle_0.15mm_PLA_2m.gcode"
         path:
           type: string
-        display:
-          type: string
-        name:
-          type: string
+          example: "/Prusa Link gcodes/Castle_0.15mm_PLA_2m.gcode"
         size:
           type: integer
-          example: 873151
-        type:
-          type: string
-        typePath:
-          type: array
-          items:
-            type: string
-
-    FileInfo:
-      allOf:
-        - $ref: "#/components/schemas/CommonFileInfo"
-        - type: object
-      properties:
-        refs:
-          type: object
-          properties:
-            resource:
-              type: string
-            download:
-              type: string
-            thumbnailSmall: # do not send if metadata not ready
-              type: string
-              nullable: true
-            thumbnailBig: # do not send if metadata not ready
-              type: string
-              nullable: true
-        gcodeAnalysis:
-          type: object
-          properties:
-            estimatedPrintTime: # do not send if metadata not ready
-              type: integer # [s]
-              description: estimated print time in [s].
-              nullable: true
-            material: # do not send if metadata not ready
-              type: string
-              description: String with used material. It is not compatible with OctoPrint.
-              nullable: true
-            layerHeight: # do not send if metadata not ready
-              type: number # [mm]
-              description: Layer height of the file in [mm]. It is not compatible with OctoPrint.
-        hash:
-          type: string
-        date:
+          example: 71421
+        start: 
           type: integer
-          description: Unix timestamp of last modified date [s]. It is not compatible with OctoPrint.
-      default:
-        origin: local
-        path: internal/examples/harry_potter_hogwarts_a_mohimont.sl1
-        display: harry_potter_hogwarts_a_mohimont.sl1
-        name: harry_potter_hogwarts_a_mohimont.sl1
-        size: 873151
-        date: 1574156567
-        type: machinecode
-        typePath: [machinecode, gcode]
-        hash: 5f972cc1cfb91f91f7c70d0dff6a0462a9de1d41
-        refs:
-          resource: http://localhost/api/files/local/internal/examples/harry_potter_hogwarts_a_mohimont.sl1
-          download: http://localhost/api/downloads/local/internal/examples/harry_potter_hogwarts_a_mohimont.sl1
-          thumbnailSmall: http://localhost/api/thumbnails/tmpy36n51rt/thumbnail/thumbnail400x400.png
-          thumbnailBig: http://localhost/api/thumbnails/tmpy36n51rt/thumbnail/thumbnail800x480.png
-        gcodeAnalysis:
-          estimatedPrintTime: 2445
-          material: "Prusa Orange Tough"
-          layerHeight: 0.025
-
-    FolderInfo:
-      allOf:
-        - $ref: "#/components/schemas/CommonFileInfo"
-        - type: object
-      properties:
-        refs:
-          type: object
-          properties:
-            resource:
-              type: string
-        children:
-          type: array
-          items:
-            type: object
-      example:
-        origin: local
-        path: internal/examples
-        display: examples
-        name: examples
-        size: 873151
-        type: folder
-        typePath: [folder]
-        refs:
-          resource: http://localhost/api/files/local/internal/examples
-
-    FullFolderInfo:
-      allOf:
-        - $ref: "#/components/schemas/FolderInfo"
-        - type: object
-      properties:
-        children:
-          type: array
-          items:
-            oneOf:
-              - $ref: "#/components/schemas/FileInfo"
-              - $ref: "#/components/schemas/FolderInfo"
-            discriminator:
-              propertyName: type
-
-    FileOrFolderInfo:
-      oneOf:
-        - $ref: "#/components/schemas/FileInfo"
-        - $ref: "#/components/schemas/FullFolderInfo"
-
-    AllFilesInfo:
+          example: 1643977846
+        time_estimated:
+          type: integer
+          example: 100
+          
+    Files:
       type: object
       properties:
         files:
-          type: array
-          items:
-            oneOf:
-              - $ref: "#/components/schemas/FileInfo"
-              - $ref: "#/components/schemas/FullFolderInfo"
-        free:
-          type: integer
-        total:
-          type: integer
-
-    FileCommand:
-      type: object
-      properties:
-        command:
-          type: string
-          enum: [select, copy, move]
-          default: select
+          type: object
+          properties:
+            free:
+              type: string
+              example: "122 G"
+            0:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: "Prusa Link gcodes"
+                path:
+                  type: string
+                  example: "/Prusa Link gcodes"
+                date:
+                  type: integer
+                  example: 16443224493
+                size:
+                  type: integer
+                  example: 206507519
+                type:
+                  type: string
+                  example: "folder"
+                children:
+                  type: object
+            1:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: "SD Card"
+                path:
+                  type: string
+                  example: "/SD Card"
+                date:
+                  type: integer
+                  example: null
+                size:
+                  type: integer
+                  example: 346664101
+                type:
+                  type: string
+                  example: "folder"
+                children:
+                  type: object
 
     CreateFolder:
       properties:
@@ -1656,125 +331,12 @@ components:
                 resource:
                   type: string
 
-    State:
-      type: string
-      enum: [
-        "Operational",
-        "Printing",
-        "Pausing",
-        "Paused",
-        "Cancelling",
-        "Error",
-        "Offline",
-        "Busy",
-      ]
-      example: "Operational"
-
-    TelemetryMini:
-      type: object
-      properties:
-        temp_bed:
-          type: number
-        temp_nozzle:
-          type: number
-        material:
-          type: string
-
-    TelemetrySL1:
-      type: object
-      properties:
-        fanUvLed:
-          type: integer
-          example: 2000
-        fanBlower:
-          type: integer
-          example: 3333
-        fanRear:
-          type: integer
-          example: 1000
-        coverClosed:
-          type: boolean
-          example: true
-        tempAmbient:
-          type: number
-          example: 23.4
-        tempCpu:
-          type: number
-          example: 46.9
-        tempUvLed:
-          type: number
-          example: 52.6
-
-    #JobFileFDM:
-
-    JobFileSLA:
-      type: object
-      properties:
-        layers:
-          type: integer
-          description: Total number of layers
-          example: 12345
-          nullable: true
-        layerHeight: # [mm]
-          type: number
-          example: 0.025
-        exposureTime: # [ms]
-          type: integer
-          example: 6000
-          nullable: true
-        exposureTimeFirst: # [ms]
-          type: number
-          example: 30000
-          nullable: true
-        exposureTimeCalibration: # [ms]
-          type: number
-          example: 30000
-          nullable: true
-        exposureUserProfile: # [-]
-          type: number
-          example: 1
-          nullable: true
-
-    JobFDM:
-      type: object
-      properties:
-        filament:
-          type: object
-          properties:
-            length:
-              type: number
-              description: Length of filament used in mm.
-              nullable: true
-            volume:
-              type: number
-              description: Volume in filament used in cm3.
-              nullable: true
-          nullable: true
-
-    JobSLA:
-      type: object
-      properties:
-        resin:
-          type: object
-          properties:
-            remaining:
-              type: number
-              description: Volume of remaining resin in the tank [ml].
-              nullable: true
-              example: 134.5
-            consumed:
-              type: number
-              description: Volume of already consumed resin in the tank [ml].
-              nullable: true
-              example: 22.4
-          nullable: true
-
     Error:
       type: object
       properties:
         code:
           type: string
-          description: Prusa error code. Mus be string if we will have printer with code for example 04
+          description: Prusa error code. Must be string if we will have printer with code for example 04
           example: "10108"
         title:
           type: string
@@ -1934,3 +496,9 @@ components:
         application/json:
           schema:
             $ref: "#/components/schemas/Error"
+  
+  
+  
+  
+  
+  
