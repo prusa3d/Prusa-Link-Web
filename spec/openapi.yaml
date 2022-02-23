@@ -28,16 +28,16 @@ paths:
         403:
           $ref: "#/components/responses/Unauthorized"
   
-  /api/v1.0/telemetry:
+  /api/v1.0/status:
     get:
-      summary: printer telemetry
+      summary: printer status
       responses:
         200:
           description: OK
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Telemetry"
+                $ref: "#/components/schemas/Status"
         403:
           $ref: "#/components/responses/Unauthorized"
                     
@@ -128,13 +128,23 @@ components:
         hostname:
           type: string
           example: "prusa-mini.lan"
-          
-    Telemetry:
+
+    Status:
       type: object
       properties:
         state:
           type: string
           example: "PRINTING"
+        telemetry:
+          $ref: "#/components/schemas/Telemetry"
+        job:
+          $ref: "#/components/schemas/Job"
+        transfer:
+          $ref: "#/components/schemas/Transfer"
+
+    Telemetry:
+      type: object
+      properties:
         temp_nozzle:
           type: number
           example: 242.2
@@ -199,6 +209,9 @@ components:
         time_estimated:
           type: integer
           example: 100
+
+    Transfer:
+      #TODO
           
     Files:
       type: object
