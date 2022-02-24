@@ -40,20 +40,7 @@ paths:
                 $ref: "#/components/schemas/Status"
         403:
           $ref: "#/components/responses/Unauthorized"
-                    
-  /api/v1.0/job:
-    get:
-      summary: information about current job
-      responses:
-        200:
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Job"
-        403:
-          $ref: "#/components/responses/Unauthorized"
-                  
+
   /api/v1.0/files/<path>:
     parameters:
       - in: query
@@ -104,7 +91,7 @@ paths:
         500:
           $ref: "#/components/responses/InternalServerError"
           description: File is too big.
-  
+
 components:
   schemas:
     Info:
@@ -139,8 +126,6 @@ components:
           $ref: "#/components/schemas/Telemetry"
         job:
           $ref: "#/components/schemas/Job"
-        transfer:
-          $ref: "#/components/schemas/Transfer"
 
     Telemetry:
       type: object
@@ -190,11 +175,11 @@ components:
         job_id:
           type: integer
           example: 42
-          
+
     Job:
       type: object
       properties:
-        name: 
+        name:
           type: string
           example: "Castle_0.15mm_PLA_2m.gcode"
         path:
@@ -203,15 +188,12 @@ components:
         size:
           type: integer
           example: 71421
-        start: 
+        start:
           type: integer
           example: 1643977846
         time_estimated:
           type: integer
           example: 100
-
-    Transfer:
-      #TODO
           
     Files:
       type: object
