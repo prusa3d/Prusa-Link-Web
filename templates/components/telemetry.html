@@ -9,9 +9,9 @@
 {% if env.PRINTER_TYPE == "sla" %}
   {%
       set telemetry_list = [
-          {'text': 'CPU temperature', 'label': 'prop.temp-cpu', 'icon': 'temperature_color.svg', 'format': 'temp',  "locations": ["temperature.bed.actual", "temperature.bed.target"] },
-          {'text': 'UV LED temperature', 'label': 'prop.temp-led', 'icon': 'temperature_color.svg', 'format': 'temp',  "locations": ["temperature.tool0.actual", "temperature.tool0.target"] },
-          {'text': 'ambient temperature', 'label': 'prop.temp-amb', 'icon': 'temperature_color.svg', 'format': 'temp',  "locations": ["temperature.chamber.actual", "temperature.chamber.target"] },
+          {'text': 'CPU temperature', 'label': 'prop.temp-cpu', 'icon': 'temperature_color.svg', 'format': 'temp',  "locations": ["temperature.bed.actual"] },
+          {'text': 'UV LED temperature', 'label': 'prop.temp-led', 'icon': 'temperature_color.svg', 'format': 'temp',  "locations": ["temperature.tool0.actual"] },
+          {'text': 'ambient temperature', 'label': 'prop.temp-amb', 'icon': 'temperature_color.svg', 'format': 'temp',  "locations": ["temperature.chamber.actual"] },
           {'text': 'UV LED fan', 'label': 'prop.fan-led', 'icon': 'fan_color.svg', 'format': 'fan',  "location": "telemetry.fanUvLed" },
           {'text': 'blower fan', 'label': 'prop.fan-blower', 'icon': 'fan_color.svg', 'format': 'fan',  "location": "telemetry.fanBlower" },
           {'text': 'rear fan', 'label': 'prop.fan-rear', 'icon': 'fan_color.svg', 'format': 'fan',  "location": "telemetry.fanRear" },
