@@ -69,7 +69,9 @@ class Preprocess {
   async loadAssets() {
     for (var filename in this.countAssets) {
       if (filename.endsWith(".svg")) {
-        let assets_path = path.join(this.assets_dir, filename);
+        // NOTE: always embed the favicon, because webpack does not replace the filename with mangled version
+        const origin_filename = filename === "__favicon__.svg" ? "prusa-link-favicon.svg" : filename;
+        let assets_path = path.join(this.assets_dir, origin_filename);
         let svg = await this.optimizeSVG(assets_path);
         if (!this.config.WITH_EMBEDDED_SVGS && this.countAssets[filename] > 1) {
           // more than 1: save in /views/{filename}
