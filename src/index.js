@@ -131,7 +131,7 @@ async function appLoop(version) {
         }
       } else {
         handleApiError(result);
-        connectionProblem = true;
+        connectionProblem = !result.code;
       }
     }
     printer.setConnected(!connectionProblem);
