@@ -54,7 +54,7 @@ const setValue = (item_name, value, min, max, step) => {
                 value.innerHTML = translate("exp-times.slower");
                 break;
             case 2:
-                value.innerHTML = translate("exp-times.superslow")
+                value.innerHTML = translate("exp-times.high-viscosity")
                 break;
             default:
                 value.innerHTML = translate("exp-times.faster")
@@ -98,7 +98,7 @@ const setUpElements = (file, elements, div) => {
                 value.innerHTML = translate("exp-times.slower");
                 break;
             case 2:
-                value.innerHTML = translate("exp-times.superslow")
+                value.innerHTML = translate("exp-times.high-viscosity")
                 break;
             default:
                 value.innerHTML = translate("exp-times.faster")
