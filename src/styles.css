@@ -135,7 +135,7 @@ nav .brand-logo {
 
 nav .brand-logo img {
   width: auto;
-  height: 42px;
+  height: 110px;
 }
 nav > ul {
   padding-left: 0;
@@ -1387,6 +1387,9 @@ input .autoresize {
   nav .brand-logo {
     max-width: 300px;
     min-height: auto;
+  }
+  nav .brand-logo img {
+    height: 42px;
   }
   nav .navbar-burger {
     display: none;
