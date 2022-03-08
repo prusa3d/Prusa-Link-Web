@@ -22,7 +22,7 @@ const context = {
   current: undefined,
   /** Result of `api/connection`. */
   connection: undefined,
-  /** Supported project file extensions*/
+  /** Supported project file extensions. */
   projectExtensions: [],
 };
 
@@ -124,18 +124,14 @@ const sla = {
         getTitle: () => buildTitle(translate("control.link")),
       } : null,
   ].filter(route => route != null),
-  init: ({ version, printer, profiles, connection }) => {
-    context.version = version;
-    context.printer = printer?.data;
-    context.connection = connection?.data;
-    context.projectExtensions = profiles?.data.profiles[0]?.projectExtensions || process.env.PROJECT_EXTENSIONS
-    document.title = version.hostname + " - " + process.env.APP_NAME;
+  init: (apiResult) => {
+    updateContext(apiResult);
+    context.projectExtensions = apiResult.profiles?.data?.profiles[0]?.projectExtensions || process.env.PROJECT_EXTENSIONS;
+    document.title = context.version.hostname + " - " + process.env.APP_NAME;
     initTemperatureGraph();
   },
-  update: ({ printer, job, connection }) => {
-    context.printer = printer?.data;
-    context.current = job?.data;
-    context.connection = connection?.data || context.connection;
+  update: (apiResult) => {
+    updateContext(apiResult);
     if (context.printer.state.flags.operational)
       hideLoading();
     else
@@ -158,6 +154,21 @@ const sla = {
     return context;
   },
 };
+
+const updateContext = ({ connection, job, printer, version }) => {
+  if (connection?.ok && connection.payload) {
+    context.connection = connection.payload.data;
+  }
+  if (job?.ok && job.payload) {
+    context.current = job.payload.data;
+  }
+  if (printer?.ok && printer.payload) {
+    context.printer = printer.payload.data;
+  }
+  if (version?.ok && version.payload) {
+    context.version = version.payload;
+  }
+}
 
 const initTemperatureGraph = () => {
   const maxTemp = 100;

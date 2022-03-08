@@ -57,36 +57,38 @@ const requests = {
 };
 
 async function getRequests(initialized) {
-  const entries = Object.entries(requests);
   const timestamp = new Date().getTime();
+  const apiRequests = Object.fromEntries(
+    Object.entries(requests).map(([key, values]) => {
+      const shouldGet = () => {
+        if (!initialized)
+          return values.init;
 
-  const promises = entries.map(([, values]) => {
-    function shouldGet() {
-      if (!initialized)
-        return values.init;
-
-      if (values.update) {
-        if (!values.updateInterval)
-          return true;
-        if (!values.timestamp)
-          values.timestamp = timestamp + values.updateInterval;
-        if (timestamp >= values.timestamp) {
-          values.timestamp = timestamp + values.updateInterval;
-          return true;
+        if (values.update) {
+          if (!values.updateInterval)
+            return true;
+          if (!values.timestamp)
+            values.timestamp = timestamp + values.updateInterval;
+          if (timestamp >= values.timestamp) {
+            values.timestamp = timestamp + values.updateInterval;
+            return true;
+          }
         }
       }
-    }
-    return shouldGet() ? values.get() : Promise.resolve(null);
-  });
+      return [key, shouldGet() ? values.get() : undefined];
+    }).filter(([, values]) => values !== undefined)
+  );
 
-  const responses = await Promise.all(promises);
-  let result = new Object();
-  for (let i = 0; i < entries.length; i++) {
-    const [key,] = entries[i];
-    const value = responses[i];
-    result[key] = value;
-  }
-
+  const promises = Object.values(apiRequests);
+  const responses = await Promise.all(
+    promises.map(i => i
+      .then(payload => { return { ok: true, payload, }; })
+      .catch(error => { return { ok: false, error, }; })
+    )
+  );
+  const result = Object.fromEntries(
+    Object.entries(apiRequests).map(([key,], i) => [key, responses[i]])
+  );
   return result;
 }
 
@@ -112,28 +114,34 @@ async function appLoop(version) {
   let initialized = false;
 
   while (true) {
+    let apiProblem = false;
+
     try {
       const responses = await getRequests(initialized);
-      connectionProblem = false;
+      if (responses.printer)
+        connectionProblem = !responses.printer.ok;
+
+
+      Object.values(responses).forEach(({ ok, error }) => {
+        if (!ok) {
+          apiProblem = true;
+          handleApiError(error);
+        }
+      });
 
       if (initialized) {
-        update(responses)
+        update(responses);
       } else {
-        responses.version = version;
-        init(responses);
-        initialized = true;
+        if (!apiProblem) {
+          responses.version = { ok: true, payload: version };
+          init(responses);
+          initialized = true;
+        }
       }
     } catch (result) {
-      if (result.code == 401) {
-        const auth = sessionStorage.getItem("auth") || "false";
-        if (auth == "false") {
-          initAuth();
-        }
-      } else {
-        handleApiError(result);
-        connectionProblem = !result.code;
-      }
+      handleAppError(result);
     }
+
     printer.setConnected(!connectionProblem);
     await new Promise(resolve => setTimeout(resolve, UPDATE_INTERVAL));
   }
