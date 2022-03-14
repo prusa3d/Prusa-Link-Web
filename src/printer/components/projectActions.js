@@ -40,3 +40,23 @@ export const downloadProject = (file) => {
     next: page,
   });
 };
+
+export const startPrint = () => {
+  console.log("startPrint");
+}
+export const renameProject = () => {
+  console.log("renameProject");
+}
+export const copyProject = () => {
+  console.log("copyProject");
+}
+
+export const createFolder = () => {
+  console.log("createFolder");
+}
+export const deleteFolder = () => {
+  console.log("deleteFolder");
+}
+export const renameFolder = () => {
+  console.log("renameFolder");
+}

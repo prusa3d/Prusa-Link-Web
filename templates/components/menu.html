@@ -12,17 +12,19 @@
     "link-proj": {"text": "Projects", label: "proj.link", path: "#projects", condition: env.WITH_PROJECTS },
     "link-temp": {"text": "Temperatures", label: "temps.title", path: "#temperature" },
     "link-ctrl": {"text": "Control", label: "control.link", path: "#control", condition: env.WITH_CONTROLS },
+    "separator": {},
     "link-sett": {"text": "Settings", label: "settings.title", path: "#settings", condition: env.WITH_SETTINGS }
   }
 %}
 
-<ul class="burger-menu txt-bold" id="navbar">
+<ul class="burger-menu" id="navbar">
   {% for key, values in menu_dict %}
-    {% if not "condition" in values or values.condition %}
+    {% if key == "separator" %}
+      <div class="separator"></div>
+    {% elif not "condition" in values or values.condition %}
       <li>
         <a href="{{ values.path }}" data-label="{{ values.label }}">{{ values.text }}</a>
       </li>
     {% endif %}
   {% endfor %}
-  <select data-type="dropdown"></select>
 </ul>

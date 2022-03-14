@@ -54,19 +54,23 @@ export class Dropdown {
    * @param {(HTMLElement|string|undefined)} root Root element - from that element
    * the search for input element begins. Pass HTMLElement (ref), string (id) or
    * undefined (body).
+   * @param {(string | undefined)} id Optional element ID
    * @returns {Dropdown | undefined} Returns undefined if it fails.
    */
-  static init(root) {
+  static init(root, id) {
     let rootElement = getElement(root);
 
     const template = document.getElementById("dropdown-template");
-    const select = rootElement.querySelector('select[data-type="dropdown"]');
+    const select = rootElement.getAttribute("data-type") === "dropdown"
+      ? rootElement
+      : rootElement.querySelector('select[data-type="dropdown"]');
 
     if (!select)
       return undefined;
 
     select.after(document.importNode(template.content, true));
     const dropdown = select.nextElementSibling;
+    dropdown.id = id;
     select.remove();
 
     const btn = dropdown.querySelector(".dropdown-btn");

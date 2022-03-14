@@ -4,7 +4,7 @@
 
 import joinPaths from "../../helpers/join_paths";
 import updateProperties from "./updateProperties";
-import fallbackThumbnail from "../../assets/thumbnail.png";
+import fallbackThumbnail from "../../assets/thumbnail.svg";
 import { cancelJob, cancelPreview, pauseJob, resumeJob, startJob } from "./jobActions";
 import { deleteProject, downloadProject } from "./projectActions";
 import { getImage, getJson } from "../../auth";

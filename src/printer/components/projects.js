@@ -10,12 +10,14 @@ import { getValue } from "./updateProperties.js";
 import { handleError } from "./errors";
 import { navigateShallow } from "../../router.js";
 import { translate, translateLabels } from "../../locale_provider.js";
-import { deleteProject, downloadProject } from "./projectActions.js";
+import { copyProject, createFolder, deleteFolder, deleteProject, downloadProject, renameFolder, renameProject, startPrint } from "./projectActions.js";
 import printer from "../index";
 import { error } from "./toast.js";
 import { cancelPreview } from "./jobActions";
 import scrollIntoViewIfNeeded from "../../helpers/scroll_into_view_if_needed.js";
 import * as job from "./job";
+import { initKebabMenu } from "./kebabMenu.js";
+import { setEnabled } from "../../helpers/element.js";
 
 let lastData = null;
 
@@ -124,7 +126,7 @@ export function load(context) {
     initUpload(context);
 
   if (metadata.current_path.length > 0) {
-    let view = metadata.files.find((elm) => elm.origin === metadata.current_path[0]).children;
+    let view = metadata.files.find((elm) => elm.origin === metadata.origin).children;
     for (let i = 1; i < metadata.current_path.length; i++) {
       let path = metadata.current_path[i];
       view = view.find((elm) => elm.name === path).children;
@@ -134,10 +136,13 @@ export function load(context) {
       "title-status-label"
     ).innerHTML = metadata.current_path.join(" > ");
 
+    projects.appendChild(createCurrent());
     projects.appendChild(createUp());
     for (let node of view) {
       if (node.type === "folder") {
-        projects.appendChild(createFolder(node.display || node.name, node.path));
+        const files = countFilesRecursively(node);
+        const folders = countFoldersRecursively(node);
+        projects.appendChild(createNodeFolder(node.display || node.name, node.path, {files, folders}));
       } else {
         projects.appendChild(createFile(node));
       }
@@ -147,7 +152,9 @@ export function load(context) {
     if (metadata.files.length) {
       for (let file of metadata.files) {
         if (file.type === "folder") {
-          projects.appendChild(createFolder(file.display || file.name, joinPaths(file.path), file.origin));
+          const files = countFilesRecursively(file);
+          const folders = countFoldersRecursively(file);
+          projects.appendChild(createNodeFolder(file.display || file.name, joinPaths(file.path), {files, folders}, file.origin));
         } else {
           projects.appendChild(createFile(file));
         }
@@ -165,11 +172,13 @@ export function load(context) {
 function createElement(templateName, name, cb) {
   const templateFolder = document.getElementById(templateName).content;
   const elm = document.importNode(templateFolder, true);
-  elm.querySelector(".node").addEventListener("click", (e) => {
-    cb(e);
-    e.preventDefault();
-  });
-  elm.querySelector("p").appendChild(document.createTextNode(name));
+  if (cb) {
+    elm.querySelector(".node").addEventListener("click", (e) => {
+      cb(e);
+      e.preventDefault();
+    });
+  }
+  elm.querySelector("#name").appendChild(document.createTextNode(name));
   return elm;
 }
 
@@ -177,10 +186,11 @@ function createElement(templateName, name, cb) {
  * Create a folder element
  * @param {string} name
  * @param {string} path
+ * @param {{files: number, folders: number} | undefined} details (optional)
  * @param {string|undefined} origin (optimal)
  */
-function createFolder(name, path, origin) {
-  return createElement("node-folder", name, () => {
+function createNodeFolder(name, path, details, origin) {
+  const elm = createElement("node-folder", name, () => {
     if (origin)
       metadata.origin = origin;
 
@@ -191,13 +201,42 @@ function createFolder(name, path, origin) {
     }
     load();
   });
+
+  const filesText = details?.files ? `${details.files} files` : null;
+  const foldersText = details?.folders ? `${details.folders} folders`: null;
+  const detailsText = [filesText, foldersText].filter(i => i != null).join(" | ");
+
+  elm.getElementById("details").innerHTML = detailsText;
+  elm.getElementById("delete").onclick = (e) => {
+    e.stopPropagation();
+    deleteFolder();
+  }
+  elm.getElementById("rename").onclick = (e) => {
+    e.stopPropagation();
+    renameFolder();
+  }
+  return elm;
+}
+
+function createCurrent() {
+  const p = metadata.current_path;
+  const title = p.length > 0 ? p[p.length - 1] : "Root";
+  const elm = createElement("node-current", title);
+  elm.getElementById("path").innerHTML = `/${joinPaths(metadata.current_path.slice(0, -1))}`
+
+  elm.getElementById("create").onclick = (e) => {
+    e.stopPropagation();
+    createFolder();
+  }
+  return elm;
 }
 
 /**
  * create a up button element
  */
 function createUp() {
-  const title = metadata.current_path.length === 1 ? translate("proj.main") : "..";
+  const p = metadata.current_path;
+  const title = p[p.length - 1];
   return createElement("node-up", title, () => {
     metadata.current_path.pop();
     load();
@@ -250,9 +289,7 @@ function selectPreview(url) {
  * @param {object} node
  */
 function createFile(node) {
-  const elm = createElement("node-project", node.display || node.name, (e) =>
-    onClickFile(node)
-  );
+  const elm = createElement("node-project", node.display || node.name);
   const nodeDetails = elm.querySelector(".node-details");
   nodeDetails.querySelectorAll(".details").forEach((element) => {
     translateLabels(element);
@@ -262,7 +299,7 @@ function createFile(node) {
         element.dataset.format,
         value
       );
-      element.querySelector("p").innerHTML += ` <span>${data}</span>`
+      element.querySelector("p[data-value]").innerHTML = data;
     } else {
       nodeDetails.removeChild(element);
     }
@@ -274,6 +311,8 @@ function createFile(node) {
     });
   }
 
+  initKebabMenu(elm);
+
   setupFileButtons(node, elm);
   return elm;
 }
@@ -283,20 +322,34 @@ function setupFileButtons(node, elm) {
   const paths = getNodeFilePaths(node.name);
   const fileUrl = joinPaths("/api/files/", ...paths);
 
+  const detailsBtn = elm.querySelector("#details");
+  if (detailsBtn) {
+    detailsBtn.onclick = (e) => {
+      onClickFile(node);
+    }
+  }
+  elm.querySelector("#start").onclick = (e) => {
+    e.stopPropagation();
+    startPrint();
+  }
+  elm.querySelector("#rename").onclick = (e) => {
+    e.stopPropagation();
+    renameProject();
+  }
+
   const deleteBtn = elm.querySelector("#delete");
   const downloadBtn = elm.querySelector("#download");
   getJson(fileUrl).then((result) => {
     const file = result.data;
-
     if (deleteBtn) {
-      deleteBtn.disabled = !(file.refs && file.refs.resource);
+      setEnabled(deleteBtn, file.refs?.resource);
       deleteBtn.onclick = (e) => {
         deleteProject(file);
         e.stopPropagation();
       }
     }
     if (downloadBtn) {
-      downloadBtn.disabled = !(file.refs && file.refs.download);
+      setEnabled(downloadBtn, file.refs?.download);
       downloadBtn.onclick = (e) => {
         downloadProject(file);
         e.stopPropagation();
@@ -322,5 +375,21 @@ function getNodeFilePaths(nodeName) {
   ];
   return paths;
 }
+
+function countFoldersRecursively(node) {
+  const folders = node?.children?.filter(i => i.type === "folder") || [];
+  let count = folders.length || 0;
+  folders.forEach(i => count += countFoldersRecursively(i));
+  return count;
+}
+
+function countFilesRecursively(node) {
+  const files = node?.children?.filter(i => i.type === "machinecode") || [];
+  const folders = node?.children?.filter(i => i.type === "folder") || [];
+  let count = files.length || 0;
+  folders.forEach(i => count += countFilesRecursively(i));
+  return count;
+}
+
 
 export default { load, update };

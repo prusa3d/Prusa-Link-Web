@@ -9,9 +9,10 @@ import { getLanguage, getLanguages, setLanguage } from "../../../locale_provider
    * @param {(HTMLElement|string|undefined)} root Root element - from that element
    * the search for input element begins. Pass HTMLElement (ref), string (id) or
    * undefined (body).
+   * @param {(string | undefined)} id Optional element ID
 */
-const init = (root) => {
-  const dropdown = Dropdown.init(root);
+const init = (root, id) => {
+  const dropdown = Dropdown.init(root, id);
   if (dropdown) {
     dropdown.setOptions(getLanguages());
     dropdown.value = getLanguage();

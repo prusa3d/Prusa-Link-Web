@@ -12,6 +12,8 @@ $font-size-3-mobile: 1.2rem;
 $font-size-3-desktop: 0.75rem;
 $font-size-h1-mobile: 5rem;
 $font-size-h1-desktop: 2.5rem;
+$font-size-nav-mobile: 3rem;
+$font-size-nav-desktop: 16px;
 $text-white: #ffffff;
 $text-grey: #707070;
 $text-orange: #f8651b;
@@ -88,6 +90,10 @@ select {
   font-weight: bold;
 }
 
+nav {
+  font-size: $font-size-nav-mobile;
+}
+
 @media only screen and (min-width: 992px) {
   .txt-size-1 {
     font-size: $font-size-1-desktop;
@@ -103,5 +109,8 @@ select {
   }
   button > p {
     font-size: $font-size-2-desktop;
+  }
+  nav {
+    font-size: $font-size-nav-desktop;
   }
 }

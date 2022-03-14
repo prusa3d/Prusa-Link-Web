@@ -1,0 +1,18 @@
+<!-- prettier-ignore -->
+{#
+  # This file is part of the Prusa Link Web
+  # Copyright (C) 2021 Prusa Research a.s. - www.prusa3d.com
+  # SPDX-License-Identifier: GPL-3.0-or-later
+#}
+
+<template id="node-up">
+  <div class="node line">
+    <div class="node-icon-box">
+      <img class="node-img node-icon" src="{{ pre.countOrRenderAssets('up_folder_white.svg') | safe }}"/>
+    </div>
+    <div>
+      <p id="description" class="txt-size-3 txt-grey">parent folder</p>
+      <p id="name" class="txt-size-2 txt-bold"></p>
+    </div>
+  </div>
+</template>
