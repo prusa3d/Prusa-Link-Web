@@ -15,19 +15,20 @@
   </head>
 
   <body>
-    <div class="header">
+    <div class="header txt-bold">
       <div class="content">
         <nav>
-          <a href="/#dashboard" class="brand-logo">
-            <img
-              src="{{ pre.countOrRenderAssets('prusa-link-beta.svg') | safe }}"
-            />
-          </a>
           <a class="navbar-burger" id="menu">
             <div></div>
             <div></div>
             <div></div>
           </a>
+          <a href="/#dashboard" class="brand-logo">
+            <img
+              src="{{ pre.countOrRenderAssets('prusa-link-beta.svg') | safe }}"
+            />
+          </a>
+          <select id="lang-dropdown" data-type="dropdown"></select>
           {% include "components/menu.html" %}
         </nav>
       </div>

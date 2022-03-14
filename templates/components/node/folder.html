@@ -1,0 +1,33 @@
+<!-- prettier-ignore -->
+{#
+  # This file is part of the Prusa Link Web
+  # Copyright (C) 2021 Prusa Research a.s. - www.prusa3d.com
+  # SPDX-License-Identifier: GPL-3.0-or-later
+#}
+
+{%
+  set buttons = {
+    'rename': {text: 'Rename', label: '', icon: 'edit.svg' },
+    'delete': {text: 'Delete', label: '', icon: 'delete.svg' }
+  }
+%}
+
+<template id="node-folder">
+  <div class="node line">
+    <div class="node-icon-box">
+      <img class="node-img node-icon" src="{{ pre.countOrRenderAssets('folder.svg') | safe }}"/>
+    </div>
+    <div>
+      <p id="name" class="txt-size-2 txt-bold"></p>
+      <p id="details" class="txt-size-3 txt-grey">x folders | x files</p>
+    </div>
+    <div class="separator"></div>
+    <ul class="node-btn-list">
+      {% for key, values in buttons %}
+        <li id="{{ key }}" title="{{ values.text }}">
+          <img class="icon icon-small" src="{{ pre.countOrRenderAssets(values.icon) | safe }}"/>
+        </li>
+      {% endfor %}
+    </ul>
+  </div>
+</template>

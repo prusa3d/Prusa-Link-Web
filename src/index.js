@@ -16,6 +16,7 @@ import { getJson, initAuth } from "./auth.js";
 import { initMenu } from "./printer/components/menu";
 import { translate, translateLabels } from "./locale_provider";
 import { handleError } from "./printer/components/errors";
+import langSelect from "./printer/components/dropdown/language";
 
 const UPDATE_INTERVAL = process.env.UPDATE_INTERVAL;
 let connectionProblem = false;
@@ -95,6 +96,7 @@ async function getRequests(initialized) {
 window.onload = () => {
   console.log(`${process.env.APP_NAME} v.${process.env.APP_VERSION}`);
   initMenu();
+  langSelect.init("lang-dropdown", "lang-dropdown");
   translateLabels(); // Translate menu and telemetry
 
   document.querySelectorAll("a[href]").forEach((link) => {

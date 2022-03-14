@@ -49,14 +49,18 @@ p {
   min-width: 48px;
   padding: 2px;
 }
+.icon-small {
+  width: 32px;
+  height: 32px;
+  min-width: 32px;
+}
 button > img {
   width: 36px;
   height: 36px;
   min-width: 36px;
   margin: 2px;
 }
-.content,
-nav > ul {
+.content {
   margin-left: auto;
 }
 button,
@@ -71,12 +75,19 @@ button::-moz-focus-inner {
   border-style: none;
   padding: 0;
 }
-.component > p,
-.header,
-.line,
-#title {
-  border-bottom: 1px solid #707070;
+.header {
+  border-bottom: 2px solid #707070;
   border-radius: 0;
+}
+.component > p,
+.line,
+.line-y,
+#title {
+  border-bottom: 1px solid #bababa;
+  border-radius: 0;
+}
+.line-y {
+  border-top: 1px solid #bababa;
 }
 button:-moz-focusring {
   outline: ButtonText dotted 1px;
@@ -91,7 +102,7 @@ progress {
 }
 
 .header {
-  padding-bottom: 16px;
+  padding: 16px 0 16px 0;
 }
 
 .node:hover,
@@ -103,7 +114,7 @@ progress {
 .content {
   display: block;
   margin-right: auto;
-  width: 95%;
+  width: 92%;
 }
 
 body > .content {
@@ -119,55 +130,55 @@ body > .content {
 /* ===================================== HEAD ======================================= */
 
 nav {
-  padding: 4px 0 0;
   display: flex;
   align-items: center;
   flex-wrap: wrap;
-  justify-content: space-between;
   min-width: 685px;
   font-size: 40px;
 }
 nav .brand-logo {
-  flex-grow: 10;
+  order: 1;
+  flex-grow: 1;
   min-width: 288px;
   min-height: 125px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 nav .brand-logo img {
-  width: auto;
-  height: 110px;
+  max-width: 75%;
+  max-height: 75%;
 }
 nav > ul {
+  order: 3;
   padding-left: 0;
   display: flex;
   align-items: center;
   flex-direction: column;
+  flex-grow: 1;
   width: 100%;
   margin-bottom: 0;
+  margin-top: 0;
 }
 nav > ul > li {
   display: flex;
   list-style-type: none;
-  width: 100%;
-  border-bottom: 1px solid #707070;
 }
 nav > ul > li.active {
-  border-bottom: 1px solid #f8651b;
-}
-nav > ul > li:hover {
-  border-bottom: 1px solid #ffffff;
+  border-bottom: 2px solid #f8651b;
 }
 nav > ul a {
   list-style: none;
   text-decoration: none;
   width: 100%;
-  padding: 16px;
+  padding: 32px;
 }
 nav .navbar-burger {
+  order: 0;
   display: flex;
   flex-direction: column;
   align-items: flex-end;
-  flex-grow: 1;
   align-self: flex-end;
   margin-bottom: auto;
   margin-top: auto;
@@ -198,6 +209,9 @@ nav .navbar-burger.burger-open div:last-child {
 nav .burger-icon.burger-open {
   transition-duration: 0.5s;
   background: 0 0;
+}
+#lang-dropdown {
+  order: 2;
 }
 
 /* ===================================== TELEMETRY ======================================= */
@@ -507,20 +521,17 @@ nav .burger-icon.burger-open {
   width: 100%;
   margin-top: 16px;
 }
-.details > img, .details > .icon,
 .node-icon,
-.node-img-box,
-.node-wrapper {
-  margin: 12px;
+.node-icon-box,
+.node-img-box {
+  margin-right: 12px;
 }
 .node {
   display: flex;
   align-items: center;
+  padding: 6px 0;
 }
-.node-icon {
-  height: 48px;
-  width: 48px;
-}
+.node-icon,
 .node-img {
   position: absolute;
   width: 100%;
@@ -531,32 +542,68 @@ nav .burger-icon.burger-open {
   bottom: 0;
   object-fit: contain;
 }
-.node-img-box {
+.node-icon {
+  max-width: 48px;
+  max-height: 48px;
+  margin: auto;
+}
+.node-img-box,
+.node-icon-box {
+  flex-shrink: 0;
   position: relative;
-  width: 112px;
-  height: auto;
+  width: 100px;
+  height: 100px;
   align-self: stretch;
+}
+.node-icon-box {
+  height: 60px;
 }
 .node-wrapper {
   display: flex;
   width: 100%;
   flex-direction: column;
+  gap: 12px;
 }
-.node-wrapper > p {
+.node-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+}
+.node-header > p {
   -ms-word-break: break-all;
   word-break: break-all;
-  margin: 12px;
+  margin: 0;
 }
 .node-details {
   display: flex;
   flex-wrap: wrap;
   width: 100%;
-  justify-content: space-between;
+  column-gap: 15px;
 }
-.details {
+.node-current {
   display: flex;
-  flex-grow: 1;
   align-items: center;
+  gap: 6px;
+}
+.node-btn-list {
+  display: flex;
+  list-style: none;
+}
+.node-btn-list > li {
+  padding: 5px;
+  cursor: pointer;
+}
+.node-btn-list > li:last-child {
+  margin-right: -5px;
+}
+.node-btn-list > li:not([disabled]):hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 50%;
+}
+.node-btn-list > li[disabled] {
+  cursor: default;
+  pointer-events: none;
+  opacity: 0.3;
 }
 #preview-wrapper {
   display: flex;
@@ -1236,7 +1283,7 @@ $toast-success-title-color: $text-white;
 }
 .dropdown li {
   cursor: pointer;
-  padding: 2px 4px;
+  padding: 15px 20px;
 }
 .dropdown li:hover {
   background: #f8651b;
@@ -1254,6 +1301,53 @@ $toast-success-title-color: $text-white;
   position: absolute;
   visibility: collapse;
   z-index: 1;
+}
+
+/* ===================================== KEBAB ======================================= */
+
+.kebab {
+  position: relative;
+}
+.kebab > ul {
+  position: absolute;
+  right: 0;
+  z-index: 1;
+  display: none;
+  list-style: none;
+  width: max-content;
+  margin: 0;
+  padding: 0;
+  background-color: #f1f1f1;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  border-radius: 4px;
+  cursor: default;
+}
+.kebab > ul.open {
+  display: block;
+}
+.kebab > ul > li {
+  padding: 0 24px;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+.kebab > ul > li[disabled] {
+  cursor: default;
+  pointer-events: none;
+  opacity: 0.3;
+}
+.kebab > ul > li:not([disabled]):hover {
+  background-color: rgba(0, 0, 0, 0.1);
+}
+.kebab > ul > li:first-child {
+  padding-top: 12px;
+}
+.kebab > ul > li:last-child {
+  padding-bottom: 12px;
+}
+.kebab > ul > li > .icon {
+  margin: 12px;
+  margin-left: 0;
 }
 
 /* ===================================== LOADING ======================================= */
@@ -1351,7 +1445,16 @@ input .autoresize {
   margin: -7px 0 7px 0;
 }
 
+@media only screen and (max-width: 992px) {
+  .pc-only {
+    display: none;
+  }
+}
+
 @media only screen and (min-width: 992px) {
+  .mobile-only {
+    display: none;
+  }
   .header {
     padding-bottom: 0;
     position: sticky;
@@ -1362,34 +1465,53 @@ input .autoresize {
     width: 75%;
   }
   nav {
-    font-size: 16px;
+    flex-direction: inherit;
   }
   nav > ul {
     flex-wrap: nowrap;
     flex-direction: row;
     width: inherit;
   }
+  nav > ul > li {
+    border-bottom: 2px solid #707070;
+  }
+  nav > ul > li:hover {
+    border-bottom: 2px solid #ffffff;
+  }
+  nav > ul a {
+    padding: 16px;
+  }
   nav > ul > li,
   nav > ul .dropdown {
-  margin-bottom: -1px;
-}
+    margin-bottom: -2px;
+  }
   nav .dropdown {
     padding: 0;
     align-self: unset !important;
     min-width: fit-content !important;
   }
+  .dropdown li {
+    padding: 2px 4px;
+  }
+  #lang-dropdown {
+    order: 4;
+  }
   .burger-menu {
     display: flex;
   }
-  nav {
-    flex-direction: inherit;
-  }
   nav .brand-logo {
+    max-height: 100%;
     max-width: 300px;
     min-height: auto;
+    margin-bottom: auto;
+    flex-grow: 0;
+    justify-content: flex-start;
   }
   nav .brand-logo img {
-    height: 42px;
+    max-width: none;
+    max-height: none;
+    width: auto;
+    height: auto;
   }
   nav .navbar-burger {
     display: none;
@@ -1429,9 +1551,10 @@ input .autoresize {
     height: 24px;
     min-width: 24px;
   }
-  .node-icon {
-    height: 32px;
-    width: 32px;
+  .icon-small {
+    width: 16px;
+    height: 16px;
+    min-width: 16px;
   }
   button {
     border-radius: 4px;
@@ -1521,5 +1644,32 @@ input .autoresize {
   }
   #job .progress {
     font-size: 16px;
+  }
+  .kebab-responsive > .kebab-menu {
+    display: none;
+  }
+  .kebab-responsive > ul {
+    position: static;
+    display: flex;
+    background: none;
+    border: 0;
+  }
+  .kebab-responsive > ul.open {
+    display: flex;
+  }
+  .kebab-responsive > ul > li,
+  .kebab-responsive > ul > li:first-child,
+  .kebab-responsive > ul > li:last-child {
+    padding: 5px;
+  }
+  .kebab-responsive > ul > li:last-child {
+    margin-right: -5px;
+  }
+  .kebab-responsive > ul > li:not([disabled]):hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 50%;
+  }
+  .kebab-responsive > ul > li .icon {
+    margin: 0;
   }
 }

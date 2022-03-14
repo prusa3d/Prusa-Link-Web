@@ -26,14 +26,13 @@ const updateTelemetryPosition = () => {
   }
 
   const rect = elm.getBoundingClientRect();
-  const topOffset = 87;
 
-  if (window.innerHeight > (rect.height + topOffset)) {
+  if (window.innerHeight > (rect.height + rect.top)) {
     elm.style.position = "sticky";
-    elm.style.top = `${topOffset}px`;
+    elm.style.top = `${rect.top}px`;
   } else {
     elm.style.position = "sticky";
-    let top = topOffset - window.scrollY;
+    let top = rect.top - window.scrollY;
     const minTop = window.innerHeight - rect.height;
     if (top < minTop)
       top = minTop;
