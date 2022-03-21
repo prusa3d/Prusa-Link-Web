@@ -1,5 +1,14 @@
 # Changelog
 
+## 2022-03-21 (3.9.0)
+* New application design
+* New field to rename project file uploaded by URL
+* New widget displaying used/free size (not-connected to printer yet)
+* New Rename and Copy actions (hidden)
+* New tool to unify icons colors
+* Fixed icons colors
+
+
 ## 2022-02-11 (3.8.0)
 * Add support for file extensions provided by printer profiles from API
 * Fix display names of origins
