@@ -13,7 +13,8 @@
           {"text": "Material", "label": "prop.material", "format": "material", "location": "gcodeAnalysis.material", "icon": "status_filament.svg" },
           {"text": "Layer Height", "label": "prop.layer-ht", "format": "layer", "location": "gcodeAnalysis.layerHeight", "icon": "quality_medium.svg" },
           {"separator": true},
-          {"text": "File Size", "label": "prop.size", "format": "size", "location": "size", "icon": "" }
+          {"additional": true, "format": "date", "location": "date" },
+          {"additional": true, "format": "size", "location": "size" }
         ]
     %}
 {% else %}
@@ -22,7 +23,8 @@
           {"text": "Printing time", "label": "prop.pnt-time", "format": "time", "location": "gcodeAnalysis.estimatedPrintTime", "icon": "time_color.svg" },
           {"text": "Material", "label": "prop.material", "format": "material", "location": "gcodeAnalysis.material", "icon": "status_filament.svg" },
           {"separator": true},
-          {"text": "File Size", "label": "prop.size", "format": "size", "location": "size", "icon": "" }
+          {"additional": true, "format": "date", "location": "date" },
+          {"additional": true, "format": "size", "location": "size" }
         ]
     %}
 {% endif %}
@@ -30,11 +32,11 @@
 <!-- prettier-ignore -->
 {%
   set buttons = {
-    'details': {text: 'Project detail', label: '', icon: 'project_details.svg' },
-    'start': {text: 'Start print', label: '', icon: 'print.svg' },
-    'delete': {text: 'Delete', label: '', icon: 'delete.svg' },
-    'rename': {text: 'Rename', label: '', icon: 'edit.svg' },
-    'download': {text: 'Download', label: '', icon: 'download_alt.svg' }
+    'details': {text: 'Project detail', label: '', pc_icon: 'project_details.svg', mobile_icon: 'project_details_light.svg', implemented: true },
+    'start': {text: 'Start print', label: '', pc_icon: 'print.svg', mobile_icon: 'print_light.svg', implemented: false },
+    'delete': {text: 'Delete', label: '', pc_icon: 'delete.svg', mobile_icon: 'delete_light.svg', implemented: true },
+    'rename': {text: 'Rename', label: '', pc_icon: 'edit.svg', mobile_icon: 'edit_light.svg', implemented: false },
+    'download': {text: 'Download', label: '', pc_icon: 'download_alt.svg', mobile_icon: 'download_alt_light.svg', implemented: true }
   }
 %}
 
@@ -50,11 +52,13 @@
           <img class="kebab-menu icon" src="{{ pre.countOrRenderAssets('kebab_menu.svg') | safe }}" />
           <ul class="txt-black txt-size-2">
             {% for key, values in buttons %}
-              <li id="{{ key }}" title="{{ values.text }}">
-                <img class="pc-only icon icon-small" src="{{ pre.countOrRenderAssets(values.icon) | safe }}"/>
-                <img class="mobile-only icon" src="{{ pre.countOrRenderAssets(values.icon.replace('.svg', '_light.svg')) | safe }}"/>
-                <span class="mobile-only">{{ values.text }}</span>
-              </li>
+              {% if values.implemented %}
+                <li id="{{ key }}" title="{{ values.text }}">
+                  <img class="pc-only icon icon-small" src="{{ pre.countOrRenderAssets(values.pc_icon) | safe }}"/>
+                  <img class="mobile-only icon" src="{{ pre.countOrRenderAssets(values.mobile_icon) | safe }}"/>
+                  <span class="mobile-only">{{ values.text }}</span>
+                </li>
+              {% endif %}
             {% endfor %}
           </ul>
         </div>
@@ -66,10 +70,14 @@
             <div class="separator pc-only"></div>
           {% else %}
             <div class="details" data-format="{{ values.format }}" data-where="{{ values.location }}">
-              <p data-label="{{ values.label }}" class="txt-grey">
-                {{ values.text }}
-              </p>
-              <p data-value="data-value"></p>
+              {% if values.additional %}
+                <p class="pc-only" data-value="data-value"></p>
+              {% else %}
+                <p data-label="{{ values.label }}" class="txt-grey">
+                  {{values.text}}
+                </p>
+                <p data-value="data-value"></p>
+              {% endif %}
             </div>
           {% endif %}
         {% endfor %}

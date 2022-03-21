@@ -10,14 +10,15 @@ import { getValue } from "./updateProperties.js";
 import { handleError } from "./errors";
 import { navigateShallow } from "../../router.js";
 import { translate, translateLabels } from "../../locale_provider.js";
-import { copyProject, createFolder, deleteFolder, deleteProject, downloadProject, renameFolder, renameProject, startPrint } from "./projectActions.js";
+import { createFolder, deleteFolder, deleteProject, downloadProject, renameFolder, renameProject, startPrint } from "./projectActions.js";
 import printer from "../index";
 import { error } from "./toast.js";
 import { cancelPreview } from "./jobActions";
 import scrollIntoViewIfNeeded from "../../helpers/scroll_into_view_if_needed.js";
 import * as job from "./job";
 import { initKebabMenu } from "./kebabMenu.js";
-import { setEnabled } from "../../helpers/element.js";
+import { onOutsideClick, setEnabled } from "../../helpers/element.js";
+import { updateProgressBar } from "./progressBar.js";
 
 let lastData = null;
 
@@ -111,6 +112,9 @@ function initUpload(context) {
  * load projects page
  */
 export function load(context) {
+  if (!context)
+    context = printer.getContext();
+
   if (context)
     job.update(context);
 
@@ -122,6 +126,7 @@ export function load(context) {
   if (metadata.current_path.length === 0)
     metadata.origin = "local";
 
+  projects.appendChild(createStorages());
   if (context)
     initUpload(context);
 
@@ -140,9 +145,10 @@ export function load(context) {
     projects.appendChild(createUp());
     for (let node of view) {
       if (node.type === "folder") {
+        // TODO: Cache file/folder count or count async.
         const files = countFilesRecursively(node);
         const folders = countFoldersRecursively(node);
-        projects.appendChild(createNodeFolder(node.display || node.name, node.path, {files, folders}));
+        projects.appendChild(createNodeFolder(node.display || node.name, node.path, { files, folders }));
       } else {
         projects.appendChild(createFile(node));
       }
@@ -154,7 +160,7 @@ export function load(context) {
         if (file.type === "folder") {
           const files = countFilesRecursively(file);
           const folders = countFoldersRecursively(file);
-          projects.appendChild(createNodeFolder(file.display || file.name, joinPaths(file.path), {files, folders}, file.origin));
+          projects.appendChild(createNodeFolder(file.display || file.name, joinPaths(file.path), { files, folders }, file.origin));
         } else {
           projects.appendChild(createFile(file));
         }
@@ -178,7 +184,7 @@ function createElement(templateName, name, cb) {
       e.preventDefault();
     });
   }
-  elm.querySelector("#name").appendChild(document.createTextNode(name));
+  elm.querySelector("#name")?.appendChild(document.createTextNode(name));
   return elm;
 }
 
@@ -203,17 +209,24 @@ function createNodeFolder(name, path, details, origin) {
   });
 
   const filesText = details?.files ? `${details.files} files` : null;
-  const foldersText = details?.folders ? `${details.folders} folders`: null;
+  const foldersText = details?.folders ? `${details.folders} folders` : null;
   const detailsText = [filesText, foldersText].filter(i => i != null).join(" | ");
 
   elm.getElementById("details").innerHTML = detailsText;
-  elm.getElementById("delete").onclick = (e) => {
-    e.stopPropagation();
-    deleteFolder();
+
+  const deleteBtn = elm.getElementById("delete");
+  if (deleteBtn) {
+    deleteBtn.onclick = (e) => {
+      e.stopPropagation();
+      deleteFolder();
+    }
   }
-  elm.getElementById("rename").onclick = (e) => {
-    e.stopPropagation();
-    renameFolder();
+  const renameBtn = elm.getElementById("rename");
+  if (renameBtn) {
+    renameBtn.onclick = (e) => {
+      e.stopPropagation();
+      renameFolder();
+    }
   }
   return elm;
 }
@@ -224,10 +237,48 @@ function createCurrent() {
   const elm = createElement("node-current", title);
   elm.getElementById("path").innerHTML = `/${joinPaths(metadata.current_path.slice(0, -1))}`
 
-  elm.getElementById("create").onclick = (e) => {
-    e.stopPropagation();
-    createFolder();
+  const createBtn = elm.getElementById("create");
+  if (createBtn) {
+    createBtn.onclick = (e) => {
+      e.stopPropagation();
+      createFolder();
+    }
   }
+  return elm;
+}
+
+function createStorages() {
+  const elm = createElement("node-storages", "");
+  const dropdownBtn = elm.querySelector(".storage-select-btn");
+  const dropdownContent = elm.querySelector(".storage-select-content");
+  dropdownBtn.onclick = (e) => {
+    e.stopPropagation();
+    dropdownContent.classList.toggle("open");
+    onOutsideClick(() => {
+      dropdownContent?.classList.remove("open");
+    }, dropdownBtn, dropdownContent);
+  }
+  dropdownContent.querySelectorAll("li").forEach(li => {
+    const origin = li.id;
+    const path = li.getAttribute("data-path");
+    li.setAttribute("selected", metadata.origin === origin); // for pc
+    li.onclick = (e) => {
+      e.stopPropagation();
+      if (!metadata.firstTime) {
+        dropdownBtn.innerHTML = li.innerHTML;
+        dropdownContent.classList.remove("open");
+        metadata.origin = origin;
+        metadata.current_path = [path]; // TODO: Don't use path in templates
+        load();
+      }
+    }
+  })
+  const selected = dropdownContent.querySelector("li[selected=true]");
+  if (selected) {
+    dropdownBtn.querySelector(".storage-select-btn-inner").innerHTML = selected.innerHTML;
+  }
+
+  updateProgressBar(elm, 0.5);
   return elm;
 }
 
@@ -289,7 +340,9 @@ function selectPreview(url) {
  * @param {object} node
  */
 function createFile(node) {
-  const elm = createElement("node-project", node.display || node.name);
+  const elm = createElement("node-project", node.display || node.name, (e) =>
+    onClickFile(node)
+  );
   const nodeDetails = elm.querySelector(".node-details");
   nodeDetails.querySelectorAll(".details").forEach((element) => {
     translateLabels(element);
@@ -312,7 +365,6 @@ function createFile(node) {
   }
 
   initKebabMenu(elm);
-
   setupFileButtons(node, elm);
   return elm;
 }
@@ -322,23 +374,29 @@ function setupFileButtons(node, elm) {
   const paths = getNodeFilePaths(node.name);
   const fileUrl = joinPaths("/api/files/", ...paths);
 
-  const detailsBtn = elm.querySelector("#details");
+  const detailsBtn = elm.getElementById("details");
   if (detailsBtn) {
     detailsBtn.onclick = (e) => {
       onClickFile(node);
     }
   }
-  elm.querySelector("#start").onclick = (e) => {
-    e.stopPropagation();
-    startPrint();
+  const startBtn = elm.getElementById("start");
+  if (startBtn) {
+    startBtn.onclick = (e) => {
+      e.stopPropagation();
+      startPrint();
+    }
   }
-  elm.querySelector("#rename").onclick = (e) => {
-    e.stopPropagation();
-    renameProject();
+  const renameBtn = elm.getElementById("rename");
+  if (renameBtn) {
+    renameBtn.onclick = (e) => {
+      e.stopPropagation();
+      renameProject();
+    }
   }
 
-  const deleteBtn = elm.querySelector("#delete");
-  const downloadBtn = elm.querySelector("#download");
+  const deleteBtn = elm.getElementById("delete");
+  const downloadBtn = elm.getElementById("download");
   getJson(fileUrl).then((result) => {
     const file = result.data;
     if (deleteBtn) {
@@ -390,6 +448,5 @@ function countFilesRecursively(node) {
   folders.forEach(i => count += countFilesRecursively(i));
   return count;
 }
-
 
 export default { load, update };

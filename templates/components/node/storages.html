@@ -1,0 +1,70 @@
+<!-- prettier-ignore -->
+{#
+  # This file is part of the Prusa Link Web
+  # Copyright (C) 2021 Prusa Research a.s. - www.prusa3d.com
+  # SPDX-License-Identifier: GPL-3.0-or-later
+#}
+
+{%
+  set origins = {
+    'local': {
+      path: 'Prusa Link gcodes',
+      text: 'PrusaLink g-codes',
+      label: '',
+      pc_icon: 'local_storage.svg',
+      mobile_icon: 'local_storage_light.svg'
+    },
+    'sdcard': {
+      path: 'SD Card',
+      text: 'SD card',
+      label: '',
+      pc_icon: 'sd_card.svg',
+      mobile_icon: 'micro_sd_card_light.svg'
+    }
+  }
+%}
+
+<template id="node-storages">
+  <div class="new-component-header">
+    <img class="icon" src="{{ pre.countOrRenderAssets('storage.svg') | safe }}"/>
+    <p class="txt-size-3 txt-uppercase">Storages</p>
+  </div>
+  <div class="storage-select">
+    <div class="storage-select-btn">
+      <div class="storage-select-btn-inner">
+        <img class="icon" src="{{ pre.countOrRenderAssets('micro_sd_card_light.svg') | safe }}" />
+        <p class="txt-size-2">PrusaLink g-codes</p>
+      </div>
+      <img class="icon" src="{{ pre.countOrRenderAssets('dropdown_light.svg') | safe }}" />
+    </div>
+    <ul class="storage-select-content">
+      {% for key, values in origins %}
+        <li id="{{ key }}" data-path="{{ values.path }}">
+          <img class="icon pc-only" src="{{ pre.countOrRenderAssets(values.pc_icon) | safe }}"/>
+          <img class="icon mobile-only" src="{{ pre.countOrRenderAssets(values.mobile_icon) | safe }}"/>
+          <p class="txt-size-2">{{ values.text }}</p>
+        </li>
+      {% endfor %}
+    </div>
+  </div>
+
+  <div style="padding-bottom: 30px">
+    <div class="node-storage-space txt-size-3">
+      <div class="progress-bar" role="status">
+        <div class="fill"></div>
+        <p
+          class="txt-black txt-bold"
+          data-format="progress"
+        >
+          0%
+        </p>
+      </div>
+      <p>2.6 GB of 11.8 GB free</p>
+    </div>
+  </div>
+
+  {% include "components/upload.html" %}
+
+  <div style="margin-bottom: 20px;"></div>
+
+</template>

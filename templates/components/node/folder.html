@@ -7,8 +7,8 @@
 
 {%
   set buttons = {
-    'rename': {text: 'Rename', label: '', icon: 'edit.svg' },
-    'delete': {text: 'Delete', label: '', icon: 'delete.svg' }
+    'rename': {text: 'Rename', label: '', icon: 'edit.svg', implemented: false },
+    'delete': {text: 'Delete', label: '', icon: 'delete.svg', implemented: false }
   }
 %}
 
@@ -24,9 +24,11 @@
     <div class="separator"></div>
     <ul class="node-btn-list">
       {% for key, values in buttons %}
-        <li id="{{ key }}" title="{{ values.text }}">
-          <img class="icon icon-small" src="{{ pre.countOrRenderAssets(values.icon) | safe }}"/>
-        </li>
+        {% if values.implemented %}
+          <li id="{{ key }}" title="{{ values.text }}">
+            <img class="icon icon-small" src="{{ pre.countOrRenderAssets(values.icon) | safe }}"/>
+          </li>
+        {% endif %}
       {% endfor %}
     </ul>
   </div>

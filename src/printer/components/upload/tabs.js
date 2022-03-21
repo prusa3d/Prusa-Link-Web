@@ -8,17 +8,17 @@ class TabsController {
 
   lock() {
     this._isLocked = true;
-    this._root.querySelectorAll(".tab-header").forEach(headerElm => {
-      if (headerElm.getAttribute("data-tab") !== this.selected)
-        headerElm.setAttribute("locked", true);
+    this._root.querySelectorAll("[data-tab-btn]").forEach(btn => {
+      if (btn.getAttribute("data-tab-btn") !== this.selected)
+        btn.setAttribute("locked", true);
     })
   }
 
   unlock() {
     this._isLocked = false;
-    this._root.querySelectorAll(".tab-header").forEach(headerElm => {
-      if (headerElm.hasAttribute("locked"))
-        headerElm.removeAttribute("locked");
+    this._root.querySelectorAll("[data-tab-btn]").forEach(btn => {
+      if (btn.hasAttribute("locked"))
+        btn.removeAttribute("locked");
     })
   }
 
@@ -29,87 +29,41 @@ class TabsController {
     this._selected = null;
     /** @type {boolean} */
     this._isLocked = false;
-    /** @type {ResizeObserver | null} */
-    this._observer = null;
   }
 
   init(root) {
     this._root = root;
-    this._root.querySelectorAll(".tab").forEach(tabElm => {
-      const headerElm = tabElm.querySelector(".tab-header");
-      if (headerElm) {
-        headerElm.onclick = () => {
-          if (!this._isLocked) {
-            const tab = tabElm.getAttribute("data-tab");
-            if (tab === this._selected) {
-              this.closeTab();
-            } else {
-              this.openTab(tab);
-            }
+    root.querySelectorAll("[data-tab-btn]").forEach(btn => {
+      btn.onclick = () => {
+        if (!this._isLocked) {
+          const tab = btn.getAttribute("data-tab-btn");
+          if (tab === this._selected) {
+            // this.closeTab();
+          } else {
+            this.closeTab();
+            this.openTab(tab);
           }
         }
       }
-    });
+    })
+
     this.openTab(this._selected, true);
-  }
-
-  /**
-   * Setup `ResizeObserver` to handle element's resizing.
-   * @param {HTMLElement} tabBodyElm
-   */
-  _setupObserver(tabElm, tabBodyElm) {
-    if (this.observer)
-      this.observer.disconnect();
-
-    if (!tabBodyElm || !tabBodyElm.firstElementChild)
-      return;
-
-    const contentElm = tabBodyElm.firstElementChild;
-    this.observer = new ResizeObserver((e) => {
-      if (tabElm.getAttribute("opened") === "true")
-        tabBodyElm.style.height = contentElm.scrollHeight + "px";
-    });
-    this.observer.observe(tabBodyElm.firstElementChild);
   }
 
   /**
    * Open tab
    * @param {String} tab data-tab attribute
-   * @param {boolean} skipAnimation
    */
-  openTab(tab, skipAnimation = false) {
+  openTab(tab) {
     if (tab) {
-      const tabElm = this._root.querySelector(`.tab[data-tab="${tab}"]`);
-      if (!tabElm)
-        return;
-
-      const bodyElm = tabElm.querySelector(".tab-body");
-      if (!bodyElm)
-        return;
-
-      function show() {
-        if (!bodyElm.style.height)
-          bodyElm.style.height = `${bodyElm.scrollHeight}px`;
+      const tabElm = this._root.querySelector(`[data-tab="${tab}"]`);
+      if (tabElm)
         tabElm.setAttribute("opened", true);
-      }
 
-      function showImmediately() {
-        bodyElm.style.transition = "none";
-        show();
-        bodyElm.offsetHeight; // trigger reflow
-        bodyElm.style.transition = "";
-      }
+      const btnElm = this._root.querySelector(`[data-tab-btn="${tab}"]`);
+      if (btnElm)
+        btnElm.setAttribute("selected", true);
 
-      if (this._selected && this.selected !== tab)
-        this.closeTab();
-
-      if (skipAnimation) {
-        showImmediately();
-      } else {
-        show();
-      }
-
-      this._setupObserver(tabElm, bodyElm);
       this._selected = tab;
     }
   }
@@ -119,16 +73,14 @@ class TabsController {
    */
   closeTab() {
     if (this._selected) {
-      const tabElm = this._root.querySelector(`.tab[data-tab="${this._selected}"]`);
-      if (!tabElm)
-        return;
+      const tabElm = this._root.querySelector(`[data-tab="${this._selected}"]`);
+      console.log(tabElm);
+      if (tabElm)
+        tabElm.setAttribute("opened", false);
 
-      const bodyElm = tabElm.querySelector(".tab-body");
-      if (!bodyElm)
-        return;
-
-      tabElm.setAttribute("opened", false);
-      bodyElm.style.height = "";
+      const btnElm = this._root.querySelector(`[data-tab-btn="${this._selected}"]`);
+      if (btnElm)
+        btnElm.setAttribute("selected", false);
 
       this._selected = null;
     }

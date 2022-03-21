@@ -13,13 +13,20 @@ function scrollIntoViewIfNeeded(target, behavior = "smooth") {
 
   const elemRect = target.getBoundingClientRect();
   const bodyRect = document.body.getBoundingClientRect();
-  const offset = elemRect.top - bodyRect.top;
+  const offset = elemRect.top - (bodyRect.top + getHeaderOffset());
 
   if (elemRect.bottom > window.innerHeight) {
     window.scroll({ top: offset, behavior });
   } else if (elemRect.top < 0) {
     window.scroll({ top: offset, behavior });
   }
+}
+
+function getHeaderOffset() {
+  const header = document.querySelector(".header");
+  return header && getComputedStyle(header).position === "sticky"
+    ? header.getBoundingClientRect().height
+    : 0;
 }
 
 export default scrollIntoViewIfNeeded;

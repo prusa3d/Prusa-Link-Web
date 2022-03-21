@@ -65,3 +65,25 @@ export function showLoading() {
 export function hideLoading() {
   setHidden(document.querySelector("#job .loading-overlay"));
 }
+
+/**
+ * Invoke callback when user clicks outside given element(s).
+ * Subscription is removed after callback.
+ * @param {() => void} callback
+ * @param {...Element} refs References to one or more elements to ignore clicks.
+ */
+export function onOutsideClick(callback, ...refs) {
+  const handler = (e) => {
+    if (refs) {
+      for (const ref of refs) {
+        if (ref && ref.contains(e.target))
+          return;
+      }
+    }
+    if (callback) {
+      callback();
+    }
+    window.removeEventListener("pointerup", handler);
+  };
+  window.addEventListener("pointerup", handler);
+}

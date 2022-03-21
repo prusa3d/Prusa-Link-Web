@@ -219,7 +219,7 @@
   },
   "upld": {
     "direct": {
-      "choose": "Choose a {{file}} or drop it here.",
+      "choose": "Click to choose a {{file}} file or drag it here",
       "description": "Upload project directly to the printer via local network",
       "title": "Direct upload"
     },
@@ -227,17 +227,8 @@
       "description": "Upload project from remote URL directly to the printer",
       "hint-fdm": "Type URL of G-CODE project file",
       "hint-sla": "Type URL of compatible project file",
-      "source": "source URL",
+      "source": "Source URL",
       "title": "Remote url"
-    },
-    "slicer": {
-      "description": "Upload project from PrusaSlicer to the printer via local network",
-      "guide": {
-        "1": "Use Prusa Slicer to upload files with print data, instructions on how to do this can be found",
-        "1-link": "here",
-        "2": "You will have to fill it out IP address {{ip_address}} and API key {{api_key}}"
-      },
-      "title": "Prusa Slicer"
     },
     "start-pt": "start print after transfer",
     "title": "upload project"

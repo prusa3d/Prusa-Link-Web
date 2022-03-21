@@ -5,73 +5,31 @@
   # SPDX-License-Identifier: GPL-3.0-or-later
 #}
 
-<div id="upld">
-  <div class="tab" data-tab="direct" opened="false">
-    <div class="tab-header" data-tab="direct">
-        <img class="icon" src="{{ pre.countOrRenderAssets('prusa-link-favicon.svg') | safe }}"/>
-      <p
-        class="txt-black txt-size-2 txt-bold txt-uppercase"
-        data-label="upld.direct.title"
-      >
-        DIRECT UPLOAD
-      </p>
-      <div class="separator"></div>
-      <p
-        class="txt-size-3 txt-italic txt-description"
-        data-label="upld.direct.description"
-      >
-        Upload project directly to the printer via local network
-      </p>
-    </div>
-    <div class="tab-body">
-      {% include "components/upload/direct.html" %}
-    </div>
+{%
+  set sources = {
+    'direct': {text: 'Local storage', label: '', component: 'components/upload/direct.html' },
+    'remote': {text: 'Remote URL', label: '', component: 'components/upload/remote.html' }
+  }
+%}
+
+<div id="upld" class="txt-size-3">
+  <div class="upld-source">
+    <img class="icon icon-small" src="{{ pre.countOrRenderAssets('upload_arrow.svg') | safe }}"/>
+    <p class="txt-bold txt-uppercase">Add project from &nbsp;</p>
+    <ul class="node-upload-source">
+      {% for key, values in sources %}
+        <li class="txt-bold txt-uppercase">
+          <a data-tab-btn="{{ key }}">{{ values.text }}</a>
+        </li>
+      {% endfor %}
+    </ul>
   </div>
 
-  {% if env.WITH_REMOTE_UPLOAD %}
-    <div class="tab" data-tab="remote" opened="false">
-      <div class="tab-header" data-tab="remote">
-        <img class="icon" src="{{ pre.countOrRenderAssets('remote_url.svg') | safe }}"/>
-        <p
-          class="txt-black txt-size-2 txt-bold txt-uppercase"
-          data-label="upld.remote.title"
-        >
-          REMOTE URL
-        </p>
-        <div class="separator"></div>
-        <p
-          class="txt-size-3 txt-italic txt-description"
-          data-label="upld.remote.description"
-        >
-          Upload project from remote URL directly to the printer
-        </p>
+  <div style="margin-left: 20px;">
+    {% for key, values in sources %}
+      <div data-tab="{{ key }}">
+        {% include values.component %}
       </div>
-      <div class="tab-body">
-        {% include "components/upload/remote.html" %}
-      </div>
-    </div>
-  {% endif %}
-
-  <div class="tab" data-tab="slicer" opened="false">
-    <div class="tab-header" data-tab="slicer">
-      <img class="icon" src="{{ pre.countOrRenderAssets('prusaslicer-logo.svg') | safe }}"/>
-      <p
-        class="txt-black txt-size-2 txt-bold txt-uppercase"
-        data-label="upld.slicer.title"
-      >
-        PRUSA SLICER
-      </p>
-      <div class="separator"></div>
-      <p
-        class="txt-size-3 txt-italic txt-description"
-        data-label="upld.slicer.description"
-      >
-        Upload project from PrusaSlicer to the printer via local network
-      </p>
-    </div>
-    <div class="tab-body">
-      {% include "components/upload/slicer.html" %}
-    </div>
+    {% endfor %}
   </div>
-
 </div>

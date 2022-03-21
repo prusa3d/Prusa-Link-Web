@@ -39,7 +39,8 @@ const requests = {
     update: true
   },
   profiles: {
-    get: () => getJson("/api/printerprofiles"),
+    // NOTE: I leave it like this until we change the API
+    get: () => (process.env.PRINTER_TYPE === "sla") ? getJson("/api/printerprofiles") : new Promise(resolve => resolve({})),
     init: true,
     update: false
   },
@@ -183,4 +184,5 @@ function handleAppError(result) {
       message: "Something bad happened on application side",
     },
   });
+  console.error(result);
 }

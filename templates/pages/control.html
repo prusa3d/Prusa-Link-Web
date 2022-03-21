@@ -121,75 +121,77 @@
   </div>
 
   <div class="resp-row">
-    <div class="col" id="heated-bed-xy-move">
-      <p
-        data-label="control.heated-bed-move"
-        class="txt-bold txt-grey txt-size-2 txt-underline title"
-      >
-        heated bed X and Y move
-      </p>
-      <div class="row">
-        <div class="square"></div>
-        <button class="action square" data-action="move" data-value="y+">
-          <img src="{{ pre.countOrRenderAssets('arrow_up.svg') | safe }}"/>
-        </button>
-        <div class="square"></div>
-      </div>
-      <div class="row">
-        <button class="action square" data-action="move" data-value="x-">
-          <img src="{{ pre.countOrRenderAssets('arrow_left.svg') | safe }}"/>
-        </button>
-        <div class="square"></div>
-        <button class="action square" data-action="move" data-value="x+">
-          <img src="{{ pre.countOrRenderAssets('arrow_right.svg') | safe }}"/>
-        </button>
-      </div>
-      <div class="row">
-        <div class="square"></div>
-        <button class="action square" data-action="move" data-value="y-">
-          <img src="{{ pre.countOrRenderAssets('arrow_down.svg') | safe }}"/>
-        </button>
-        <button class="action square" data-action="home" data-value="x,y">
-          <img src="{{ pre.countOrRenderAssets('home.svg') | safe }}"/>
-        </button>
-      </div>
-
-      <p
-        data-label="control.move-step"
-        class="txt-bold txt-grey txt-size-2 title"
-      >
-        move step [mm]
-      </p>
-      <div class="row" id="move-step">
-        {% for value in[0.1, 1, 10] %}
-          <button class="action square" data-step="{{ value }}">
-            <p>{{ value }}</p>
+    <div class="resp-group">
+      <div class="col" id="heated-bed-xy-move">
+        <p
+          data-label="control.heated-bed-move"
+          class="txt-bold txt-grey txt-size-2 txt-underline title"
+        >
+          heated bed X and Y move
+        </p>
+        <div class="row">
+          <div class="square"></div>
+          <button class="action square" data-action="move" data-value="y+">
+            <img src="{{ pre.countOrRenderAssets('arrow_up.svg') | safe }}"/>
           </button>
-        {% endfor %}
-      </div>
-    </div>
+          <div class="square"></div>
+        </div>
+        <div class="row">
+          <button class="action square" data-action="move" data-value="x-">
+            <img src="{{ pre.countOrRenderAssets('arrow_left.svg') | safe }}"/>
+          </button>
+          <div class="square"></div>
+          <button class="action square" data-action="move" data-value="x+">
+            <img src="{{ pre.countOrRenderAssets('arrow_right.svg') | safe }}"/>
+          </button>
+        </div>
+        <div class="row">
+          <div class="square"></div>
+          <button class="action square" data-action="move" data-value="y-">
+            <img src="{{ pre.countOrRenderAssets('arrow_down.svg') | safe }}"/>
+          </button>
+          <button class="action square" data-action="home" data-value="x,y">
+            <img src="{{ pre.countOrRenderAssets('home.svg') | safe }}"/>
+          </button>
+        </div>
 
-    <div class="col" id="nozzle-z-move">
-      <p
-        data-label="control.nozzle-z-move"
-        class="txt-bold txt-grey txt-size-2 txt-underline title"
-      >
-        nozzle Z move
-      </p>
-      <div class="row">
-        <button class="action square" data-action="move" data-value="z+">
-          <img src="{{ pre.countOrRenderAssets('arrow_up.svg') | safe }}"/>
-        </button>
+        <p
+          data-label="control.move-step"
+          class="txt-bold txt-grey txt-size-2 title"
+        >
+          move step [mm]
+        </p>
+        <div class="row" id="move-step">
+          {% for value in[0.1, 1, 10] %}
+            <button class="action square" data-step="{{ value }}">
+              <p>{{ value }}</p>
+            </button>
+          {% endfor %}
+        </div>
       </div>
-      <div class="row">
-        <button class="action square" data-action="move" data-value="z-">
-          <img src="{{ pre.countOrRenderAssets('arrow_down.svg') | safe }}"/>
-        </button>
-      </div>
-      <div class="row">
-        <button class="action square" data-action="home" data-value="z">
-          <img src="{{ pre.countOrRenderAssets('home.svg') | safe }}"/>
-        </button>
+
+      <div class="col" id="nozzle-z-move">
+        <p
+          data-label="control.nozzle-z-move"
+          class="txt-bold txt-grey txt-size-2 txt-underline title"
+        >
+          nozzle Z move
+        </p>
+        <div class="row">
+          <button class="action square" data-action="move" data-value="z+">
+            <img src="{{ pre.countOrRenderAssets('arrow_up.svg') | safe }}"/>
+          </button>
+        </div>
+        <div class="row">
+          <button class="action square" data-action="move" data-value="z-">
+            <img src="{{ pre.countOrRenderAssets('arrow_down.svg') | safe }}"/>
+          </button>
+        </div>
+        <div class="row">
+          <button class="action square" data-action="home" data-value="z">
+            <img src="{{ pre.countOrRenderAssets('home.svg') | safe }}"/>
+          </button>
+        </div>
       </div>
     </div>
 

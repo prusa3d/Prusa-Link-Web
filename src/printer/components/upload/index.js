@@ -3,7 +3,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import direct from "./direct";
-import slicer from "./slicer";
 import TabsController from "./tabs";
 
 const remote = process.env.WITH_REMOTE_UPLOAD ? require("./remote").default : null;
@@ -12,7 +11,6 @@ const tabs = new TabsController();
 function init(origin="local", path="", projectExtensions) {
   direct.init(origin, path, projectExtensions);
   remote?.init(origin, path);
-  slicer.init();
 
   tabs.init(document.getElementById("upld"));
   updateTabs();
@@ -32,6 +30,8 @@ function updateTabs() {
     tabs.lock();
   } else {
     tabs.unlock();
+    if (!tabs.selected)
+      tabs.openTab("direct");
   }
 }
 

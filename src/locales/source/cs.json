@@ -228,16 +228,9 @@
       "hint-fdm": "Zadejte URL souboru projektu G-CODE",
       "hint-sla": "Zadejte URL adresu kompatibilního projektu",
       "source": "URL zdroje",
+      "project": "Název projektu",
+      "project-hint": "Zadejte název souboru projektu",
       "title": "Vzdálené URL"
-    },
-    "slicer": {
-      "description": "Nahrajte projekt z PrusaSlicer do tiskárny prostřednictvím místní sítě",
-      "guide": {
-        "1": "Pomocí nástroje Prusa Slicer nahrajte soubory s tiskovými daty. Pokyny, jak to provést, najdete",
-        "1-link": "zde",
-        "2": "Budete muset vyplnit IP adresu {{ip_address}} a API klíč {{api_key}}"
-      },
-      "title": "Prusa Slicer"
     },
     "start-pt": "po přenosu zahájit tisk",
     "title": "nahrát projekt"

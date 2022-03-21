@@ -7,21 +7,23 @@
 
 {%
   set buttons = {
-    'create': {text: 'Create new folder', label: '', icon: 'create_folder.svg' }
+    'create': {text: 'Create new folder', label: '', icon: 'create_folder.svg', implemented: false }
   }
 %}
 
 <template id="node-current">
   <div class="line-y node-current">
     <img class="icon icon-small" src="{{ pre.countOrRenderAssets('folder_opened.svg') | safe }}"/>
-    <p id="name" class="txt-size-3 txt-bold txt-uppercase"></p>
+    <p id="name" class="txt-size-3 txt-uppercase"></p>
     <p id="path" class="txt-size-3 txt-grey">/PrusaLink g-codes/MK3/</p>
     <div class="separator"></div>
     <ul class="node-btn-list">
       {% for key, values in buttons %}
-        <li id="{{ key }}" title="{{ values.text }}">
-          <img class="icon icon-small" src="{{ pre.countOrRenderAssets(values.icon) | safe }}"/>
-        </li>
+        {% if values.implemented %}
+          <li id="{{ key }}">
+            <img class="icon icon-small" src="{{ pre.countOrRenderAssets(values.icon) | safe }}"/>
+          </li>
+        {% endif %}
       {% endfor %}
     </ul>
   </div>

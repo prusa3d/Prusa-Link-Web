@@ -275,7 +275,7 @@ const fdmFormatData = (format, value) => {
     case "progress":
       return numberFormat((value || 0) * 100) + "%";
     case "percent":
-      return `${numberFormat((value || 0), true, 0)}%`;
+      return `${numberFormat((value || 0), 0)}%`;
     case "material":
       return value || translate("prop.na");
     case "size":
