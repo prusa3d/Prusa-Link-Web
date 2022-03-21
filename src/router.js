@@ -2,6 +2,7 @@
 // Copyright (C) 2021 Prusa Research a.s. - www.prusa3d.com
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+import { updateTelemetryVisibility } from "./layout";
 import { translateLabels } from "./locale_provider";
 import printer from "./printer";
 
@@ -19,6 +20,7 @@ function doNavigate (url, pushIntoHistory) {
   translateLabels(root);
   updateNavbar(page);
   tryChangeTitle(route.getTitle);
+  updateTelemetryVisibility();
   window.scrollTo({ top: 0 });
 
   route.module.load();

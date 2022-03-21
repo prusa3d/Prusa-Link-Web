@@ -17,6 +17,7 @@ function init(origin, path) {
   const elm = document.getElementById("upld-remote");
   if (elm) {
     const urlInput = elm.querySelector("#remote-url");
+    const nameInput = elm.querySelector("#remote-project-name");
     const uploadBtn = elm.querySelector("#upld-proj");
     const startPtCheckbox = elm.querySelector("#upld-remote-start-pt");
 
@@ -24,7 +25,10 @@ function init(origin, path) {
       urlInput.value,
       origin,
       path,
-      { to_print: startPtCheckbox.checked },
+      { 
+        to_print: startPtCheckbox.checked,
+        rename: nameInput.value
+      },
     );
 
     const updateUploadBtn = () => {
@@ -96,7 +100,7 @@ const startUpload = (url, target, destination, options) => {
     body: JSON.stringify({
       url,
       destination,
-      to_print: options.to_print,
+      ...options,
     }),
   }).catch((result) => handleError(result));
 }

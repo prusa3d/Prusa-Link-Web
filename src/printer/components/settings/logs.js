@@ -48,9 +48,11 @@ function showLogContent(filename) {
     const ul = document.querySelector("ul.logs");
     if (ul) {
       if (result.data) {
-        ul.innerHTML = result.data.split("\n").map(line => `<li>${line}</li>`).join("");
+        ul.innerHTML = result.data.split("\n")
+          .map(row => createLi(row))
+          .join("");
       } else {
-        ul.innerHTML = `<li>${translate("logs.empty-file")}</li>`;
+        ul.innerHTML = createLi(translate("logs.empty-file"));
       }
     }
   })
@@ -60,8 +62,12 @@ function showLogExceedSizeLimit() {
   const ul = document.querySelector("ul.logs");
   const message = translate("logs.file-too-large", { size: formatData("size", sizeLimit) });
   if (ul) {
-    ul.innerHTML = `<li>${message}</li>`;
+    ul.innerHTML = createLi(message);
   }
+}
+
+function createLi(innerHTML) {
+  `<li class="txt-size-2>${innerHTML}</li>`;
 }
 
 const update = () => {

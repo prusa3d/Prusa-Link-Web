@@ -3,6 +3,8 @@
 * SPDX-License-Identifier: GPL-3.0-or-later
 */
 
+$orange: #FA6831;
+
 /* ===================================== TEXT ======================================= */
 button,
 html,
@@ -29,6 +31,12 @@ body, body > .header{
 }
 a {
   background-color: transparent;
+}
+a:not([href]) {
+  cursor: pointer;
+}
+a:not([href]):hover {
+  text-decoration: underline;
 }
 img {
   border-style: none;
@@ -102,7 +110,7 @@ progress {
 }
 
 .header {
-  padding: 16px 0 16px 0;
+  padding: 32px 0;
 }
 
 .node:hover,
@@ -139,8 +147,6 @@ nav {
 nav .brand-logo {
   order: 1;
   flex-grow: 1;
-  min-width: 288px;
-  min-height: 125px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -158,15 +164,15 @@ nav > ul {
   flex-direction: column;
   flex-grow: 1;
   width: 100%;
-  margin-bottom: 0;
-  margin-top: 0;
+  margin: 0;
+  padding: 32px 0;
 }
 nav > ul > li {
   display: flex;
   list-style-type: none;
 }
 nav > ul > li.active {
-  border-bottom: 2px solid #f8651b;
+  border-bottom: 2px solid $orange;
 }
 nav > ul a {
   list-style: none;
@@ -274,52 +280,37 @@ nav .burger-icon.burger-open {
   flex-direction: column;
   justify-content: space-between;
 }
+.progress-bar {
+  background: white;
+  position: relative;
+  min-height: 5px;
+  overflow-y: visible;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.progress-bar > .fill {
+  background: $orange;
+  position: absolute;
+  z-index: 1;
+}
+.progress-bar > p {
+  z-index: 2;
+}
+.hide-scrollbar::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+}
 
 /* ===================================== UPLOAD ======================================= */
-.tab-header {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: baseline;
-  background-color: #5b5b5b;
-  padding: 12px 8px;
-  cursor: pointer;
+
+[data-tab]:not([opened="true"]) {
+  display: none;
 }
-.tab-header > div {
-  display: flex;
+[data-tab-btn][selected="true"] {
+  color: $orange;
 }
-.tab-header > p:first-of-type {
-  margin: 0 30px 0 6px;
-}
-.tab-header > img {
-  padding: 0;
-  margin: auto 0;
-}
-.tab-header[locked="true"] {
-  opacity: 0.3;
-  cursor: not-allowed;
-}
-.tab-body {
-  padding: 25px;
-  border-left: 1px solid #5b5b5b;
-  border-right: 1px solid #5b5b5b;
-  overflow: hidden;
-  transition: 0.5s;
-  margin-bottom: 1px;
-}
-.tab[opened="false"] .tab-body {
-  height: 0;
-  padding-top: 0;
-  padding-bottom: 0;
-}
-.tab-body a {
-  text-decoration: none;
-}
-.tab-body a:hover {
-  text-decoration: underline;
-}
-#upld > div:last-child > .tab-body {
-  border-bottom: 1px solid #5b5b5b;
-}
+
 .separator {
   flex-grow: 1;
 }
@@ -333,26 +324,36 @@ nav .burger-icon.burger-open {
   padding-top: 64px;
   line-height: 1.5;
 }
+.new-component-header {
+  display:flex;
+  align-items: center;
+  padding: 10px 0;
+}
 .abs-center {
   position: absolute;
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%);
 }
-#upld-direct-frame,
-#upld-direct .state-choose img {
-  padding-bottom: 20px;
+#upld .upld-source {
+  display:flex;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+}
+#upld .state-choose-checkbox{
+  margin-top: 10px;
 }
 #upld-direct-frame {
   position: relative;
-  border-style: dashed;
-  border-color: #f8651b;
-  padding-top: 20px;
+  border: 2px dashed white;
+  padding: 40px 0;
 }
 #upld-direct-frame div {
   display: flex;
-  flex-flow: column nowrap;
+  flex-direction: row;
   align-items: center;
+  justify-content: center;
 }
 #upld-direct input[type="file"] {
   position: absolute;
@@ -384,15 +385,14 @@ nav .burger-icon.burger-open {
 #upld-direct[data-state="uploading"] .state-uploading {
   display: block;
 }
-#upld-remote .wrapper {
-  display: flex;
-}
 #upld-remote button {
-  white-space: nowrap;
-  margin-left: 12px;
+  margin-left: auto;
 }
 #upld-remote input[type="text"] {
   width: 100%;
+  box-sizing: border-box;
+  line-height: 1.5;
+  margin: 4px 0;
 }
 #upld-remote .upld-details {
   display: flex;
@@ -404,16 +404,18 @@ nav .burger-icon.burger-open {
 }
 #upld-remote .progress-bar {
   height: 36px;
-  background-color: white;
   overflow: hidden;
 }
 #upld-remote .progress-bar p {
   position: absolute;
   left: 0;
   right: 0;
+  top: 50%;
+  transform: translate(0,-50%);
   padding: 2px;
-  line-height: 2rem;
-  overflow: auto;
+  overflow-x: auto;
+  overflow-y: hidden;
+  white-space: nowrap;
 }
 #upld-remote[data-state="choose"] .state-uploading {
   display: none;
@@ -440,7 +442,7 @@ nav .burger-icon.burger-open {
   fill: #1b73f8;
 }
 .temp-legend-orange {
-  fill: #f8651b;
+  fill: $orange;
 }
 .temp-legend-yellow {
   fill: #f3f12c;
@@ -456,7 +458,7 @@ nav .burger-icon.burger-open {
   stroke: #1b73f8;
 }
 #temp-line-orange {
-  stroke: #f8651b;
+  stroke: $orange;
 }
 #temp-line-yellow {
   stroke: #f3f12c;
@@ -543,20 +545,20 @@ nav .burger-icon.burger-open {
   object-fit: contain;
 }
 .node-icon {
-  max-width: 48px;
-  max-height: 48px;
+  max-width: 80px;
+  max-height: 80px;
   margin: auto;
 }
 .node-img-box,
 .node-icon-box {
   flex-shrink: 0;
   position: relative;
-  width: 100px;
-  height: 100px;
+  width: 150px;
+  height: 150px;
   align-self: stretch;
 }
 .node-icon-box {
-  height: 60px;
+  height: 100px;
 }
 .node-wrapper {
   display: flex;
@@ -579,6 +581,11 @@ nav .burger-icon.burger-open {
   flex-wrap: wrap;
   width: 100%;
   column-gap: 15px;
+}
+.node-details .details {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
 }
 .node-current {
   display: flex;
@@ -604,6 +611,33 @@ nav .burger-icon.burger-open {
   cursor: default;
   pointer-events: none;
   opacity: 0.3;
+}
+.node-storage-space {
+  display: flex;
+  margin-top: 10px;
+  column-gap: 15px;
+  align-items: center;
+  justify-content: flex-end;
+}
+.node-storage-space .progress-bar {
+  flex-grow: 1;
+  max-width: 200px;
+}
+.node-upload-source {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+}
+.node-upload-source > li {
+  display: flex;
+}
+.node-upload-source > li[selected="true"] {
+  color: $orange;
+}
+.node-upload-source > li:not(:first-child)::before {
+  content: "\00a0|\00a0";
+  color: white;
 }
 #preview-wrapper {
   display: flex;
@@ -728,6 +762,16 @@ button:disabled {
   background-color: #be0000;
   border-color: #dbdbdb;
 }
+.outlined {
+  border-style: solid;
+  background-color: transparent;
+  border-color: white;
+  border-radius: 2px;
+}
+.outlined:hover {
+  background-color: white;
+  color: black;
+}
 .message {
   display: flex;
   justify-content: center;
@@ -757,14 +801,6 @@ button:disabled {
 .force-column {
   flex-direction: column !important;
 }
-.progress-bar {
-  background: #242526;
-  position: relative;
-}
-.progress-bar > .fill {
-  background: #f8651b;
-  position: absolute;
-}
 .progress-img {
   position: relative;
   height: 100%;
@@ -793,8 +829,10 @@ button:disabled {
   justify-content: center;
 }
 .progress-with-img .progress-bar {
+  height: auto;
   width: 20px;
   flex-shrink: 0;
+  background: #242526;
 }
 .progress-without-img {
   display: flex;
@@ -808,6 +846,7 @@ button:disabled {
 .progress-without-img .progress-bar {
   height: 20px;
   width: 100%;
+  background: #242526;
 }
 .stats {
   display: grid;
@@ -856,6 +895,14 @@ button:disabled {
   width: 100%;
   flex-direction: column;
   flex-wrap: wrap;
+}
+#control .resp-group {
+  display: flex;
+  justify-content: space-between;
+  flex-grow: 1;
+}
+#control .resp-group .col:last-child {
+  margin: 0 auto;
 }
 #control .txt-underline {
   border-bottom: 1px solid #707070;
@@ -922,7 +969,7 @@ button:disabled {
 }
 #control button[selected], #control button[selected]:disabled {
   border: 0;
-  background: #f8651b;
+  background: $orange;
   opacity: 1;
 }
 
@@ -1108,7 +1155,7 @@ button:disabled {
   line-height: 1.5;
   display: flex;
   flex-direction: column;
-  z-index: 2;
+  z-index: 4;
   position: fixed;
   right: 0;
   bottom: 0;
@@ -1286,7 +1333,7 @@ $toast-success-title-color: $text-white;
   padding: 15px 20px;
 }
 .dropdown li:hover {
-  background: #f8651b;
+  background: $orange;
 }
 
 .dropdown-btn img {
@@ -1300,7 +1347,64 @@ $toast-success-title-color: $text-white;
   min-width: 100%;
   position: absolute;
   visibility: collapse;
-  z-index: 1;
+  z-index: 3;
+}
+
+.storage-select {
+  align-self: center;
+  text-transform: uppercase;
+  position: relative;
+  width: 100%;
+  color: black;
+}
+.storage-select .open {
+  visibility: visible;
+}
+.storage-select .icon {
+  padding: 0 8px;
+}
+.storage-select-content {
+  background: white;
+  min-width: 100%;
+  position: absolute;
+  visibility: collapse;
+  z-index: 3;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  border-radius: 6px;
+  border: 1px solid #d5d5d5;
+}
+.storage-select-content > li {
+  display: flex;
+  align-items: center;
+  padding: 16px 0;
+  cursor: pointer;
+}
+.storage-select-content > li:hover {
+  background: #d5d5d5;
+}
+.storage-select-btn,
+.storage-select-btn-inner {
+  display: flex;
+  align-items: center;
+}
+.storage-select-btn {
+  cursor: pointer;
+  padding: 16px 0;
+  display: flex;
+  align-items: center;
+  border-radius: 6px;
+  background: white;
+  border: 1px solid #d5d5d5;
+}
+.storage-select-btn:hover span {
+  color: $orange;
+}
+.storage-select-btn img:last-child {
+  margin-left: auto;
+  border-left: 1px solid #d5d5d5;
+  padding: 0 10px;
 }
 
 /* ===================================== KEBAB ======================================= */
@@ -1311,7 +1415,7 @@ $toast-success-title-color: $text-white;
 .kebab > ul {
   position: absolute;
   right: 0;
-  z-index: 1;
+  z-index: 3;
   display: none;
   list-style: none;
   width: max-content;
@@ -1445,7 +1549,7 @@ input .autoresize {
   margin: -7px 0 7px 0;
 }
 
-@media only screen and (max-width: 992px) {
+@media only screen and (max-width: 991.5px) {
   .pc-only {
     display: none;
   }
@@ -1456,10 +1560,10 @@ input .autoresize {
     display: none;
   }
   .header {
-    padding-bottom: 0;
+    padding: 16px 0 0 16px;
     position: sticky;
     top: 0;
-    z-index: 1;
+    z-index: 3;
   }
   .content {
     width: 75%;
@@ -1471,6 +1575,7 @@ input .autoresize {
     flex-wrap: nowrap;
     flex-direction: row;
     width: inherit;
+    padding: 0 0 0 32px;
   }
   nav > ul > li {
     border-bottom: 2px solid #707070;
@@ -1645,6 +1750,25 @@ input .autoresize {
   #job .progress {
     font-size: 16px;
   }
+  .node,
+  .node-btn-list {
+    padding-right: 5px;
+  }
+  .node .node-btn-list {
+    padding-right: 0;
+  }
+  .node-icon {
+    max-width: 48px;
+    max-height: 48px;
+  }
+  .node-img-box,
+  .node-icon-box {
+    width: 100px;
+    height: 100px;
+  }
+  .node-icon-box {
+    height: 60px;
+  }
   .kebab-responsive > .kebab-menu {
     display: none;
   }
@@ -1671,5 +1795,44 @@ input .autoresize {
   }
   .kebab-responsive > ul > li .icon {
     margin: 0;
+  }
+  .storage-select {
+    color: white;
+    border-bottom: 1px solid #bababa;
+    border-radius: 0;
+  }
+  .storage-select-btn {
+    display: none;
+  }
+  .storage-select-content {
+    visibility: visible;
+    position: static;
+    border: 0;
+    background: transparent;
+    list-style: none;
+    display: flex;
+  }
+  .storage-select-content > li {
+    display: flex;
+    align-items: center;
+    margin: 0 0 -1px 0;
+    padding: 5px 30px 5px 5px;
+    cursor: pointer;
+    border: 1px solid transparent;
+    border-bottom-color: #bababa;
+  }
+  .storage-select-content > li:hover {
+    background: transparent;
+  }
+  .storage-select-content > li[selected="false"]:hover {
+    background: #313131;
+  }
+  .storage-select-content > li[selected="true"] {
+    color: $orange;
+    border: 1px solid #bababa;
+    border-bottom: 1px solid #0a0a0a;
+  }
+  .storage-select-content > li:first-child {
+    margin-left: 10px;
   }
 }

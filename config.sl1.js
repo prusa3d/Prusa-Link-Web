@@ -12,7 +12,7 @@ module.exports = (env, args) => {
         WITH_REMOTE_UPLOAD: true,
         WITH_START_PRINT_AFTER_UPLOAD: true,
         WITH_LOGS: false,
-        WITH_FONT: true,
+        WITH_FONT: false,
         ...env,
     };
     return webpackConfig(config, args);

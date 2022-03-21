@@ -47,22 +47,13 @@
 
 <div id="upld-remote" data-state="choose">
   <div class="state-choose">
-    <p data-label="upld.remote.source">source URL</p>
-    <div class="wrapper">
-      <input
-        id="remote-url"
-        type="text"
-        placeholder="http://"
-      />
-      <button id="upld-proj" class="yes">
-        <p
-          class="txt-uppercase"
-          data-label="btn.upld-proj"
-        >
-          UPLOAD PROJECT
-        </p>
-      </button>
-    </div>
+    <p data-label="upld.remote.source" class="txt-grey">Source URL</p>
+    <input
+      id="remote-url"
+      class="txt-size-2"
+      type="text"
+      placeholder="http://"
+    />
     {% if env.PRINTER_TYPE == "fdm" %}
       <p
         class="txt-grey txt-italic"
@@ -78,6 +69,29 @@
         Type URL of compatible project file
       </p>
     {% endif %}
+
+    <p data-label="upld.remote.project" class="txt-grey" style="margin-top: 10px;">Project name</p>
+    <input
+      id="remote-project-name"
+      class="txt-size-2"
+      type="text"
+    />
+    <p
+      class="txt-grey txt-italic"
+      data-label="upld.remote.project-hint"
+    >
+      Type or edit project name
+    </p>
+
+    <button id="upld-proj" class="outlined">
+      <p
+        class="txt-uppercase"
+        data-label="btn.upld-proj"
+      >
+        UPLOAD PROJECT
+      </p>
+    </button>
+
     {% if env.WITH_START_PRINT_AFTER_UPLOAD %}
       <div class="state-choose-checkbox">
         <input type="checkbox" id="upld-remote-start-pt" />
@@ -94,7 +108,7 @@
   <div class="state-uploading">
     <div class="progress-bar">
       <div class="fill"></div>
-      <p class="txt-black"
+      <p class="txt-black hide-scrollbar"
         data-where="url"
         data-type="download"
       >
