@@ -55,3 +55,14 @@ npm run start:sl1
 5. Check the diff.
 6. Delete `cs_CZ.json`, `en_US.json`, ... files.
 7. Commit
+
+## Icons
+
+1. Add icons into the `src/assets/` directory.
+2. Run the `npm run recolor` script, it will do the following:
+    1. Fix the primary (orange) color to use only the correct one.
+    2. Create a green version for m1 printers.
+
+The script may not recognize the primary (orange) color. If that happens, you have two choices:
+1. Add this color into `tools\recolor_icons\config\fix_primary_color.js`.
+2. Or manually change the color of an icon and run the script again.

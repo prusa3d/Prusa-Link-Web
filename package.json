@@ -15,7 +15,8 @@
     "start:mini": "webpack --config config.mini.js --env locales dev && webpack serve --config config.mini.js --env dev",
     "build:mini": "webpack --config config.mini.js --env locales && webpack --config config.mini.js",
     "start:custom": "webpack --config config.custom.js --env locales dev && webpack serve --config config.custom.js --env dev",
-    "build:custom": "webpack --config config.custom.js --env locales && webpack --config config.custom.js"
+    "build:custom": "webpack --config config.custom.js --env locales && webpack --config config.custom.js",
+    "recolor": "node tools/recolor_icons"
   },
   "repository": {
     "type": "git",
