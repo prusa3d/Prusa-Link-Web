@@ -1,17 +1,1 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
-<!-- Creator: CorelDRAW 2017 -->
-<svg xmlns="http://www.w3.org/2000/svg" xml:space="preserve" width="7.341mm" height="10.3597mm" version="1.1" style="shape-rendering:geometricPrecision; text-rendering:geometricPrecision; image-rendering:optimizeQuality; fill-rule:evenodd; clip-rule:evenodd" viewBox="0 0 186.42 263.07" xmlns:xlink="http://www.w3.org/1999/xlink">
-    <defs>
-        <style type="text/css">
-            <![CDATA[
-                .fil1 {fill:#FF6600}
-                .fil0 {fill:white}
-            ]]>
-        </style>
-    </defs>
-    <g>
-        <polygon class="fil0" points="-0,35.98 36.28,35.98 59.12,185.81 137.06,185.81 137.06,263.07 -0,263.07 " />
-        <polygon class="fil1" points="136.93,0 41.81,33.29 112.85,167.17 186.42,141.42 " />
-    </g>
-</svg>
+<svg xmlns="http://www.w3.org/2000/svg" xml:space="preserve" width="27.746" height="39.155" style="shape-rendering:geometricPrecision;text-rendering:geometricPrecision;image-rendering:optimizeQuality;fill-rule:evenodd;clip-rule:evenodd" viewBox="0 0 186.42 263.07"><path style="fill:#fff" d="M0 35.98h36.28l22.84 149.83h77.94v77.26H0z"/><path style="fill:#FA6831" d="M136.93 0 41.81 33.29l71.04 133.88 73.57-25.75z"/></svg>
