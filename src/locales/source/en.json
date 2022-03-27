@@ -75,7 +75,7 @@
   },
   "home": {
     "link": "Dashboard",
-    "title": "Printer status"
+    "title": "Printer Status"
   },
   "logs": {
     "empty-file": "Log file is empty!",
