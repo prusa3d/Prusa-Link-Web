@@ -19,6 +19,7 @@ router.post("/:target", async (req, res, next) => {
     size: 3705000,
     to_select: req.body.to_select || false,
     to_print: req.body.to_print || false,
+    rename: req.body.rename || "",
   };
 
   const printer = req.app.get("printer");

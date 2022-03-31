@@ -1,5 +1,9 @@
 # Changelog
 
+## 2022-03-31 (3.10.0)
+* Updated free space logic
+* Fixed storage tabs behavior
+
 ## 2022-03-21 (3.9.0)
 * New application design
 * New field to rename project file uploaded by URL

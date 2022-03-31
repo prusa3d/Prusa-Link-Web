@@ -136,6 +136,12 @@ export function translateLabels(root) {
   let rootElement = getElement(root);
 
   rootElement.querySelectorAll(`[data-label]:not([data-label=""])`).forEach((elm) => {
-    elm.innerHTML = translate(elm.getAttribute("data-label"));
+    const message = translate(elm.getAttribute("data-label"));
+    const target = elm.getAttribute("data-label-target");
+    if (target) {
+      elm.setAttribute(target, message);
+    } else {
+      elm.innerHTML = message;
+    }
   });
 }

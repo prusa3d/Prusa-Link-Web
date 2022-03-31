@@ -17,8 +17,8 @@ import { cancelPreview } from "./jobActions";
 import scrollIntoViewIfNeeded from "../../helpers/scroll_into_view_if_needed.js";
 import * as job from "./job";
 import { initKebabMenu } from "./kebabMenu.js";
-import { onOutsideClick, setEnabled } from "../../helpers/element.js";
-import { updateProgressBar } from "./progressBar.js";
+import { setEnabled } from "../../helpers/element.js";
+import storage from "./storage.js";
 
 let lastData = null;
 
@@ -28,7 +28,7 @@ let lastData = null;
 const metadata = {
   origin: "",
   current_path: [],
-  files: {},
+  files: [],
   eTag: null,
   free: 0,
   total: 0,
@@ -94,9 +94,6 @@ const updateData = () => {
  * @param {object} context
  */
 export const update = (context) => {
-  if (metadata.firstTime) {
-    navigateShallow("#loading");
-  }
   updateData();
   job.update(context);
   upload.update();
@@ -115,6 +112,12 @@ export function load(context) {
   if (!context)
     context = printer.getContext();
 
+  if (metadata.firstTime) {
+    navigateShallow("#loading");
+    update(context);
+    return;
+  }
+
   if (context)
     job.update(context);
 
@@ -123,12 +126,17 @@ export function load(context) {
     projects.removeChild(projects.firstChild);
   }
 
-  if (metadata.current_path.length === 0)
+  if (!metadata.firstTime && !metadata.origin) {
     metadata.origin = "local";
+    selectStorage("local");
+    return;
+  }
 
-  projects.appendChild(createStorages());
-  if (context)
+  if (context) {
     initUpload(context);
+    const origins = metadata.files.map(i => i.origin);
+    storage.load(context, origins, metadata.origin, selectStorage);
+  }
 
   if (metadata.current_path.length > 0) {
     let view = metadata.files.find((elm) => elm.origin === metadata.origin).children;
@@ -142,7 +150,9 @@ export function load(context) {
     ).innerHTML = metadata.current_path.join(" > ");
 
     projects.appendChild(createCurrent());
-    projects.appendChild(createUp());
+    if (metadata.current_path.length > 1)
+      projects.appendChild(createUp());
+
     for (let node of view) {
       if (node.type === "folder") {
         // TODO: Cache file/folder count or count async.
@@ -154,18 +164,7 @@ export function load(context) {
       }
     }
   } else {
-    document.getElementById("title-status-label").innerHTML = translate("proj.title");
-    if (metadata.files.length) {
-      for (let file of metadata.files) {
-        if (file.type === "folder") {
-          const files = countFilesRecursively(file);
-          const folders = countFoldersRecursively(file);
-          projects.appendChild(createNodeFolder(file.display || file.name, joinPaths(file.path), { files, folders }, file.origin));
-        } else {
-          projects.appendChild(createFile(file));
-        }
-      }
-    }
+    console.log("This storage is not available");
   }
 }
 
@@ -247,51 +246,18 @@ function createCurrent() {
   return elm;
 }
 
-function createStorages() {
-  const elm = createElement("node-storages", "");
-  const dropdownBtn = elm.querySelector(".storage-select-btn");
-  const dropdownContent = elm.querySelector(".storage-select-content");
-  dropdownBtn.onclick = (e) => {
-    e.stopPropagation();
-    dropdownContent.classList.toggle("open");
-    onOutsideClick(() => {
-      dropdownContent?.classList.remove("open");
-    }, dropdownBtn, dropdownContent);
-  }
-  dropdownContent.querySelectorAll("li").forEach(li => {
-    const origin = li.id;
-    const path = li.getAttribute("data-path");
-    li.setAttribute("selected", metadata.origin === origin); // for pc
-    li.onclick = (e) => {
-      e.stopPropagation();
-      if (!metadata.firstTime) {
-        dropdownBtn.innerHTML = li.innerHTML;
-        dropdownContent.classList.remove("open");
-        metadata.origin = origin;
-        metadata.current_path = [path]; // TODO: Don't use path in templates
-        load();
-      }
-    }
-  })
-  const selected = dropdownContent.querySelector("li[selected=true]");
-  if (selected) {
-    dropdownBtn.querySelector(".storage-select-btn-inner").innerHTML = selected.innerHTML;
-  }
-
-  updateProgressBar(elm, 0.5);
-  return elm;
-}
-
 /**
  * create a up button element
  */
 function createUp() {
   const p = metadata.current_path;
   const title = p[p.length - 1];
-  return createElement("node-up", title, () => {
+  const elm = createElement("node-up", title, () => {
     metadata.current_path.pop();
     load();
   });
+  translateLabels(elm);
+  return elm;
 }
 
 /**
@@ -366,6 +332,7 @@ function createFile(node) {
 
   initKebabMenu(elm);
   setupFileButtons(node, elm);
+  translateLabels(elm);
   return elm;
 }
 
@@ -447,6 +414,21 @@ function countFilesRecursively(node) {
   let count = files.length || 0;
   folders.forEach(i => count += countFilesRecursively(i));
   return count;
+}
+
+function selectStorage(origin) {
+  if (metadata.firstTime)
+    return;
+
+  const root = metadata.files.find(i => i.origin === origin);
+  if (root) {
+    metadata.origin = root.origin;
+    metadata.current_path = [...joinPaths(root.path).split("/").filter(str => str !== "")];
+  } else {
+    metadata.origin = origin;
+    metadata.current_path = [];
+  }
+  load();
 }
 
 export default { load, update };

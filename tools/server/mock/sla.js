@@ -6,8 +6,8 @@ const Printer = require("./printer.js");
 const errors = require("./errors.js");
 
 class PrinterSLA extends Printer {
-  constructor(name) {
-    super(require("./files_sl1"), name, 100);
+  constructor(name, code) {
+    super(require("./files_sl1"), name, 100, code);
     this.exposureTime = 1500;
     this.exposureTimeFirst = 15000;
     this.exposureTimeCalibration = 3000;
@@ -107,6 +107,19 @@ class PrinterSLA extends Printer {
       }
     }
     return true;
+  }
+
+  getStorage() {
+    return {
+      local: {
+        free_space: 123,
+        total_space: 256,
+      },
+      usb: {
+        free_space: 256,
+        total_space: 512,
+      },
+    }
   }
 }
 

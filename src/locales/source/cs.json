@@ -21,7 +21,7 @@
     "sla-refill": "Doplnit resin",
     "sla-refilled": "Resin doplněn",
     "start-pt": "Start tisku",
-    "upld-proj": "Upload project",
+    "upld-proj": "Nahrát projekt",
     "yes": "Ano"
   },
   "conn": {
@@ -131,10 +131,21 @@
     "title": "tiskárna"
   },
   "proj": {
-    "del": "Smazat soubor",
+    "add-from": {
+      "local": "Lokálního úložiště",
+      "remote": "Vzdálené url",
+      "title": "Nahrát projekt z"
+    },
+    "del": "Smazat",
+    "details": "Detaily projektu",
+    "download": "Stáhnout",
     "link": "Projekty",
     "main": "Zpět",
-    "title": "Soubory projektu"
+    "rename": "Přejmenovat",
+    "start": "Spustit tisk",
+    "storage": "Úložiště",
+    "title": "Soubory projektu",
+    "up-folder": "nadřazená složka"
   },
   "prop": {
     "at": "v",
@@ -174,6 +185,7 @@
     "st-busy": "Zaneprázdeněná",
     "st-feedme": "Doplnění resinu",
     "st-pour-resin": "Nalití resinu",
+    "storage-space": "{{free}} volných z {{total}}",
     "temp-amb": "Teplota okolí",
     "temp-bed": "Vyhřívaná podložka",
     "temp-cpu": "Teplota CPU",
