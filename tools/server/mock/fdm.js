@@ -7,8 +7,8 @@ const errors = require("./errors.js");
 const Printer = require("./printer.js");
 
 class PrinterFDM extends Printer {
-  constructor(name) {
-    super(require("./files_gcode"), name, 300);
+  constructor(name, code) {
+    super(require("./files_gcode"), name, 300, code);
   }
 
   // Functions are almost same as functions in printer
@@ -154,6 +154,19 @@ class PrinterFDM extends Printer {
     };
 
     return printerStatus;
+  }
+
+  getStorage() {
+    if (this.code === "mini") {
+      return {
+        usb: {
+          free_space: 123,
+          total_space: 256,
+        }
+      }
+    }
+
+    return super.getStorage();
   }
 }
 

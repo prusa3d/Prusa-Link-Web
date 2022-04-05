@@ -131,10 +131,21 @@
     "title": "printer"
   },
   "proj": {
-    "del": "Delete File",
+    "add-from": {
+      "local": "Local storage",
+      "remote": "Remote url",
+      "title": "Add project from"
+    },
+    "del": "Delete",
+    "download": "Download",
+    "details": "Project details",
     "link": "Projects",
     "main": "Main",
-    "title": "Project files"
+    "rename": "Rename",
+    "start": "Start print",
+    "storage": "Storage",
+    "title": "Project files",
+    "up-folder": "parent folder"
   },
   "prop": {
     "at": "at",
@@ -174,6 +185,7 @@
     "st-busy": "Busy",
     "st-feedme": "Refill resin",
     "st-pour-resin": "Pour in resin",
+    "storage-space": "{{free}} of {{total}} free",
     "temp-amb": "Ambient temperature",
     "temp-bed": "Heatbed",
     "temp-cpu": "CPU temperature",
@@ -228,6 +240,8 @@
       "hint-fdm": "Type URL of G-CODE project file",
       "hint-sla": "Type URL of compatible project file",
       "source": "Source URL",
+      "project": "Project name",
+      "project-hint": "Type project file name",
       "title": "Remote url"
     },
     "start-pt": "start print after transfer",

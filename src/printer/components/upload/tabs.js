@@ -8,6 +8,8 @@ class TabsController {
 
   lock() {
     this._isLocked = true;
+    if (!this._root)
+      return;
     this._root.querySelectorAll("[data-tab-btn]").forEach(btn => {
       if (btn.getAttribute("data-tab-btn") !== this.selected)
         btn.setAttribute("locked", true);
@@ -16,6 +18,8 @@ class TabsController {
 
   unlock() {
     this._isLocked = false;
+    if (!this._root)
+      return;
     this._root.querySelectorAll("[data-tab-btn]").forEach(btn => {
       if (btn.hasAttribute("locked"))
         btn.removeAttribute("locked");
@@ -33,6 +37,9 @@ class TabsController {
 
   init(root) {
     this._root = root;
+    if (!this._root)
+      return;
+
     root.querySelectorAll("[data-tab-btn]").forEach(btn => {
       btn.onclick = () => {
         if (!this._isLocked) {
@@ -55,6 +62,9 @@ class TabsController {
    * @param {String} tab data-tab attribute
    */
   openTab(tab) {
+    if (!this._root)
+      return;
+
     if (tab) {
       const tabElm = this._root.querySelector(`[data-tab="${tab}"]`);
       if (tabElm)
@@ -72,9 +82,11 @@ class TabsController {
    * Close selected tab
    */
   closeTab() {
+    if (!this._root)
+      return;
+
     if (this._selected) {
       const tabElm = this._root.querySelector(`[data-tab="${this._selected}"]`);
-      console.log(tabElm);
       if (tabElm)
         tabElm.setAttribute("opened", false);
 

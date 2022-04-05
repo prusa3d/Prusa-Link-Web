@@ -32,11 +32,11 @@
 <!-- prettier-ignore -->
 {%
   set buttons = {
-    'details': {text: 'Project detail', label: '', pc_icon: 'project_details.svg', mobile_icon: 'project_details_light.svg', implemented: true },
-    'start': {text: 'Start print', label: '', pc_icon: 'print.svg', mobile_icon: 'print_light.svg', implemented: false },
-    'delete': {text: 'Delete', label: '', pc_icon: 'delete.svg', mobile_icon: 'delete_light.svg', implemented: true },
-    'rename': {text: 'Rename', label: '', pc_icon: 'edit.svg', mobile_icon: 'edit_light.svg', implemented: false },
-    'download': {text: 'Download', label: '', pc_icon: 'download_alt.svg', mobile_icon: 'download_alt_light.svg', implemented: true }
+    'details': {text: 'Project details', label: 'proj.details', pc_icon: 'project_details.svg', mobile_icon: 'project_details_light.svg', implemented: true },
+    'start': {text: 'Start print', label: 'proj.start', pc_icon: 'print.svg', mobile_icon: 'print_light.svg', implemented: false },
+    'delete': {text: 'Delete', label: 'proj.del', pc_icon: 'delete.svg', mobile_icon: 'delete_light.svg', implemented: true },
+    'rename': {text: 'Rename', label: 'proj.rename', pc_icon: 'edit.svg', mobile_icon: 'edit_light.svg', implemented: false },
+    'download': {text: 'Download', label: 'proj.download', pc_icon: 'download_alt.svg', mobile_icon: 'download_alt_light.svg', implemented: true }
   }
 %}
 
@@ -53,10 +53,12 @@
           <ul class="txt-black txt-size-2">
             {% for key, values in buttons %}
               {% if values.implemented %}
-                <li id="{{ key }}" title="{{ values.text }}">
+                <li id="{{ key }}" data-label="{{ values.label }}" data-label-target="title" title="{{ values.text }}">
                   <img class="pc-only icon icon-small" src="{{ pre.countOrRenderAssets(values.pc_icon) | safe }}"/>
                   <img class="mobile-only icon" src="{{ pre.countOrRenderAssets(values.mobile_icon) | safe }}"/>
-                  <span class="mobile-only">{{ values.text }}</span>
+                  <span class="mobile-only" data-label="{{ values.label }}">
+                    {{ values.text }}
+                  </span>
                 </li>
               {% endif %}
             {% endfor %}

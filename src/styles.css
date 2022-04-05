@@ -320,9 +320,13 @@ nav .burger-icon.burger-open {
 .component {
   flex-grow: 1;
   flex-wrap: wrap;
-  width: 100%;
   padding-top: 64px;
   line-height: 1.5;
+}
+.component,
+#upld,
+#node-storage {
+  width: 100%;
 }
 .new-component-header {
   display:flex;
@@ -1454,6 +1458,53 @@ $toast-success-title-color: $text-white;
   margin-left: 0;
 }
 
+/* ===================================== KEBAB ======================================= */
+
+.kebab {
+  position: relative;
+}
+.kebab > ul {
+  position: absolute;
+  right: 0;
+  z-index: 3;
+  display: none;
+  list-style: none;
+  width: max-content;
+  margin: 0;
+  padding: 0;
+  background-color: #f1f1f1;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  border-radius: 4px;
+  cursor: default;
+}
+.kebab > ul.open {
+  display: block;
+}
+.kebab > ul > li {
+  padding: 0 24px;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+.kebab > ul > li[disabled] {
+  cursor: default;
+  pointer-events: none;
+  opacity: 0.3;
+}
+.kebab > ul > li:not([disabled]):hover {
+  background-color: rgba(0, 0, 0, 0.1);
+}
+.kebab > ul > li:first-child {
+  padding-top: 12px;
+}
+.kebab > ul > li:last-child {
+  padding-bottom: 12px;
+}
+.kebab > ul > li > .icon {
+  margin: 12px;
+  margin-left: 0;
+}
+
 /* ===================================== LOADING ======================================= */
 
 .loading {
@@ -1576,6 +1627,15 @@ input .autoresize {
     flex-direction: row;
     width: inherit;
     padding: 0 0 0 32px;
+  }
+  nav > ul > li {
+    border-bottom: 2px solid #707070;
+  }
+  nav > ul > li:hover {
+    border-bottom: 2px solid #ffffff;
+  }
+  nav > ul a {
+    padding: 16px;
   }
   nav > ul > li {
     border-bottom: 2px solid #707070;

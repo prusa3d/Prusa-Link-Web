@@ -44,9 +44,9 @@ const devServer = (app, conf) => {
   app.use(bodyParser.urlencoded({ extended: false }));
   app.use(bodyParser.json());
   if (conf.PRINTER_TYPE == "sla") {
-    app.set("printer", new PrinterSLA(conf.PRINTER_NAME));
+    app.set("printer", new PrinterSLA(conf.PRINTER_NAME, conf.PRINTER_CODE));
   } else {
-    app.set("printer", new PrinterFDM(conf.PRINTER_NAME));
+    app.set("printer", new PrinterFDM(conf.PRINTER_NAME, conf.PRINTER_CODE));
   }
 
   /*

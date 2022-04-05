@@ -7,7 +7,7 @@ const path = require("path");
 const errors = require("./errors.js");
 
 class Printer {
-  constructor(files, name, maxTemperature) {
+  constructor(files, name, maxTemperature, code) {
     this.files = files;
     this.maxTemperature = maxTemperature;
     this.free = 88398225408;
@@ -39,6 +39,7 @@ class Printer {
     this.last_error = null;
     this.logFiles = require("./logs");
     this.logFilesContents = [];
+    this.code = code;
     setInterval(() => this.updateLogs(), 10000);
   }
 
@@ -473,7 +474,15 @@ class Printer {
     return { state };
   }
 
-  startDownload({ url, target, destination, size, to_select = false, to_print = false }) {
+  startDownload({
+    url,
+    target,
+    destination,
+    size,
+    to_select = false,
+    to_print = false,
+    rename = "",
+  }) {
     if (!url || !target) {
       this.last_error = new errors.InvalidProject();
       return this.last_error;
@@ -499,6 +508,7 @@ class Printer {
       remaining_time: download_time,
       to_select,
       to_print,
+      rename,
     };
     this.isDownloading = true;
 
@@ -525,7 +535,7 @@ class Printer {
         select: status.to_select,
         print: status.to_print,
         path: status.destination,
-        fileName: status.url.split("/").pop() || "new project",
+        fileName: status.rename || status.url.split("/").pop() || "new project",
         fileSize: status.size,
       };
 
@@ -555,6 +565,19 @@ class Printer {
     };
   }
 
+  getStorage() {
+    return {
+      local: {
+        free_space: 419430400,
+        total_space: 536870912,
+      },
+      sdcard: {
+        free_space: 2791728742,
+        total_space: 12670153523,
+      },
+    }
+  }
+
   getTemperatures() {
     return {
       tool0: {
@@ -580,6 +603,7 @@ class Printer {
       temperature: this.getTemperatures(),
       sd: this.getSD(),
       state: this.getStatus(),
+      storage: this.getStorage(),
     };
   }
 

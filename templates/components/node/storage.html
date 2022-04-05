@@ -8,26 +8,37 @@
 {%
   set origins = {
     'local': {
-      path: 'Prusa Link gcodes',
+      origin: 'local',
       text: 'PrusaLink g-codes',
-      label: '',
-      pc_icon: 'local_storage.svg',
-      mobile_icon: 'local_storage_light.svg'
+      pc_icon: 'prusa-link-favicon.svg',
+      mobile_icon: 'prusa-link-favicon.svg'
     },
     'sdcard': {
-      path: 'SD Card',
       text: 'SD card',
-      label: '',
+      origin: 'sdcard',
+      printerType: 'fdm',
+      pc_icon: 'sd_card.svg',
+      mobile_icon: 'micro_sd_card_light.svg'
+    },
+    'usb': {
+      text: 'USB',
+      origin: 'sdcard',
+      printerType: 'sla',
       pc_icon: 'sd_card.svg',
       mobile_icon: 'micro_sd_card_light.svg'
     }
   }
 %}
 
-<template id="node-storages">
+<div id="node-storage">
   <div class="new-component-header">
     <img class="icon" src="{{ pre.countOrRenderAssets('storage.svg') | safe }}"/>
-    <p class="txt-size-3 txt-uppercase">Storages</p>
+    <p
+      data-label="proj.storage"
+      class="txt-size-3 txt-uppercase"
+    >
+      Storage
+    </p>
   </div>
   <div class="storage-select">
     <div class="storage-select-btn">
@@ -39,13 +50,15 @@
     </div>
     <ul class="storage-select-content">
       {% for key, values in origins %}
-        <li id="{{ key }}" data-path="{{ values.path }}">
-          <img class="icon pc-only" src="{{ pre.countOrRenderAssets(values.pc_icon) | safe }}"/>
-          <img class="icon mobile-only" src="{{ pre.countOrRenderAssets(values.mobile_icon) | safe }}"/>
-          <p class="txt-size-2">{{ values.text }}</p>
-        </li>
+        {% if not values.printerType or values.printerType == env.PRINTER_TYPE %}
+          <li data-location="{{ key }}" data-origin="{{ values.origin }}">
+            <img class="icon pc-only" src="{{ pre.countOrRenderAssets(values.pc_icon) | safe }}"/>
+            <img class="icon mobile-only" src="{{ pre.countOrRenderAssets(values.mobile_icon) | safe }}"/>
+            <p class="txt-size-2">{{ values.text }}</p>
+          </li>
+        {% endif %}
       {% endfor %}
-    </div>
+    </ul>
   </div>
 
   <div style="padding-bottom: 30px">
@@ -53,18 +66,14 @@
       <div class="progress-bar" role="status">
         <div class="fill"></div>
         <p
+          id="storage-pct"
           class="txt-black txt-bold"
-          data-format="progress"
         >
           0%
         </p>
       </div>
-      <p>2.6 GB of 11.8 GB free</p>
+      <p id="storage-space">2.6 GB of 11.8 GB free</p>
     </div>
   </div>
 
-  {% include "components/upload.html" %}
-
-  <div style="margin-bottom: 20px;"></div>
-
-</template>
+</div>

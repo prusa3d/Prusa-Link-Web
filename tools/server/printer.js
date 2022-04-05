@@ -13,6 +13,7 @@ router.get("/", async (req, res, next) => {
     temperature: true,
     sd: true,
     state: true,
+    storage: true,
   };
   if (req.query["exclude"]) {
     let listExclude = req.query["exclude"].split(",");
@@ -21,7 +22,7 @@ router.get("/", async (req, res, next) => {
     }
   }
 
-  if (!(include.temperature || include.state || include.sd)) {
+  if (!(include.temperature || include.state || include.sd || include.storage)) {
     res.status(400).json({ message: "Bad request" });
     return;
   }
@@ -42,6 +43,10 @@ router.get("/", async (req, res, next) => {
 
   if (include.state) {
     result["state"] = data.state;
+  }
+
+  if (include.storage) {
+    result["storage"] = data.storage;
   }
 
   res.json(result);
