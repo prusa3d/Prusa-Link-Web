@@ -5,12 +5,24 @@
   # SPDX-License-Identifier: GPL-3.0-or-later
 #}
 
-{%
-  set sources = {
-    'direct': {text: 'Local storage', label: 'proj.add-from.local', component: 'components/upload/direct.html' },
-    'remote': {text: 'Remote URL', label: 'proj.add-from.remote', component: 'components/upload/remote.html' }
-  }
-%}
+{% if env.WITH_REMOTE_UPLOAD %}
+
+  {%
+    set sources = {
+      'direct': {text: 'Local storage', label: 'proj.add-from.local', component: 'components/upload/direct.html' },
+      'remote': {text: 'Remote URL', label: 'proj.add-from.remote', component: 'components/upload/remote.html' }
+    }
+  %}
+
+{% else %}
+
+  {%
+    set sources = {
+      'direct': {text: 'Local storage', label: 'proj.add-from.local', component: 'components/upload/direct.html' }
+    }
+  %}
+
+{% endif %}
 
 <div id="upld" class="txt-size-3">
   <div class="upld-source">

@@ -4,7 +4,6 @@
 
 import joinPaths from "../../helpers/join_paths";
 import updateProperties from "./updateProperties";
-import fallbackThumbnail from "../../assets/thumbnail.svg";
 import { cancelJob, cancelPreview, pauseJob, resumeJob, startJob } from "./jobActions";
 import { deleteProject, downloadProject } from "./projectActions";
 import { getImage, getJson } from "../../auth";
@@ -225,10 +224,8 @@ function setupThumbnail(url) {
   const img = document.getElementById("preview-img");
   if (!img)
     console.error("Thumbnail element was not found!");
-  if (img && (url || fallbackThumbnail)) {
-    img.src = url || fallbackThumbnail;
-  } else {
-    console.error("url || fallbackThumbnail are both null!")
+  if (img && url) {
+    img.src = url;
   }
 }
 
