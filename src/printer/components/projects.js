@@ -127,14 +127,15 @@ export function load(context) {
   }
 
   if (!metadata.firstTime && !metadata.origin) {
-    metadata.origin = "local";
-    selectStorage("local");
+    const origin = process.env.WITH_STORAGES[0] || "local";
+    metadata.origin = origin;
+    selectStorage(origin);
     return;
   }
 
   if (context) {
     initUpload(context);
-    const origins = metadata.files.map(i => i.origin);
+    const origins = process.env.WITH_STORAGES;
     storage.load(context, origins, metadata.origin, selectStorage);
   }
 
@@ -363,24 +364,22 @@ function setupFileButtons(node, elm) {
   }
 
   const deleteBtn = elm.getElementById("delete");
+  if (deleteBtn) {
+    setEnabled(deleteBtn, node.refs?.resource);
+    deleteBtn.onclick = (e) => {
+      deleteProject(node);
+      e.stopPropagation();
+    }
+  }
+  
   const downloadBtn = elm.getElementById("download");
-  getJson(fileUrl).then((result) => {
-    const file = result.data;
-    if (deleteBtn) {
-      setEnabled(deleteBtn, file.refs?.resource);
-      deleteBtn.onclick = (e) => {
-        deleteProject(file);
-        e.stopPropagation();
-      }
+  if (downloadBtn) {
+    setEnabled(downloadBtn, node.refs?.download);
+    downloadBtn.onclick = (e) => {
+      downloadProject(node);
+      e.stopPropagation();
     }
-    if (downloadBtn) {
-      setEnabled(downloadBtn, file.refs?.download);
-      downloadBtn.onclick = (e) => {
-        downloadProject(file);
-        e.stopPropagation();
-      }
-    }
-  }).catch(() => { });
+  }
 }
 
 /**
