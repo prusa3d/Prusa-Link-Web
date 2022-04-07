@@ -9,23 +9,21 @@
   set origins = {
     'local': {
       origin: 'local',
-      text: 'PrusaLink g-codes',
+      text: env.LOCAL_STORAGE_NAME,
       pc_icon: 'prusa-link-favicon.svg',
       mobile_icon: 'prusa-link-favicon.svg'
     },
     'sdcard': {
       text: 'SD card',
       origin: 'sdcard',
-      printerType: 'fdm',
       pc_icon: 'sd_card.svg',
       mobile_icon: 'micro_sd_card_light.svg'
     },
     'usb': {
       text: 'USB',
-      origin: 'sdcard',
-      printerType: 'sla',
-      pc_icon: 'sd_card.svg',
-      mobile_icon: 'micro_sd_card_light.svg'
+      origin: 'usb',
+      pc_icon: 'usb-flash-drive-icon.svg',
+      mobile_icon: 'usb-flash-drive-icon-light.svg'
     }
   }
 %}
@@ -44,13 +42,13 @@
     <div class="storage-select-btn">
       <div class="storage-select-btn-inner">
         <img class="icon" src="{{ pre.countOrRenderAssets('micro_sd_card_light.svg') | safe }}" />
-        <p class="txt-size-2">PrusaLink g-codes</p>
+        <p class="txt-size-2">Local</p>
       </div>
       <img class="icon" src="{{ pre.countOrRenderAssets('dropdown_light.svg') | safe }}" />
     </div>
     <ul class="storage-select-content">
       {% for key, values in origins %}
-        {% if not values.printerType or values.printerType == env.PRINTER_TYPE %}
+        {% if env.WITH_STORAGES.includes(key) %}
           <li data-location="{{ key }}" data-origin="{{ values.origin }}">
             <img class="icon pc-only" src="{{ pre.countOrRenderAssets(values.pc_icon) | safe }}"/>
             <img class="icon mobile-only" src="{{ pre.countOrRenderAssets(values.mobile_icon) | safe }}"/>
@@ -72,7 +70,7 @@
           0%
         </p>
       </div>
-      <p id="storage-space">2.6 GB of 11.8 GB free</p>
+      <p id="storage-space">0 GB of 0 GB free</p>
     </div>
   </div>
 
