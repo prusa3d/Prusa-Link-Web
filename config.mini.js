@@ -5,7 +5,8 @@ module.exports = (env, args) => {
         PRINTER_NAME: "Original Prusa Mini",
         PRINTER_TYPE: "fdm",
 
-        WITH_PROJECTS: false,
+        WITH_STORAGES: ["usb"],
+        WITH_PROJECTS: true,
         WITH_SETTINGS: false,
         WITH_CONTROLS: true,
         WITH_REMOTE_UPLOAD: false,

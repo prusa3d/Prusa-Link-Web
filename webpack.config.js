@@ -37,6 +37,8 @@ module.exports = (env, args) => {
     HTTP_APIKEY: env["HTTP_APIKEY"] || env["http-apikey"] || false,
     HTTP_BASIC: env["HTTP_BASIC"] || env["http-basic"] || false,
 
+    LOCAL_STORAGE_NAME: env["LOCAL_STORAGE_NAME"] || "PrusaLink G-codes",
+    WITH_STORAGES: env["WITH_STORAGES"] || ["local", "sdcard"],
     WITH_PROJECTS: withDefault(env["WITH_PROJECTS"], true),
     WITH_SETTINGS: env["WITH_SETTINGS"] || false,
     WITH_CONTROLS: env["WITH_CONTROLS"] || false,
