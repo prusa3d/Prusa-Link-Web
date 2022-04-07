@@ -5,7 +5,9 @@ module.exports = (env, args) => {
         PRINTER_NAME: "Original Prusa SL1/S",
         PRINTER_TYPE: "sla",
         PROJECT_EXTENSIONS: [".sl1", ".sl1s"],
+        LOCAL_STORAGE_NAME: ["Local"],
 
+        WITH_STORAGES: ["local", "usb"],
         WITH_PROJECTS: true,
         WITH_SETTINGS: false,
         WITH_CONTROLS: false,
