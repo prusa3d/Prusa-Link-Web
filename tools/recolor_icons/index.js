@@ -38,7 +38,7 @@ function recolor(config) {
           console.log("⬤ ", outputFilePath);
         }
       } else if (referencing) {
-        if (rewriteFile(outputFilePath, `../${fileName}`)) {
+        if (rewriteFile(outputFilePath, sourceContent)) {
           stats.referenced++;
           console.log("◯ ", outputFilePath);
         }
