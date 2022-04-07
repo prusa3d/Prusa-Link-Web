@@ -1,5 +1,11 @@
 # Changelog
 
+## 2022-04-07 (3.10.1)
+* Fix M1 icons
+* Add USB icon for USB storage
+* Avoid unnecessary requests to BE for file metadata
+* Hardcode storages list to printers
+
 ## 2022-03-31 (3.10.0)
 * Updated free space logic
 * Fixed storage tabs behavior
