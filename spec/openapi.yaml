@@ -1,0 +1,262 @@
+openapi: 3.0.1
+info:
+  title: PrusaLink Web
+  description:
+    This is a printer webservice.
+  contact:
+    email: link@prusa3d.cz
+  license:
+    name: AGPLv3
+  version: 1.0.0-draft
+externalDocs:
+  description: Find out more about API
+  url: http://connect.prusa3d.cz
+security:
+  - digestAuth: []
+paths:
+  /api/version:
+    get:
+      summary: api version informations
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Version"
+
+  /api/v1/info:
+    get:
+      summary: printer informations
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Info"
+        401:
+          $ref: "#/components/responses/Unauthorized"
+
+components:
+  schemas:
+    Version:
+      type: object
+      properties:
+        api:
+          type: string
+          example: "1.0.0"
+        version:
+          type: string
+          example: "0.7.0"
+        printer:
+          type: string
+          example: "1.3.1"
+        text:
+          type: string
+          example: "PrusaLink 0.7.0"
+        firmware:
+          type: string
+          example: "3.10.1-4697"
+        sdk:
+          type: string
+          example: "0.7.0"
+      required:
+        - api
+        - version
+        - printer
+        - text
+        - firmware
+
+    Info:
+      type: object
+      properties:
+        mmu:
+          type: boolean
+          example: false
+        name:
+          type: string
+          example: "MuadDib"
+        location:
+          type: string
+          example: "Arrakis"
+        farm_mode:
+          type: boolean
+          example: false
+        serial:
+          type: string
+          example: "CZPX4720X004XC34242"
+        sd_ready:
+          type: boolean
+          example: true
+        hostname:
+          type: string
+          example: "prusa-mk3.lan"
+        port:
+          type: string
+          example: "/dev/tty"
+
+    Error:
+      type: object
+      properties:
+        code:
+          type: string
+          description: Prusa error code. Must be string if we will have printer with code for example 04
+          example: "10108"
+        title:
+          type: string
+          description: Prusa error text string with prefiled variable macros.
+          example: "RESIN TOO LOW"
+        text:
+          type: string
+          description: Prusa error text string with prefiled variable macros.
+          example: "Measured resin volume 22.4 ml is lower than required for this print. Refill the tank and restart the print."
+        url:
+          type: string
+          description: Link to the Prusa help page
+          example: "https://help.prusa3d.com/en/10108/LHE3Q0I1"
+      required:
+        - title
+        - text
+
+    ResponsePlaintext:
+      type: string
+      default: "Project with same name has been already uploaded."
+      description: Prusa error message (raw_message)
+
+  responses:
+    NotModified: # 304
+      description: Not Modified
+      headers:
+        Content-Location:
+          $ref: "#/components/headers/Content-Location"
+      content:
+        text/plain:
+          schema:
+            $ref: "#/components/schemas/ResponsePlaintext"
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+
+    BadRequest: # 400
+      description: Bad Request
+      headers:
+        Content-Location:
+          $ref: "#/components/headers/Content-Location"
+      content:
+        text/plain:
+          schema:
+            $ref: "#/components/schemas/ResponsePlaintext"
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+
+    Unauthorized: # 401
+      description: Unauthorized
+      headers:
+        Content-Location:
+          $ref: "#/components/headers/Content-Location"
+      content:
+        text/plain:
+          schema:
+            $ref: "#/components/schemas/ResponsePlaintext"
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+
+    Forbidden: # 403
+      description: Forbidden
+      headers:
+        Content-Location:
+          $ref: "#/components/headers/Content-Location"
+      content:
+        text/plain:
+          schema:
+            $ref: "#/components/schemas/ResponsePlaintext"
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+
+    NotFound: # 404
+      description: Not Found
+      headers:
+        Content-Location:
+          $ref: "#/components/headers/Content-Location"
+      content:
+        text/plain:
+          schema:
+            $ref: "#/components/schemas/ResponsePlaintext"
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+
+    Conflict: # 409
+      description: Conflict
+      headers:
+        Content-Location:
+          $ref: "#/components/headers/Content-Location"
+      content:
+        text/plain:
+          schema:
+            $ref: "#/components/schemas/ResponsePlaintext"
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+
+    UnsupportedMediaType: # 415
+      description: Unsupported Media Type
+      headers:
+        Content-Location:
+          $ref: "#/components/headers/Content-Location"
+      content:
+        text/plain:
+          schema:
+            $ref: "#/components/schemas/ResponsePlaintext"
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+
+    InternalServerError: # 500
+      description: Internal Server Error
+      headers:
+        Content-Location:
+          $ref: "#/components/headers/Content-Location"
+      content:
+        text/plain:
+          schema:
+            $ref: "#/components/schemas/ResponsePlaintext"
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+
+    NotImplemented: # 501
+      description: Not Implemented
+      headers:
+        Content-Location:
+          $ref: "#/components/headers/Content-Location"
+      content:
+        text/plain:
+          schema:
+            $ref: "#/components/schemas/ResponsePlaintext"
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+
+  headers:
+    Accept:
+      required: false
+      schema:
+        type: string
+        default: text/plain
+      description: Parameter specifying supported data format from client. PCL has to support it.
+      Slicer doesn't have to use this. If the header is not present, it defaults to text/plain
+    Content-Location:
+      schema:
+        type: string
+        default: "http://<PCL IP>/error"
+      description: URI path to nice error page. We can send URI to help.prusa3d.com in the future.
+
+  securitySchemes:
+    digestAuth:
+      type: http
+      scheme: digest
