@@ -31,14 +31,12 @@ const load = (context, origins, selectedOrigin, onSelect) => {
       return;
 
     const available = origins.includes(origin);
-    console.log("available", available)
     setVisible(li, available);
     if (!available)
       return;
 
     const location = li.getAttribute("data-location");
     const storageInfo = context.printer.storage?.[location];
-    console.log("selectedOrigin", selectedOrigin)
     const isSelected = origin === selectedOrigin;
     li.setAttribute("selected", isSelected); // for pc
     li.onclick = (e) => {
