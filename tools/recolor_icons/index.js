@@ -1,4 +1,5 @@
 const fs = require("fs");
+const lnk = require("lnk");
 const { join } = require("path");
 
 function main() {
@@ -38,7 +39,7 @@ function recolor(config) {
           console.log("⬤ ", outputFilePath);
         }
       } else if (referencing) {
-        if (rewriteFile(outputFilePath, sourceContent)) {
+        if (lnk.sync(filePath, outputDir, {type: 'symbolic', force: true})) {
           stats.referenced++;
           console.log("◯ ", outputFilePath);
         }
