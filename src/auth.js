@@ -64,7 +64,6 @@ const setUpAuth = () =>
     return fetch("/api/version", { headers: getHeaders() })
       .then((response) => {
         if (response.status == 401) {
-          response.json().then((data) => handleError({ data }));
           const auth_type = response.headers
             .get("WWW-Authenticate")
             .split(" ")[0];
@@ -77,7 +76,11 @@ const setUpAuth = () =>
           }
           return setUpAuth().then((data) => resolve(data)); // http-digest
         } else {
-          return response.json(); // done
+          const result = response.json();
+          if (response.status != 200) {
+            result.then(data => handleError({ data }));
+          }
+          return result; // done
         }
       })
       .then((data) => {
