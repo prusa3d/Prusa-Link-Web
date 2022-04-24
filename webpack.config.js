@@ -21,9 +21,11 @@ function withDefault(value, defaultValue) {
 module.exports = (env, args) => {
   const buildLocales = env.locales;
 
+  var printerName = env["PRINTER_NAME"] || DEFAULT_NAME;
+
   var config = {
-    PRINTER_NAME: env["PRINTER_NAME"] || DEFAULT_NAME,
-    PRINTER_CODE: env["PRINTER_NAME"].split(" ").slice(-1)[0].toLowerCase(),
+    PRINTER_NAME: printerName,
+    PRINTER_CODE: printerName.split(" ").slice(-1)[0].toLowerCase(),
     PRINTER_TYPE: env["PRINTER_TYPE"] || "fdm", // "fdm" | "sla"
     PROJECT_EXTENSIONS: env["PROJECT_EXTENSIONS"] || [".gcode"],
 
