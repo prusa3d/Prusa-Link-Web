@@ -5,9 +5,9 @@
 const toast_context = document.getElementById("prusa-toast");
 const timeouts = {
   "info": 10_500,
-  "success": null,
+  "success": 10_500,
   "warning": 10_500,
-  "error": null,
+  "error": 10_500,
 };
 
 /**
