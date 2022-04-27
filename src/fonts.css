@@ -13,7 +13,7 @@ $font-size-3-desktop: 0.75rem;
 $font-size-h1-mobile: 5rem;
 $font-size-h1-desktop: 2.5rem;
 $font-size-nav-mobile: 3rem;
-$font-size-nav-desktop: 16px;
+$font-size-nav-desktop: 1rem;
 $text-white: #efefef;
 $text-grey: #707070;
 $text-orange: #FA6831;
@@ -22,7 +22,7 @@ $text-black: #000000;
 
 html {
   line-height: 1.15;
-  font-size: 16px;
+  font-size: 14pt;
   -webkit-text-size-adjust: 100%;
   font-family: "Atlas Grotesk Regular Web", Helvetica, sans-serif;
   color: $text-white;

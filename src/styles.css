@@ -142,7 +142,6 @@ nav {
   align-items: center;
   flex-wrap: wrap;
   min-width: 685px;
-  font-size: 40px;
 }
 nav .brand-logo {
   order: 1;
@@ -256,7 +255,7 @@ nav .burger-icon.burger-open {
 .main {
   display: block;
   flex-grow: 1;
-  padding: 0.75rem;
+  padding: 12px 0 0;
 }
 #title {
   display: flex;
@@ -469,7 +468,7 @@ nav .burger-icon.burger-open {
 }
 .temp-text {
   fill: #efefef;
-  font-size: 11px;
+  font-size: 0.75rem;
   letter-spacing: normal;
   padding: 8px;
   stroke: transparent;
@@ -484,7 +483,7 @@ nav .burger-icon.burger-open {
 }
 .temp-label-x,
 .temp-label-y {
-  font-size: 11px;
+  font-size: 0.75rem;
   fill: #efefef;
   text-anchor: middle;
   letter-spacing: normal;
@@ -516,7 +515,7 @@ nav .burger-icon.burger-open {
   stroke-linejoin: round;
 }
 .temp-line-text {
-  font-size: 15px;
+  font-size: 1rem;
   padding: 5px;
   fill: #efefef;
   letter-spacing: normal;
@@ -1163,7 +1162,7 @@ button:disabled {
   position: fixed;
   right: 0;
   bottom: 0;
-  font-size: 24px;
+  font-size: 1.15rem;
 }
 
 $toast-delay: 10s;
@@ -1611,7 +1610,7 @@ input .autoresize {
     display: none;
   }
   .header {
-    padding: 16px 0 0 16px;
+    padding: 16px 0 0;
     position: sticky;
     top: 0;
     z-index: 3;
@@ -1683,7 +1682,7 @@ input .autoresize {
   }
   #telemetry-wrapper {
     width: 20%;
-    min-width: 20%;
+    min-width: 206px;
   }
   .telemetry {
     flex-direction: column;
@@ -1798,7 +1797,7 @@ input .autoresize {
     border-radius: 0 4px 4px 0;
   }
   #prusa-toast {
-    font-size: 16px;
+    font-size: 1rem;
   }
   .close-button {
     height: 20px;
@@ -1808,7 +1807,7 @@ input .autoresize {
     min-width: 20px;
   }
   #job .progress {
-    font-size: 16px;
+    font-size: 1rem;
   }
   .node,
   .node-btn-list {
