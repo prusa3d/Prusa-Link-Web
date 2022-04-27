@@ -1,5 +1,12 @@
 # Changelog
 
+## 2022-04-27 (3.10.2)
+* Removed page `Temperatures`
+* Fix formatting of percentages
+* Reworked text styles
+* Changed minimal width of sidebar node
+* Changed white color to light gray
+
 ## 2022-04-07 (3.10.1)
 * Fix M1 icons
 * Add USB icon for USB storage

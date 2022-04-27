@@ -9,7 +9,7 @@ $orange: #FA6831;
 button,
 html,
 nav > ul a {
-  color: #fff;
+  color: #efefef;
 }
 .progress > p,
 #upld-direct p,
@@ -142,7 +142,6 @@ nav {
   align-items: center;
   flex-wrap: wrap;
   min-width: 685px;
-  font-size: 40px;
 }
 nav .brand-logo {
   order: 1;
@@ -256,7 +255,7 @@ nav .burger-icon.burger-open {
 .main {
   display: block;
   flex-grow: 1;
-  padding: 0.75rem;
+  padding: 12px 0 0;
 }
 #title {
   display: flex;
@@ -266,7 +265,7 @@ nav .burger-icon.burger-open {
   padding-bottom: 0.25rem;
 }
 .title-status {
-  color: #fff;
+  color: #efefef;
   margin-bottom: 0;
 }
 .title-hostname {
@@ -468,15 +467,15 @@ nav .burger-icon.burger-open {
   stroke: #f3f12c;
 }
 .temp-text {
-  fill: #fff;
-  font-size: 11px;
+  fill: #efefef;
+  font-size: 0.75rem;
   letter-spacing: normal;
   padding: 8px;
   stroke: transparent;
   stroke-width: 0;
 }
 .temp-label-line {
-  stroke: #fff;
+  stroke: #efefef;
   fill: transparent;
   stroke-width: 2px;
   stroke-linecap: round;
@@ -484,8 +483,8 @@ nav .burger-icon.burger-open {
 }
 .temp-label-x,
 .temp-label-y {
-  font-size: 11px;
-  fill: #fff;
+  font-size: 0.75rem;
+  fill: #efefef;
   text-anchor: middle;
   letter-spacing: normal;
 }
@@ -508,7 +507,7 @@ nav .burger-icon.burger-open {
   pointer-events: painted;
 }
 .temp-connect-text {
-  stroke: #fff;
+  stroke: #efefef;
   size: 5px;
   fill: transparent;
   stroke-width: 1px;
@@ -516,9 +515,9 @@ nav .burger-icon.burger-open {
   stroke-linejoin: round;
 }
 .temp-line-text {
-  font-size: 15px;
+  font-size: 1rem;
   padding: 5px;
-  fill: #fff;
+  fill: #efefef;
   letter-spacing: normal;
   stroke: transparent;
   stroke-width: 0;
@@ -1036,7 +1035,7 @@ button:disabled {
 }
 .close-button:after,
 .close-button:before {
-  background-color: #fff;
+  background-color: #efefef;
   content: "";
   display: block;
   left: 50%;
@@ -1163,11 +1162,11 @@ button:disabled {
   position: fixed;
   right: 0;
   bottom: 0;
-  font-size: 24px;
+  font-size: 1.15rem;
 }
 
 $toast-delay: 10s;
-$text-white: #ffffff;
+$text-white: #efefef;
 $color-grey: #707070;
 $toast-default-bg: $color-grey;
 $toast-default-color: $text-white;
@@ -1611,7 +1610,7 @@ input .autoresize {
     display: none;
   }
   .header {
-    padding: 16px 0 0 16px;
+    padding: 16px 0 0;
     position: sticky;
     top: 0;
     z-index: 3;
@@ -1632,7 +1631,7 @@ input .autoresize {
     border-bottom: 2px solid #707070;
   }
   nav > ul > li:hover {
-    border-bottom: 2px solid #ffffff;
+    border-bottom: 2px solid #efefef;
   }
   nav > ul a {
     padding: 16px;
@@ -1641,7 +1640,7 @@ input .autoresize {
     border-bottom: 2px solid #707070;
   }
   nav > ul > li:hover {
-    border-bottom: 2px solid #ffffff;
+    border-bottom: 2px solid #efefef;
   }
   nav > ul a {
     padding: 16px;
@@ -1683,7 +1682,7 @@ input .autoresize {
   }
   #telemetry-wrapper {
     width: 20%;
-    min-width: 20%;
+    min-width: 206px;
   }
   .telemetry {
     flex-direction: column;
@@ -1798,7 +1797,7 @@ input .autoresize {
     border-radius: 0 4px 4px 0;
   }
   #prusa-toast {
-    font-size: 16px;
+    font-size: 1rem;
   }
   .close-button {
     height: 20px;
@@ -1808,7 +1807,7 @@ input .autoresize {
     min-width: 20px;
   }
   #job .progress {
-    font-size: 16px;
+    font-size: 1rem;
   }
   .node,
   .node-btn-list {

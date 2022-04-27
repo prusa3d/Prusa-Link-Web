@@ -78,12 +78,6 @@ const sla = {
       getTitle: () => buildTitle(translate("home.link")),
     },
     {
-      path: "temperature",
-      html: require("../../views/temperature.html"),
-      module: updateHostname(temperature),
-      getTitle: () => buildTitle(translate("temps.title")),
-    },
-    {
       path: "question",
       html: require("../../views/question.html"),
       module: updateHostname(question),

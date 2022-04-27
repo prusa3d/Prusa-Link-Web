@@ -263,7 +263,7 @@ const fdmFormatData = (format, value) => {
     case "fan":
       return numberFormat(value) + ` ${str_rpm}`;
     case "print":
-      return numberFormat(value) + " %";
+      return numberFormat(value || 0, true, 0) + "%";
     case "pos":
       return numberFormat(value) + " mm";
     case "date":
@@ -273,9 +273,9 @@ const fdmFormatData = (format, value) => {
     case "timeEst":
       return formatEstimatedTime(value);
     case "progress":
-      return numberFormat((value || 0) * 100) + "%";
+      return numberFormat((value || 0) * 100, true, 0) + "%";
     case "percent":
-      return `${numberFormat((value || 0), 0)}%`;
+      return `${numberFormat((value || 0), true, 0)}%`;
     case "material":
       return value || translate("prop.na");
     case "size":
