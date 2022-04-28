@@ -48,13 +48,13 @@ const getInitialMetadataFiles = (data) => {
     type: "folder",
     children: data.files.filter((elm) => elm.origin === "local"),
   }];
-  let usb_files = data.files.filter((elm) => elm.origin === "sdcard");
+  let usb_files = data.files.filter((elm) => elm.origin === "usb");
   if (usb_files.length > 0) {
     files.push({
-      name: "sdcard",
+      name: "usb",
       display: "USB",
-      origin: "sdcard",
-      path: "/sdcard",
+      origin: "usb",
+      path: "/usb",
       type: "folder",
       children: usb_files,
     });
