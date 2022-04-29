@@ -3,17 +3,58 @@
     "back": "Wstecz",
     "cancel": "Anuluj",
     "cancel-pt": "Anuluj wydruk",
-    "chg-exp": "Ustawienia druku",
+    "chg": "zmień",
+    "chg-exp": "Zmień czasy naświetlania",
     "confirm": "Potwierdzam",
     "continue": "Kontynuuj",
     "del": "usuń",
+    "disable-steppers": "wyłącz silniki krokowe",
+    "download": "pobierz",
+    "extrude": "wytłaczaj",
     "login": "Zaloguj",
     "no": "Nie",
+    "pause-pt": "Wstrzymaj wydurk",
+    "resume-pt": "Wznów wydruk",
+    "retract": "wycofaj",
     "save-chgs": "Zapisz zmiany",
+    "set": "USTAW",
     "sla-refill": "Uzupełnij żywicę",
     "sla-refilled": "Żywica uzupełniona",
     "start-pt": "Start druku",
+    "upld-proj": "Prześlij projekt",
     "yes": "Tak"
+  },
+  "conn": {
+    "err-conn": "Nie można połączyć się z drukarką",
+    "printer-status": "Stan połączenia drukarki 3D",
+    "prusa-connect-status": "Stan połączenia PRUSA CONNECT",
+    "suc": "Połączono pomyślnie",
+    "title": "połączenie",
+    "unsuc": "Połączenie nie powiodło się"
+  },
+  "control": {
+    "axis": {
+      "x": "Oś X",
+      "y": "Oś Y",
+      "z": "Oś Z"
+    },
+    "coordinates": "koordynaty drukarki",
+    "extrude-retract-step": "wytłocz/wycofaj [mm]",
+    "extruder": "ekstruder",
+    "flow": "przepływ",
+    "heated-bed-move": "ruch stołu w osi x i y",
+    "heated-bed-temp": "temperatura stołu",
+    "link": "Sterowanie",
+    "move-step": "odległość [mm]",
+    "nozzle-temp": "temperatura dyszy",
+    "nozzle-z-move": "ruch dyszy w osi z",
+    "speed": "prędkość",
+    "stepper-motors": "silniki krokowe",
+    "title": "Sterowanie drukarką"
+  },
+  "download": {
+    "dl-started": "Rozpoczęto pobieranie",
+    "start-pt": "Autostart"
   },
   "error": {
     "401-title": "Logowanie nieudane"
@@ -21,11 +62,13 @@
   "exp-times": {
     "exp-time": "Czas naświetlania [s]",
     "faster": "Szybciej",
+    "high-viscosity": "Wysoka lepkość",
     "inc": "Przyrost czasu naświetl. [s]",
     "layer-1st": "Naśw. 1. warstwy [s]",
     "profile": "Profil druku",
     "slower": "Wolniej",
-    "title": "Ustawienia druku"
+    "superslow": "Bardzo wolno",
+    "title": "Zmień czasy naświetlania"
   },
   "glob": {
     "hd-st": "Stan sprzętu",
@@ -35,8 +78,16 @@
     "link": "Panel kontrolny",
     "title": "Stan drukarki"
   },
+  "logs": {
+    "empty-file": "Log jest pusty!",
+    "file-too-large": "Pliki z logami o rozmiarze większym niż {{size}} są dostępne jedynie do pobrania.",
+    "not-selected": "Nie wybrano logu!",
+    "select-file": "wybierz plik",
+    "select-file-placeholder": "Wybierz log",
+    "title": "logi"
+  },
   "msg": {
-    "api-key-1": "Witaj w interfejsie sieciowym Prusa Link Web.",
+    "api-key-1": "Witaj w interfejsie sieciowym Prusa Connect Local.",
     "api-key-2": "Wpisz klucz API.",
     "api-key-3": "Możesz znaleźć go w sekcji Ustawienia -> Sieć -> Dane logowania.",
     "cancel": "Czy na pewno chcesz anulować wydruk?",
@@ -47,9 +98,10 @@
     "modal-p1": "Witaj w interfejsie Twojej",
     "modal-p2": "Wartości będą wyświetlane tylko podczas drukowania.",
     "modal-p3": "DRUKARKA 3D ORIGINAL PRUSA",
-    "pour-resin": "Wlej do zbiornika żywicę w ilości odpowiedniej dla wybranego projektu i zamknij pokrywę.",
     "sla-fill": "Uzupełnij żywicę i zamknij pokrywę.",
-    "sla-fly-fill": "Uzupełnij żywicę do znacznika 100%."
+    "sla-fly-fill": "Uzupełnij żywicę do znacznika 100%.",
+    "sla-pour-resin": "Wlej do zbiornika odpowiednią ilość żywicy dla wybranego projektu i zamknij pokrywę. Minimalna ilość żywicy jest wyświetlana na ekranie dotykowym.",
+    "sla-refill": "Uzupełnij żywicę do poziomu 100% i zamknij pokrywę."
   },
   "ntf": {
     "actn-pending": "Akcja zostanie wykonana po zakończeniu warstwy.",
@@ -57,6 +109,7 @@
     "error": "Błąd",
     "n-calibrated": "Drukarka nie jest skalibrowana!",
     "not-idle": "Drukarka nie znajduje się w stanie oczekiwania.",
+    "settings-suc": "Ustawienia zmienione pomyślnie",
     "start-print": "Drukarka jest przygotowywana.",
     "success": "Sukces",
     "upld-exists": "Istnieje już projekt o nazwie {{file_name}}.",
@@ -65,13 +118,24 @@
     "upld-unsuc": "Przesyłanie projektu {{file_name}} nie powiodło się."
   },
   "print": {
+    "1": "Masz zamiar rozpocząć druk zdalnie przy pomocy interfejsu sieciowego. Upewnij się, że drukarka 3D jest prawidłowo skonfigurowana i gotowa do pracy.",
+    "2": "Platforma jest czysta i zamontowana w drukarce",
+    "3": "W zbiorniku jest wystarczająca ilość żywicy",
+    "4": "Pokrywa jest zamknięta",
+    "fdm": {
+      "1": "Czy drukarka jest gotowa?",
+      "2": "czy płyta stołu jest czysta i pusta?"
+    },
     "sla": {
-      "1": "Masz zamiar rozpocząć druk zdalnie przy pomocy interfejsu sieciowego. Upewnij się, że drukarka 3D jest prawidłowo skonfigurowana i gotowa do pracy.",
-      "2": "Platforma jest czysta i zamontowana w drukarce",
-      "3": "W zbiorniku jest wystarczająca ilość żywicy",
-      "4": "Pomarańczowa pokrywa jest zamknięta",
-      "5": "Zbiornik jest czysty i zamontowany w drukarce"
+      "1": "Masz zamiar rozpocząć drukowanie zdalnie przez interfejs sieciowy. Upewnij się, że drukarka 3D jest poprawnie ustawiona i gotowa do drukowania.",
+      "2": "Platforma robocza jest czysta i zamontowana w drukarce",
+      "3": "W zbiorniku jest wystarczająca ilość żywicy"
     }
+  },
+  "printer": {
+    "location": "lokalizacja drukarki",
+    "name": "nazwa drukarki",
+    "title": "drukarka"
   },
   "proj": {
     "del": "Usuń plik",
@@ -84,10 +148,13 @@
     "cover": "Stan pokrywy",
     "cover-closed": "Zamknięta",
     "cover-opened": "Otwarta",
+    "current-layer": "Obecna warstwa",
     "d+": "D+",
     "est-end": "Szacowane zakończenie",
+    "est-pnt-time": "Szac. czas drukowania",
     "exp-time": "czas naświetlania",
     "exp-times": "Czasy naświetlania",
+    "false": "Nie",
     "fan-blower": "Wentylator boczny",
     "fan-led": "Wentylator UV LED",
     "fan-rear": "Tylny wentylator",
@@ -101,11 +168,18 @@
     "material": "Materiał",
     "na": "N/D",
     "pnt-time": "Czas druku",
+    "progress": "Postęp",
     "rem-time": "Pozostały czas",
+    "size": "Rozmiar pliku",
     "sla-csm-mt": "Zużyta żywica",
     "sla-rmn-mt": "Pozostała żywica",
     "speed": "Prędkość drukowania",
+    "st-busy": "Zajęty",
+    "st-feedme": "Uzupełnij żywicę",
     "st-idle": "Oczekuje",
+    "st-paused": "Wstzymano",
+    "st-pausing": "Wstrzymywanie",
+    "st-pour-resin": "Wlej żywicę",
     "st-printing": "Drukowanie",
     "temp-amb": "Temperatura otoczenia",
     "temp-bed": "Stół",
@@ -116,11 +190,22 @@
     "tmw": "Jutro",
     "tmw-at": "Jutro o",
     "today-at": "Dzisiaj o",
+    "true": "Tak",
     "z-height": "Wysokość Z"
   },
-  "refill": {
-    "title": "Uzupełnij żywicę",
-    "title-pour-resin": "Dolej żywicy"
+  "serial": {
+    "label": "numer seryjny",
+    "title": "numer seryjny"
+  },
+  "settings": {
+    "title": "Ustawienia"
+  },
+  "sys-version": {
+    "description": "opis",
+    "id": "ID",
+    "os": "OS",
+    "python": "python",
+    "title": "wersja systemowa"
   },
   "temps": {
     "title": "Temperatury",
@@ -128,7 +213,11 @@
     "y": "Temperatura [°C]"
   },
   "unit": {
+    "b": "B",
+    "gb": "GB",
     "h": "g",
+    "kb": "KB",
+    "mb": "MB",
     "min": "min",
     "minute": "minuta",
     "minute_plural": "minuty",
@@ -136,8 +225,47 @@
     "rpm": "Obr./min"
   },
   "upld": {
+    "direct": {
+      "choose": "Wybierz {{file}} lub upuść go tutaj.",
+      "description": "Prześlij projekt bezpośrednio do drukarki przez sieć lokalną",
+      "title": "Przesyłanie bezpośrednie"
+    },
     "loading": "Przesyłanie...",
     "open": "Wybierz {{file}} lub przeciągnij go tutaj",
+    "remote": {
+      "description": "Prześlij projekt ze zdalnego adresu URL bezpośrednio do drukarki",
+      "hint-fdm": "Wpisz adres URL pliku G-code z projektem",
+      "hint-sla": "Wpisz adres URL kompatybilnego pliku z projektem",
+      "source": "źródłowy URL",
+      "title": "Zdalny URL"
+    },
+    "slicer": {
+      "description": "Prześlij projekt z PrusaSlicer do drukarki przez sieć lokalną",
+      "guide": {
+        "1": "Użyj PrusaSlicer do przesłania plików z danymi do drukowania, instrukcje znajdziesz ",
+        "1-link": "tutaj",
+        "2": "Musisz wpisać adres IP {{ip_address}} oraz klucz API {{api_key}}"
+      },
+      "title": "PrusaSlicer"
+    },
+    "start-pt": "rozpocznij drukowanie po przesłaniu",
     "title": "prześlij projekt"
+  },
+  "user": {
+    "new-password": "nowe hasło",
+    "password": "hasło",
+    "re-password": "powtórz hasło",
+    "title": "użytkownik",
+    "username": "nazwa użytkownika"
+  },
+  "version": {
+    "api": "api",
+    "fe": "frontend",
+    "firmware": "firmware",
+    "hostname": "nazwa hosta",
+    "sdk": "sdk",
+    "server": "serwer",
+    "text": "text",
+    "title": "wersja"
   }
 }

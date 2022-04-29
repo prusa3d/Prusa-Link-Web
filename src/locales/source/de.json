@@ -3,17 +3,58 @@
     "back": "Zurück",
     "cancel": "Abbrechen",
     "cancel-pt": "Druck abbrechen",
-    "chg-exp": "Druckeinstellungen",
+    "chg": "Ändern",
+    "chg-exp": "Belichtungszeiten ändern",
     "confirm": "Bestätigen",
     "continue": "Fortfahren",
     "del": "löschen",
+    "disable-steppers": "Stepper deaktivieren",
+    "download": "Download",
+    "extrude": "Extrudieren",
     "login": "Login",
     "no": "Nein",
+    "pause-pt": "Druck pausieren",
+    "resume-pt": "Druck fortsetzen",
+    "retract": "Rückzug",
     "save-chgs": "Änderungen speichern",
+    "set": "SETZEN",
     "sla-refill": "Harz auffüllen",
     "sla-refilled": "Harz voll aufgefüllt",
     "start-pt": "Druck starten",
+    "upld-proj": "Projekt hochladen",
     "yes": "Ja"
+  },
+  "conn": {
+    "err-conn": "Keine Verbindung zum Drucker möglich",
+    "printer-status": "Verbindungsstatus des 3D-Druckers",
+    "prusa-connect-status": "PRUSA CONNECT Verbindungsstatus",
+    "suc": "Erfolgreich verbunden",
+    "title": "Verbindung",
+    "unsuc": "Verbindung fehlgeschlagen"
+  },
+  "control": {
+    "axis": {
+      "x": "X-Achse",
+      "y": "Y-Achse",
+      "z": "Z-Achse"
+    },
+    "coordinates": "Drucker-Koordinaten",
+    "extrude-retract-step": "Schritt extrudieren/zurückziehen [mm]",
+    "extruder": "Extruder",
+    "flow": "Fluss",
+    "heated-bed-move": "Heizbett x und y bewegen",
+    "heated-bed-temp": "Heizbett-Temperatur",
+    "link": "Steuerung",
+    "move-step": "Schritt bewegen [mm]",
+    "nozzle-temp": "Düsentemperatur",
+    "nozzle-z-move": "Düsen z bewegen",
+    "speed": "Geschwindigkeit",
+    "stepper-motors": "Schrittmotoren",
+    "title": "Druckersteuerung"
+  },
+  "download": {
+    "dl-started": "Download begonnen",
+    "start-pt": "Autostart"
   },
   "error": {
     "401-title": "Login fehlgeschlagen"
@@ -21,11 +62,13 @@
   "exp-times": {
     "exp-time": "Belichtung [s]",
     "faster": "Schneller",
+    "high-viscosity": "Hohe Viskosität",
     "inc": "Belichtungszeit inkr. [s]",
     "layer-1st": "Erste Schicht Bel. [s]",
     "profile": "Druckprofil",
     "slower": "Langsamer",
-    "title": "Druckeinstellungen"
+    "superslow": "Super langsam",
+    "title": "Belichtungszeiten ändern"
   },
   "glob": {
     "hd-st": "Hardwarestatus",
@@ -35,8 +78,16 @@
     "link": "Dashboard",
     "title": "Druckerstatus"
   },
+  "logs": {
+    "empty-file": "Die Logdatei ist leer!",
+    "file-too-large": "Protokolldateien, die größer sind als {{size}}, sind nur zum Herunterladen verfügbar.",
+    "not-selected": "Keine Protokolldatei ausgewählt!",
+    "select-file": "Datei wählen",
+    "select-file-placeholder": "Logdatei auswählen",
+    "title": "Protokolle"
+  },
   "msg": {
-    "api-key-1": "Willkommen auf der Web-Oberfläche von Prusa Link Web.",
+    "api-key-1": "Willkommen auf der Web-Oberfläche von Prusa Connect Local.",
     "api-key-2": "Bitte geben Sie den API-Schlüssel ein.",
     "api-key-3": "Sie finden ihn in Einstellungen -> Netzwerk -> Anmeldedaten.",
     "cancel": "Wollen Sie den Druck wirklich abbrechen?",
@@ -47,9 +98,10 @@
     "modal-p1": "Willkommen zur Weboberfläche Ihres",
     "modal-p2": "Bitte beachten Sie, dass die Werte nur angezeigt werden, wenn der Drucker gerade druckt.",
     "modal-p3": "ORIGINAL PRUSA 3D DRUCKER",
-    "pour-resin": "Füllen Sie genügend Harz für das gewählte Projekt in den Behälter und schließen Sie den Deckel.",
     "sla-fill": "Bitte füllen Sie den Harztank und schließen Sie den Deckel.",
-    "sla-fly-fill": "Bitte füllen Sie den Harztank vollständig auf."
+    "sla-fly-fill": "Bitte füllen Sie den Harztank vollständig auf.",
+    "sla-pour-resin": "Füllen Sie genügend Harz für das ausgewählte Projekt in den Tank und schließen Sie die Abdeckung. Die minimale Menge des Harzes wird auf dem Touchscreen angezeigt.",
+    "sla-refill": "Füllen Sie den Tank zu 100 % auf und schließen Sie die Abdeckung."
   },
   "ntf": {
     "actn-pending": "Aktion wird nach Beendigung der Schicht ausgeführt.",
@@ -57,6 +109,7 @@
     "error": "Fehler",
     "n-calibrated": "Der Drucker ist nicht kalibriert!",
     "not-idle": "Der Drucker arbeitet!",
+    "settings-suc": "Die Einstellungen wurden erfolgreich geändert.",
     "start-print": "Der Drucker bereitet sich vor.",
     "success": "Erfolg",
     "upld-exists": "Das Projekt {{file_name}} existiert bereits.",
@@ -65,13 +118,24 @@
     "upld-unsuc": "Das Hochladen des Projekts {{file_name}} war nicht erfolgreich."
   },
   "print": {
+    "1": "Sie sind dabei, einen Remote-Druck über die Web-Benutzeroberfläche zu starten. Bitte stellen Sie sicher, dass Ihr 3D-Drucker korrekt eingerichtet und für den Druck bereit ist.",
+    "2": "Die Druckplattform ist sauber und im Drucker installiert",
+    "3": "Eine ausreichende Menge Harz befindet sich im Tank",
+    "4": "Der orangefarbene Acryldeckel ist geschlossen",
+    "fdm": {
+      "1": "Ist der Drucker bereit?",
+      "2": "Ist das Druckblech leer und sauber?"
+    },
     "sla": {
-      "1": "Sie sind dabei, einen Remote-Druck über die Web-Benutzeroberfläche zu starten. Bitte stellen Sie sicher, dass Ihr 3D-Drucker korrekt eingerichtet und für den Druck bereit ist.",
+      "1": "Sie sind dabei, einen Remote-Druck über die Web-Benutzeroberfläche zu starten. Bitte vergewissern Sie sich, dass Ihr 3D-Drucker korrekt eingerichtet und für den Druck bereit ist.",
       "2": "Die Druckplattform ist sauber und im Drucker installiert",
-      "3": "Eine ausreichende Menge Harz befindet sich im Tank",
-      "4": "Der orangefarbene Acryldeckel ist geschlossen",
-      "5": "Der Harzbehälter ist sauber und im Drucker installiert."
+      "3": "Es befindet sich eine ausreichende Menge Harz im Tank"
     }
+  },
+  "printer": {
+    "location": "Druckerstandort",
+    "name": "Druckername",
+    "title": "Drucker"
   },
   "proj": {
     "del": "Datei löschen",
@@ -84,10 +148,13 @@
     "cover": "Abdeckungsstatus",
     "cover-closed": "Geschlossen",
     "cover-opened": "Geöffnet",
+    "current-layer": "Aktuelle Schicht",
     "d+": "D+",
     "est-end": "Erwartetes Ende",
+    "est-pnt-time": "Erw. Druckzeit",
     "exp-time": "Belichtungszeit",
     "exp-times": "Belichtungszeiten",
+    "false": "Nein",
     "fan-blower": "Kühllüfter",
     "fan-led": "UV LED Lüfter",
     "fan-rear": "Hinterer Lüfter",
@@ -101,11 +168,18 @@
     "material": "Material",
     "na": "NV",
     "pnt-time": "Druckzeit",
+    "progress": "Fortschritt",
     "rem-time": "Restzeit",
+    "size": "Dateigröße",
     "sla-csm-mt": "Verbrauchtes Harz",
     "sla-rmn-mt": "Restharz",
     "speed": "Druckgeschwindigkeit",
+    "st-busy": "Aktiv",
+    "st-feedme": "Harz nachfüllen",
     "st-idle": "Leerlauf",
+    "st-paused": "Pausiert",
+    "st-pausing": "Pausierend",
+    "st-pour-resin": "Harz einfüllen",
     "st-printing": "Druckt",
     "temp-amb": "Außentemperatur",
     "temp-bed": "Heizbett",
@@ -116,11 +190,22 @@
     "tmw": "Morgen",
     "tmw-at": "Morgen um",
     "today-at": "Heute um",
+    "true": "Ja",
     "z-height": "Z-Höhe"
   },
-  "refill": {
-    "title": "Harz auffüllen",
-    "title-pour-resin": "Harz hinzufügen"
+  "serial": {
+    "label": "Seriennummer",
+    "title": "Seriennummer"
+  },
+  "settings": {
+    "title": "Einstellungen"
+  },
+  "sys-version": {
+    "description": "Beschreibung",
+    "id": "ID",
+    "os": "OS",
+    "python": "Python",
+    "title": "System Version"
   },
   "temps": {
     "title": "Temperaturen",
@@ -128,7 +213,11 @@
     "y": "Temperatur [°C]"
   },
   "unit": {
+    "b": "B",
+    "gb": "GB",
     "h": "h",
+    "kb": "KB",
+    "mb": "MB",
     "min": "min",
     "minute": "Minute",
     "minute_plural": "Minuten",
@@ -136,8 +225,47 @@
     "rpm": "UPM"
   },
   "upld": {
+    "direct": {
+      "choose": "Wählen Sie eine {{file}} oder legen Sie sie hier ab.",
+      "description": "Projekt über das lokale Netzwerk direkt auf den Drucker hochladen",
+      "title": "Direktes Hochladen"
+    },
     "loading": "Lade hoch...",
     "open": "{{file}} wählen oder hier fallenlassen.",
+    "remote": {
+      "description": "Projekt von einer entfernten URL direkt auf den Drucker hochladen",
+      "hint-fdm": "URL der G-CODE Projektdatei eingeben",
+      "hint-sla": "URL der kompatiblen Projektdatei eingeben",
+      "source": "Quell-URL",
+      "title": "Remote Url"
+    },
+    "slicer": {
+      "description": "Projekt vom PrusaSlicer über das lokale Netzwerk auf den Drucker hochladen",
+      "guide": {
+        "1": "Verwenden Sie Prusa Slicer, um Dateien mit Druckdaten hochzuladen. Eine Anleitung dazu finden Sie unter",
+        "1-link": "hier",
+        "2": "Sie müssen die IP-Adresse {{ip_address}} und den API-Schlüssel {{api_key}} ausfüllen"
+      },
+      "title": "Prusa Slicer"
+    },
+    "start-pt": "Druck nach Übertragung starten",
     "title": "Projekt hochladen"
+  },
+  "user": {
+    "new-password": "neues Kennwort",
+    "password": "Kennwort",
+    "re-password": "Kennwort wiederholen",
+    "title": "Benutzer",
+    "username": "Benutzername"
+  },
+  "version": {
+    "api": "api",
+    "fe": "Frontend",
+    "firmware": "Firmware",
+    "hostname": "Hostname",
+    "sdk": "Sdk",
+    "server": "Server",
+    "text": "Text",
+    "title": "Version"
   }
 }
