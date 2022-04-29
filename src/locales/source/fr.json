@@ -3,17 +3,58 @@
     "back": "Retour",
     "cancel": "Annuler",
     "cancel-pt": "Annuler l'impression",
-    "chg-exp": "Réglages d'Impression",
+    "chg": "changer",
+    "chg-exp": "Modifier les temps d'exposition",
     "confirm": "Confirmer",
     "continue": "Continuer",
     "del": "supprimer",
+    "disable-steppers": "désactiver les moteurs pas à pas",
+    "download": "télécharger",
+    "extrude": "extruder",
     "login": "Connexion",
     "no": "Non",
+    "pause-pt": "Mettre en pause l'impression",
+    "resume-pt": "Reprendre l'impression",
+    "retract": "rétracter",
     "save-chgs": "Enregistrer les modifications",
+    "set": "APPLIQUER",
     "sla-refill": "Faire le plein de résine",
     "sla-refilled": "Plein de résine fait",
     "start-pt": "Lancer l'impression",
+    "upld-proj": "Télécharger le projet",
     "yes": "Oui"
+  },
+  "conn": {
+    "err-conn": "Impossible de se connecter à l'imprimante",
+    "printer-status": "État de la connexion de l'imprimante 3D",
+    "prusa-connect-status": "Statut de la connexion de PRUSA CONNECT",
+    "suc": "Connexion réussie",
+    "title": "connexion",
+    "unsuc": "Échec de la connexion"
+  },
+  "control": {
+    "axis": {
+      "x": "Axe X",
+      "y": "Axe Y",
+      "z": "Axe Z"
+    },
+    "coordinates": "coordonnées de l'imprimante",
+    "extrude-retract-step": "pas d'extrusion/rétraction [mm]",
+    "extruder": "extrudeur",
+    "flow": "flux",
+    "heated-bed-move": "déplacement en x et y du plateau chauffant",
+    "heated-bed-temp": "température du plateau chauffant",
+    "link": "Contrôle",
+    "move-step": "pas de déplacement [mm]",
+    "nozzle-temp": "température de la buse",
+    "nozzle-z-move": "déplacement en z de la buse",
+    "speed": "vitesse",
+    "stepper-motors": "moteurs pas à pas",
+    "title": "Contrôle de l'imprimante"
+  },
+  "download": {
+    "dl-started": "Téléchargement Lancé",
+    "start-pt": "Démarrage automatique"
   },
   "error": {
     "401-title": "Échec de la connexion"
@@ -21,11 +62,13 @@
   "exp-times": {
     "exp-time": "Exposition [s]",
     "faster": "Plus rapide",
+    "high-viscosity": "Haute Viscosité",
     "inc": "Incr. du temps d'exposition [s]",
     "layer-1st": "Première couche Expo. [s]",
     "profile": "Profil d'Impression",
     "slower": "Plus lent",
-    "title": "Réglages d'Impression"
+    "superslow": "SuperLent",
+    "title": "Modifier les temps d'exposition"
   },
   "glob": {
     "hd-st": "état du matériel",
@@ -35,8 +78,16 @@
     "link": "Tableau de bord",
     "title": "État de l'imprimante"
   },
+  "logs": {
+    "empty-file": "Le fichier de journal est vide !",
+    "file-too-large": "Les fichiers de journal d'une taille supérieure à {{size}} ne sont disponibles que pour le téléchargement.",
+    "not-selected": "Aucun fichier de journal n'est sélectionné !",
+    "select-file": "sélectionner le fichier",
+    "select-file-placeholder": "Sélectionner le fichier de journal",
+    "title": "journaux"
+  },
   "msg": {
-    "api-key-1": "Bienvenue sur l'interface web locale de Prusa Link Web.",
+    "api-key-1": "Bienvenue sur l'interface web locale de Prusa Connect.",
     "api-key-2": "Veuillez insérer la clé API.",
     "api-key-3": "Vous pouvez la trouver dans Réglages -> Réseau -> Informations de connexion.",
     "cancel": "Voulez-vous vraiment annuler l'impression ?",
@@ -47,9 +98,10 @@
     "modal-p1": "Bienvenue dans l'interface web de votre",
     "modal-p2": "Veuillez noter que les valeurs sont affichées uniquement lorsque l'imprimante imprime.",
     "modal-p3": "IMPRIMANTE 3D ORIGINALE PRUSA",
-    "pour-resin": "Versez suffisamment de résine dans le réservoir pour le projet sélectionné et fermez le capot.",
     "sla-fill": "Veuillez remplir le réservoir de résine et fermer le couvercle.",
-    "sla-fly-fill": "Veuillez remplir complètement le réservoir de résine."
+    "sla-fly-fill": "Veuillez remplir complètement le réservoir de résine.",
+    "sla-pour-resin": "Versez suffisamment de résine pour le projet sélectionné dans le réservoir et fermez le capot. La quantité minimale de résine est affichée sur l'écran tactile.",
+    "sla-refill": "Remplissez le réservoir à 100 % et fermez le capot."
   },
   "ntf": {
     "actn-pending": "L'action sera exécutée une fois la couche terminée.",
@@ -57,6 +109,7 @@
     "error": "Erreur",
     "n-calibrated": "L'imprimante n'est pas calibrée !",
     "not-idle": "L'imprimante n'est pas au repos !",
+    "settings-suc": "Les paramètres ont été modifiés avec succès.",
     "start-print": "Préparation de l'imprimante.",
     "success": "Succès",
     "upld-exists": "Le projet {{file_name}} existe déjà.",
@@ -65,13 +118,24 @@
     "upld-unsuc": "Le téléchargement du projet {{file_name}} a échoué."
   },
   "print": {
+    "1": "Vous êtes sur le point de démarrer une impression à distance à l'aide de l'interface utilisateur web. Veuillez vous assurer que votre imprimante 3D est correctement configurée et prête pour l'impression.",
+    "2": "La plateforme d'impression est propre et installée sur l'imprimante",
+    "3": "Une quantité suffisante de résine se trouve dans le réservoir",
+    "4": "Le couvercle en acrylique est fermé",
+    "fdm": {
+      "1": "L'imprimante est-elle prête ?",
+      "2": "La plaque d'impression est-elle vide et propre ?"
+    },
     "sla": {
-      "1": "Vous êtes sur le point de démarrer une impression à distance à l'aide de l'interface utilisateur web. Veuillez vous assurer que votre imprimante 3D est correctement configurée et prête pour l'impression.",
-      "2": "La plateforme d'impression est propre et installée sur l'imprimante",
-      "3": "Une quantité suffisante de résine se trouve dans le réservoir",
-      "4": "Le couvercle en acrylique orange est fermé",
-      "5": "Le réservoir de résine est propre et installé dans l'imprimante"
+      "1": "Vous êtes sur le point de lancer une impression à distance à l'aide de l'interface utilisateur web. Veuillez vous assurer que votre imprimante 3D est correctement configurée et prête pour l'impression.",
+      "2": "La plate-forme d'impression est propre et installée dans l'imprimante.",
+      "3": "Une quantité suffisante de résine se trouve dans le réservoir"
     }
+  },
+  "printer": {
+    "location": "emplacement de l'imprimante",
+    "name": "nom de l'imprimante",
+    "title": "imprimante"
   },
   "proj": {
     "del": "Supprimer le Fichier",
@@ -84,10 +148,13 @@
     "cover": "État du capot",
     "cover-closed": "Fermé",
     "cover-opened": "Ouvert",
+    "current-layer": "Couche en cours",
     "d+": "D+",
     "est-end": "Fin estimée",
+    "est-pnt-time": "Temps d'Impression Est.",
     "exp-time": "temps d'exposition",
     "exp-times": "Temps d'exposition",
+    "false": "Non",
     "fan-blower": "Ventilateur radial",
     "fan-led": "Ventilateur des LED UV",
     "fan-rear": "Ventilateur arrière",
@@ -101,11 +168,18 @@
     "material": "Matériau",
     "na": "NA",
     "pnt-time": "Temps d'impression",
+    "progress": "Progression",
     "rem-time": "Temps restant",
+    "size": "Taille du fichier",
     "sla-csm-mt": "Résine consommée",
     "sla-rmn-mt": "Résine restante",
     "speed": "Vitesse d'impression",
+    "st-busy": "Occupé",
+    "st-feedme": "Remettre de la résine",
     "st-idle": "Repos",
+    "st-paused": "En pause",
+    "st-pausing": "Mise en pause",
+    "st-pour-resin": "Verser de la résine",
     "st-printing": "Impression",
     "temp-amb": "Température ambiante",
     "temp-bed": "Plateau chauffant",
@@ -116,11 +190,22 @@
     "tmw": "Demain",
     "tmw-at": "Demain à",
     "today-at": "Aujourd'hui à",
+    "true": "Oui",
     "z-height": "Hauteur en Z"
   },
-  "refill": {
-    "title": "Faire le plein de résine",
-    "title-pour-resin": "Verser de la résine"
+  "serial": {
+    "label": "numéro de série",
+    "title": "numéro de série"
+  },
+  "settings": {
+    "title": "Réglages"
+  },
+  "sys-version": {
+    "description": "description",
+    "id": "ID",
+    "os": "OS",
+    "python": "python",
+    "title": "version du système"
   },
   "temps": {
     "title": "Températures",
@@ -128,7 +213,11 @@
     "y": "Température [°C]"
   },
   "unit": {
+    "b": "o",
+    "gb": "Go",
     "h": "h",
+    "kb": "Ko",
+    "mb": "Mo",
     "min": "min",
     "minute": "minute",
     "minute_plural": "minutes",
@@ -136,8 +225,47 @@
     "rpm": "TPM"
   },
   "upld": {
+    "direct": {
+      "choose": "Choisissez un {{file}} ou déposez-le ici.",
+      "description": "Téléchargement du projet directement sur l'imprimante via le réseau local",
+      "title": "Téléchargement direct"
+    },
     "loading": "Téléchargement...",
     "open": "Choisissez un {{file}} ou déposez-le ici.",
+    "remote": {
+      "description": "Téléchargement d'un projet depuis une URL distante directement sur l'imprimante",
+      "hint-fdm": "Tapez l'URL du fichier du projet G-CODE",
+      "hint-sla": "Type l'URL du fichier de projet compatible",
+      "source": "URL de la source",
+      "title": "URL distante"
+    },
+    "slicer": {
+      "description": "Téléchargement du projet depuis PrusaSlicer vers l'imprimante via le réseau local",
+      "guide": {
+        "1": "Utilisez Prusa Slicer pour télécharger les fichiers contenant les données d'impression, des instructions sur la façon de procéder peuvent être trouvées",
+        "1-link": "ici",
+        "2": "Vous devrez remplir l'adresse IP {{ip_address}} et la clé API {{api_key}}"
+      },
+      "title": "Prusa Slicer"
+    },
+    "start-pt": "lancer l'impression après le transfert",
     "title": "télécharger un projet"
+  },
+  "user": {
+    "new-password": "nouveau mot de passe",
+    "password": "mot de passe",
+    "re-password": "répéter le mot de passe",
+    "title": "utilisateur",
+    "username": "nom d'utilisateur"
+  },
+  "version": {
+    "api": "api",
+    "fe": "front-end",
+    "firmware": "firmware",
+    "hostname": "nom d'hôte",
+    "sdk": "sdk",
+    "server": "serveur",
+    "text": "texte",
+    "title": "version"
   }
 }

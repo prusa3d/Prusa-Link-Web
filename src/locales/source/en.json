@@ -26,7 +26,7 @@
   },
   "conn": {
     "err-conn": "Cannot connect to the printer",
-    "printer-status" : "3D printer connection status",
+    "printer-status": "3D printer connection status",
     "prusa-connect-status": "PRUSA CONNECT connection status",
     "suc": "Successfully connected",
     "title": "connection",
@@ -53,8 +53,8 @@
     "title": "Printer control"
   },
   "download": {
-    "start-pt": "Autostart",
-    "dl-started": "Download Started"
+    "dl-started": "Download Started",
+    "start-pt": "Autostart"
   },
   "error": {
     "401-title": "Login failed"
@@ -62,11 +62,11 @@
   "exp-times": {
     "exp-time": "Exposure [s]",
     "faster": "Faster",
+    "high-viscosity": "High Viscosity",
     "inc": "Exposure time incr. [s]",
     "layer-1st": "First Layer Expo. [s]",
     "profile": "Print profile",
     "slower": "Slower",
-    "high-viscosity": "High Viscosity",
     "title": "Print Settings"
   },
   "glob": {
@@ -137,8 +137,8 @@
       "title": "Add project from"
     },
     "del": "Delete",
-    "download": "Download",
     "details": "Project details",
+    "download": "Download",
     "link": "Projects",
     "main": "Main",
     "rename": "Rename",
@@ -152,6 +152,7 @@
     "cover": "Cover state",
     "cover-closed": "Closed",
     "cover-opened": "Opened",
+    "current-layer": "Current layer",
     "d+": "D+",
     "est-end": "Estimated end",
     "est-pnt-time": "Est. Printing Time",
@@ -167,7 +168,6 @@
     "layer-1st": "first layer",
     "layer-ht": "Layer Height",
     "layers": "Layers",
-    "current-layer": "Current layer",
     "less-than": "Less than a minute",
     "material": "Material",
     "na": "NA",
@@ -178,13 +178,13 @@
     "sla-csm-mt": "Consumed resin",
     "sla-rmn-mt": "Remaining resin",
     "speed": "Printing Speed",
+    "st-busy": "Busy",
+    "st-feedme": "Refill resin",
     "st-idle": "Idle",
     "st-paused": "Paused",
     "st-pausing": "Pausing",
-    "st-printing": "Printing",
-    "st-busy": "Busy",
-    "st-feedme": "Refill resin",
     "st-pour-resin": "Pour in resin",
+    "st-printing": "Printing",
     "storage-space": "{{free}} of {{total}} free",
     "temp-amb": "Ambient temperature",
     "temp-bed": "Heatbed",
@@ -199,8 +199,8 @@
     "z-height": "Z-Height"
   },
   "serial": {
-    "title": "serial number",
-    "label": "serial number"
+    "label": "serial number",
+    "title": "serial number"
   },
   "settings": {
     "title": "Settings"
@@ -239,9 +239,9 @@
       "description": "Upload project from remote URL directly to the printer",
       "hint-fdm": "Type URL of G-CODE project file",
       "hint-sla": "Type URL of compatible project file",
-      "source": "Source URL",
       "project": "Project name",
       "project-hint": "Type project file name",
+      "source": "Source URL",
       "title": "Remote url"
     },
     "start-pt": "start print after transfer",

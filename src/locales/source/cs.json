@@ -4,57 +4,57 @@
     "cancel": "Zrušit",
     "cancel-pt": "Zrušit tisk",
     "chg": "změnit",
-    "chg-exp": "Tisková nastavení",
+    "chg-exp": "Změnit časy expozice",
     "confirm": "Potvrdit",
     "continue": "Pokračovat",
     "del": "smazat",
-    "disable-steppers": "vypnout motory",
+    "disable-steppers": "vypnout krokové motory",
     "download": "stáhnout",
-    "extrude": "vytlačit",
+    "extrude": "extruze",
     "login": "Přihlášení",
     "no": "Ne",
     "pause-pt": "Pozastavit tisk",
     "resume-pt": "Pokračovat v tisku",
-    "retract": "vtáhnout",
+    "retract": "retrakce",
     "save-chgs": "Uložit změny",
     "set": "NASTAVIT",
     "sla-refill": "Doplnit resin",
-    "sla-refilled": "Resin doplněn",
+    "sla-refilled": "Resin zcela doplněn",
     "start-pt": "Start tisku",
     "upld-proj": "Nahrát projekt",
     "yes": "Ano"
   },
   "conn": {
     "err-conn": "Nelze se připojit k tiskárně",
-    "printer-status" : "stav připojení 3D tiskárny",
-    "prusa-connect-status": "stav připojení PRUSA CONNECT",
-    "suc": "Úspěšně připojeno",
+    "printer-status": "Stav připojení 3D tiskárny",
+    "prusa-connect-status": "Stav připojení PRUSA CONNECT",
+    "suc": "Úspěšné připojení",
     "title": "připojení",
-    "unsuc": "Připojení se nezdařilo"
+    "unsuc": "Připojení selhalo"
   },
   "control": {
     "axis": {
-      "x": "osa X",
-      "y": "osa Y",
-      "z": "osa Z"
+      "x": "Osa X",
+      "y": "Osa Y",
+      "z": "Osa Z"
     },
-    "coordinates": "souřadnice tiskárny",
-    "extrude-retract-step": "krok vytlačení/vtažení [mm]",
-    "extruder": "extrudér",
+    "coordinates": "koordináty tiskárny",
+    "extrude-retract-step": "krok extruze/retrakce [mm]",
+    "extruder": "extruder",
     "flow": "průtok",
-    "heated-bed-move": "pohyb podložky v ose X a Y",
-    "heated-bed-temp": "heated bed temperature",
+    "heated-bed-move": "pohyb podložky - osa x a y",
+    "heated-bed-temp": "teplota vyhřívané podložky",
     "link": "Ovládání",
-    "move-step": "krok pohybu [mm]",
-    "nozzle-temp": "nozzle temperature",
-    "nozzle-z-move": "pohyb extrudéru v ose Z",
+    "move-step": "pohyb kroku [mm]",
+    "nozzle-temp": "teplota trysky",
+    "nozzle-z-move": "pohyb trysky v ose z",
     "speed": "rychlost",
     "stepper-motors": "krokové motory",
     "title": "Ovládání tiskárny"
   },
   "download": {
-    "start-pt": "Spustit tisk",
-    "dl-started": "Začátek stahování"
+    "dl-started": "Stahování začalo",
+    "start-pt": "Autostart"
   },
   "error": {
     "401-title": "Přihlášení selhalo"
@@ -62,12 +62,13 @@
   "exp-times": {
     "exp-time": "Doba osvitu [s]",
     "faster": "Rychlejší",
+    "high-viscosity": "Vysoká viskozita",
     "inc": "Navýšení expozice (s)",
     "layer-1st": "Osvit první vrstvy [s]",
     "profile": "Tiskový profil",
     "slower": "Pomalejší",
-    "high-viscosity": "Velmi Viskózní",
-    "title": "Tisková nastavení"
+    "superslow": "Velmi Pomalu",
+    "title": "Změnit expoziční časy"
   },
   "glob": {
     "hd-st": "stav zařízení",
@@ -78,15 +79,15 @@
     "title": "Stav tiskárny"
   },
   "logs": {
-    "empty-file": "Soubor je prázdný!",
-    "file-too-large": "Soubory logů o velikosti větší než {{size}} jsou k dispozici pouze ke stažení!",
-    "not-selected": "Není vybrán soubor logů!",
-    "select-file": "vyberte soubor",
-    "select-file-placeholder": "Vyberte soubor logů",
+    "empty-file": "Log soubor je prázdný!",
+    "file-too-large": "Log soubory větší než {{size}} jsou k dispozici pouze pro stažení.",
+    "not-selected": "Nebyl vybrán log soubor!",
+    "select-file": "vybrat soubor",
+    "select-file-placeholder": "Vybrat log soubor",
     "title": "logy"
   },
   "msg": {
-    "api-key-1": "Vítejte ve webovém rozhraní Prusa Link Web!",
+    "api-key-1": "Vítejte ve webovém rozhraní Prusa Connect Local!",
     "api-key-2": "Vložte API klíč.",
     "api-key-3": "Otevřete menu Nastavení -> Síť -> Přihlašovací údaje",
     "cancel": "Chcete opravdu zrušit tisk?",
@@ -97,8 +98,10 @@
     "modal-p1": "Vítejte na webovém rozhraní vaší",
     "modal-p2": "Upozornění: některé hodnoty jsou zobrazeny pouze v průběhu tisku.",
     "modal-p3": "3D TISKÁRNA ORIGINAL PRUSA",
-    "sla-pour-resin": "Nalijte do vaničky dostatečné množství resinu pro vybraný projekt a zavřete víko. Minimální objem resinu je zobrazen na dotykovém displeji tiskárny.",
-    "sla-refill": "Dolijte vaničku do 100 % a zavřete víko."
+    "sla-fill": "Naplňte prosím vaničku na resin a zavřete víko.",
+    "sla-fly-fill": "Naplňte vaničku na resin.",
+    "sla-pour-resin": "Do vaničky naljite dostatek resinu, aby mohl být tisk dokončen, a zavřete víko. Minimální nutné množství resinu je zobrazeno na displeji tiskárny.",
+    "sla-refill": "Doplňte vaničku na ukazatel 100 % a zavřete víko"
   },
   "ntf": {
     "actn-pending": "Akce se vykoná po dokončení vytvrzení vrstvy.",
@@ -106,23 +109,27 @@
     "error": "Chyba",
     "n-calibrated": "Tiskárna není zkalibrovaná!",
     "not-idle": "Tiskárna je zaneprázdněna, prosím vyčkejte!",
-    "settings-suc": "Nastavení bylo úspěšně změněno.",
+    "settings-suc": "Nastavení úspěšně změněno",
     "start-print": "Tiskárna se připravuje.",
-    "success": "Požadavek byl úspěšný",
+    "success": "Úspěch",
     "upld-exists": "Projekt s názvem {{file_name}} již existuje",
     "upld-not-sup": "Projekt {{file_name}} není podporován",
-    "upld-suc": "Projekt {{file_name}} byl úspěšně nahrán.",
+    "upld-suc": "Projekt {{file_name}} úspěšně nahrán.",
     "upld-unsuc": "Nahrání projektu {{file_name}} selhalo."
   },
   "print": {
+    "1": "Spouštíte vzdálený tisk pomocí webového rozhraní. Ujistěte se, že vaše 3D tiskárna je správně nastavena a je připravena k tisku.",
+    "2": "Tisková platforma je čistá a správně nainstalovaná.",
+    "3": "Ve vaničce je dostatečné množství resinu",
+    "4": "Kryt je zavřený",
     "fdm": {
       "1": "Je tiskárna připravena?",
-      "2": "Je tisková podložka prázdná a čistá?"
+      "2": "je tiskový plát prázdný a čistý?"
     },
     "sla": {
-      "1": "Spouštíte vzdálený tisk pomocí webového rozhraní. Ujistěte se, že vaše 3D tiskárna je správně nastavena a je připravena k tisku.",
-      "2": "Tisková platforma je čistá a správně nainstalovaná.",
-      "3": "Ve vaničce je dostatečné množství resinu"
+      "1": "Hodláte spustit vzdálený tisk pomocí webového rozhraní. Ujistěte se, že je vaše 3D tiskárna správně nastavená a připravená k tisku.",
+      "2": "Tisková platforma je čistá a zajištěná v tiskárně",
+      "3": "Ve vaničce je dostatečné množství resinu."
     }
   },
   "printer": {
@@ -131,30 +138,20 @@
     "title": "tiskárna"
   },
   "proj": {
-    "add-from": {
-      "local": "Lokálního úložiště",
-      "remote": "Vzdálené url",
-      "title": "Nahrát projekt z"
-    },
-    "del": "Smazat",
-    "details": "Detaily projektu",
-    "download": "Stáhnout",
+    "del": "Smazat soubor",
     "link": "Projekty",
     "main": "Zpět",
-    "rename": "Přejmenovat",
-    "start": "Spustit tisk",
-    "storage": "Úložiště",
-    "title": "Soubory projektu",
-    "up-folder": "nadřazená složka"
+    "title": "Soubory projektu"
   },
   "prop": {
     "at": "v",
     "cover": "Stav víka",
     "cover-closed": "Uzavřené",
     "cover-opened": "Otevřené",
+    "current-layer": "Aktuální vrstva",
     "d+": "D+",
     "est-end": "Odhadovaný konec",
-    "est-pnt-time": "Odhad doby tisku",
+    "est-pnt-time": "Odhad tiskového času",
     "exp-time": "doba expozice",
     "exp-times": "Doba expozice",
     "false": "Ne",
@@ -167,7 +164,6 @@
     "layer-1st": "první vrstva",
     "layer-ht": "Výška vrstvy",
     "layers": "Vrstvy",
-    "current-layer": "Aktuální vrstva",
     "less-than": "Méně než minuta",
     "material": "Materiál",
     "na": "N/A",
@@ -178,14 +174,13 @@
     "sla-csm-mt": "Spotřeba resinu",
     "sla-rmn-mt": "Zbývající resin",
     "speed": "Rychlost tisku",
+    "st-busy": "Pracuji",
+    "st-feedme": "Doplnit resin",
     "st-idle": "Nečinná",
-    "st-paused": "Pozastavena",
-    "st-pausing": "Pozastavuje se",
+    "st-paused": "Pozastaveno",
+    "st-pausing": "Pozastavuji",
+    "st-pour-resin": "Nalijte resin",
     "st-printing": "Probíhá tisk",
-    "st-busy": "Zaneprázdeněná",
-    "st-feedme": "Doplnění resinu",
-    "st-pour-resin": "Nalití resinu",
-    "storage-space": "{{free}} volných z {{total}}",
     "temp-amb": "Teplota okolí",
     "temp-bed": "Vyhřívaná podložka",
     "temp-cpu": "Teplota CPU",
@@ -199,8 +194,8 @@
     "z-height": "Výška Z"
   },
   "serial": {
-    "title": "sériové číslo",
-    "label": "sériové číslo"
+    "label": "sériové číslo",
+    "title": "sériové číslo"
   },
   "settings": {
     "title": "Nastavení"
@@ -231,26 +226,35 @@
   },
   "upld": {
     "direct": {
-      "choose": "Vyberte {{file}} nebo jej přetáhněte sem.",
-      "description": "Nahrajte projekt do tiskárny prostřednictvím místní sítě",
+      "choose": "Vyberte {{file}} nebo jej přetáhněte sem",
+      "description": "Nahrát projekt přímo do tiskárny přes místní síť",
       "title": "Přímé nahrání"
     },
+    "loading": "Nahrává se...",
+    "open": "Vyberte {{file}} nebo jej přetáhněte sem.",
     "remote": {
-      "description": "Nahrajte projekt ze vzdálené adresy URL přímo do tiskárny",
-      "hint-fdm": "Zadejte URL souboru projektu G-CODE",
-      "hint-sla": "Zadejte URL adresu kompatibilního projektu",
-      "source": "URL zdroje",
-      "project": "Název projektu",
-      "project-hint": "Zadejte název souboru projektu",
+      "description": "Nahrát projekt přes webové URL přímo do tiskárny",
+      "hint-fdm": "Vložte URL pro G-Code projektu",
+      "hint-sla": "Vložte URL projektového souboru",
+      "source": "zdrojové URL",
       "title": "Vzdálené URL"
     },
-    "start-pt": "po přenosu zahájit tisk",
-    "title": "Nahrát projekt"
+    "slicer": {
+      "description": "Nahrát projekt z PrusaSliceru do tiskárny přes lokální síť",
+      "guide": {
+        "1": "Použijte PrusaSlicer k nahrání souborů s tiskovými daty. Podrobnější informace:",
+        "1-link": "zde",
+        "2": "Je nutné vyplnit IP adresu {{ip_adddress}} a API klíč {{api_key}}"
+      },
+      "title": "PrusaSlicer"
+    },
+    "start-pt": "začít tisk po přenosu",
+    "title": "nahrát projekt"
   },
   "user": {
     "new-password": "nové heslo",
     "password": "heslo",
-    "re-password": "zopakujte heslo",
+    "re-password": "zopakovat heslo",
     "title": "uživatel",
     "username": "uživatelské jméno"
   },
