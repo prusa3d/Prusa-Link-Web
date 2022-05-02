@@ -138,10 +138,21 @@
     "title": "drukarka"
   },
   "proj": {
+    "add-from": {
+      "local": "Pamięć lokalna",
+      "remote": "Zdalny URL",
+      "title": "Dodaj projekt z"
+    },
     "del": "Usuń plik",
+    "details": "Szczegóły projektu",
+    "download": "Pobierz",
     "link": "Projekty",
     "main": "Główne",
-    "title": "Pliki projektu"
+    "rename": "Zmień nazwę",
+    "start": "Start druku",
+    "storage": "Pamięć",
+    "title": "Pliki projektu",
+    "up-folder": "folder nadrzędny"
   },
   "prop": {
     "at": "o",
@@ -181,6 +192,7 @@
     "st-pausing": "Wstrzymywanie",
     "st-pour-resin": "Wlej żywicę",
     "st-printing": "Drukowanie",
+    "storage-space": "Wolne: {{free}} z {{total}}",
     "temp-amb": "Temperatura otoczenia",
     "temp-bed": "Stół",
     "temp-cpu": "Temperatura CPU",
@@ -236,6 +248,8 @@
       "description": "Prześlij projekt ze zdalnego adresu URL bezpośrednio do drukarki",
       "hint-fdm": "Wpisz adres URL pliku G-code z projektem",
       "hint-sla": "Wpisz adres URL kompatybilnego pliku z projektem",
+      "project": "Nazwa projektu",
+      "project-hint": "Wpisz nazwę projektu",
       "source": "źródłowy URL",
       "title": "Zdalny URL"
     },

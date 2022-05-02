@@ -138,10 +138,21 @@
     "title": "impresora"
   },
   "proj": {
+    "add-from": {
+      "local": "Almacenamiento local",
+      "remote": "Url remota",
+      "title": "Añadir proyecto desde"
+    },
     "del": "Borrar archivo",
+    "details": "Detalles del proyecto",
+    "download": "Descargar",
     "link": "Proyectos",
     "main": "Principal",
-    "title": "Archivos de proyecto"
+    "rename": "Renombrar",
+    "start": "Empezar impresión",
+    "storage": "Almacenamiento",
+    "title": "Archivos de proyecto",
+    "up-folder": "carpeta principal"
   },
   "prop": {
     "at": "a las",
@@ -181,6 +192,7 @@
     "st-pausing": "Pausando",
     "st-pour-resin": "Vierte resina",
     "st-printing": "Imprimiendo",
+    "storage-space": "{{free}} de {{total}} libres",
     "temp-amb": "Temperatura ambiente",
     "temp-bed": "Base calefactable",
     "temp-cpu": "Temperatura de la CPU",
@@ -236,6 +248,8 @@
       "description": "Subir el proyecto desde una URL remota directamente a la impresora",
       "hint-fdm": "Escribe la URL del archivo de proyecto G-CODE",
       "hint-sla": "Escribe la URL del archivo de proyecto compatible",
+      "project": "Nombre del proyecto ",
+      "project-hint": "Escribe el nombre del archivo del proyecto",
       "source": "fuente URL",
       "title": "URL remota"
     },
