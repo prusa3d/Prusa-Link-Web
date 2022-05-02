@@ -138,10 +138,21 @@
     "title": "tiskárna"
   },
   "proj": {
+    "add-from": {
+      "local": "Místní úložiště",
+      "remote": "Vzdálené URL",
+      "title": "Přidat projekt z"
+    },
     "del": "Smazat soubor",
+    "details": "Detaily projektu",
+    "download": "Stáhnout",
     "link": "Projekty",
     "main": "Zpět",
-    "title": "Soubory projektu"
+    "rename": "Přejmenovat",
+    "start": "Začít tisk",
+    "storage": "Úložiště",
+    "title": "Soubory projektu",
+    "up-folder": "nadřazená složka"
   },
   "prop": {
     "at": "v",
@@ -181,6 +192,7 @@
     "st-pausing": "Pozastavuji",
     "st-pour-resin": "Nalijte resin",
     "st-printing": "Probíhá tisk",
+    "storage-space": "{{free}} z {{total}} volných",
     "temp-amb": "Teplota okolí",
     "temp-bed": "Vyhřívaná podložka",
     "temp-cpu": "Teplota CPU",
@@ -236,6 +248,8 @@
       "description": "Nahrát projekt přes webové URL přímo do tiskárny",
       "hint-fdm": "Vložte URL pro G-Code projektu",
       "hint-sla": "Vložte URL projektového souboru",
+      "project": "Název projektu",
+      "project-hint": "Vložte název projektu",
       "source": "zdrojové URL",
       "title": "Vzdálené URL"
     },

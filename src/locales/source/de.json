@@ -138,10 +138,21 @@
     "title": "Drucker"
   },
   "proj": {
+    "add-from": {
+      "local": "Lokaler Speicher",
+      "remote": "Remote Url",
+      "title": "Projekt hinzufügen von"
+    },
     "del": "Datei löschen",
+    "details": "Projektdetails",
+    "download": "Download",
     "link": "Projekte",
     "main": "Startseite",
-    "title": "Projektdateien"
+    "rename": "Umbenennen",
+    "start": "Druck starten",
+    "storage": "Speicher",
+    "title": "Projektdateien",
+    "up-folder": "übergeordneter Ordner"
   },
   "prop": {
     "at": "um",
@@ -181,6 +192,7 @@
     "st-pausing": "Pausierend",
     "st-pour-resin": "Harz einfüllen",
     "st-printing": "Druckt",
+    "storage-space": "{{free}} von {{total}} frei",
     "temp-amb": "Außentemperatur",
     "temp-bed": "Heizbett",
     "temp-cpu": "CPU Temperatur",
@@ -236,6 +248,8 @@
       "description": "Projekt von einer entfernten URL direkt auf den Drucker hochladen",
       "hint-fdm": "URL der G-CODE Projektdatei eingeben",
       "hint-sla": "URL der kompatiblen Projektdatei eingeben",
+      "project": "Projektname",
+      "project-hint": "Geben Sie den Namen der Projektdatei ein",
       "source": "Quell-URL",
       "title": "Remote Url"
     },
