@@ -51,15 +51,15 @@
           text: "Layer",
           label: "prop.layers",
           format: "int",
-          location: "job.file.layers",
-          type: "job"
+          location: "gcodeAnalysis.layers",
+          type: "file"
         },
         {
           text: "Layer Height",
           label: "prop.layer-ht",
           format: "layer",
-          location: "job.file.layerHeight",
-          type: "job"
+          location: "gcodeAnalysis.layerHeight",
+          type: "file"
         },
         {
           text: "Current Layer",
@@ -118,7 +118,6 @@
     },
     {
       icon: 'status_filament.svg',
-      printerType: 'fdm',
       data: [
         {
           text: 'Material',

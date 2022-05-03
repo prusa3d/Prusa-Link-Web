@@ -95,7 +95,7 @@ const updateData = () => {
  */
 export const update = (context) => {
   updateData();
-  job.update(context);
+  job.update(context, true);
   upload.update();
 };
 
@@ -118,8 +118,16 @@ export function load(context) {
     return;
   }
 
-  if (context)
-    job.update(context);
+  const previewFile = job.getPreviewFile();
+  if (previewFile) {
+    const file = findProject(previewFile.origin, previewFile.path);
+    if (!file) {
+      job.selectFilePreview(null);
+    } else if (file.date > previewFile.data) {
+      job.selectFilePreview(file);
+    }
+  }
+  job.update(context, true);
 
   const projects = document.getElementById("projects");
   while (projects.firstChild) {
@@ -266,40 +274,23 @@ function createUp() {
  * @param {object} node
  */
 const onClickFile = (node) => {
-  const paths = getNodeFilePaths(node.name);
-  const url = joinPaths("api/files", paths);
-
-  const flags = printer.getContext().printer.state.flags;
-  if (flags.printing) {
-    if (flags.ready) {
-      cancelPreview().then(() => selectPreview(url));
-    } else {
-      error("Can't preview project", "Printer is printing!");
-    }
-  } else {
-    selectPreview(url);
-  }
+  showPreview(node);
 };
 
-function selectPreview(url) {
-  console.log("Select preview");
-  return getJson(url, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ command: "select" }),
-  })
-    .then((result) => {
-      job.update(printer.getContext());
-      const jobElement = document.getElementById("job");
-      if (jobElement) {
-        scrollIntoViewIfNeeded(jobElement);
-      }
-    })
-    .catch((result) => {
-      handleError(result);
-    });
+function showPreview(file) {
+  const currentPreview = job.getPreviewFile();
+  if (!currentPreview
+    || currentPreview.origin !== file.origin
+    || currentPreview.path !== file.path
+  ) {
+    job.selectFilePreview(file);
+    job.update(printer.getContext(), true);
+  }
+
+  const jobElement = document.getElementById("job");
+  if (jobElement) {
+    scrollIntoViewIfNeeded(jobElement);
+  }
 }
 
 /**
@@ -371,7 +362,7 @@ function setupFileButtons(node, elm) {
       e.stopPropagation();
     }
   }
-  
+
   const downloadBtn = elm.getElementById("download");
   if (downloadBtn) {
     setEnabled(downloadBtn, node.refs?.download);
@@ -428,6 +419,26 @@ function selectStorage(origin) {
     metadata.current_path = [];
   }
   load();
+}
+
+function findProject(origin, path) {
+  if (!origin || !path)
+    return null;
+
+  let target = metadata.files.find(i => i.origin === origin);
+  const pathSegments = process.env.PRINTER_TYPE === "fdm"
+    ? path.split("/").filter(i => i).slice(1)
+    : path.split("/").filter(i => i);
+
+  for (const segment of pathSegments) {
+    if (!target)
+      break;
+    target = target.children.find(i => i.name === segment);
+  }
+
+  return target?.type === "machinecode"
+    ? target
+    : null;
 }
 
 export default { load, update };

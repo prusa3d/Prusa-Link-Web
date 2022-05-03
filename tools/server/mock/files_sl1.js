@@ -221,6 +221,28 @@ module.exports = {
       },
     },
     {
+      path: "harry-potter-button.sl1s",
+      origin: "local",
+      type: "machinecode",
+      size: 1273004,
+      name: "harry-potter-button.sl1s",
+      display: "harry-potter-button.sl1s",
+      date: 1651502447.795,
+      typePath: ["machinecode", "gcode"],
+      gcodeAnalysis: {
+        estimatedPrintTime: 987.409091,
+        layerHeight: 0.05,
+        material: "Prusa Orange Tough",
+        layers: 200,
+      },
+      refs: {
+        "resource": "http://localhost:9000/api/files/local/harry-potter-button.sl1s",
+        "download": "http://localhos:9000/api/downloads/local/harry-potter-button.sl1s",
+        "thumbnailSmall": null,
+        "thumbnailBig": null,
+      },
+    },
+    {
       origin: "local",
       path: "examples",
       display: "examples",

@@ -148,12 +148,19 @@ module.exports = (env, args) => {
 
     //...
     devServer: {
+      /*
       contentBase: path.join(__dirname, "dist"),
       compress: true,
       port: 9000,
       after: function (app, server, compiler) {
         devServer(app, config);
         preprocessing.startWatcher(server);
+      },
+      */
+      port: 9000,
+      proxy: {
+        // "/": "http://192.168.1.107:80", // mini
+        "/": "http://192.168.1.50:8080", // mk3
       },
     },
   };

@@ -13,15 +13,27 @@ import { translate } from "../../locale_provider";
 /**
  * Start printing.
  */
-const confirmJob = () => {
-  return getJson("/api/job", {
+
+const confirmJob = process.env.WITH_COMMAND_SELECT ? (fileUrl) =>
+  getJson(fileUrl, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ command: "select" }),
+  }).then(() => getJson("/api/job", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({ command: "start" }),
-  }).catch((result) => handleError(result));
-};
+  })) : (fileUrl) => getJson(fileUrl, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ command: "start" }),
+  });
 
 /**
  * Pause printing.
@@ -76,16 +88,16 @@ export const pauseJob = () => {
 /**
  * Confirm job modal.
  */
- const createConfirmJob = (close) => {
+ const createConfirmJob = (close, fileUrl) => {
   const template = document.getElementById("modal-confirm");
   const node = document.importNode(template.content, true);
   const yesButton = node.getElementById("yes");
   yesButton.addEventListener("click", (event) => {
     event.preventDefault();
-    confirmJob().then(() => {
-      close();
-      navigate("#dashboard");
-    });
+    confirmJob(fileUrl)
+      .then(() => navigate("#dashboard"))
+      .catch((result) => handleError(result))
+      .finally(() => close());
   });
   const noButton = node.getElementById("no");
   noButton.addEventListener("click", close);
@@ -95,14 +107,16 @@ export const pauseJob = () => {
 /**
  * Conditionally shows modal, then starts printing the file that is currently previewed.
  */
- export const startJob = (showConfirmModal) => {
+ export const startJob = (showConfirmModal, fileUrl) => {
   if (showConfirmModal) {
-    modal(createConfirmJob, {
+    modal((close) => createConfirmJob(close, fileUrl), {
       timeout: 0,
       closeOutside: false,
     });
   } else {
-    confirmJob();
+    confirmJob(fileUrl)
+      .then(() => navigate("#dashboard"))
+      .catch((result) => handleError(result));
   }
 };
 
