@@ -51,6 +51,7 @@ module.exports = (env, args) => {
     WITH_LOGS: env["WITH_LOGS"] || false,
     WITH_FONT: env["WITH_FONT"] || false,
     WITH_EMBEDDED_SVGS: env["WITH_EMBEDDED_SVGS"] || false,
+    WITH_COMMAND_SELECT: withDefault(env["WITH_COMMAND_SELECT"], true),
   };
   config["TPL_ASSETS_PATH"] = config["PRINTER_CODE"] == "m1" ? "../assets/m1" : "../assets";
 
@@ -148,20 +149,18 @@ module.exports = (env, args) => {
 
     //...
     devServer: {
-      /*
       contentBase: path.join(__dirname, "dist"),
       compress: true,
-      port: 9000,
       after: function (app, server, compiler) {
         devServer(app, config);
         preprocessing.startWatcher(server);
       },
-      */
       port: 9000,
+      /*
       proxy: {
-        // "/": "http://192.168.1.107:80", // mini
-        "/": "http://192.168.1.50:8080", // mk3
+        "/": "http://PRINTER_HOST:80"
       },
+      */
     },
   };
 };
