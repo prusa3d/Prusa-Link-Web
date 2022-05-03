@@ -1,5 +1,12 @@
 # Changelog
 
+## 2022-05-03 (3.11.0)
+
+* Project preview is now not dependent on `/api/job` endpoint
+* Added new configuration parameter `WITH_COMMAND_SELECT=true` to send `select` to start
+printing
+* Prepared to take metadata for SL1 from `/api/files` endpoint instead of `/api/job`
+
 ## 2022-04-27 (3.10.2)
 * Removed page `Temperatures`
 * Fix formatting of percentages

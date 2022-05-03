@@ -8,7 +8,7 @@ module.exports = (env, args) => {
         WITH_STORAGES: ["usb"],
         WITH_PROJECTS: true,
         WITH_SETTINGS: false,
-        WITH_CONTROLS: true,
+        WITH_CONTROLS: false,
         WITH_REMOTE_UPLOAD: false,
         WITH_START_PRINT_AFTER_UPLOAD: false,
         WITH_SERIAL: false,
@@ -16,6 +16,7 @@ module.exports = (env, args) => {
         WITH_LOGS: false,
         WITH_FONT: false,
         WITH_EMBEDDED_SVGS: true,
+        WITH_COMMAND_SELECT: false,
         ...env,
     };
     return webpackConfig(config, args);

@@ -16,6 +16,8 @@ import changeExposureTimesQuestion from "../sla/exposure";
 import { resinRefill } from "../sla/refill";
 
 let metadata = getDefaultMetadata();
+let filePreviewMetadata = getDefaultFilePreviewMetadata();
+let fallbackThumbnailUrl = null;
 
 function getDefaultMetadata() {
   return {
@@ -39,6 +41,41 @@ function getDefaultMetadata() {
   };
 }
 
+function getDefaultFilePreviewMetadata() {
+  return {
+    file: null,
+    thumbnail: {
+      ready: false,
+      url: null,
+    },
+  };
+}
+
+export function getPreviewFile() {
+  return filePreviewMetadata.file;
+}
+
+export function selectFilePreview(filePreview) {
+  if (!filePreview) {
+    filePreviewMetadata = getDefaultFilePreviewMetadata();
+    return;
+  }
+
+  filePreviewMetadata = getDefaultFilePreviewMetadata();
+  filePreviewMetadata.file = filePreview;
+  showLoading();
+  getThumbnailImgUrl(filePreview.refs?.thumbnailBig).then(url => {
+    if (canEditFilePreviewMetadata(filePreview)) {
+      filePreviewMetadata.thumbnail = {
+        ready: true,
+        url,
+      };
+    } else {
+      console.warn("Can't edit file preview metadata because path was changed");
+    }
+  });
+}
+
 /**
  * Rerender component without api calls.
  * @param {object} context Printer context.
@@ -59,24 +96,21 @@ export function render(context) {
  * Updates component.
  * @param {object} context Printer context.
  */
-export function update(context) {
-  const visible = setComponentVisibility(context);
+export function update(context, isFilePreview = false) {
+  const visible = setComponentVisibility(context, isFilePreview);
   if (visible)
-    updateJob(context);
+    updateJob(context, isFilePreview);
 };
 
-function setComponentVisibility(context) {
+function setComponentVisibility(context, isFilePreview) {
   const element = document.getElementById("job");
   if (!element)
     return false;
 
-  const page = window.location.hash
-  const isPreview = context?.printer?.state?.flags?.ready &&
-    context?.printer?.state?.flags?.operational;
-  const visible = Boolean(
-    (!isPreview && page === "#dashboard") ||
-    (isPreview && context?.current?.job?.file?.name && page === "#projects")
-  );
+  const visible = isFilePreview
+    ? Boolean(filePreviewMetadata.file)
+    : Boolean(context?.current?.job?.file?.name)
+
   setVisible(element, visible);
   return visible;
 }
@@ -85,34 +119,40 @@ function canEditMetadata(path) {
   return metadata.path === path;
 }
 
-function updateJob(context) {
-  if (!context?.current?.job?.file) {
-    console.error("No job file was provided!");
-    hideLoading();
-    return;
+function canEditFilePreviewMetadata(file) {
+  return filePreviewMetadata.file === file;
+}
+
+function updateJob(context, isFilePreview) {
+  if (!isFilePreview) {
+    if (!context?.current?.job?.file) {
+      console.error("No job file was provided!");
+      hideLoading();
+      return;
+    }
+
+    const jobFile = context.current.job.file;
+    const path = joinPaths(jobFile.origin, jobFile.path);
+    let loading = (context.current.state === "Busy");
+
+    if (path && path !== metadata.path) {
+      console.log(`File Path was changed\nold path: ${metadata.path}\nnew path: ${path}`)
+      metadata = getDefaultMetadata();
+      metadata.path = path;
+      loading = true;
+      reFetch(path);
+    }
+
+    if (loading) {
+      showLoading();
+    }
+
+    metadata.lastPrintingResult = context.current.state === "Printing"
+      ? context.current
+      : metadata.lastPrintingResult;
   }
 
-  const jobFile = context.current.job.file;
-  const path = joinPaths(jobFile.origin, jobFile.path);
-  let loading = (context.current.state === "Busy");
-
-  if (path && path !== metadata.path) {
-    console.log(`File Path was changed\nold path: ${metadata.path}\nnew path: ${path}`)
-    metadata = getDefaultMetadata();
-    metadata.path = path;
-    loading = true;
-    reFetch(path);
-  }
-
-  if (loading) {
-    showLoading();
-  }
-
-  metadata.lastPrintingResult = context.current.state === "Printing"
-    ? context.current
-    : metadata.lastPrintingResult;
-
-  updateComponent(context);
+  updateComponent(context, isFilePreview);
 }
 
 function reFetch(path) {
@@ -150,43 +190,76 @@ function reFetch(path) {
   }).catch((result) => handleError(result)); // TODO: Consider better error handling
 }
 
-function updateComponent(context) {
-  const jobResult = metadata.lastPrintingResult || context.current;
-  if (!jobResult) {
-    console.warn("No job result was provided!");
-    return;
-  }
+function updateComponent(context, isFilePreview) {
+  const previewImgElm = document.querySelector("#job .preview-img");
+  if (!fallbackThumbnailUrl)
+    fallbackThumbnailUrl = document.querySelector("#job #preview-img")?.src;
 
-  const {
-    file,
-    thumbnail,
-  } = metadata;
+  if (isFilePreview) {
+    const {
+      file,
+      thumbnail,
+    } = filePreviewMetadata;
 
-  const state = context.printer.state;
+    setupProperties(true);
+    setVisible(previewImgElm);
+    setupProgress(false);
+    updateProperties("job", null);
+    updateProperties("file", file);
+    const nameElm = document.querySelector('#job [data-where="job.file.name"]');
+    if (nameElm) {
+      nameElm.innerHTML = file.name;
+    }
+    setupButtons(context, null, file, isFilePreview);
 
-  if (process.env.PRINTER_TYPE === "sla") {
-    setupRefill(state.text);
-  }
+    const state = context.printer.state;
+    hideNaProperties(state, isFilePreview);
 
-  setupProperties(state);
-  updateProperties("job", jobResult);
-  const progressIsVisible = state.flags.printing || state.flags.pausing || state.flags.paused;
-  setHidden(document.querySelector("#job .preview-img"), progressIsVisible);
-  setupProgress(progressIsVisible);
+    if (thumbnail.ready) {
+      setupThumbnail(thumbnail.url);
+      hideLoading();
+    }
 
-  if (file.ready)
-    updateProperties("file", file.data);
+  } else if (!isFilePreview) { // job or remote preview
+    const jobResult = metadata.lastPrintingResult || context.current;
+    if (!jobResult) {
+      console.warn("No job result was provided!");
+      return;
+    }
 
-  setupButtons(context, jobResult);
+    const {
+      file,
+      thumbnail,
+    } = metadata;
 
-  if (thumbnail.ready) {
-    setupThumbnail(thumbnail.url);
-  }
+    const state = context.printer.state;
 
-  hideNaProperties(state);
+    if (process.env.PRINTER_TYPE === "sla") {
+      setupRefill(state.text);
+    }
 
-  if (thumbnail.ready && state.text !== "Busy") {
-    hideLoading();
+    const isJobPreview = state.flags.ready && state.flags.operational;
+    setupProperties(isJobPreview);
+
+    updateProperties("job", jobResult);
+    const progressIsVisible = state.flags.printing || state.flags.pausing || state.flags.paused;
+    setHidden(previewImgElm, progressIsVisible);
+    setupProgress(progressIsVisible);
+
+    if (file.ready)
+      updateProperties("file", file.data);
+
+    setupButtons(context, jobResult, file, isFilePreview);
+
+    if (thumbnail.ready) {
+      setupThumbnail(thumbnail.url);
+    }
+
+    hideNaProperties(state, isFilePreview);
+
+    if (thumbnail.ready && state.text !== "Busy") {
+      hideLoading();
+    }
   }
 }
 
@@ -222,10 +295,12 @@ function setupRefill(stateText) {
 
 function setupThumbnail(url) {
   const img = document.getElementById("preview-img");
-  if (!img)
+  if (!img) {
     console.error("Thumbnail element was not found!");
-  if (img && url) {
-    img.src = url;
+    return;
+  }
+  if (url || fallbackThumbnailUrl) {
+    img.src = url || fallbackThumbnailUrl;
   }
 }
 
@@ -266,8 +341,7 @@ function setupProgress(progressIsVisible) {
   }
 }
 
-function setupProperties(state) {
-  const isPreview = state.flags.ready && state.flags.operational;
+function setupProperties(isPreview) {
   setHidden(document.querySelector("#job #pnt-time"), isPreview);
   setHidden(document.querySelector("#job #rem-time"), isPreview);
   const estEnd = document.querySelector("#job #est-end p[data-format]");
@@ -278,7 +352,7 @@ function setupProperties(state) {
   }
 }
 
-function hideNaProperties(state) {
+function hideNaProperties(state, isFilePreview) {
   const naValue = translate("prop.na");
 
   document.getElementById("job").querySelectorAll(".job-details .job-prop").forEach(section => {
@@ -295,10 +369,14 @@ function hideNaProperties(state) {
     if (process.env.PRINTER_TYPE === "sla")
       setHidden(document.getElementById("pnt-time-est"), true)
 
-    if (process.env.PRINTER_TYPE === "sla" && section.id === "file-last-mod" && ["Busy", "Printing"].includes(state.text)) {
+    if (process.env.PRINTER_TYPE === "sla"
+      && section.id === "file-last-mod"
+      && !isFilePreview
+      && ["Busy", "Printing"].includes(state.text)
+    ) {
       hidden = true;
     }
-      
+
 
     setHidden(section, hidden);
   })
@@ -306,55 +384,71 @@ function hideNaProperties(state) {
 
 /* ===================================== SETUP BUTTONS ======================================= */
 
-function setupButtons(context, jobResult) {
-  const {
-    file,
-  } = metadata;
+function setupButtons(context, jobResult, file, isFilePreview) {
   const state = context.printer.state;
   const jobState = context.current.state;
 
-  setupStartButton(state);
-  setupCancelButton(state);
+  if (isFilePreview) {
+    setupCancelButton(state, isFilePreview);
 
-  if (file.ready) {
-    setupDeleteButton(jobState, file.data);
-    setupDownloadButton(jobState, file.data);
-  }
+    if (file) {
+      const fileUrl = joinPaths("api/files", file.origin, file.path);
+      setupStartButton(state, fileUrl, isFilePreview);
+      setupDeleteButton(jobState, file, isFilePreview);
+      setupDownloadButton(jobState, file, isFilePreview);
+    }
+  } else { // job or remote preview
+    setupCancelButton(state, isFilePreview);
 
-  if (process.env.PRINTER_TYPE === "fdm") {
-    setupPauseButton(state, "#job #pause");
-    setupPausingButton(state);
-    setupResumeButton(state);
-  }
+    if (file.ready) {
+      const fileUrl = joinPaths("api/files", file.data.origin, file.data.path);
+      setupStartButton(state, fileUrl, isFilePreview);
+      setupDeleteButton(jobState, file.data, isFilePreview);
+      setupDownloadButton(jobState, file.data, isFilePreview);
+    }
 
-  if (process.env.PRINTER_TYPE === "sla") {
-    const jobFile = jobResult.job?.file;
-    if (jobFile)
-      setupExposureButton(state, jobFile, changeExposureTimesQuestion);
-    setupPauseButton(state, "#job #refill");
-    setupSlaResumeButton(state, "#job #continue");
-    setupSlaResumeButton(state, "#job #back");
+    if (process.env.PRINTER_TYPE === "fdm") {
+      setupPauseButton(state, "#job #pause");
+      setupPausingButton(state);
+      setupResumeButton(state);
+    }
+
+    if (process.env.PRINTER_TYPE === "sla") {
+      const jobFile = jobResult?.job?.file;
+      if (jobFile)
+        setupExposureButton(state, jobFile, changeExposureTimesQuestion);
+      setupPauseButton(state, "#job #refill");
+      setupSlaResumeButton(state, "#job #continue");
+      setupSlaResumeButton(state, "#job #back");
+    }
   }
 }
 
-function setupCancelButton(state) {
+function setupCancelButton(state, isFilePreview) {
   const btn = document.querySelector("#job #cancel");
-  const isPreview = state.flags.ready && state.flags.operational;
 
-  if (process.env.PRINTER_TYPE === "sla")
-    setVisible(btn, state.text != "Feed me");
+  if (isFilePreview) {
+    if (btn)
+      btn.onclick = () => selectFilePreview(null);
+  } else {
+    const isJobPreview = state.flags.ready && state.flags.operational;
+
+    if (process.env.PRINTER_TYPE === "sla")
+      setVisible(btn, state.text != "Feed me");
+
+    if (btn)
+      btn.onclick = isJobPreview ? cancelPreview : cancelJob;
+  }
+}
+
+function setupStartButton(state, fileUrl, isFilePreview) {
+  const btn = document.querySelector("#job #start");
+  const canPrint = state.flags.ready && state.flags.operational;
+  setVisible(btn, isFilePreview || canPrint)
+  setEnabled(btn, canPrint);
 
   if (btn)
-    btn.onclick = isPreview ? cancelPreview : cancelJob;
-}
-
-function setupStartButton(state) {
-  const btn = document.querySelector("#job #start");
-  setVisible(btn, state.flags.ready && state.flags.operational)
-  setEnabled(btn, state.flags.operational);
-
-  if (btn && !btn.onclick)
-    btn.onclick = () => startJob(!state.flags.checked);
+    btn.onclick = () => startJob(!state.flags.checked, fileUrl);
 }
 
 function setupPauseButton(state, selector) {
@@ -398,22 +492,22 @@ function setupSlaResumeButton(state, selector) {
 }
 
 
-function setupDeleteButton(jobState, file) {
+function setupDeleteButton(jobState, file, isFilePreview) {
   const btn = document.querySelector("#job #delete");
   setEnabled(btn, file.refs?.resource);
-  setVisible(btn, jobState === "Operational");
+  setVisible(btn, isFilePreview || jobState === "Operational");
 
   if (btn)
     btn.onclick = () => deleteProject(file);
 }
 
-function setupDownloadButton(jobState, file) {
+function setupDownloadButton(jobState, file, isFilePreview) {
   const btn = document.querySelector("#job #download");
   setEnabled(btn, file.refs?.download);
-  setVisible(btn, jobState === "Operational");
+  setVisible(btn, isFilePreview || jobState === "Operational");
 
   if (btn)
-    btn.onclick = () => downloadProject(file);;
+    btn.onclick = () => downloadProject(file);
 }
 
 function setupExposureButton(state, jobFile, changeExposureTimesQuestion) {
