@@ -1583,6 +1583,8 @@ input .autoresize {
   padding-right: 15px;
 }
 #settings .logs {
+  flex: 0 0 auto;
+  display: block;
   background: white;
   color: black;
   height: 12rem;
@@ -1590,7 +1592,12 @@ input .autoresize {
   line-height: 1.5;
   list-style: none;
   padding: 10px;
-  max-width: 100%;
+}
+
+#settings .logs li {
+  inline-size: 100%;
+  overflow-wrap: break-word;
+  word-break: break-all;
 }
 
 /* ===================================== CONNECTION STATUS ======================================= */
