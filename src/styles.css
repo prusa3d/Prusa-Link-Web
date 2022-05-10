@@ -1326,6 +1326,11 @@ $toast-success-title-color: $text-white;
   position: relative;
   width: max-content;
 }
+
+#log-list {
+  text-transform: none;
+}
+
 .dropdown .open {
   visibility: visible;
 }
