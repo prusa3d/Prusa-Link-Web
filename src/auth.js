@@ -61,7 +61,7 @@ const getHeaders = (accept = "application/json") => {
 const setUpAuth = () =>
   new Promise((resolve, reject) => {
     sessionStorage.setItem("auth", "pending");
-    return fetch("/api/version", { headers: getHeaders() })
+    return fetch(process.env.WITH_V1_API ? "/api/v1/info" : "/api/version", { headers: getHeaders() })
       .then((response) => {
         if (response.status == 401) {
           const auth_type = response.headers

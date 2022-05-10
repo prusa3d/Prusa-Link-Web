@@ -268,7 +268,7 @@ nav .burger-icon.burger-open {
   color: #efefef;
   margin-bottom: 0;
 }
-.title-hostname {
+.title-printer {
   margin-left: inherit;
   margin-bottom: 0;
 }
@@ -1703,7 +1703,7 @@ input .autoresize {
   #title {
     flex-direction: row;
   }
-  .title-hostname {
+  .title-printer {
     margin-left: auto;
   }
   .project-icon {
