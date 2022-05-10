@@ -807,6 +807,7 @@ button:disabled {
 .progress-img {
   position: relative;
   height: 100%;
+  min-width: 200px;
 }
 .progress-img > .background {
   filter: grayscale(1);
@@ -819,17 +820,23 @@ button:disabled {
   left: 0;
   height: 100%;
 }
+.progress-with-img {
+  flex: 1 1 auto;
+
+}
 .progress-with-img > div {
   display: flex;
 }
 .progress-with-img .progress-img-wrapper {
-  flex-grow: 1;
+  flex: 1 1 auto;
 }
 .progress-with-img .progress-pct {
   display: flex;
-  min-width: 20rem;
+  padding: 0 0 0 1rem;
   align-items: center;
-  justify-content: center;
+  justify-content: left;
+  flex: 0 0 auto;
+  flex-wrap: nowrap;
 }
 .progress-with-img .progress-bar {
   height: auto;
@@ -1768,9 +1775,6 @@ input .autoresize {
   #settings .col:nth-child(3) {
     width: 30%;
     margin-left: 0;
-  }
-  .progress-with-img .progress-pct {
-    min-width: 10rem;
   }
   #control {
     max-width: 750px;
