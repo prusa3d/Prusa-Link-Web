@@ -994,6 +994,7 @@ button:disabled {
   background-color: rgba(10, 10, 10, 0.86);
   opacity: 0;
   visibility: hidden;
+  z-index: 5;
 }
 
 .modal-box {
@@ -1004,6 +1005,7 @@ button:disabled {
   background-color: #4a4a4a;
   padding: 1rem 1.5rem;
   border-radius: 0.5rem;
+  z-index: 1000;
 }
 
 .close-button {
