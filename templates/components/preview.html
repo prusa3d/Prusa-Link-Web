@@ -136,10 +136,12 @@
         <p data-label="btn.chg-exp">change exposure times</p>
       </button>
       {% endif %}
+      {% if env.WITH_PRINT_BUTTON %}
       <button class="yes" id="start" disabled>
         <img src="{{ pre.countOrRenderAssets('yes_color.svg') | safe }}" />
         <p data-label="btn.start-pt">start print</p>
       </button>
+      {% endif %}
       <button class="no" id="cancel">
         <img src="{{ pre.countOrRenderAssets('cancel.svg') | safe }}" />
         <p data-label="btn.cancel">cancel print</p>

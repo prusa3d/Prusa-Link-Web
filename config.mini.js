@@ -17,6 +17,7 @@ module.exports = (env, args) => {
         WITH_FONT: false,
         WITH_EMBEDDED_SVGS: true,
         WITH_COMMAND_SELECT: false,
+        WITH_PRINT_BUTTON: false,
         ...env,
     };
     return webpackConfig(config, args);
