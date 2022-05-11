@@ -13,6 +13,7 @@ const PreprocessingPlugin = require("./tools/preprocessing");
 const devServer = require("./tools/server");
 
 const DEFAULT_NAME = "Original Prusa 3D Printer";
+const BACKEND_URL = undefined; // "http://192.168.1.50:8080";
 
 function withDefault(value, defaultValue) {
   return value === undefined ? defaultValue : value;
@@ -52,6 +53,8 @@ module.exports = (env, args) => {
     WITH_FONT: env["WITH_FONT"] || false,
     WITH_EMBEDDED_SVGS: env["WITH_EMBEDDED_SVGS"] || false,
     WITH_COMMAND_SELECT: withDefault(env["WITH_COMMAND_SELECT"], true),
+    WITH_V1_API: withDefault(env["WITH_V1_API"], false),
+    WITH_PRINT_BUTTON: withDefault(env["WITH_PRINT_BUTTON"], true),
   };
   config["TPL_ASSETS_PATH"] = config["PRINTER_CODE"] == "m1" ? "../assets/m1" : "../assets";
 
@@ -147,20 +150,22 @@ module.exports = (env, args) => {
       minimizer: [new TerserPlugin()],
     },
 
-    //...
     devServer: {
-      contentBase: path.join(__dirname, "dist"),
-      compress: true,
-      after: function (app, server, compiler) {
-        devServer(app, config);
-        preprocessing.startWatcher(server);
-      },
       port: 9000,
-      /*
-      proxy: {
-        "/": "http://PRINTER_HOST:80"
-      },
-      */
+      ...(
+        BACKEND_URL ? {
+          proxy: {
+            "/": BACKEND_URL
+          }
+        }: {
+          contentBase: path.join(__dirname, "dist"),
+          compress: true,
+          after: function (app, server, compiler) {
+            devServer(app, config);
+            preprocessing.startWatcher(server);
+          },
+        }
+      )
     },
   };
 };

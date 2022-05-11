@@ -1,5 +1,14 @@
 # Changelog
 
+## 2022-05-10 (3.11.1)
+
+* Hide print button on MINI
+* Fix logs displaying
+* Fix word wrapping and breaking in logs
+* Fix modal dialog z-index
+* Fix printing image preview and progress responsivity
+* Add optional name and location to page heading
+
 ## 2022-05-03 (3.11.0)
 
 * Project preview is now not dependent on `/api/job` endpoint

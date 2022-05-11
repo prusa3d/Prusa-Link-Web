@@ -268,7 +268,7 @@ nav .burger-icon.burger-open {
   color: #efefef;
   margin-bottom: 0;
 }
-.title-hostname {
+.title-printer {
   margin-left: inherit;
   margin-bottom: 0;
 }
@@ -807,6 +807,7 @@ button:disabled {
 .progress-img {
   position: relative;
   height: 100%;
+  min-width: 200px;
 }
 .progress-img > .background {
   filter: grayscale(1);
@@ -819,17 +820,23 @@ button:disabled {
   left: 0;
   height: 100%;
 }
+.progress-with-img {
+  flex: 1 1 auto;
+
+}
 .progress-with-img > div {
   display: flex;
 }
 .progress-with-img .progress-img-wrapper {
-  flex-grow: 1;
+  flex: 1 1 auto;
 }
 .progress-with-img .progress-pct {
   display: flex;
-  min-width: 20rem;
+  padding: 0 0 0 1rem;
   align-items: center;
-  justify-content: center;
+  justify-content: left;
+  flex: 0 0 auto;
+  flex-wrap: nowrap;
 }
 .progress-with-img .progress-bar {
   height: auto;
@@ -987,6 +994,7 @@ button:disabled {
   background-color: rgba(10, 10, 10, 0.86);
   opacity: 0;
   visibility: hidden;
+  z-index: 5;
 }
 
 .modal-box {
@@ -997,6 +1005,7 @@ button:disabled {
   background-color: #4a4a4a;
   padding: 1rem 1.5rem;
   border-radius: 0.5rem;
+  z-index: 1000;
 }
 
 .close-button {
@@ -1317,6 +1326,11 @@ $toast-success-title-color: $text-white;
   position: relative;
   width: max-content;
 }
+
+#log-list {
+  text-transform: none;
+}
+
 .dropdown .open {
   visibility: visible;
 }
@@ -1574,6 +1588,8 @@ input .autoresize {
   padding-right: 15px;
 }
 #settings .logs {
+  flex: 0 0 auto;
+  display: block;
   background: white;
   color: black;
   height: 12rem;
@@ -1581,7 +1597,12 @@ input .autoresize {
   line-height: 1.5;
   list-style: none;
   padding: 10px;
-  max-width: 100%;
+}
+
+#settings .logs li {
+  inline-size: 100%;
+  overflow-wrap: break-word;
+  word-break: break-all;
 }
 
 /* ===================================== CONNECTION STATUS ======================================= */
@@ -1703,7 +1724,7 @@ input .autoresize {
   #title {
     flex-direction: row;
   }
-  .title-hostname {
+  .title-printer {
     margin-left: auto;
   }
   .project-icon {
@@ -1768,9 +1789,6 @@ input .autoresize {
   #settings .col:nth-child(3) {
     width: 30%;
     margin-left: 0;
-  }
-  .progress-with-img .progress-pct {
-    min-width: 10rem;
   }
   #control {
     max-width: 750px;

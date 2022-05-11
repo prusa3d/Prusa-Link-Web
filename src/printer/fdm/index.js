@@ -24,23 +24,32 @@ const context = {
   projectExtensions: [],
 };
 
-const updateHostname = (obj) => {
-  const newHostname = () => {
-    const hostnameLabel = document.getElementById("title-hostname");
-    if (hostnameLabel) {
-      hostnameLabel.innerHTML = getHostname();
+const updatePrinterTitle = (obj) => {
+  const newTitle = () => {
+    const label = document.getElementById("title-printer");
+    if (label) {
+      label.innerHTML = getPrinterName();
     }
   };
   const load = obj.load;
   obj.load = () => {
-    newHostname();
+    newTitle();
     load(context);
   };
   return obj;
 };
 
-const getHostname = () => context.version?.hostname || "localhost";
-const buildTitle = (title) => getHostname() + " - " +
+const getPrinterName = () => {
+  const parts = [];
+  const location = context.version?.location
+  const name = context.version?.name
+  location && parts.push(location)
+  name && parts.push(name)
+  parts.push(context.version?.hostname || "localhost")
+  return parts.join(", ")
+}
+
+const buildTitle = (title) => getPrinterName() + " - " +
   (title.trim() || process.env.APP_NAME) +
   " - " + process.env.APP_NAME;
 
@@ -65,18 +74,18 @@ const fdm = {
     {
       path: "dashboard",
       html: require("../../views/dashboard.html"),
-      module: updateHostname(dashboard),
+      module: updatePrinterTitle(dashboard),
       getTitle: () => buildTitle(translate("home.link")),
     },
     {
       path: "question",
       html: require("../../views/question.html"),
-      module: updateHostname(question),
+      module: updatePrinterTitle(question),
     },
     {
       path: "loading",
       html: require("../../views/loading.html"),
-      module: updateHostname({
+      module: updatePrinterTitle({
         load: () => translate("proj.title", { query: "#title-status-label" }),
       }),
     },
@@ -84,7 +93,7 @@ const fdm = {
       {
         path: "projects",
         html: require("../../views/projects.html"),
-        module: updateHostname(projects),
+        module: updatePrinterTitle(projects),
         getTitle: () => buildTitle(translate("proj.link")),
       }
       : null,
@@ -92,7 +101,7 @@ const fdm = {
       {
         path: "settings",
         html: require("../../views/settings.html"),
-        module: updateHostname(require("../components/settings.js").default),
+        module: updatePrinterTitle(require("../components/settings.js").default),
         getTitle: () => buildTitle(translate("settings.title")),
       }
       : null,
@@ -100,7 +109,7 @@ const fdm = {
       {
         path: "control",
         html: require("../../views/control.html"),
-        module: updateHostname(require("../components/control.js").default),
+        module: updatePrinterTitle(require("../components/control.js").default),
         getTitle: () => buildTitle(translate("control.link")),
       } : null,
   ].filter(route => route != null),

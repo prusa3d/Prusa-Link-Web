@@ -21,7 +21,7 @@ function initLogs() {
   getJson("api/logs").then(result => {
     const files = result.data.files;
 
-    const dropdown = Dropdown.init("settings");
+    const dropdown = Dropdown.init("settings", "log-list");
     const options = files.map(file => file.name);
     const placeholder = translate("logs.select-file-placeholder");
 
@@ -67,7 +67,7 @@ function showLogExceedSizeLimit() {
 }
 
 function createLi(innerHTML) {
-  `<li class="txt-size-2>${innerHTML}</li>`;
+  return `<li class="txt-size-2>${innerHTML}</li>`;
 }
 
 const update = () => {
