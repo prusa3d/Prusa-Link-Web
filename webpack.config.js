@@ -13,6 +13,7 @@ const PreprocessingPlugin = require("./tools/preprocessing");
 const devServer = require("./tools/server");
 
 const DEFAULT_NAME = "Original Prusa 3D Printer";
+const BACKEND_URL = undefined; // "http://192.168.1.50:8080";
 
 function withDefault(value, defaultValue) {
   return value === undefined ? defaultValue : value;
@@ -149,20 +150,22 @@ module.exports = (env, args) => {
       minimizer: [new TerserPlugin()],
     },
 
-    //...
     devServer: {
-      contentBase: path.join(__dirname, "dist"),
-      compress: true,
-      after: function (app, server, compiler) {
-        devServer(app, config);
-        preprocessing.startWatcher(server);
-      },
       port: 9000,
-      /*
-      proxy: {
-        "/": "http://PRINTER_HOST:80"
-      },
-      */
+      ...(
+        BACKEND_URL ? {
+          proxy: {
+            "/": BACKEND_URL
+          }
+        }: {
+          contentBase: path.join(__dirname, "dist"),
+          compress: true,
+          after: function (app, server, compiler) {
+            devServer(app, config);
+            preprocessing.startWatcher(server);
+          },
+        }
+      )
     },
   };
 };
