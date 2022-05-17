@@ -48,7 +48,7 @@ class PrinterFDM extends Printer {
     return [".gcode"]
   }
 
-  uploadProject(options) {
+  uploadFile(options) {
     if (!options.path) {
       const root = this.files.files;
       const origin = root.find(file => file.origin === options.target);
@@ -75,12 +75,12 @@ class PrinterFDM extends Printer {
         }
       }
 
-      const project = this.createNewFile(options);
-      parent.push(project);
+      const file = this.createNewFile(options);
+      parent.push(file);
       this.eTag = `W/"${new Date().getTime()}"`;
 
       if (options.select || options.print) {
-        const select = this.selectProject(
+        const select = this.selectFile(
           options.target,
           joinPaths(options.path, options.fileName),
           options.print,
@@ -95,9 +95,9 @@ class PrinterFDM extends Printer {
       return {
         files: {
           local: {
-            name: project.name,
-            origin: project.origin,
-            refs: project.refs,
+            name: file.name,
+            origin: file.origin,
+            refs: file.refs,
           },
         },
         done: true,

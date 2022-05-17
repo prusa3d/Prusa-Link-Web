@@ -5,7 +5,7 @@
 import joinPaths from "../../helpers/join_paths";
 import updateProperties from "./updateProperties";
 import { cancelJob, cancelPreview, pauseJob, resumeJob, startJob } from "./jobActions";
-import { deleteProject, downloadProject } from "./projectActions";
+import { deleteFile, downloadFile } from "./fileActions";
 import { getImage, getJson } from "../../auth";
 import { handleError } from "./errors";
 import { renderProgressImg, updateProgressImg } from "./progressImage";
@@ -498,7 +498,7 @@ function setupDeleteButton(jobState, file, isFilePreview) {
   setVisible(btn, isFilePreview || jobState === "Operational");
 
   if (btn)
-    btn.onclick = () => deleteProject(file);
+    btn.onclick = () => deleteFile(file);
 }
 
 function setupDownloadButton(jobState, file, isFilePreview) {
@@ -507,7 +507,7 @@ function setupDownloadButton(jobState, file, isFilePreview) {
   setVisible(btn, isFilePreview || jobState === "Operational");
 
   if (btn)
-    btn.onclick = () => downloadProject(file);
+    btn.onclick = () => downloadFile(file);
 }
 
 function setupExposureButton(state, jobFile, changeExposureTimesQuestion) {

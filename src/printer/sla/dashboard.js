@@ -9,7 +9,7 @@ import * as job from "../components/job";
 
 const load = (context) => {
   translate("home.link", { query: "#title-status-label" });
-  upload.init("local", "", context.projectExtensions);
+  upload.init("local", "", context.fileExtensions);
   graph.render();
   update(context);
 };

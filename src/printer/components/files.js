@@ -4,13 +4,13 @@
 
 import formatData from "./dataFormat.js";
 import joinPaths from "../../helpers/join_paths";
-import upload from "../components/upload";
+import upload from "./upload";
 import { getJson, getImage } from "../../auth.js";
 import { getValue } from "./updateProperties.js";
 import { handleError } from "./errors";
 import { navigateShallow } from "../../router.js";
 import { translate, translateLabels } from "../../locale_provider.js";
-import { createFolder, deleteFolder, deleteProject, downloadProject, renameFolder, renameProject, startPrint } from "./projectActions.js";
+import { createFolder, deleteFolder, deleteFile, downloadFile, renameFolder, renameFile, startPrint } from "./fileActions.js";
 import printer from "../index";
 import { error } from "./toast.js";
 import { cancelPreview } from "./jobActions";
@@ -23,7 +23,7 @@ import storage from "./storage.js";
 let lastData = null;
 
 /**
- * project context
+ * file context
  */
 const metadata = {
   origin: "",
@@ -63,7 +63,7 @@ const getInitialMetadataFiles = (data) => {
 }
 
 /**
- * callback for update the project context
+ * callback for update the file context
  * @param {object} status
  * @param {object} data
  */
@@ -81,8 +81,8 @@ const updateData = () => {
         metadata.total = data.total;
         metadata.eTag = result.eTag;
         metadata.firstTime = false;
-        if (window.location.hash === "#projects") {
-          navigateShallow("#projects");
+        if (window.location.hash === "#files") {
+          navigateShallow("#files");
         }
       }
     })
@@ -90,7 +90,7 @@ const updateData = () => {
 };
 
 /**
- * update project page
+ * update file page
  * @param {object} context
  */
 export const update = (context) => {
@@ -102,11 +102,11 @@ export const update = (context) => {
 function initUpload(context) {
   const origin = metadata.origin;
   const path = joinPaths(getCurrentPath());
-  upload.init(origin, path, context?.projectExtensions);
+  upload.init(origin, path, context?.fileExtensions);
 }
 
 /**
- * load projects page
+ * load files page
  */
 export function load(context) {
   if (!context)
@@ -120,7 +120,7 @@ export function load(context) {
 
   const previewFile = job.getPreviewFile();
   if (previewFile) {
-    const file = findProject(previewFile.origin, previewFile.path);
+    const file = findFile(previewFile.origin, previewFile.path);
     if (!file) {
       job.selectFilePreview(null);
     } else if (file.date > previewFile.data) {
@@ -129,9 +129,9 @@ export function load(context) {
   }
   job.update(context, true);
 
-  const projects = document.getElementById("projects");
-  while (projects.firstChild) {
-    projects.removeChild(projects.firstChild);
+  const files = document.getElementById("files");
+  while (files.firstChild) {
+    files.removeChild(files.firstChild);
   }
 
   if (!metadata.firstTime && !metadata.origin) {
@@ -158,18 +158,18 @@ export function load(context) {
       "title-status-label"
     ).innerHTML = metadata.current_path.join(" > ");
 
-    projects.appendChild(createCurrent());
+    files.appendChild(createCurrent());
     if (metadata.current_path.length > 1)
-      projects.appendChild(createUp());
+      files.appendChild(createUp());
 
     for (let node of view) {
       if (node.type === "folder") {
         // TODO: Cache file/folder count or count async.
-        const files = countFilesRecursively(node);
+        const filesCount = countFilesRecursively(node);
         const folders = countFoldersRecursively(node);
-        projects.appendChild(createNodeFolder(node.display || node.name, node.path, { files, folders }));
+        files.appendChild(createNodeFolder(node.display || node.name, node.path, { files: filesCount, folders }));
       } else {
-        projects.appendChild(createFile(node));
+        files.appendChild(createFile(node));
       }
     }
   } else {
@@ -298,7 +298,7 @@ function showPreview(file) {
  * @param {object} node
  */
 function createFile(node) {
-  const elm = createElement("node-project", node.display || node.name, (e) =>
+  const elm = createElement("node-file", node.display || node.name, (e) =>
     onClickFile(node)
   );
   const nodeDetails = elm.querySelector(".node-details");
@@ -350,7 +350,7 @@ function setupFileButtons(node, elm) {
   if (renameBtn) {
     renameBtn.onclick = (e) => {
       e.stopPropagation();
-      renameProject();
+      renameFile();
     }
   }
 
@@ -358,7 +358,7 @@ function setupFileButtons(node, elm) {
   if (deleteBtn) {
     setEnabled(deleteBtn, node.refs?.resource);
     deleteBtn.onclick = (e) => {
-      deleteProject(node);
+      deleteFile(node);
       e.stopPropagation();
     }
   }
@@ -367,7 +367,7 @@ function setupFileButtons(node, elm) {
   if (downloadBtn) {
     setEnabled(downloadBtn, node.refs?.download);
     downloadBtn.onclick = (e) => {
-      downloadProject(node);
+      downloadFile(node);
       e.stopPropagation();
     }
   }
@@ -421,7 +421,7 @@ function selectStorage(origin) {
   load();
 }
 
-function findProject(origin, path) {
+function findFile(origin, path) {
   if (!origin || !path)
     return null;
 

@@ -13,11 +13,11 @@ module.exports = {
       }
     },
     {
-      name: "projects.log",
+      name: "files.log",
       date: 1621844642,
       size: 512,
       refs: {
-        download: "http://localhost:9000/api/logs?filename=projects.log"
+        download: "http://localhost:9000/api/logs?filename=files.log"
       }
     },
     {

@@ -10,19 +10,19 @@ import uploadRequest from "../../../helpers/upload_request";
 let isUploading = false;
 let progress = 0;
 
-function init(origin, path, projectExtensions) {
-  translate("upld.direct.choose", { query: "#upld-direct p", file: projectExtensions.join(", ") });
-  initInput(origin, path, projectExtensions);
+function init(origin, path, fileExtensions) {
+  translate("upld.direct.choose", { query: "#upld-direct p", file: fileExtensions.join(", ") });
+  initInput(origin, path, fileExtensions);
   if (isUploading) {
     setState("uploading");
     setProgress(progress);
   }
 }
 
-function initInput(origin, path, projectExtensions) {
+function initInput(origin, path, fileExtensions) {
   var input = document.querySelector('#upld-direct input[type="file"]');
   if (input) {
-    input.setAttribute("accept", projectExtensions.join(", "));
+    input.setAttribute("accept", fileExtensions.join(", "));
     input.onchange = () => {
       if (input.files.length > 0 && !isUploading) {
         let file = input.files[0];

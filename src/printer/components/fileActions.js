@@ -9,9 +9,9 @@ import { translate } from "../../locale_provider";
 import download from "../../helpers/download";
 
 /**
- * download project
+ * download file
  */
-export const downloadProject = (file) => {
+export const downloadFile = (file) => {
   if (!file?.refs?.download)
     return; // TODO: Consider showing error
 
@@ -21,9 +21,9 @@ export const downloadProject = (file) => {
 };
 
 /**
- * delete project
+ * delete file
  */
- export const deleteProject = (file) => {
+ export const deleteFile = (file) => {
   if (!file?.refs?.resource)
     return; // TODO: Consider showing error
 
@@ -44,11 +44,11 @@ export const downloadProject = (file) => {
 export const startPrint = () => {
   console.log("startPrint");
 }
-export const renameProject = () => {
-  console.log("renameProject");
+export const renameFile = () => {
+  console.log("renameFile");
 }
-export const copyProject = () => {
-  console.log("copyProject");
+export const copyFile = () => {
+  console.log("copyFile");
 }
 
 export const createFolder = () => {

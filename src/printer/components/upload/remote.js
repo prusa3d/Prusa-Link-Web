@@ -17,7 +17,7 @@ function init(origin, path) {
   const elm = document.getElementById("upld-remote");
   if (elm) {
     const urlInput = elm.querySelector("#remote-url");
-    const nameInput = elm.querySelector("#remote-project-name");
+    const nameInput = elm.querySelector("#remote-file-name");
     const uploadBtn = elm.querySelector("#upld-proj");
     const startPtCheckbox = elm.querySelector("#upld-remote-start-pt");
 
@@ -74,7 +74,7 @@ function handleResult(result) {
   }
 }
 
-/** Upload project from remote URL.
+/** Upload file from remote URL.
  * @param {String} url
  * @param {String} target
  * @param {String} destination

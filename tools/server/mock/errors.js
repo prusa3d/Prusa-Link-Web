@@ -103,14 +103,14 @@ class NotUvCalibrated extends ApiError {
   }
 }
 
-class InvalidProject extends ApiError {
+class InvalidFile extends ApiError {
   constructor() {
     super();
     this.status = 415;
     this.error = {
       code: "#10521",
-      title: "INVALID PROJECT",
-      message: "The project file is invalid!",
+      title: "INVALID FILE",
+      message: "The file is invalid!",
       url: "https://help.prusa3d.com/en/10521",
     };
   }
@@ -137,7 +137,7 @@ class NotEnoughInternalSpace extends ApiError {
     this.error = {
       code: "#10516",
       title: "INTERNAL MEMORY FULL",
-      message: "Internal memory is full. Delete some of your projects first.",
+      message: "Internal memory is full. Delete some of your files first.",
       url: "https://help.prusa3d.com/en/10516",
     };
   }
@@ -165,7 +165,7 @@ module.exports = {
   FileAlreadyExists,
   NotMechanicallyCalibrated,
   NotUvCalibrated,
-  InvalidProject,
+  InvalidFile,
   NotAvailableInState,
   NotEnoughInternalSpace,
   RemoteApiError,

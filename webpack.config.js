@@ -13,11 +13,14 @@ const PreprocessingPlugin = require("./tools/preprocessing");
 const devServer = require("./tools/server");
 
 const DEFAULT_NAME = "Original Prusa 3D Printer";
-const BACKEND_URL = undefined; // "http://192.168.1.50:8080";
+const BACKEND_URL = undefined;
+// const BACKEND_URL = "http://192.168.1.30:8080";
 
 function withDefault(value, defaultValue) {
   return value === undefined ? defaultValue : value;
 }
+
+
 
 module.exports = (env, args) => {
   const buildLocales = env.locales;
@@ -28,7 +31,7 @@ module.exports = (env, args) => {
     PRINTER_NAME: printerName,
     PRINTER_CODE: printerName.split(" ").slice(-1)[0].toLowerCase(),
     PRINTER_TYPE: env["PRINTER_TYPE"] || "fdm", // "fdm" | "sla"
-    PROJECT_EXTENSIONS: env["PROJECT_EXTENSIONS"] || [".gcode"],
+    FILE_EXTENSIONS: env["FILE_EXTENSIONS"] || [".gcode"],
 
     APP_NAME: env["APP_NAME"] || "PrusaLink",
     APP_TITLE: env["APP_TITLE"] || env["PRINTER_NAME"] || DEFAULT_NAME,
@@ -42,7 +45,7 @@ module.exports = (env, args) => {
 
     LOCAL_STORAGE_NAME: env["LOCAL_STORAGE_NAME"] || "PrusaLink G-codes",
     WITH_STORAGES: env["WITH_STORAGES"] || ["local", "sdcard"],
-    WITH_PROJECTS: withDefault(env["WITH_PROJECTS"], true),
+    WITH_FILES: withDefault(env["WITH_FILES"], true),
     WITH_SETTINGS: env["WITH_SETTINGS"] || false,
     WITH_CONTROLS: env["WITH_CONTROLS"] || false,
     WITH_REMOTE_UPLOAD: withDefault(env["WITH_REMOTE_UPLOAD"], true),

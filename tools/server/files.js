@@ -62,7 +62,7 @@ router.post("/:target", upload.any(), async (req, res, next) => {
   };
 
   const printer = req.app.get("printer");
-  const result = printer.uploadProject(options);
+  const result = printer.uploadFile(options);
   if (result instanceof errors.ApiError) {
     result.handleError(res);
   } else {
@@ -101,7 +101,7 @@ router.post("/:target/:filename(*)", async (req, res, next) => {
     return;
   }
 
-  const result = printer.selectProject(target, pathname, print);
+  const result = printer.selectFile(target, pathname, print);
   if (result instanceof errors.ApiError) {
     result.handleError(res);
   } else {
@@ -117,7 +117,7 @@ router.delete("/:target/:filename(*)", async (req, res, next) => {
   const target = req.params.target;
   const pathname = req.params.filename;
 
-  const result = printer.removeProject(target, pathname);
+  const result = printer.removeFile(target, pathname);
   if (result instanceof errors.ApiError) {
     result.handleError(res);
   } else {

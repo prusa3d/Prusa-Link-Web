@@ -14,7 +14,7 @@ class Printer {
     this.total = 237645131776;
     this.profile = { id: "_default", name };
     this.eTag = `W/"${new Date().getTime()}"`;
-    this.printingProject = null;
+    this.printingFile = null;
     this.isPrinting = false;
     this.progress = {
       estimatedPrintTime: 120,
@@ -27,7 +27,7 @@ class Printer {
     this.status = {
       operational: true, // true if the printer is operational, false otherwise
       paused: false, // true if the printer is currently paused, false otherwise
-      printing: false, // true if the project is opened
+      printing: false, // true if the file is opened
       cancelling: false, // true if the printer is currently printing and in the process of pausing, false otherwise
       pausing: false, // true if the printer is currently printing and in the process of pausing, false otherwise
       sdReady: true, // true if the printer’s SD card is available and initialized, false otherwise. This is redundant information to the SD State.
@@ -100,12 +100,12 @@ class Printer {
     return data;
   }
 
-  checkProject(target, pathname) {
-    const project = this.getFiles(target, pathname);
+  checkFile(target, pathname) {
+    const file = this.getFiles(target, pathname);
     if (
-      project == null ||
-      project.total !== undefined ||
-      project.type == "folder"
+      file == null ||
+      file.total !== undefined ||
+      file.type == "folder"
     ) {
       this.last_error = new errors.FileNotFound();
       return this.last_error;
@@ -116,18 +116,18 @@ class Printer {
       return this.last_error;
     }
 
-    if (this.isPrinting && this.printingProject !== project) {
+    if (this.isPrinting && this.printingFile !== file) {
       this.last_error = new errors.NotAvailableInState();
       return this.last_error;
     }
 
-    return project;
+    return file;
   }
 
-  selectProject(target, pathname, print = false) {
-    const result = this.checkProject(target, pathname);
+  selectFile(target, pathname, print = false) {
+    const result = this.checkFile(target, pathname);
     if (!(result instanceof errors.ApiError)) {
-      this.printingProject = result;
+      this.printingFile = result;
       this.statusText = "Operational";
       if (print) {
         this.startPrint();
@@ -136,7 +136,7 @@ class Printer {
     return result;
   }
 
-  uploadProject(options) {
+  uploadFile(options) {
     let parent = null;
     if (options.path && options.path !== "/") {
       parent = this.getFiles(options.target, options.path, true);
@@ -160,12 +160,12 @@ class Printer {
         }
       }
 
-      const project = this.createNewFile(options);
-      parent.push(project);
+      const file = this.createNewFile(options);
+      parent.push(file);
       this.eTag = `W/"${new Date().getTime()}"`;
 
       if (options.select || options.print) {
-        const select = this.selectProject(
+        const select = this.selectFile(
           options.target,
           joinPaths(options.path, options.fileName),
           options.print,
@@ -180,9 +180,9 @@ class Printer {
       return {
         files: {
           local: {
-            name: project.name,
-            origin: project.origin,
-            refs: project.refs,
+            name: file.name,
+            origin: file.origin,
+            refs: file.refs,
           },
         },
         done: true,
@@ -227,8 +227,8 @@ class Printer {
     return node;
   }
 
-  removeProject(target, pathname) {
-    const result = this.checkProject(target, pathname);
+  removeFile(target, pathname) {
+    const result = this.checkFile(target, pathname);
     if (result instanceof errors.ApiError) {
       return result;
     }
@@ -240,7 +240,7 @@ class Printer {
     if (pos > -1) {
       node.splice(pos, 1);
       this.eTag = `W/"${new Date().getTime()}"`;
-      if (this.printingProject == result) {
+      if (this.printingFile == result) {
         this.stopPrint();
       }
       return true;
@@ -381,7 +381,7 @@ class Printer {
   }
 
   print() {
-    if (!this.printingProject || this.isPrinting || this.status.cancelling) {
+    if (!this.printingFile || this.isPrinting || this.status.cancelling) {
       this.last_error = new errors.NotAvailableInState();
       return this.last_error;
     }
@@ -397,10 +397,10 @@ class Printer {
     this.status.ready = false;
     let estimatedPrintTime = 120;
     if (
-      this.printingProject.gcodeAnalysis &&
-      this.printingProject.gcodeAnalysis.estimatedPrintTime
+      this.printingFile.gcodeAnalysis &&
+      this.printingFile.gcodeAnalysis.estimatedPrintTime
     ) {
-      estimatedPrintTime = this.printingProject.gcodeAnalysis
+      estimatedPrintTime = this.printingFile.gcodeAnalysis
         .estimatedPrintTime;
     }
     this.progress.estimatedPrintTime = estimatedPrintTime;
@@ -410,20 +410,20 @@ class Printer {
   }
 
   stopPrint() {
-    this.printingProject = null;
+    this.printingFile = null;
     this.isPrinting = false; // doesn't print
-    this.status.printing = false; // close project
+    this.status.printing = false; // close file
     this.status.ready = true;
     this.status.cancelling = false;
     this.statusText = "Operational";
   }
 
   stop() {
-    if (this.printingProject) {
+    if (this.printingFile) {
       if (this.isPrinting) {
-        this.printingProject = null;
+        this.printingFile = null;
         this.isPrinting = false; // doesn't print
-        this.status.printing = false; // close project
+        this.status.printing = false; // close file
         this.status.ready = false;
         this.status.cancelling = true;
         this.statusText = "Cancelling";
@@ -441,15 +441,15 @@ class Printer {
 
   job() {
     const state = this.statusText;
-    if (this.printingProject) {
+    if (this.printingFile) {
       const job = {
         estimatedPrintTime: this.progress.estimatedPrintTime,
         file: {
-          date: this.printingProject.date,
-          name: this.printingProject.name,
-          origin: this.printingProject.origin,
-          path: this.printingProject.path,
-          size: this.printingProject.size || 3636012,
+          date: this.printingFile.date,
+          name: this.printingFile.name,
+          origin: this.printingFile.origin,
+          path: this.printingFile.path,
+          size: this.printingFile.size || 3636012,
         },
       };
       const result = { job, state };
@@ -484,7 +484,7 @@ class Printer {
     rename = "",
   }) {
     if (!url || !target) {
-      this.last_error = new errors.InvalidProject();
+      this.last_error = new errors.InvalidFile();
       return this.last_error;
     }
 
@@ -535,16 +535,16 @@ class Printer {
         select: status.to_select,
         print: status.to_print,
         path: status.destination,
-        fileName: status.rename || status.url.split("/").pop() || "new project",
+        fileName: status.rename || status.url.split("/").pop() || "new file",
         fileSize: status.size,
       };
 
-      const uploadResult = this.uploadProject(options);
+      const uploadResult = this.uploadFile(options);
       if (uploadResult instanceof errors.ApiError)
         return uploadResult;
 
       if (options.select || options.print)
-        return this.selectProject(
+        return this.selectFile(
           options.target,
           joinPaths(options.path, options.fileName),
           options.print,

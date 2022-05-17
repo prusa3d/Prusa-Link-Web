@@ -8,8 +8,8 @@ import TabsController from "./tabs";
 const remote = process.env.WITH_REMOTE_UPLOAD ? require("./remote").default : null;
 const tabs = new TabsController();
 
-function init(origin="local", path="", projectExtensions) {
-  direct.init(origin, path, projectExtensions);
+function init(origin="local", path="", fileExtensions) {
+  direct.init(origin, path, fileExtensions);
   remote?.init(origin, path);
 
   tabs.init(document.getElementById("upld"));
