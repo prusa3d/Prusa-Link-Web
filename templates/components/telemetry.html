@@ -24,11 +24,15 @@
           {'text': 'Nozzle Temperature', 'label': 'prop.temp-nozzle', 'icon': 'status_nozzle.svg', 'format': 'temp', "locations": ["telemetry.temp-nozzle", "temperature.tool0.target"] },
           {'text': 'Heatbed', 'label': 'prop.temp-bed', 'icon': 'status_heatbed.svg', 'format': 'temp', "locations": ["telemetry.temp-bed", "temperature.bed.target"] },
           {'text': 'Printing Speed', 'label': 'prop.speed', 'icon': 'status_prnspeed.svg', 'format': 'print', "location": "telemetry.print-speed" },
-          {'text': 'Z - Height', 'label': 'prop.z-height', 'icon': 'status_z_axis.svg', "location": "telemetry.z-height", 'format': 'pos'  },
-          {'text': 'Material', 'label': 'prop.material', 'icon': 'status_filament.svg', "location": "telemetry.material" }
+          {'text': 'Z - Height', 'label': 'prop.z-height', 'icon': 'status_z_axis.svg', "location": "telemetry.z-height", 'format': 'pos' }
       ]
   %}
 {% endif %}
+
+<!--
+  Material is temporarly anavailable on FDM
+  {'text': 'Material', 'label': 'prop.material', 'icon': 'status_filament.svg', "location": "telemetry.material" } 
+-->
 
 {%
     set connection_status_list = [
