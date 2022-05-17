@@ -37,6 +37,7 @@ const load = (context, origins, selectedOrigin, onSelect) => {
 
     const location = li.getAttribute("data-location");
     const storageInfo = context.printer.storage?.[location];
+    
     const isSelected = origin === selectedOrigin;
     li.setAttribute("selected", isSelected); // for pc
     li.onclick = (e) => {
