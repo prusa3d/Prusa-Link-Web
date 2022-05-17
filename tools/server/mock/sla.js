@@ -45,7 +45,7 @@ class PrinterSLA extends Printer {
     const layers = 200;
     const resin = 100;
 
-    if (this.printingProject) {
+    if (this.printingFile) {
       jobSLA.job.file = {
         ...jobSLA.job.file,
         layers: layers,
@@ -90,7 +90,7 @@ class PrinterSLA extends Printer {
   }
 
   changeExposureTimes(exposureTimes) {
-    if (!this.printingProject) {
+    if (!this.printingFile) {
       this.last_error = new errors.NotAvailableInState();
       return this.last_error;
     }

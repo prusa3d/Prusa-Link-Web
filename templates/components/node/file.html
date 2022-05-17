@@ -8,7 +8,7 @@
 <!-- prettier-ignore -->
 {% if env.PRINTER_TYPE == "sla" %}
     {%
-        set project_list = [
+        set file_list = [
           {"text": "Printing time", "label": "prop.est-pnt-time", "format": "est-time", "location": "gcodeAnalysis.estimatedPrintTime", "icon": "time_color.svg" },
           {"text": "Material", "label": "prop.material", "format": "material", "location": "gcodeAnalysis.material", "icon": "status_filament.svg" },
           {"text": "Layer Height", "label": "prop.layer-ht", "format": "layer", "location": "gcodeAnalysis.layerHeight", "icon": "quality_medium.svg" },
@@ -19,7 +19,7 @@
     %}
 {% else %}
     {%
-        set project_list = [
+        set file_list = [
           {"text": "Printing time", "label": "prop.pnt-time", "format": "time", "location": "gcodeAnalysis.estimatedPrintTime", "icon": "time_color.svg" },
           {"text": "Material", "label": "prop.material", "format": "material", "location": "gcodeAnalysis.material", "icon": "status_filament.svg" },
           {"separator": true},
@@ -32,7 +32,7 @@
 <!-- prettier-ignore -->
 {%
   set buttons = {
-    'details': {text: 'Project details', label: 'proj.details', pc_icon: 'project_details.svg', mobile_icon: 'project_details_light.svg', implemented: true },
+    'details': {text: 'File details', label: 'proj.details', pc_icon: 'file_details.svg', mobile_icon: 'file_details_light.svg', implemented: true },
     'start': {text: 'Start print', label: 'proj.start', pc_icon: 'print.svg', mobile_icon: 'print_light.svg', implemented: false },
     'delete': {text: 'Delete', label: 'proj.del', pc_icon: 'delete.svg', mobile_icon: 'delete_light.svg', implemented: true },
     'rename': {text: 'Rename', label: 'proj.rename', pc_icon: 'edit.svg', mobile_icon: 'edit_light.svg', implemented: false },
@@ -40,7 +40,7 @@
   }
 %}
 
-<template id="node-project">
+<template id="node-file">
   <div class="node line">
     <div class="node-img-box">
       <img class="node-img" src="../assets/thumbnail.svg" />
@@ -67,7 +67,7 @@
       </div>
 
       <div class="node-details">
-        {% for values in project_list %}
+        {% for values in file_list %}
           {% if values.separator %}
             <div class="separator pc-only"></div>
           {% else %}

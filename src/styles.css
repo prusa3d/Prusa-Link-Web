@@ -522,7 +522,7 @@ nav .burger-icon.burger-open {
   stroke: transparent;
   stroke-width: 0;
 }
-#projects {
+#files {
   width: 100%;
   margin-top: 16px;
 }
@@ -790,7 +790,7 @@ button:disabled {
   margin-top: 1rem;
   position: relative;
 }
-#job .project-name {
+#job .file-name {
   margin-bottom: 20px;
 }
 #job .progress {
@@ -1727,7 +1727,7 @@ input .autoresize {
   .title-printer {
     margin-left: auto;
   }
-  .project-icon {
+  .file-icon {
     height: 28px;
     width: 28px;
   }

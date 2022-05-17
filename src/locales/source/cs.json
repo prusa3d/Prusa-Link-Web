@@ -3,25 +3,25 @@
     "back": "Zpět",
     "cancel": "Zrušit",
     "cancel-pt": "Zrušit tisk",
-    "chg": "změnit",
+    "chg": "Změnit",
     "chg-exp": "Tisková nastavení",
     "confirm": "Potvrdit",
     "continue": "Pokračovat",
-    "del": "smazat",
-    "disable-steppers": "vypnout motory",
-    "download": "stáhnout",
-    "extrude": "vytlačit",
+    "del": "Smazat",
+    "disable-steppers": "Vypnout motory",
+    "download": "Stáhnout",
+    "extrude": "Vytlačit",
     "login": "Přihlášení",
     "no": "Ne",
     "pause-pt": "Pozastavit tisk",
     "resume-pt": "Pokračovat v tisku",
-    "retract": "vtáhnout",
+    "retract": "Vtáhnout",
     "save-chgs": "Uložit změny",
-    "set": "NASTAVIT",
+    "set": "Nastavit",
     "sla-refill": "Doplnit resin",
     "sla-refilled": "Resin doplněn",
     "start-pt": "Start tisku",
-    "upld-proj": "Nahrát projekt",
+    "upld-proj": "Nahrát soubor",
     "yes": "Ano"
   },
   "conn": {
@@ -97,7 +97,7 @@
     "modal-p1": "Vítejte na webovém rozhraní vaší",
     "modal-p2": "Upozornění: některé hodnoty jsou zobrazeny pouze v průběhu tisku.",
     "modal-p3": "3D TISKÁRNA ORIGINAL PRUSA",
-    "sla-pour-resin": "Nalijte do vaničky dostatečné množství resinu pro vybraný projekt a zavřete víko. Minimální objem resinu je zobrazen na dotykovém displeji tiskárny.",
+    "sla-pour-resin": "Nalijte do vaničky dostatečné množství resinu pro vybraný soubor a zavřete víko. Minimální objem resinu je zobrazen na dotykovém displeji tiskárny.",
     "sla-refill": "Dolijte vaničku do 100 % a zavřete víko."
   },
   "ntf": {
@@ -109,10 +109,10 @@
     "settings-suc": "Nastavení bylo úspěšně změněno.",
     "start-print": "Tiskárna se připravuje.",
     "success": "Požadavek byl úspěšný",
-    "upld-exists": "Projekt s názvem {{file_name}} již existuje",
-    "upld-not-sup": "Projekt {{file_name}} není podporován",
-    "upld-suc": "Projekt {{file_name}} byl úspěšně nahrán.",
-    "upld-unsuc": "Nahrání projektu {{file_name}} selhalo."
+    "upld-exists": "Soubor s názvem {{file_name}} již existuje",
+    "upld-not-sup": "Soubor {{file_name}} není podporován",
+    "upld-suc": "Soubor {{file_name}} byl úspěšně nahrán.",
+    "upld-unsuc": "Nahrání souboru {{file_name}} selhalo."
   },
   "print": {
     "fdm": {
@@ -134,17 +134,17 @@
     "add-from": {
       "local": "Lokálního úložiště",
       "remote": "Vzdálené url",
-      "title": "Nahrát projekt z"
+      "title": "Nahrát soubor z"
     },
     "del": "Smazat",
-    "details": "Detaily projektu",
+    "details": "Detaily souboru",
     "download": "Stáhnout",
-    "link": "Projekty",
+    "link": "Úložiště",
     "main": "Zpět",
     "rename": "Přejmenovat",
     "start": "Spustit tisk",
     "storage": "Úložiště",
-    "title": "Soubory projektu",
+    "title": "Soubory",
     "up-folder": "nadřazená složka"
   },
   "prop": {
@@ -232,20 +232,20 @@
   "upld": {
     "direct": {
       "choose": "Vyberte {{file}} nebo jej přetáhněte sem.",
-      "description": "Nahrajte projekt do tiskárny prostřednictvím místní sítě",
+      "description": "Nahrajte soubor do tiskárny prostřednictvím místní sítě",
       "title": "Přímé nahrání"
     },
     "remote": {
-      "description": "Nahrajte projekt ze vzdálené adresy URL přímo do tiskárny",
-      "hint-fdm": "Zadejte URL souboru projektu G-CODE",
-      "hint-sla": "Zadejte URL adresu kompatibilního projektu",
+      "description": "Nahrajte soubor ze vzdálené adresy URL přímo do tiskárny",
+      "hint-fdm": "Zadejte URL souboru souboru G-CODE",
+      "hint-sla": "Zadejte URL adresu kompatibilního souboru",
       "source": "URL zdroje",
-      "project": "Název projektu",
-      "project-hint": "Zadejte název souboru projektu",
+      "file": "Název souboru",
+      "file-hint": "Zadejte název souboru souboru",
       "title": "Vzdálené URL"
     },
     "start-pt": "po přenosu zahájit tisk",
-    "title": "Nahrát projekt"
+    "title": "Nahrát soubor"
   },
   "user": {
     "new-password": "nové heslo",

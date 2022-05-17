@@ -3,25 +3,25 @@
     "back": "Back",
     "cancel": "Cancel",
     "cancel-pt": "Cancel print",
-    "chg": "change",
+    "chg": "Change",
     "chg-exp": "Print Settings",
     "confirm": "Confirm",
     "continue": "Continue",
-    "del": "delete",
-    "disable-steppers": "disable steppers",
-    "download": "download",
-    "extrude": "extrude",
+    "del": "Delete",
+    "disable-steppers": "Disable Steppers",
+    "download": "Download",
+    "extrude": "Extrude",
     "login": "Login",
     "no": "No",
-    "pause-pt": "Pause print",
-    "resume-pt": "Resume print",
-    "retract": "retract",
+    "pause-pt": "Pause Print",
+    "resume-pt": "Resume Print",
+    "retract": "Retract",
     "save-chgs": "Save changes",
-    "set": "SET",
-    "sla-refill": "Refill resin",
-    "sla-refilled": "Resin refilled",
-    "start-pt": "Start print",
-    "upld-proj": "Upload project",
+    "set": "Set",
+    "sla-refill": "Refill Resin",
+    "sla-refilled": "Resin Refilled",
+    "start-pt": "Start Print",
+    "upld-file": "Upload File",
     "yes": "Yes"
   },
   "conn": {
@@ -97,7 +97,7 @@
     "modal-p1": "Welcome to the web interface of your",
     "modal-p2": "Please note that values are shown only when the printer is printing.",
     "modal-p3": "ORIGINAL PRUSA 3D PRINTER",
-    "sla-pour-resin": "Pour enough resin for selected project into the tank and close the lid. Minimal amount of the resin is displayed on the touchscreen.",
+    "sla-pour-resin": "Pour enough resin for selected file into the tank and close the lid. Minimal amount of the resin is displayed on the touchscreen.",
     "sla-refill": "Refill the tank to 100 % and close the lid."
   },
   "ntf": {
@@ -109,10 +109,10 @@
     "settings-suc": "Settings was changed successfully.",
     "start-print": "The printer is getting ready.",
     "success": "The request was successful",
-    "upld-exists": "The project {{file_name}} already exists.",
-    "upld-not-sup": "The project {{file_name}} is not supported.",
-    "upld-suc": "The project {{file_name}} was uploaded successfully.",
-    "upld-unsuc": "The project {{file_name}} upload was unsuccessful."
+    "upld-exists": "The file {{file_name}} already exists.",
+    "upld-not-sup": "The file {{file_name}} is not supported.",
+    "upld-suc": "The file {{file_name}} was uploaded successfully.",
+    "upld-unsuc": "The file {{file_name}} upload was unsuccessful."
   },
   "print": {
     "fdm": {
@@ -134,17 +134,17 @@
     "add-from": {
       "local": "Local storage",
       "remote": "Remote url",
-      "title": "Add project from"
+      "title": "Add file from"
     },
     "del": "Delete",
     "download": "Download",
-    "details": "Project details",
-    "link": "Projects",
+    "details": "File details",
+    "link": "Storage",
     "main": "Main",
     "rename": "Rename",
     "start": "Start print",
     "storage": "Storage",
-    "title": "Project files",
+    "title": "Files",
     "up-folder": "parent folder"
   },
   "prop": {
@@ -232,20 +232,20 @@
   "upld": {
     "direct": {
       "choose": "Click to choose a {{file}} file or drag it here",
-      "description": "Upload project directly to the printer via local network",
+      "description": "Upload file directly to the printer via local network",
       "title": "Direct upload"
     },
     "remote": {
-      "description": "Upload project from remote URL directly to the printer",
-      "hint-fdm": "Type URL of G-CODE project file",
-      "hint-sla": "Type URL of compatible project file",
+      "description": "Upload file from remote URL directly to the printer",
+      "hint-fdm": "Type URL of G-CODE file",
+      "hint-sla": "Type URL of compatible file",
       "source": "Source URL",
-      "project": "Project name",
-      "project-hint": "Type project file name",
+      "file": "File name",
+      "file-hint": "Type file name",
       "title": "Remote url"
     },
     "start-pt": "start print after transfer",
-    "title": "upload project"
+    "title": "upload file"
   },
   "user": {
     "new-password": "new password",

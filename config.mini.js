@@ -6,7 +6,7 @@ module.exports = (env, args) => {
         PRINTER_TYPE: "fdm",
 
         WITH_STORAGES: ["usb"],
-        WITH_PROJECTS: true,
+        WITH_FILES: true,
         WITH_SETTINGS: false,
         WITH_CONTROLS: false,
         WITH_REMOTE_UPLOAD: false,

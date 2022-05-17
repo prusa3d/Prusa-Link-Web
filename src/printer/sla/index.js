@@ -4,7 +4,7 @@
 
 import * as graph from "../components/temperature_graph";
 import dashboard from "./dashboard.js";
-import projects from "../components/projects";
+import files from "../components/files";
 import question from "../components/question.js";
 import refill from "./refill.js";
 import temperature from "./temperature.js";
@@ -22,8 +22,8 @@ const context = {
   current: undefined,
   /** Result of `api/connection`. */
   connection: undefined,
-  /** Supported project file extensions. */
-  projectExtensions: [],
+  /** Supported file extensions. */
+  fileExtensions: [],
 };
 
 const updatePrinterTitle = (obj) => {
@@ -94,11 +94,11 @@ const sla = {
       html: require("../../views/refill.html"),
       module: updatePrinterTitle(refill),
     },
-    process.env.WITH_PROJECTS ?
+    process.env.WITH_FILES ?
       {
-        path: "projects",
-        html: require("../../views/projects.html"),
-        module: updatePrinterTitle(projects),
+        path: "files",
+        html: require("../../views/files.html"),
+        module: updatePrinterTitle(files),
         getTitle: () => buildTitle(translate("proj.link")),
       }
       : null,
@@ -120,7 +120,7 @@ const sla = {
   ].filter(route => route != null),
   init: (apiResult) => {
     updateContext(apiResult);
-    context.projectExtensions = apiResult.profiles?.data?.profiles[0]?.projectExtensions || process.env.PROJECT_EXTENSIONS;
+    context.fileExtensions = apiResult.profiles?.data?.profiles[0]?.projectExtensions || process.env.FILE_EXTENSIONS;
     document.title = context.version.hostname + " - " + process.env.APP_NAME;
     initTemperatureGraph();
   },
