@@ -210,9 +210,9 @@ function updateComponent(context, isFilePreview) {
     setupProgress(false);
     updateProperties("job", null);
     updateProperties("file", file);
-    const nameElm = document.querySelector('#job [data-where="job.file.name"]');
+    const nameElm = document.querySelector('#job [data-where="job.file.display"]');
     if (nameElm) {
-      nameElm.innerHTML = file.name;
+      nameElm.innerHTML = file.display || file.name;
     }
     setupButtons(context, null, file, isFilePreview);
 
