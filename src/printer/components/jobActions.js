@@ -66,7 +66,6 @@ export const pauseJob = () => {
  */
  export const cancelJob = () => {
   const page = window.location.hash;
-  navigateShallow("#loading");
   doQuestion({
     title: translate("btn.cancel"),
     questionChildren: translate("msg.cancel"),
@@ -77,9 +76,10 @@ export const pauseJob = () => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({ command: "cancel" }),
-      })
-        .catch((result) => handleError(result))
-        .finally((result) => close());
+      }).catch(
+        (result) => handleError(result)
+      );
+      close();
     },
     next: page,
   });

@@ -19,6 +19,10 @@ let metadata = getDefaultMetadata();
 let filePreviewMetadata = getDefaultFilePreviewMetadata();
 let fallbackThumbnailUrl = null;
 
+function isLoading(state) {
+  return ["Busy", "Cancelling"].includes(state)
+}
+
 function getDefaultMetadata() {
   return {
     /** Full path of the current selected (printing) file. */
@@ -133,7 +137,7 @@ function updateJob(context, isFilePreview) {
 
     const jobFile = context.current.job.file;
     const path = joinPaths(jobFile.origin, jobFile.path);
-    let loading = (context.current.state === "Busy");
+    let loading = isLoading(context.current.state);
 
     if (path && path !== metadata.path) {
       console.log(`File Path was changed\nold path: ${metadata.path}\nnew path: ${path}`)
@@ -257,7 +261,7 @@ function updateComponent(context, isFilePreview) {
 
     hideNaProperties(state, isFilePreview);
 
-    if (thumbnail.ready && state.text !== "Busy") {
+    if (thumbnail.ready && !isLoading(state.text)) {
       hideLoading();
     }
   }
@@ -323,7 +327,6 @@ function setupProgress(progressIsVisible) {
   // Render (mount) progress image
   const haveThumbnail = Boolean(thumbnail.ready && thumbnail.url);
   if (haveThumbnail && thumbnail.url && !previewImgWrapper?.hasChildNodes()) {
-    console.log("Render progress img");
     renderProgressImg(previewImgWrapper, thumbnail.url);
   }
 
