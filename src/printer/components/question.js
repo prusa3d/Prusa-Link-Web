@@ -66,7 +66,6 @@ export const load = () => {
     action.querySelector("p").innerHTML = question[actionName + "Text"];
     action.addEventListener("click", (e) => {
       e.stopPropagation();
-      navigateShallow("#loading");
       func(cleanQuestion);
     });
   }

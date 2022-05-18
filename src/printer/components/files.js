@@ -113,7 +113,6 @@ export function load(context) {
     context = printer.getContext();
 
   if (metadata.firstTime) {
-    navigateShallow("#loading");
     update(context);
     return;
   }

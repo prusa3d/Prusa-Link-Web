@@ -86,7 +86,7 @@ const sla = {
       path: "loading",
       html: require("../../views/loading.html"),
       module: updatePrinterTitle({
-        load: () => translate("proj.title", { query: "#title-status-label" }),
+        load: () => translate("home.link", { query: "#title-status-label" }),
       }),
     },
     {

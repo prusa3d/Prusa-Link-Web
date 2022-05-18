@@ -82,13 +82,6 @@ const fdm = {
       html: require("../../views/question.html"),
       module: updatePrinterTitle(question),
     },
-    {
-      path: "loading",
-      html: require("../../views/loading.html"),
-      module: updatePrinterTitle({
-        load: () => translate("proj.title", { query: "#title-status-label" }),
-      }),
-    },
     process.env.WITH_FILES ?
       {
         path: "files",
