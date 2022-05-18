@@ -112,7 +112,8 @@
     "upld-exists": "The file {{file_name}} already exists.",
     "upld-not-sup": "The file {{file_name}} is not supported.",
     "upld-suc": "The file {{file_name}} was uploaded successfully.",
-    "upld-unsuc": "The file {{file_name}} upload was unsuccessful."
+    "upld-unsuc": "The file {{file_name}} upload was unsuccessful.",
+    "upld-start": "Upload request has been accepted"
   },
   "print": {
     "fdm": {

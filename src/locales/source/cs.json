@@ -112,7 +112,8 @@
     "upld-exists": "Soubor s názvem {{file_name}} již existuje",
     "upld-not-sup": "Soubor {{file_name}} není podporován",
     "upld-suc": "Soubor {{file_name}} byl úspěšně nahrán.",
-    "upld-unsuc": "Nahrání souboru {{file_name}} selhalo."
+    "upld-unsuc": "Nahrání souboru {{file_name}} selhalo.",
+    "upld-start": "Požadavek na nahrání souboru byl přijat"
   },
   "print": {
     "fdm": {
