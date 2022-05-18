@@ -103,6 +103,7 @@ function initUpload(context) {
   const origin = metadata.origin;
   const path = joinPaths(getCurrentPath());
   upload.init(origin, path, context?.fileExtensions);
+  upload.hide(metadata.origin === "sdcard");
 }
 
 /**
@@ -419,6 +420,8 @@ function selectStorage(origin) {
     metadata.current_path = [];
   }
   load();
+
+  upload.hide(origin === "sdcard")
 }
 
 function findFile(origin, path) {

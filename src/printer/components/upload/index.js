@@ -4,6 +4,7 @@
 
 import direct from "./direct";
 import TabsController from "./tabs";
+import {setHidden} from "../../../helpers/element"
 
 const remote = process.env.WITH_REMOTE_UPLOAD ? require("./remote").default : null;
 const tabs = new TabsController();
@@ -14,6 +15,10 @@ function init(origin="local", path="", fileExtensions) {
 
   tabs.init(document.getElementById("upld"));
   updateTabs();
+}
+
+function hide(isHidden) {
+  setHidden(document.getElementById("upld"), isHidden);
 }
 
 function update() {
@@ -35,4 +40,4 @@ function updateTabs() {
   }
 }
 
-export default { init, update };
+export default { init, update, hide };

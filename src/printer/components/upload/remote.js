@@ -57,6 +57,16 @@ function update() {
   });
 }
 
+function handleAccept(result) {
+  setState("uploading");
+  // updateProperties("download", data);
+  const progressBar = document.querySelector("#upld-remote .progress-bar");
+  updateProgressBar(progressBar, 0);
+  const title = translate("ntf.success");
+  const message = translate("ntf.upld-start");
+  success(title, message);
+}
+
 function handleResult(result) {
   const data = result.data;
 
@@ -102,7 +112,9 @@ const startUpload = (url, target, destination, options) => {
       destination,
       ...options,
     }),
-  }).catch((result) => handleError(result));
+  }).then(
+    result => handleAccept(result)
+  ).catch((result) => handleResult(result));
 }
 
 function displaySuccess() {
