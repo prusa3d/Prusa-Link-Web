@@ -37,7 +37,7 @@ const update = (context) => {
     telemetry: context.printer.telemetry,
     job: context.current,
   });
-  updateDisableSteppersBtn(context.printer.state);
+  updateButtons(context.printer.state);
 }
 
 function initButtons() {
@@ -55,12 +55,12 @@ function initDisableSteppersBtn() {
     };
 }
 
-function updateDisableSteppersBtn(state) {
-  const btn = document.querySelector("#control #disable-steppers");
-  if (btn) {
-    const disabled = state.flags.printing || state.flags.pausing || state.flags.paused;
-    setDisabled(btn, disabled);
-  }
+function updateButtons(state) {
+  const disabled = state.flags.printing || state.flags.pausing || state.flags.paused;
+  const whitelist = ["move-step", "extrude-retract-step"];
+  document.querySelectorAll("#control button").forEach(
+    btn => setDisabled(btn, !(whitelist.includes(btn.parentNode.id) || !disabled))
+  );
 }
 
 function initExtrudeBtn() {
