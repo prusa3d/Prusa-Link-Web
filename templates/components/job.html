@@ -13,7 +13,7 @@
   ></p>
   <div id="preview-wrapper">
     <div class="preview-img">
-      <img id="preview-img" src="../assets/thumbnail.svg" />
+      <img id="preview-img" src="{{ pre.countOrRenderAssets('thumbnail.svg') | safe }}" />
     </div>
       <!-- prettier-ignore -->
       {% include "components/job/progress.html" %}

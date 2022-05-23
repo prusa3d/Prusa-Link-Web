@@ -43,7 +43,7 @@
 <template id="node-project">
   <div class="node line">
     <div class="node-img-box">
-      <img class="node-img" src="../assets/thumbnail.svg" />
+      <img class="node-img" src="{{ pre.countOrRenderAssets('thumbnail.svg') | safe }}" />
     </div>
     <div class="node-wrapper txt-size-3">
       <div class="node-header">

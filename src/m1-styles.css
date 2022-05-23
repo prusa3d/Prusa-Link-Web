@@ -33,3 +33,19 @@ nav > ul > li.active {
 .dropdown li:hover {
   background: $green;
 }
+
+.storage-select-content > li[selected="true"] {
+  color: $green;
+}
+
+.node-upload-source > li[selected="true"] {
+  color: $green;
+}
+
+.storage-select-btn:hover span {
+  color: $green;
+}
+
+[data-tab-btn][selected="true"] {
+  color: $green;
+}
