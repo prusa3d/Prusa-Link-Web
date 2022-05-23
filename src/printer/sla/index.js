@@ -7,7 +7,6 @@ import dashboard from "./dashboard.js";
 import files from "../components/files";
 import question from "../components/question.js";
 import refill from "./refill.js";
-import temperature from "./temperature.js";
 import { updateProperties } from "../components/updateProperties.js";
 import { translate } from "../../locale_provider";
 import { showLoading, hideLoading } from "../../helpers/element";
@@ -81,13 +80,6 @@ const sla = {
       path: "question",
       html: require("../../views/question.html"),
       module: updatePrinterTitle(question),
-    },
-    {
-      path: "loading",
-      html: require("../../views/loading.html"),
-      module: updatePrinterTitle({
-        load: () => translate("home.link", { query: "#title-status-label" }),
-      }),
     },
     {
       path: "refill",
