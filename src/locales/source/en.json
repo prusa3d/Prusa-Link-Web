@@ -28,6 +28,7 @@
     "err-conn": "Cannot connect to the printer",
     "printer-status" : "3D printer connection status",
     "prusa-connect-status": "PRUSA CONNECT connection status",
+    "prusa-connect-url": "PRUSA CONNECT address",
     "suc": "Successfully connected",
     "title": "connection",
     "unsuc": "Connection failed"

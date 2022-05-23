@@ -5,7 +5,7 @@
 import { translate } from "../../locale_provider";
 import updateProperties from "./updateProperties";
 import { getJson } from "../../auth";
-import { setEnabled, setVisible } from "../../helpers/element";
+import { setEnabled, setHidden, setVisible } from "../../helpers/element";
 import { editPrinter, editSerialNumber, editUser, getSerialNumber } from "./settingsActions";
 import { handleError } from "./errors";
 import { success } from "./toast";
@@ -26,6 +26,11 @@ const load = (context) => {
   logsModule?.load();
 };
 
+const update = (context) => {
+  logsModule?.update();
+  updateConnectionSettings(context);
+};
+
 function initBaseSettings() {
   getJson("api/version?system=true").then(result => {
     const data = {
@@ -37,6 +42,46 @@ function initBaseSettings() {
 }
 
 function initConnectionSettings(context) {
+  updateConnectionSettings(context);
+
+  document.getElementById(
+    "edit-connect-del"
+  ).addEventListener(
+    "click", (event) => {
+      getJson("api/connection", {method: "DELETE"}).then(
+        displaySuccess
+      ).catch(
+        (result) => handleError(result)
+      );
+    }
+  );
+
+  document.getElementById(
+    "edit-connect-set"
+  ).addEventListener(
+    "click", (event) => {
+      const val = document.getElementById("conn-prusa-connect-url")?.value;
+      if (!val) return;
+      const url = new URL(val);
+      getJson("api/connection", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({connect: {
+          hostname: url.hostname,
+          port: url.port ? parseInt(url.port) : 0,
+          tls: url.protocol.startsWith('https') ? 1 : 0
+        }})
+      }).then(result => {
+        const url = result?.data?.url;
+        url && (location.href = url);
+      }).catch((result) => handleError(result));
+    }
+  );
+}
+
+function updateConnectionSettings(context) {
   if (context.connection) {
     updateProperties("con-settings", context.connection);
     updatePrusaConnectStatus(context.connection);
@@ -158,12 +203,18 @@ function updateConnectionStatus(statusElm, msgElm, ok, message, customMessage) {
 function updatePrusaConnectStatus(data) {
   const statusElm = document.getElementById("conn-prusa-connect-status");
   const msgElm = document.getElementById("conn-prusa-connect-status-msg");
+  const urlIn = document.getElementById("conn-prusa-connect-url");
 
+  const isFinished = (data.connect.registration === "FINISHED");
   const { hostname, tls } = data.connect;
   const { ok, message } = data.states.connect;
   const protocol = tls ? 'http' : 'https'
   const port = data.connect.port ? `:${data.connect.port}` : '' // 0 = protocol default port
-  const customMessage =  `(${protocol}://${hostname}${port})`;
+  const urlString = `${protocol}://${hostname}${port}`;
+  const customMessage = `(${urlString})`;
+
+  urlIn.value = urlString;
+  setHidden(urlIn.parentNode.parentNode, isFinished);
 
   updateConnectionStatus(statusElm, msgElm, ok, message, customMessage);
 }
@@ -178,10 +229,6 @@ function updatePrinterStatus(data) {
 
   updateConnectionStatus(statusElm, msgElm, ok, message, customMessage);
 }
-
-const update = () => {
-  logsModule?.update();
-};
 
 // TODO: Cleanup the hardcoded classes after completing the layout for settings page
 function updateSystemVersionProperties(data) {

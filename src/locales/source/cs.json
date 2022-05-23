@@ -28,6 +28,7 @@
     "err-conn": "Nelze se připojit k tiskárně",
     "printer-status" : "stav připojení 3D tiskárny",
     "prusa-connect-status": "stav připojení PRUSA CONNECT",
+    "prusa-connect-url": "adresa PRUSA CONNECT",
     "suc": "Úspěšně připojeno",
     "title": "připojení",
     "unsuc": "Připojení se nezdařilo"

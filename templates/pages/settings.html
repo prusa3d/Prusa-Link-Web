@@ -41,7 +41,14 @@
 <!-- prettier-ignore -->
 {%
   set section_connection = [
-    {'text': 'PRUSA CONNECT connection status' , 'label': 'conn.prusa-connect-status', 'id': 'conn-prusa-connect-status', 'component': 'conn-status' },
+    {'text': 'PRUSA CONNECT' , 'label': 'conn.prusa-connect-url', 'id': 'conn-prusa-connect-url', 'component': 'conn-status',
+      button: {id: 'edit-connect-set', text: 'set', label: 'btn.set', disabled: false},
+      editable: true,
+      type: "text"
+    },
+    {'text': 'connection status' , 'label': 'conn.prusa-connect-status', 'id': 'conn-prusa-connect-status', 'component': 'conn-status',
+      button: {id: 'edit-connect-del', text: 'delete', label: 'btn.del', disabled: false}
+    },
     {'id': 'conn-prusa-connect-status-msg' },
     {'text': '3D printer connection status' , 'label': 'conn.printer-status', 'id': 'conn-printer-status', 'component': 'conn-status' },
     {'id': 'conn-printer-status-msg'}
