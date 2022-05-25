@@ -13,14 +13,11 @@ const PreprocessingPlugin = require("./tools/preprocessing");
 const devServer = require("./tools/server");
 
 const DEFAULT_NAME = "Original Prusa 3D Printer";
-const BACKEND_URL = undefined;
-// const BACKEND_URL = "http://192.168.1.30:8080";
+const BACKEND_URL = process.env.BACKEND_URL;
 
 function withDefault(value, defaultValue) {
   return value === undefined ? defaultValue : value;
 }
-
-
 
 module.exports = (env, args) => {
   const buildLocales = env.locales;

@@ -45,6 +45,12 @@ npm run start:sl1
 
 ```
 
+## Custom backend (to try on real printer)
+
+```bash
+BACKEND_URL="http://192.168.1.100/" npm run start:mini
+```
+
 
 ## Translations
 
