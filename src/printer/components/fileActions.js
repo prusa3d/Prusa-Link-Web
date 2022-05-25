@@ -16,7 +16,7 @@ export const downloadFile = (file) => {
     return; // TODO: Consider showing error
 
   getFile(file.refs.download).then((url) => {
-    download(url, file.name || jobFile.name);
+    download(url, file.display || jobFile.display || file.name || jobFile.name);
   }).catch((result) => handleError(result))
 };
 
@@ -31,7 +31,7 @@ export const downloadFile = (file) => {
   doQuestion({
     title: translate("proj.del"),
     // TODO: add strong - Do you really want to delete <strong>${file.name}</strong>?
-    questionChildren: translate("msg.del-proj", { file_name: file.name }),
+    questionChildren: translate("msg.del-proj", { file_name: file.display || file.name }),
     yes: (close) => {
       getJson(file.refs.resource, { method: "DELETE" })
         .catch((result) => handleError(result))
