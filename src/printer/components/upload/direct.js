@@ -66,8 +66,8 @@ const uploadFile = (file, origin, path, print) => {
   setProgress(0);
   uploadRequest(url, data, {
     onProgress: (progress) => onProgressChanged(progress.percentage)
-  }).then(result => onUploadSuccess(file.name))
-    .catch(result => onUploadError(file.name, result))
+  }).then(result => onUploadSuccess(file.display || file.name))
+    .catch(result => onUploadError(file.display || file.name, result))
     .finally(() => reset());
 }
 
