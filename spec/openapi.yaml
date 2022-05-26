@@ -38,6 +38,21 @@ paths:
         401:
           $ref: "#/components/responses/Unauthorized"
 
+  /api/v1/files/{storage}/{path}:
+    get:
+      summary: file metadata
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FileInfo"
+        401:
+          $ref: "#/components/responses/Unauthorized"
+        404:
+          $ref: "#/components/responses/NotFound"
+
 components:
   schemas:
     Version:
@@ -67,6 +82,138 @@ components:
         - printer
         - text
         - firmware
+
+    FileInfo:
+      type: object
+      properties:
+        type:
+          type: string
+          description: File could be Print file, firmware or other (e.g. configuration file)
+          enum: ["PRINT", "FW", "OTHER"]
+        refs:
+          type: object
+          properties:
+            download:
+              type: string
+              example: "/api/files/local/Spice_Harvester_0.3mm_PLA_MK3S_42m.gcode/raw"
+            icon:
+              type: string
+              example: "/api/thumbnails/local/Spice_Harvester_0.3mm_PLA_MK3S_42m.gcode.small.png"
+            thumbnail:
+              type: string
+              example: "/api/thumbnails/local/Spice_Harvester_0.3mm_PLA_MK3S_42m.gcode.orig.png"
+        size:
+          type: integer
+          example: 424242
+        display_path:
+          type: string
+          example: "/PrusaLink gcodes/Dune"
+        display_name:
+          type: string
+          description: Long Filename
+          example: "Spice_Harvester_0.3mm_PLA_MK3S_12m.gcode"
+        creation_timestamp:
+          type: integer
+          description: Timestamp in seconds
+          example: 1648038843
+        ro:
+          type: boolean
+          example: False
+        metadata:
+          type: object
+          description: Print file metadata parsed from G-code, all data are optional
+          properties:
+            bed_temperature:
+              type: string
+              description: Degrees Celsius
+              example: "60"
+            nozzle_temperature:
+              type: string
+              description: Degrees Celsius
+              example: "215"
+            brim_width:
+              type: string
+              description: Milimeters
+              example: "0"
+            estimated printing time (normal mode):
+              type: string
+              example: "42m 42s"
+            faded_layers:
+              type: string
+              example: "42"
+            filament cost:
+              type: string
+              example: "0.57"
+            filament used [cm3]:
+              type: string
+              example: "12.44"
+            filament used [g]:
+              type: string
+              example: "15.79"
+            filament used [mm]:
+              type: string
+              example: "5170.06"
+            filament_type:
+              type: string
+              example: "PLA"
+            fill_density:
+              type: string
+              description: Percent
+              example: "20%"
+            initial_exposure_time:
+              type: string
+              description: Seconds
+              example: "5"
+            layer_height:
+              type: string
+              description: Milimeters
+              example: "0.3"
+            material_name:
+              type: string
+              example: "PLA Sandstorm Orange"
+            exposure_time:
+              type: string
+              description: Seconds
+              example: "2"
+            max_exposure_time:
+              type: string
+              description: Seconds
+              example: "3"
+            max_initial_exposure_time:
+              type: string
+              description: Seconds
+              example: "3"
+            min_exposure_time:
+              type: string
+              description: Seconds
+              example: "1"
+            min_initial_exposure_time:
+              type: string
+              description: Seconds
+              example: "1"
+            nozzle_diameter:
+              type: string
+              description: Milimeters
+              example: "0.4"
+            print_time:
+              type: integer
+              description: Seconds
+              example: "2562"
+            printer_model:
+              type: string
+              enum:  ["MK3", "MK3S", "MINI"]
+            support_material:
+              type: string
+              example: "PLA"
+            ironing:
+              type: string
+              example: "0"
+            required_resin_ml:
+              type: string
+              example: "123.4"
+            profile:
+              type: string
+              example: "ultra_fast"
 
     Info:
       type: object
