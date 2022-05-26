@@ -163,12 +163,12 @@ async function fetchUrl(url, opts = {}, accept, parse) {
  * @param {string} url
  * @param {object} opts
  */
-const getFileURL = (url, opts) =>
+const getFileURL = (url, opts, timestamp) =>
   new Promise((resolve, reject) => {
     const auth = sessionStorage.getItem("auth");
     if (auth == "true") {
       opts.headers = { ...opts.headers, ...getHeaders() };
-      fetch(url, opts).then((response) => {
+      fetch(timestamp ? `${url}?ct=${timestamp}` : url, opts).then((response) => {
         if (response.status == 401) {
           sessionStorage.setItem("auth", "false");
           reject(response);
@@ -188,7 +188,7 @@ const getFileURL = (url, opts) =>
  * Async function for fetch image
  * @param {string} url
  */
-const getImage = (url) => getFileURL(url, { headers: { "Content-Type": "image/png" } });
+const getImage = (url, timestamp) => getFileURL(url, { headers: { "Content-Type": "image/png" } }, timestamp);
 
 /**
  * Async function for fetch file

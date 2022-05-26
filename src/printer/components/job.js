@@ -68,7 +68,7 @@ export function selectFilePreview(filePreview) {
   filePreviewMetadata = getDefaultFilePreviewMetadata();
   filePreviewMetadata.file = filePreview;
   showLoading();
-  getThumbnailImgUrl(filePreview.refs?.thumbnailBig).then(url => {
+  getThumbnailImgUrl(filePreview.refs?.thumbnailBig, filePreview.date).then(url => {
     if (canEditFilePreviewMetadata(filePreview)) {
       filePreviewMetadata.thumbnail = {
         ready: true,
@@ -178,7 +178,7 @@ function reFetch(path) {
     if (!data.refs)
       console.warn("Missing refs for " + path);
 
-    getThumbnailImgUrl(data.refs?.thumbnailBig).then(url => {
+    getThumbnailImgUrl(data.refs?.thumbnailBig, data.date).then(url => {
       console.log("Ref to thumbnail: " + data.refs?.thumbnailBig);
       console.log("URL to thumbnail img: " + url);
       if (canEditMetadata(path)) {
@@ -267,12 +267,12 @@ function updateComponent(context, isFilePreview) {
   }
 }
 
-async function getThumbnailImgUrl(url) {
+async function getThumbnailImgUrl(url, timestamp) {
   if (!url)
     return null;
 
   try {
-    const imgUrl = await getImage(url);
+    const imgUrl = await getImage(url, timestamp);
     return imgUrl;
   } catch (e) {
     console.error("Error while getting image!");
