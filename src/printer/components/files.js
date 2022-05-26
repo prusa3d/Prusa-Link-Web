@@ -317,7 +317,7 @@ function createFile(node) {
   });
   if (node.refs && node.refs.thumbnailBig) {
     const img = elm.querySelector("img.node-img");
-    getImage(node.refs.thumbnailBig).then((url) => {
+    getImage(node.refs.thumbnailBig, node.date).then((url) => {
       img.src = url;
     });
   }
