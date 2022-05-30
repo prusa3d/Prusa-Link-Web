@@ -404,7 +404,7 @@ function setupButtons(context, jobResult, file, isFilePreview) {
     setupCancelButton(state, isFilePreview);
 
     if (file.ready) {
-      const fileUrl = file.refs.resource;
+      const fileUrl = file?.refs?.resource || joinPaths("api/files", file.data.origin, file.data.path);
       setupStartButton(state, fileUrl, isFilePreview);
       setupDeleteButton(jobState, file.data, isFilePreview);
       setupDownloadButton(jobState, file.data, isFilePreview);
