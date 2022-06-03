@@ -98,34 +98,42 @@
 %}
 
 <!-- prettier-ignore -->
-{%
-  set wrappers = {
-    'job-buttons-first': buttons_left,
-    'buttons-wrapper': buttons_right
-  }
-%}
-
-<!-- prettier-ignore -->
-{% for wrapperKey, current_buttons in wrappers %}
-  <div class="{{ wrapperKey }}">
-    {% for key, values in current_buttons %}
-      {% if not values.printerType or values.printerType == env.PRINTER_TYPE %}
-        <button id="{{ key }}" class="{{ values.class }}"
-          {% if values.hidden %}
-            hidden
-          {% endif %}
-          {% if values.disabled %}
-            disabled
-          {% endif %}
-        >
-          {% if values.icon %}
-            <img src="{{ pre.countOrRenderAssets(values.icon) | safe }}" />
-          {% endif %}
-          <p data-label="{{ values.label }}">
-            {{ values.text }}
-          </p>
-        </button>
+{% for key, values in buttons_left %}
+  {% if not values.printerType or values.printerType == env.PRINTER_TYPE %}
+    <button id="{{ key }}" class="{{ values.class }}"
+      {% if values.hidden %}
+        hidden
       {% endif %}
-    {% endfor %}
-  </div>
+      {% if values.disabled %}
+        disabled
+      {% endif %}
+    >
+      {% if values.icon %}
+        <img src="{{ pre.countOrRenderAssets(values.icon) | safe }}" />
+      {% endif %}
+      <p data-label="{{ values.label }}">
+        {{ values.text }}
+      </p>
+    </button>
+  {% endif %}
+{% endfor %}
+<div class="job-buttons-separator"></div>
+{% for key, values in buttons_right %}
+  {% if not values.printerType or values.printerType == env.PRINTER_TYPE %}
+    <button id="{{ key }}" class="{{ values.class }}"
+      {% if values.hidden %}
+        hidden
+      {% endif %}
+      {% if values.disabled %}
+        disabled
+      {% endif %}
+    >
+      {% if values.icon %}
+        <img src="{{ pre.countOrRenderAssets(values.icon) | safe }}" />
+      {% endif %}
+      <p data-label="{{ values.label }}">
+        {{ values.text }}
+      </p>
+    </button>
+  {% endif %}
 {% endfor %}
