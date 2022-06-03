@@ -216,7 +216,7 @@ function updatePrusaConnectStatus(data) {
   urlIn.value = urlString;
   setHidden(urlIn.parentNode.parentNode, isFinished);
 
-  updateConnectionStatus(statusElm, msgElm, ok, message, customMessage);
+  updateConnectionStatus(statusElm, msgElm, ok && isFinished, message, customMessage);
 }
 
 function updatePrinterStatus(data) {
