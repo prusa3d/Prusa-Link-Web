@@ -16,6 +16,7 @@
 
   <body>
     <div class="header txt-bold">
+      <div class="header__line"></div>
       <div class="content">
         <nav>
           <a class="navbar-burger" id="menu">
@@ -23,11 +24,13 @@
             <div></div>
             <div></div>
           </a>
-          <a href="/#dashboard" class="brand-logo">
-            <img
-              src="{{ pre.countOrRenderAssets('prusa-link-beta.svg') | safe }}"
-            />
-          </a>
+          <div class="logo-wrapper">
+            <a href="/#dashboard" class="brand-logo">
+              <img
+                src="{{ pre.countOrRenderAssets('prusa-link-beta.svg') | safe }}"
+              />
+            </a>
+          </div>
           <select id="lang-dropdown" data-type="dropdown"></select>
           {% include "components/menu.html" %}
         </nav>
