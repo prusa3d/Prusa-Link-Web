@@ -68,9 +68,7 @@ button > img {
   min-width: 36px;
   margin: 2px;
 }
-.content {
-  margin-left: auto;
-}
+
 button,
 input {
   font-family: inherit;
@@ -84,8 +82,15 @@ button::-moz-focus-inner {
   padding: 0;
 }
 .header {
-  border-bottom: 2px solid #707070;
-  border-radius: 0;
+  position: relative;
+}
+.header__line {
+  position: absolute;
+  bottom: 0; 
+  width: 100%;
+  height: 2px;
+  background-color: #707070;
+  z-index: 4;
 }
 .component > p,
 .line,
@@ -121,8 +126,9 @@ progress {
 
 .content {
   display: block;
-  margin-right: auto;
-  width: 92%;
+  margin: 0 auto;
+  max-width: 1280px;
+  padding: 0 40px;
 }
 
 body > .content {
@@ -139,9 +145,16 @@ body > .content {
 
 nav {
   display: flex;
-  align-items: center;
   flex-wrap: wrap;
   min-width: 685px;
+  align-items: stretch;
+}
+nav .logo-wrapper {
+  min-width: 240px;
+  display: flex;
+  align-self: flex-start;
+  padding: 4px 0 16px;
+  flex-grow: 1;
 }
 nav .brand-logo {
   order: 1;
@@ -159,7 +172,7 @@ nav > ul {
   order: 3;
   padding-left: 0;
   display: flex;
-  align-items: center;
+  align-items: stretch;
   flex-direction: column;
   flex-grow: 1;
   width: 100%;
@@ -174,6 +187,8 @@ nav > ul > li.active {
   border-bottom: 2px solid $orange;
 }
 nav > ul a {
+  display: flex;
+  align-items: center;
   list-style: none;
   text-decoration: none;
   width: 100%;
@@ -217,6 +232,8 @@ nav .burger-icon.burger-open {
 }
 #lang-dropdown {
   order: 2;
+  align-items: center;
+  display: flex;
 }
 
 /* ===================================== TELEMETRY ======================================= */
@@ -234,7 +251,7 @@ nav .burger-icon.burger-open {
 .tel-prop {
   display: flex;
   align-items: center;
-  padding: 12px 12px 12px 0;
+  padding: 12px 0;
   width: 45%;
 }
 .tel-prop > img {
@@ -1361,19 +1378,30 @@ $toast-success-title-color: $text-white;
 }
 
 .dropdown-content {
+  top: 90%;
   min-width: 100%;
   position: absolute;
   visibility: collapse;
-  z-index: 3;
+  z-index: 5;
 }
 
 .storage-select {
-  align-self: center;
+  display: flex;
+  align-items: stretch;
   text-transform: uppercase;
   position: relative;
   width: 100%;
   color: black;
 }
+.storage-select-left {
+  width: 0px;
+  border-bottom: 1px solid #d5d5d5;
+}
+.storage-select-right {
+  flex: 0 0 auto;
+  border-bottom: 1px solid #d5d5d5;
+}
+
 .storage-select .open {
   visibility: visible;
 }
@@ -1382,7 +1410,6 @@ $toast-success-title-color: $text-white;
 }
 .storage-select-content {
   background: white;
-  min-width: 100%;
   position: absolute;
   visibility: collapse;
   z-index: 3;
@@ -1391,6 +1418,7 @@ $toast-success-title-color: $text-white;
   margin: 0;
   border-radius: 6px;
   border: 1px solid #d5d5d5;
+  width: 100%;
 }
 .storage-select-content > li {
   display: flex;
@@ -1405,6 +1433,7 @@ $toast-success-title-color: $text-white;
 .storage-select-btn-inner {
   display: flex;
   align-items: center;
+  flex: 1 0 0;
 }
 .storage-select-btn {
   cursor: pointer;
@@ -1631,14 +1660,16 @@ input .autoresize {
     display: none;
   }
   .header {
-    padding: 16px 0 0;
+    padding: 0;
     position: sticky;
     top: 0;
     z-index: 3;
   }
-  .content {
-    width: 75%;
+  nav .logo-wrapper {
+
+    flex-grow: 0;
   }
+
   nav {
     flex-direction: inherit;
   }
@@ -1646,30 +1677,24 @@ input .autoresize {
     flex-wrap: nowrap;
     flex-direction: row;
     width: inherit;
-    padding: 0 0 0 32px;
+    padding: 0 0;
   }
   nav > ul > li {
+    position: relative;
+    z-index: 5;
+    margin-top: 4px;
     border-bottom: 2px solid #707070;
+  }
+  nav > ul > li a {
+    padding: 0 16px
   }
   nav > ul > li:hover {
     border-bottom: 2px solid #efefef;
   }
-  nav > ul a {
-    padding: 16px;
-  }
-  nav > ul > li {
-    border-bottom: 2px solid #707070;
-  }
   nav > ul > li:hover {
     border-bottom: 2px solid #efefef;
   }
-  nav > ul a {
-    padding: 16px;
-  }
-  nav > ul > li,
-  nav > ul .dropdown {
-    margin-bottom: -2px;
-  }
+
   nav .dropdown {
     padding: 0;
     align-self: unset !important;
@@ -1703,7 +1728,7 @@ input .autoresize {
   }
   #telemetry-wrapper {
     width: 20%;
-    min-width: 206px;
+    min-width: 256px;
   }
   .telemetry {
     flex-direction: column;
@@ -1875,8 +1900,9 @@ input .autoresize {
   }
   .storage-select {
     color: white;
-    border-bottom: 1px solid #bababa;
+    /* border-bottom: 1px solid #bababa; */
     border-radius: 0;
+  
   }
   .storage-select-btn {
     display: none;
@@ -1888,11 +1914,11 @@ input .autoresize {
     background: transparent;
     list-style: none;
     display: flex;
+    width: auto;
   }
   .storage-select-content > li {
     display: flex;
     align-items: center;
-    margin: 0 0 -1px 0;
     padding: 5px 30px 5px 5px;
     cursor: pointer;
     border: 1px solid transparent;
@@ -1909,7 +1935,10 @@ input .autoresize {
     border: 1px solid #bababa;
     border-bottom: 1px solid #0a0a0a;
   }
-  .storage-select-content > li:first-child {
-    margin-left: 10px;
+  .storage-select-left {
+    width: 10px;
+  }
+  .storage-select-right {
+    flex: 1 0 auto;
   }
 }
