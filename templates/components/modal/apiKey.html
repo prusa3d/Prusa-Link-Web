@@ -6,7 +6,7 @@
 #}
 
 <template id="modal-apiKey">
-  <div class="modal-apiKey txt-size-2">
+  <div class="modal-apiKey txt-md">
     <p data-label="msg.api-key-1" class="txt-bold">Welcome to the {{ env.APP_NAME }} web interface.</p>
     <p>
       <span data-label="msg.api-key-2" class="txt-bold">Please insert the API key.</span>
@@ -15,7 +15,7 @@
         You can find it in Settings -> Network -> Login credentials.
       </span>
     </p>
-    <input id="apiKey" class="txt-size-2 txt-grey" type="text" autofocus />
+    <input id="apiKey" class="txt-md txt-grey" type="text" autofocus />
     <button class="yes" id="login">
       <img src="{{ pre.countOrRenderAssets('yes_color.svg') | safe }}" />
       <p data-label="btn.login">Login</p>

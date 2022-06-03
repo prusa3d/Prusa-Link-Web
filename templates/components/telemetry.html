@@ -48,11 +48,11 @@
         <img class="icon" src="{{ pre.countOrRenderAssets('warning.svg') | safe }}" />
         <div class="value">
           <p
-            class="txt-size-2 txt-grey"
+            class="txt-sm txt-grey"
             data-label="{{ values.label }}"
           >{{ values.text }}</p>
           <p
-            class="txt-bold txt-size-2"
+            class="txt-bold txt-md"
             id="{{ values.id_msg }}"
           >NA</p>
         </div>
@@ -62,8 +62,8 @@
     <div class="tel-prop">
       <img class="icon" src="{{ pre.countOrRenderAssets('prusa-link-favicon.svg') | safe }}">
       <div class="value">
-        <p class="txt-size-3 txt-grey" data-label="home.title">Printer status</p>
-        <p id="printer-status" class="txt-bold txt-size-2">NA</p>
+        <p class="txt-sm txt-grey" data-label="home.title">Printer status</p>
+        <p id="printer-status" class="txt-bold txt-md">NA</p>
       </div>
     </div>
 
@@ -72,11 +72,11 @@
       <img class="icon" src="{{ pre.countOrRenderAssets(values.icon) | safe }}" />
       <div class="value">
         <p
-          class="txt-size-3 txt-grey"
+          class="txt-sm txt-grey"
           data-label="{{ values.label }}"
           >{{ values.text }}</p>
         {% if values.locations %}
-          <p class="txt-bold txt-size-2">
+          <p class="txt-bold txt-md">
             {% for location in values.locations %}
               <span
                 data-type="telemetry"
@@ -90,7 +90,7 @@
           </p>
         {% else %}
           <p
-            class="txt-bold txt-size-2"
+            class="txt-bold txt-md"
             data-type="telemetry"
             data-format="{{ values.format }}"
             data-where="{{ values.location }}"

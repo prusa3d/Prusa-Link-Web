@@ -4,16 +4,10 @@
 */
 
 /*  font size */
-$font-size-1-mobile: 2.5rem;
-$font-size-1-desktop: 1.15rem;
-$font-size-2-mobile: 1.8rem;
-$font-size-2-desktop: 1rem;
-$font-size-3-mobile: 1.5rem;
-$font-size-3-desktop: 0.75rem;
-$font-size-h1-mobile: 5rem;
-$font-size-h1-desktop: 2.5rem;
-$font-size-nav-mobile: 3rem;
-$font-size-nav-desktop: 1rem;
+$font-size-large: 1.25rem;
+$font-size-default: 1rem;
+$font-size-small: 0.75rem;
+
 $text-white: #efefef;
 $text-grey: #707070;
 $text-orange: #FA6831;
@@ -22,7 +16,7 @@ $text-black: #000000;
 
 html {
   line-height: 1.15;
-  font-size: 14pt;
+  font-size: 32pt;
   -webkit-text-size-adjust: 100%;
   font-family: "Atlas Grotesk Regular Web", Helvetica, sans-serif;
   color: $text-white;
@@ -63,26 +57,26 @@ select {
   color: $text-black !important;
 }
 
-.txt-size-1 {
-  font-size: $font-size-1-mobile;
+.txt-lg {
+  font-size: $font-size-large;
 }
 
-.txt-size-2 {
-  font-size: $font-size-2-mobile;
+.txt-md {
+  font-size: $font-size-default;
 }
 
-.txt-size-3 {
-  font-size: $font-size-3-mobile;
+.txt-sm {
+  font-size: $font-size-small;
 }
 
 .txt-size-h1 {
-  font-size: $font-size-h1-mobile;
+  font-size: $font-size-large;
 }
 
 button > p {
   font-family: "Atlas Grotesk Bold Web", Helvetica, sans-serif;
   font-weight: bold;
-  font-size: $font-size-2-mobile;
+  font-size: $font-size-default;
 }
 
 select {
@@ -91,26 +85,11 @@ select {
 }
 
 nav {
-  font-size: $font-size-nav-mobile;
+  font-size: $font-size-default;
 }
 
 @media only screen and (min-width: 992px) {
-  .txt-size-1 {
-    font-size: $font-size-1-desktop;
-  }
-  .txt-size-2 {
-    font-size: $font-size-2-desktop;
-  }
-  .txt-size-3 {
-    font-size: $font-size-3-desktop;
-  }
-  .txt-size-h1 {
-    font-size: $font-size-h1-desktop;
-  }
-  button > p {
-    font-size: $font-size-2-desktop;
-  }
-  nav {
-    font-size: $font-size-nav-desktop;
+  html {
+    font-size: 14pt;
   }
 }

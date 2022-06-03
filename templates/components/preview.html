@@ -73,7 +73,7 @@
   <p
     data-type="preview-job"
     data-where="job.file.display"
-    class="txt-bold txt-size-2"
+    class="txt-bold txt-md"
   ></p>
   <div class="preview-wrapper">
     <div class="preview-img">
@@ -94,14 +94,14 @@
         />
         {% for values in prop.data %}
         <div>
-          <p data-label="{{ values.label }}" class="txt-size-2 txt-grey">
+          <p data-label="{{ values.label }}" class="txt-md txt-grey">
             {{ values.text }}
           </p>
           <p
             data-format="{{ values.format }}"
             data-type="{{ values.type }}"
             data-where="{{ values.location }}"
-            class="txt-bold txt-size-2"
+            class="txt-bold txt-md"
           >
             NA
           </p>
