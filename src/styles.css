@@ -14,7 +14,7 @@ nav > ul a {
 .progress > p,
 #upld-direct p,
 nav > ul a {
-  text-align: center;
+  text-align: left;
 }
 
 /* ===================================== GLOBAL ======================================= */
@@ -709,29 +709,18 @@ nav .burger-icon.burger-open {
   display: flex;
   margin-top: 16px;
   flex-wrap: wrap;
-  justify-content: flex-end;
+  justify-content: flex-start;
 }
-.job-buttons-first {
-  display: flex;
-  flex-grow: 1;
-  justify-content: flex-end;
-  margin-bottom: 12px;
-  width: 100%;
+
+.job-buttons button{
+  margin: 0 12px 12px 0;
 }
-.job-buttons-first > button {
-  flex-grow: unset;
+
+.job-buttons:first-child button{
+  margin-left: 0px;
 }
-.buttons-wrapper {
-  display: flex;
-  justify-content: flex-end;
-  flex-grow: 1;
-}
-.job-buttons-first button {
-  margin-right: 12px;
-}
-.buttons-wrapper button {
-  margin-left: 12px;
-}
+
+
 button > p {
   width: 100%;
   margin: 6px;
@@ -1940,5 +1929,8 @@ input .autoresize {
   }
   .storage-select-right {
     flex: 1 0 auto;
+  }
+  .job-buttons-separator {
+    flex: 1 0 0;
   }
 }
