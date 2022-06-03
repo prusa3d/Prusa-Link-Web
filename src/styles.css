@@ -5,6 +5,10 @@
 
 $orange: #FA6831;
 
+$font-size-large: 1.25rem;
+$font-size-default: 1rem;
+$font-size-small: 0.75rem;
+
 /* ===================================== TEXT ======================================= */
 button,
 html,
@@ -25,6 +29,7 @@ html {
 }
 body {
   margin: 0;
+
 }
 body, body > .header{
   background-color: #0a0a0a;
@@ -485,7 +490,7 @@ nav .burger-icon.burger-open {
 }
 .temp-text {
   fill: #efefef;
-  font-size: 0.75rem;
+  font-size: 14pt;
   letter-spacing: normal;
   padding: 8px;
   stroke: transparent;
@@ -500,7 +505,7 @@ nav .burger-icon.burger-open {
 }
 .temp-label-x,
 .temp-label-y {
-  font-size: 0.75rem;
+  font-size: 14pt;
   fill: #efefef;
   text-anchor: middle;
   letter-spacing: normal;
@@ -532,7 +537,7 @@ nav .burger-icon.burger-open {
   stroke-linejoin: round;
 }
 .temp-line-text {
-  font-size: 1rem;
+  font-size: 14pt;
   padding: 5px;
   fill: #efefef;
   letter-spacing: normal;
@@ -1177,7 +1182,7 @@ button:disabled {
   position: fixed;
   right: 0;
   bottom: 0;
-  font-size: 1.15rem;
+  font-size: $font-size-large;
 }
 
 $toast-delay: 10s;
@@ -1829,7 +1834,7 @@ input .autoresize {
     border-radius: 0 4px 4px 0;
   }
   #prusa-toast {
-    font-size: 1rem;
+    font-size: $font-size-default;
   }
   .close-button {
     height: 20px;
@@ -1839,7 +1844,7 @@ input .autoresize {
     min-width: 20px;
   }
   #job .progress {
-    font-size: 1rem;
+    font-size: $font-size-default;
   }
   .node,
   .node-btn-list {

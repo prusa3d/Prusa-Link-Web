@@ -67,7 +67,7 @@ function showLogExceedSizeLimit() {
 }
 
 function createLi(innerHTML) {
-  return `<li class="txt-size-2>${innerHTML}</li>`;
+  return `<li class="txt-md>${innerHTML}</li>`;
 }
 
 const update = () => {

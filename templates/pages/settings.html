@@ -109,17 +109,17 @@
           id="{{section.id}}"
         {% endif %}
       >
-        <p class="txt-bold txt-white txt-size-3" data-label="{{section.label}}">{{section.text}}</p>
+        <p class="txt-bold txt-white txt-sm" data-label="{{section.label}}">{{section.text}}</p>
         <div class="table">
           {% for values in section.settings %}
             <div class="row">
 
-              <div class="col txt-size-3">
+              <div class="col txt-sm">
                 <p class="txt-bold txt-grey" data-label="{{values.label}}">{{ values.text }}</p>
               </div>
 
               {% if values.type != "btn-only" %}
-                <div class="col txt-size-2">
+                <div class="col txt-md">
                   {% if values.editable %}
                     {% if values.type == "dropdown" %}
                       <select data-type="dropdown"></select>
@@ -177,7 +177,7 @@
   {% if env.WITH_LOGS %}
     <div class="component">
       <ul class="logs">
-        <li data-label="logs.not-selected" class="txt-size-2">No log file is selected!</li>
+        <li data-label="logs.not-selected" class="txt-md">No log file is selected!</li>
       </ul>
     </div>
   {% endif %}

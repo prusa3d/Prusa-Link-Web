@@ -239,12 +239,12 @@ function updateSystemVersionProperties(data) {
       row.className = "row";
 
       const col_key = document.createElement("div");
-      col_key.className = "col txt-size-3";
+      col_key.className = "col txt-sm";
       col_key.innerHTML = `<p class="txt-bold txt-grey">${translateLabel(key)}</p>`;
       row.appendChild(col_key)
 
       const col_value = document.createElement("div");
-      col_value.className = "col txt-size-2";
+      col_value.className = "col txt-md";
       col_value.innerHTML = `<p>${value}</p>`;
       row.appendChild(col_value)
 

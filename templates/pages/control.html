@@ -77,7 +77,7 @@
     <div class="col">
       <p
         data-label="control.coordinates"
-        class="txt-bold txt-grey txt-size-2 title"
+        class="txt-bold txt-grey txt-md title"
       >
         printer coordinates
       </p>
@@ -86,7 +86,7 @@
           <div class="grid-item">
             <p
               data-label="{{ values.label }}"
-              class="txt-size-2"
+              class="txt-md"
             >
               {{ key }}
             </p>
@@ -96,7 +96,7 @@
               data-format="{{ values.format }}"
               data-type="{{ values.type }}"
               data-where="{{ values.location }}"
-              class="txt-size-2"
+              class="txt-md"
             >
               0 mm
             </p>
@@ -108,7 +108,7 @@
     <div class="col">
       <p
         data-label="control.stepper-motors"
-        class="txt-bold txt-grey txt-size-2 title"
+        class="txt-bold txt-grey txt-md title"
       >
         stepper motors
       </p>
@@ -125,7 +125,7 @@
       <div class="col" id="heated-bed-xy-move">
         <p
           data-label="control.heated-bed-move"
-          class="txt-bold txt-grey txt-size-2 txt-underline title"
+          class="txt-bold txt-grey txt-md txt-underline title"
         >
           heated bed X and Y move
         </p>
@@ -157,7 +157,7 @@
 
         <p
           data-label="control.move-step"
-          class="txt-bold txt-grey txt-size-2 title"
+          class="txt-bold txt-grey txt-md title"
         >
           move step [mm]
         </p>
@@ -173,7 +173,7 @@
       <div class="col" id="nozzle-z-move">
         <p
           data-label="control.nozzle-z-move"
-          class="txt-bold txt-grey txt-size-2 txt-underline title"
+          class="txt-bold txt-grey txt-md txt-underline title"
         >
           nozzle Z move
         </p>
@@ -198,7 +198,7 @@
     <div class="col">
       <p
         data-label="control.extruder"
-        class="txt-bold txt-grey txt-size-2 txt-underline title"
+        class="txt-bold txt-grey txt-md txt-underline title"
       >
         extruder
       </p>
@@ -215,7 +215,7 @@
       <div class="separator"></div>
       <p
         data-label="control.extrude-retract-step"
-        class="txt-bold txt-grey txt-size-2 title"
+        class="txt-bold txt-grey txt-md title"
       >
         extrude/retract step [mm]
       </p>
@@ -236,7 +236,7 @@
       <div class="col">
         <p
           data-label="{{ values.label }}"
-          class="txt-bold txt-grey txt-size-2 txt-underline title"
+          class="txt-bold txt-grey txt-md txt-underline title"
         >
           {{ key }}
         </p>
@@ -246,13 +246,13 @@
               data-format="{{ values.format }}"
               data-type="{{ values.type }}"
               data-where="{{ values.location }}"
-              class="txt-bold txt-size-2"
+              class="txt-bold txt-md"
             >
               {{ values.value }}
             </p>
           </div>
           <input type="text"
-            class="txt-bold txt-size-2"
+            class="txt-bold txt-md"
             data-action="{{ values.action }}"
           />
           <button class="action square">

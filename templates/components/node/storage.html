@@ -33,7 +33,7 @@
     <img class="icon" src="{{ pre.countOrRenderAssets('storage.svg') | safe }}"/>
     <p
       data-label="proj.storage"
-      class="txt-size-3 txt-uppercase"
+      class="txt-sm txt-uppercase"
     >
       Storage
     </p>
@@ -43,7 +43,7 @@
     <div class="storage-select-btn">
       <div class="storage-select-btn-inner">
         <img class="icon" src="{{ pre.countOrRenderAssets('micro_sd_card_light.svg') | safe }}" />
-        <p class="txt-size-2">Local</p>
+        <p class="txt-md">Local</p>
       </div>
       <img class="icon" src="{{ pre.countOrRenderAssets('dropdown_light.svg') | safe }}" />
     </div>
@@ -53,7 +53,7 @@
           <li data-location="{{ key }}" data-origin="{{ values.origin }}">
             <img class="icon pc-only" src="{{ pre.countOrRenderAssets(values.pc_icon) | safe }}"/>
             <img class="icon mobile-only" src="{{ pre.countOrRenderAssets(values.mobile_icon) | safe }}"/>
-            <p class="txt-size-2">{{ values.text }}</p>
+            <p class="txt-md">{{ values.text }}</p>
           </li>
         {% endif %}
       {% endfor %}
@@ -62,7 +62,7 @@
   </div>
 
   <div style="padding-bottom: 30px">
-    <div class="node-storage-space txt-size-3">
+    <div class="node-storage-space txt-sm">
       <div class="progress-bar" role="status">
         <div class="fill"></div>
         <p

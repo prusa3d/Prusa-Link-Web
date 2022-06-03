@@ -45,12 +45,12 @@
     <div class="node-img-box">
       <img class="node-img" src="{{ pre.countOrRenderAssets('thumbnail.svg') | safe }}" />
     </div>
-    <div class="node-wrapper txt-size-3">
+    <div class="node-wrapper txt-sm">
       <div class="node-header">
-        <p id="name" class="txt-size-2 txt-bold"></p>
+        <p id="name" class="txt-md txt-bold"></p>
         <div class="kebab kebab-responsive">
           <img class="kebab-menu icon" src="{{ pre.countOrRenderAssets('kebab_menu.svg') | safe }}" />
-          <ul class="txt-black txt-size-2">
+          <ul class="txt-black txt-md">
             {% for key, values in buttons %}
               {% if values.implemented %}
                 <li id="{{ key }}" data-label="{{ values.label }}" data-label-target="title" title="{{ values.text }}">
