@@ -32,19 +32,6 @@ function mount() {
   const node = document.importNode(template.content, true);
   document.getElementById("graph").appendChild(node);
   translateLabels("graph");
-
-  const onResize = () => {
-    const graph = document.getElementById("graph");
-    if (graph) {
-      const aspect = 300 / 550;
-      const rect = graph.getBoundingClientRect();
-      //graph.style.height = `${rect.width * aspect}px`;
-    } else {
-      window.removeEventListener("resize", onResize);
-    }
-  }
-  onResize();
-  window.addEventListener("resize", onResize);
 }
 
 export function render() {
