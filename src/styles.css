@@ -5,6 +5,7 @@
 
 $orange: #FA6831;
 
+$font-svg: 10.5pt; /* 14pt * 0.75 */
 $font-desktop-root: 14pt;
 $font-mobile-root: 32pt;
 $font-size-large: 1.25rem;
@@ -20,7 +21,7 @@ html {
   line-height: 1.15;
   font-size: $font-mobile-root;
   -webkit-text-size-adjust: 100%;
-  font-family: "Atlas Grotesk Regular Web", Helvetica, sans-serif;
+  font-family: Helvetica, sans-serif;
   color: $text-white;
 }
 
@@ -31,13 +32,12 @@ html {
 }
 
 select {
-  font-family: "Atlas Grotesk Bold Web", Helvetica, sans-serif;
+  font-family: Helvetica, sans-serif;
   font-weight: bold;
   color: $text-white;
 }
 
 .txt-bold {
-  font-family: "Atlas Grotesk Bold Web", Helvetica, sans-serif;
   font-weight: bold;
 }
 
@@ -45,7 +45,7 @@ select {
   font-style: italic;
 }
 
-.txt-uppercase {
+.uppercase {
   text-transform: uppercase;
 }
 
@@ -77,19 +77,10 @@ select {
   font-size: $font-size-small;
 }
 
-.txt-size-h1 {
-  font-size: $font-size-large;
-}
-
 button > p {
-  font-family: "Atlas Grotesk Bold Web", Helvetica, sans-serif;
+  font-family: Helvetica, sans-serif;
   font-weight: bold;
   font-size: $font-size-default;
-}
-
-select {
-  font-family: "Atlas Grotesk Bold Web", Helvetica, sans-serif;
-  font-weight: bold;
 }
 
 nav {
@@ -148,12 +139,12 @@ p {
   width: 48px;
   height: 48px;
   min-width: 48px;
-  padding: 2px;
 }
 .icon-small {
   width: 32px;
   height: 32px;
   min-width: 32px;
+  margin-right: 4px;
 }
 button > img {
   width: 36px;
@@ -229,7 +220,6 @@ body > .content {
 }
 
 .component > p {
-  width: 100%;
   display: flex;
   margin: 0;
 }
@@ -430,13 +420,13 @@ nav .burger-icon.burger-open {
   flex-grow: 1;
   flex-wrap: wrap;
   padding-top: 64px;
-  line-height: 1.5;
+  line-height: 1.0;
 }
-.component,
-#upld,
-#node-storage {
-  width: 100%;
+
+.component-fixed {
+  flex: 0 0 auto;
 }
+
 .new-component-header {
   display:flex;
   align-items: center;
@@ -448,19 +438,33 @@ nav .burger-icon.burger-open {
   top: 50%;
   transform: translate(-50%, -50%);
 }
+
+#upld a {
+  text-decoration: underline;
+}
+#upld a:hover {
+  text-decoration: none;
+}
+#upld .form-row {
+  margin-bottom: 24px;
+}
+#upld .form-submit {
+  display: flex;
+  align-items: center;
+}
 #upld .upld-source {
   display:flex;
-  align-items: center;
+  align-items: end;
   flex-wrap: wrap;
-  margin-bottom: 20px;
+  margin-bottom: 24px;
 }
 #upld .state-choose-checkbox{
-  margin-top: 10px;
+  flex: 1 1 0;
 }
 #upld-direct-frame {
   position: relative;
   border: 2px dashed white;
-  padding: 40px 0;
+  padding: 24px;
 }
 #upld-direct-frame div {
   display: flex;
@@ -497,9 +501,6 @@ nav .burger-icon.burger-open {
 }
 #upld-direct[data-state="uploading"] .state-uploading {
   display: block;
-}
-#upld-remote button {
-  margin-left: auto;
 }
 #upld-remote input[type="text"] {
   width: 100%;
@@ -539,10 +540,10 @@ nav .burger-icon.burger-open {
 
 #graph {
   position: relative;
+  width: 520px;
 }
 .temp-svg {
   pointer-events: all;
-  position: absolute;
   inset: 0 2.5%;
 }
 .temp-g-label {
@@ -578,7 +579,7 @@ nav .burger-icon.burger-open {
 }
 .temp-text {
   fill: #efefef;
-  font-size: $font-desktop-root;
+  font-size: $font-svg;
   letter-spacing: normal;
   padding: 8px;
   stroke: transparent;
@@ -593,7 +594,7 @@ nav .burger-icon.burger-open {
 }
 .temp-label-x,
 .temp-label-y {
-  font-size: $font-desktop-root;
+  font-size: $font-svg;
   fill: #efefef;
   text-anchor: middle;
   letter-spacing: normal;
@@ -625,7 +626,7 @@ nav .burger-icon.burger-open {
   stroke-linejoin: round;
 }
 .temp-line-text {
-  font-size: $font-desktop-root;
+  font-size: $font-svg;
   padding: 5px;
   fill: #efefef;
   letter-spacing: normal;
@@ -868,7 +869,6 @@ button:disabled {
   border-style: solid;
   background-color: transparent;
   border-color: white;
-  border-radius: 2px;
 }
 .outlined:hover {
   background-color: white;
@@ -1822,10 +1822,10 @@ input .autoresize {
     flex-direction: row;
   }
   .home-row > div:not(:first-child) {
-    padding-left: 8px;
+    padding-left: 12px;
   }
   .home-row > div:first-child {
-    padding-right: 8px;
+    padding-right: 12px;
   }
   .content-wrapper,
   #title {
@@ -1844,9 +1844,9 @@ input .autoresize {
     min-width: 24px;
   }
   .icon-small {
-    width: 16px;
-    height: 16px;
-    min-width: 16px;
+    width: 20px;
+    height: 20px;
+    min-width: 20px;
   }
   button {
     border-radius: 4px;

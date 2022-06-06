@@ -47,62 +47,67 @@
 
 <div id="upld-remote" data-state="choose">
   <div class="state-choose">
-    <p data-label="upld.remote.source" class="txt-grey">Source URL</p>
-    <input
-      id="remote-url"
-      class="txt-md"
-      type="text"
-      placeholder="http://"
-    />
-    {% if env.PRINTER_TYPE == "fdm" %}
-      <p
-        class="txt-grey txt-italic"
-        data-label="upld.remote.hint-fdm"
-      >
-        Type URL of G-CODE file
-      </p>
-    {% else %}
-      <p
-        class="txt-grey txt-italic"
-        data-label="upld.remote.hint-sla"
-      >
-        Type URL of compatible file
-      </p>
-    {% endif %}
-
-    <p data-label="upld.remote.file" class="txt-grey" style="margin-top: 10px;">File name</p>
-    <input
-      id="remote-file-name"
-      class="txt-md"
-      type="text"
-    />
-    <p
-      class="txt-grey txt-italic"
-      data-label="upld.remote.file-hint"
-    >
-      Type or edit file name
-    </p>
-
-    <button id="upld-proj" class="outlined">
-      <p
-        class="txt-uppercase"
-        data-label="btn.upld-proj"
-      >
-        UPLOAD FILE
-      </p>
-    </button>
-
-    {% if env.WITH_START_PRINT_AFTER_UPLOAD %}
-      <div class="state-choose-checkbox">
-        <input type="checkbox" id="upld-remote-start-pt" />
-        <label
-          data-label="upld.start-pt"
-          for="upld-remote-start-pt"
+    <div class="form-row">
+      <p data-label="upld.remote.source" class="txt-grey">Source URL</p>
+      <input
+        id="remote-url"
+        class="txt-md"
+        type="text"
+        placeholder="http://"
+      />
+      {% if env.PRINTER_TYPE == "fdm" %}
+        <p
+          class="txt-grey txt-italic txt-sm"
+          data-label="upld.remote.hint-fdm"
         >
-          start print after transfer
-        </label>
-      </div>
-    {% endif %}
+          Type URL of G-CODE file
+        </p>
+      {% else %}
+        <p
+          class="txt-grey txt-italic txt-sm"
+          data-label="upld.remote.hint-sla"
+        >
+          Type URL of compatible file
+        </p>
+      {% endif %}
+    </div>
+    <div class="form-row">
+      <p data-label="upld.remote.file" class="txt-grey" style="margin-top: 10px;">File name</p>
+      <input
+        id="remote-file-name"
+        class="txt-md"
+        type="text"
+      />
+      <p
+        class="txt-grey txt-italic"
+        data-label="upld.remote.file-hint"
+      >
+        Type or edit file name
+      </p>
+    </div>
+
+    <div class="form-submit">
+      {% if env.WITH_START_PRINT_AFTER_UPLOAD %}
+        <div class="state-choose-checkbox">
+          <input type="checkbox" id="upld-remote-start-pt" />
+          <label
+            data-label="upld.start-pt"
+            for="upld-remote-start-pt"
+          >
+            Start print after transfer
+          </label>
+        </div>
+      {% endif %}
+
+      <button id="upld-file" class="outlined">
+        <p
+          class="uppercase"
+          data-label="btn.upld-file"
+        >
+          UPLOAD FILE
+        </p>
+      </button>
+    </div>
   </div>
 
   <div class="state-uploading">

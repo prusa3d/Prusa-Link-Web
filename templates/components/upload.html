@@ -17,24 +17,24 @@
 <div id="upld" class="txt-sm">
   <div class="upld-source">
     <img class="icon icon-small" src="{{ pre.countOrRenderAssets('upload_arrow.svg') | safe }}"/>
-    <p class="txt-bold txt-uppercase" data-label="proj.add-from.title">Add file from</p>
+    <p class="txt-bold" data-label="proj.add-from.title">Add file from</p>
     <span>&nbsp;</span>
     <ul class="node-upload-source">
       {% if env.WITH_REMOTE_UPLOAD %}
         {% for key, values in sources %}
-          <li class="txt-bold txt-uppercase">
+          <li class="txt-bold">
             <a data-tab-btn="{{ key }}" data-label="{{ values.label }}">{{ values.text }}</a>
           </li>
         {% endfor %}
       {% else %}
-      <li class="txt-bold txt-uppercase">
+      <li class="txt-bold uppercase">
         <span data-label="proj.add-from.local">Local storage</span>
       </li>
       {% endif %}
     </ul>
   </div>
 
-  <div style="margin-left: 20px;">
+  <div>
     {% for key, values in sources %}
       <div data-tab="{{ key }}">
         {% include values.component %}

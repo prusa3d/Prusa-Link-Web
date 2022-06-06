@@ -128,9 +128,9 @@
     }
   },
   "printer": {
-    "location": "printer location",
-    "name": "printer name",
-    "title": "printer"
+    "location": "Printer location",
+    "name": "Printer name",
+    "title": "Printer"
   },
   "proj": {
     "add-from": {
@@ -246,8 +246,8 @@
       "file-hint": "Type file name",
       "title": "Remote url"
     },
-    "start-pt": "start print after transfer",
-    "title": "upload file"
+    "start-pt": "Start print after transfer",
+    "title": "Upload file"
   },
   "user": {
     "new-password": "new password",

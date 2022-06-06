@@ -21,7 +21,7 @@
     "sla-refill": "Doplnit resin",
     "sla-refilled": "Resin doplněn",
     "start-pt": "Start tisku",
-    "upld-proj": "Nahrát soubor",
+    "upld-file": "Nahrát soubor",
     "yes": "Ano"
   },
   "conn": {
@@ -130,7 +130,7 @@
   "printer": {
     "location": "umístění tiskárny",
     "name": "název tiskárny",
-    "title": "tiskárna"
+    "title": "Tiskárna"
   },
   "proj": {
     "add-from": {

@@ -101,7 +101,7 @@
 <!-- prettier-ignore -->
 {% include "components/title_default.html" %}
 
-<div class="main-wrapper center" id="settings">
+<div class="main-wrapper" id="settings">
   {% for section in settings %}
     {% if not "condition" in section or section.condition %}
       <div class="component"
