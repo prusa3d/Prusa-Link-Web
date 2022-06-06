@@ -38,7 +38,7 @@ function mount() {
     if (graph) {
       const aspect = 300 / 550;
       const rect = graph.getBoundingClientRect();
-      graph.style.height = `${rect.width * aspect}px`;
+      //graph.style.height = `${rect.width * aspect}px`;
     } else {
       window.removeEventListener("resize", onResize);
     }

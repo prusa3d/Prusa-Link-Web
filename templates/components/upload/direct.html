@@ -6,12 +6,12 @@
 #}
 
 <div id="upld-direct" data-state="choose">
-  <div id="upld-direct-frame">
+  <div id="upld-direct-frame" class="form-row">
     <input type="file"/>
 
     <div class="state-choose">
       <img
-        class="icon"
+        class="icon icon-small"
         src="{{ pre.countOrRenderAssets('upload_arrow_alt.svg') | safe }}"
       />
       <p>Click to choose a *.sl1 file or drag it here</p>
@@ -32,7 +32,7 @@
       data-label="upld.start-pt"
       for="upld-direct-start-pt"
     >
-      start print after transfer
+      Start print after transfer
     </label>
   </div>
   {% endif %}

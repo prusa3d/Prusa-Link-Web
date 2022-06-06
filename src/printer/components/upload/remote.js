@@ -18,7 +18,7 @@ function init(origin, path) {
   if (elm) {
     const urlInput = elm.querySelector("#remote-url");
     const nameInput = elm.querySelector("#remote-file-name");
-    const uploadBtn = elm.querySelector("#upld-proj");
+    const uploadBtn = elm.querySelector("#upld-file");
     const startPtCheckbox = elm.querySelector("#upld-remote-start-pt");
 
     uploadBtn.onclick = () => startUpload(
