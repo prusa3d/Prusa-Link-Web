@@ -5,9 +5,97 @@
 
 $orange: #FA6831;
 
+$font-desktop-root: 14pt;
+$font-mobile-root: 32pt;
 $font-size-large: 1.25rem;
 $font-size-default: 1rem;
 $font-size-small: 0.75rem;
+
+$text-white: #efefef;
+$text-grey: #707070;
+$text-orange: #FA6831;
+$text-black: #000000;
+
+html {
+  line-height: 1.15;
+  font-size: $font-mobile-root;
+  -webkit-text-size-adjust: 100%;
+  font-family: "Atlas Grotesk Regular Web", Helvetica, sans-serif;
+  color: $text-white;
+}
+
+@media only screen and (min-width: 992px) {
+  html {
+    font-size: $font-desktop-root;
+  }
+}
+
+select {
+  font-family: "Atlas Grotesk Bold Web", Helvetica, sans-serif;
+  font-weight: bold;
+  color: $text-white;
+}
+
+.txt-bold {
+  font-family: "Atlas Grotesk Bold Web", Helvetica, sans-serif;
+  font-weight: bold;
+}
+
+.txt-italic {
+  font-style: italic;
+}
+
+.txt-uppercase {
+  text-transform: uppercase;
+}
+
+.txt-orange {
+  color: $text-orange;
+}
+
+.txt-grey {
+  color: $text-grey;
+}
+
+.txt-white {
+  color: $text-white !important;
+}
+
+.txt-black {
+  color: $text-black !important;
+}
+
+.txt-lg {
+  font-size: $font-size-large;
+}
+
+.txt-md {
+  font-size: $font-size-default;
+}
+
+.txt-sm {
+  font-size: $font-size-small;
+}
+
+.txt-size-h1 {
+  font-size: $font-size-large;
+}
+
+button > p {
+  font-family: "Atlas Grotesk Bold Web", Helvetica, sans-serif;
+  font-weight: bold;
+  font-size: $font-size-default;
+}
+
+select {
+  font-family: "Atlas Grotesk Bold Web", Helvetica, sans-serif;
+  font-weight: bold;
+}
+
+nav {
+  font-size: $font-size-default;
+}
+
 
 /* ===================================== TEXT ======================================= */
 button,
@@ -490,7 +578,7 @@ nav .burger-icon.burger-open {
 }
 .temp-text {
   fill: #efefef;
-  font-size: 14pt;
+  font-size: $font-desktop-root;
   letter-spacing: normal;
   padding: 8px;
   stroke: transparent;
@@ -505,7 +593,7 @@ nav .burger-icon.burger-open {
 }
 .temp-label-x,
 .temp-label-y {
-  font-size: 14pt;
+  font-size: $font-desktop-root;
   fill: #efefef;
   text-anchor: middle;
   letter-spacing: normal;
@@ -537,7 +625,7 @@ nav .burger-icon.burger-open {
   stroke-linejoin: round;
 }
 .temp-line-text {
-  font-size: 14pt;
+  font-size: $font-desktop-root;
   padding: 5px;
   fill: #efefef;
   letter-spacing: normal;
