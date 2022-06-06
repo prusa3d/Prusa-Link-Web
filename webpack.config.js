@@ -50,7 +50,6 @@ module.exports = (env, args) => {
     WITH_SERIAL: withDefault(env["WITH_SERIAL"], true),
     WITH_CONNECTION: withDefault(env["WITH_CONNECTION"], true),
     WITH_LOGS: env["WITH_LOGS"] || false,
-    WITH_FONT: env["WITH_FONT"] || false,
     WITH_EMBEDDED_SVGS: env["WITH_EMBEDDED_SVGS"] || false,
     WITH_COMMAND_SELECT: withDefault(env["WITH_COMMAND_SELECT"], true),
     WITH_V1_API: withDefault(env["WITH_V1_API"], false),
