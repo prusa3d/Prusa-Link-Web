@@ -26,11 +26,11 @@
   },
   "conn": {
     "err-conn": "Cannot connect to the printer",
-    "printer-status" : "3D printer connection status",
-    "prusa-connect-status": "PRUSA CONNECT connection status",
-    "prusa-connect-url": "PRUSA CONNECT address",
+    "printer-status" : "3D Printer Connection Status",
+    "prusa-connect-status": "PRUSA CONNECT Status",
+    "prusa-connect-url": "PRUSA CONNECT Address",
     "suc": "Successfully connected",
-    "title": "connection",
+    "title": "Connection",
     "unsuc": "Connection failed"
   },
   "control": {
@@ -39,19 +39,19 @@
       "y": "Y axis",
       "z": "Z axis"
     },
-    "coordinates": "printer coordinates",
-    "extrude-retract-step": "extrude/retract step [mm]",
-    "extruder": "extruder",
-    "flow": "flow",
-    "heated-bed-move": "heated bed x and y move",
-    "heated-bed-temp": "heated bed temperature",
+    "coordinates": "Printer Coordinates",
+    "extrude-retract-step": "Extrude/Retract Step [mm]",
+    "extruder": "Extruder",
+    "flow": "Flow",
+    "heated-bed-move": "Heated Bed X and Y Move",
+    "heated-bed-temp": "Heated Bed Temperature",
     "link": "Control",
-    "move-step": "move step [mm]",
-    "nozzle-temp": "nozzle temperature",
-    "nozzle-z-move": "nozzle z move",
-    "speed": "speed",
-    "stepper-motors": "stepper motors",
-    "title": "Printer control"
+    "move-step": "Move Step [mm]",
+    "nozzle-temp": "Nozzle Temperature",
+    "nozzle-z-move": "Nozzle Z Move",
+    "speed": "Speed",
+    "stepper-motors": "Stepper Motors",
+    "title": "Printer Control"
   },
   "download": {
     "start-pt": "Autostart",
@@ -71,7 +71,7 @@
     "title": "Print Settings"
   },
   "glob": {
-    "hd-st": "hardware state",
+    "hd-st": "Hardware state",
     "hostname": "Hostname"
   },
   "home": {
@@ -82,9 +82,9 @@
     "empty-file": "Log file is empty!",
     "file-too-large": "Log files of size larger than {{size}} are available only for downloading.",
     "not-selected": "No log file is selected!",
-    "select-file": "select file",
+    "select-file": "Select File",
     "select-file-placeholder": "Select log file",
-    "title": "logs"
+    "title": "Logs"
   },
   "msg": {
     "api-key-1": "Welcome to the Prusa Link Web web interface.",
@@ -157,7 +157,6 @@
     "d+": "D+",
     "est-end": "Estimated end",
     "est-pnt-time": "Est. Printing Time",
-    "exp-time": "exposure time",
     "exp-times": "Exposure times",
     "false": "No",
     "fan-blower": "Blower fan",
@@ -166,7 +165,7 @@
     "fdm-sensor": "Filament sensor",
     "flow": "Printing Flow",
     "last-mod": "Last Modified",
-    "layer-1st": "first layer",
+    "layer-1st": "First layer",
     "layer-ht": "Layer Height",
     "layers": "Layers",
     "current-layer": "Current layer",
@@ -201,18 +200,17 @@
     "z-height": "Z-Height"
   },
   "serial": {
-    "title": "serial number",
-    "label": "serial number"
+    "label": "Serial Number"
   },
   "settings": {
     "title": "Settings"
   },
   "sys-version": {
-    "description": "description",
+    "description": "Description",
     "id": "ID",
     "os": "OS",
-    "python": "python",
-    "title": "system version"
+    "python": "Python",
+    "title": "System Version"
   },
   "temps": {
     "title": "Temperatures",
@@ -250,20 +248,20 @@
     "title": "Upload file"
   },
   "user": {
-    "new-password": "new password",
-    "password": "password",
-    "re-password": "repeat password",
-    "title": "user",
-    "username": "username"
+    "new-password": "New Password",
+    "password": "Password",
+    "re-password": "Repeat Password",
+    "title": "User",
+    "username": "User Name"
   },
   "version": {
-    "api": "api",
-    "fe": "frontend",
-    "firmware": "firmware",
-    "hostname": "hostname",
-    "sdk": "sdk",
-    "server": "server",
-    "text": "text",
-    "title": "version"
+    "api": "API",
+    "fe": "Frontend",
+    "firmware": "Firmware",
+    "hostname": "Hostname",
+    "sdk": "SDK",
+    "server": "Server",
+    "text": "Text",
+    "title": "Version"
   }
 }
