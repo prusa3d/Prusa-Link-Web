@@ -87,6 +87,18 @@ nav {
   font-size: $font-size-default;
 }
 
+.flex-row {
+  display: flex;
+}
+
+.flex-col {
+  display: flex;
+  flex-direction: column;
+}
+
+.mr-md {
+  margin-right: 12px;
+}
 
 /* ===================================== TEXT ======================================= */
 button,
@@ -1691,9 +1703,6 @@ input .autoresize {
 #settings .col:nth-child(3) {
   width: 70%;
   margin-left: 30%;
-}
-#settings .col .buttons-wrapper {
-  justify-content: flex-start;
 }
 #settings .col:nth-child(1), #settings .col:nth-child(2) {
   padding-right: 15px;
