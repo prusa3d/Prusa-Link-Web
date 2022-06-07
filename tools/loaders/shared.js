@@ -5,7 +5,6 @@
 const colors = require("colors");
 const fs = require("fs");
 const path = require("path");
-const getNestedValue = require("../../src/helpers/get_nested_value");
 
 const output_file = path.resolve(__dirname, "../../src/locales/locales.json");
 const source_dir = path.resolve(__dirname, "../../src/locales/source");
@@ -85,7 +84,7 @@ function saveWords(words) {
         // printer["button"]["cancel"]
         let translations = languages.map((lang) => {
           const file = require(path.resolve(source_dir, `${lang}.json`));
-          const translation = getNestedValue(file, word);
+          const translation = file[word];
           if (translation === undefined)
             missing.push(lang);
           return translation;
