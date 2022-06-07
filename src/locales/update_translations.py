@@ -9,7 +9,8 @@ languages = [
     ("es","es_ES"),
     ("fr","fr_FR"),
     ("it","it_IT"),
-    ("pl","pl_PL")
+    ("pl","pl_PL"),
+    ("kr","kr_KR")
 ]
 new_file = dict()
 for language in languages:
