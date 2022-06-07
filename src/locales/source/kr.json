@@ -1,0 +1,269 @@
+{
+  "btn": {
+    "back": "뒤로",
+    "cancel": "취소",
+    "cancel-pt": "출력을 취소하기",
+    "chg": "교체",
+    "chg-exp": "프린트 세팅",
+    "confirm": "결정",
+    "continue": "계속",
+    "del": "삭제",
+    "disable-steppers": "모터동작 정지",
+    "download": "다운로드",
+    "extrude": "압출",
+    "login": "로그인",
+    "no": "아니오",
+    "pause-pt": "출력멈춤",
+    "resume-pt": "출력복구",
+    "retract": "철회",
+    "save-chgs": "변경내용을 저장하기",
+    "set": "Set",
+    "sla-refill": "레진 보충하기",
+    "sla-refilled": "레진 보충됨",
+    "start-pt": "출력 시작",
+    "upld-file": "파일 업로드",
+    "yes": "예"
+  },
+  "conn": {
+    "err-conn": "프린터에 연결할 수 없음",
+    "printer-status" : "3D프린터 연결상태",
+    "prusa-connect-status": "프루사 커넥트 연결 상태",
+    "prusa-connect-url": "프루사 커넥트 주소",
+    "suc": "성공적으로 연결됨",
+    "title": "연결",
+    "unsuc": "연결 실패"
+  },
+  "control": {
+    "axis": {
+      "x": "X축",
+      "y": "Y축",
+      "z": "Z축"
+    },
+    "coordinates": "프린터 좌표",
+    "extrude-retract-step": "[mm] 스텝 압출/철회",
+    "extruder": "익스트루더",
+    "flow": "흐름",
+    "heated-bed-move": "히트베드 x 및 y 이동",
+    "heated-bed-temp": "히트베드 온도",
+    "link": "제어",
+    "move-step": "[mm] 스텝 이동",
+    "nozzle-temp": "노즐 온도",
+    "nozzle-z-move": "노즐 Z 이동",
+    "speed": "속도",
+    "stepper-motors": "스텝 모터",
+    "title": "프린터 제어"
+  },
+  "download": {
+    "start-pt": "자동 시작",
+    "dl-started": "다운로드 시작"
+  },
+  "error": {
+    "401-title": "로그인 실패"
+  },
+  "exp-times": {
+    "exp-time": "[s] 노출",
+    "faster": "빠르게",
+    "inc": "[s] 노출 시간 증가",
+    "layer-1st": "[s] 첫 레이어 노출",
+    "profile": "출력 프로필",
+    "slower": "느리게",
+    "high-viscosity": "고점도",
+    "title": "출력 설정"
+  },
+  "glob": {
+    "hd-st": "기계 상태",
+    "hostname": "호스트이름"
+  },
+  "home": {
+    "link": "대시보드",
+    "title": "프린터 상태"
+  },
+  "logs": {
+    "empty-file": "로그파일이 비어있음!",
+    "file-too-large": "로그 파일을 다운로드 하기 위해서는 최소 {{size}} 이상의 용량이 필요합니다.",
+    "not-selected": "로그 파일이 선택되지 않았습니다!",
+    "select-file": "파일 선택",
+    "select-file-placeholder": "로그 파일 선택",
+    "title": "로그"
+  },
+  "msg": {
+    "api-key-1": "프루사 커넥트 웹 웹인터페이스에 오신 것을 환영합니다.",
+    "api-key-2": "API키를 입력하십시오.",
+    "api-key-3": "설정 -> 네트워크 -> 프루사링크에서 찾을 수 있습니다.",
+    "cancel": "출력을 취소하겠습니까?",
+    "del-proj": "{{file_name}}을 정말로 삭제하겠습니까?",
+    "e-401-1": "프린터가 HTTP digest security로 설정됨.",
+    "e-401-2": "정확한 자격내용을 입력하십시오.",
+    "e-401-3": "설정 -> 네트워크 -> 프루사링크에서 찾을 수 있습니다.",
+    "modal-p1": "당신의 웹 인터페이스에 오신 것을 환영합니다.",
+    "modal-p2": "Please note that values are shown only when the printer is printing.",
+    "modal-p3": "ORIGINAL PRUSA 3D PRINTER",
+    "sla-pour-resin": "Pour enough resin for selected file into the tank and close the lid. Minimal amount of the resin is displayed on the touchscreen.",
+    "sla-refill": "Refill the tank to 100 % and close the lid."
+  },
+  "ntf": {
+    "actn-pending": "Action will be executed after layer finish.",
+    "e-307": "Resin measuring failed!",
+    "error": "Error",
+    "n-calibrated": "Printer is not calibrated!",
+    "not-idle": "Printer is not idle!",
+    "settings-suc": "Settings was changed successfully.",
+    "start-print": "The printer is getting ready.",
+    "success": "The request was successful",
+    "upld-exists": "The file {{file_name}} already exists.",
+    "upld-not-sup": "The file {{file_name}} is not supported.",
+    "upld-suc": "The file {{file_name}} was uploaded successfully.",
+    "upld-unsuc": "The file {{file_name}} upload was unsuccessful.",
+    "upld-start": "Upload request has been accepted"
+  },
+  "print": {
+    "fdm": {
+      "1": "Is the printer ready?",
+      "2": "Is printing sheet empty and clean?"
+    },
+    "sla": {
+      "1": "You are about to start a remote print using the web UI. Please, make sure your 3D printer is set up correctly and ready for the print.",
+      "2": "The printing platform is clean and installed in the printer",
+      "3": "A sufficient amount of resin is in the tank"
+    }
+  },
+  "printer": {
+    "location": "Printer location",
+    "name": "Printer name",
+    "title": "Printer"
+  },
+  "proj": {
+    "add-from": {
+      "local": "Local storage",
+      "remote": "Remote url",
+      "title": "Add file from"
+    },
+    "del": "Delete",
+    "download": "Download",
+    "details": "File details",
+    "link": "Storage",
+    "main": "Main",
+    "rename": "Rename",
+    "start": "Start print",
+    "storage": "Storage",
+    "title": "Files",
+    "up-folder": "parent folder"
+  },
+  "prop": {
+    "at": "at",
+    "cover": "Cover state",
+    "cover-closed": "Closed",
+    "cover-opened": "Opened",
+    "d+": "D+",
+    "est-end": "Estimated end",
+    "est-pnt-time": "Est. Printing Time",
+    "exp-time": "exposure time",
+    "exp-times": "Exposure times",
+    "false": "No",
+    "fan-blower": "Blower fan",
+    "fan-led": "UV LED fan",
+    "fan-rear": "Rear fan",
+    "fdm-sensor": "Filament sensor",
+    "flow": "Printing Flow",
+    "last-mod": "Last Modified",
+    "layer-1st": "first layer",
+    "layer-ht": "Layer Height",
+    "layers": "Layers",
+    "current-layer": "Current layer",
+    "less-than": "Less than a minute",
+    "material": "Material",
+    "na": "NA",
+    "pnt-time": "Printing time",
+    "progress": "Progress",
+    "rem-time": "Remaining time",
+    "size": "File size",
+    "sla-csm-mt": "Consumed resin",
+    "sla-rmn-mt": "Remaining resin",
+    "speed": "Printing Speed",
+    "st-idle": "Idle",
+    "st-paused": "Paused",
+    "st-pausing": "Pausing",
+    "st-printing": "Printing",
+    "st-busy": "Busy",
+    "st-feedme": "Refill resin",
+    "st-pour-resin": "Pour in resin",
+    "storage-space": "{{free}} of {{total}} free",
+    "temp-amb": "Ambient temperature",
+    "temp-bed": "Heatbed",
+    "temp-cpu": "CPU temperature",
+    "temp-led": "UV LED temperature",
+    "temp-nozzle": "Nozzle Temperature",
+    "time-est": "Print Time Estimate",
+    "tmw": "Tomorrow",
+    "tmw-at": "Tomorrow at",
+    "today-at": "Today at",
+    "true": "Yes",
+    "z-height": "Z-Height"
+  },
+  "serial": {
+    "title": "serial number",
+    "label": "serial number"
+  },
+  "settings": {
+    "title": "Settings"
+  },
+  "sys-version": {
+    "description": "description",
+    "id": "ID",
+    "os": "OS",
+    "python": "python",
+    "title": "system version"
+  },
+  "temps": {
+    "title": "Temperatures",
+    "x": "Time [s]",
+    "y": "Temperature [°C]"
+  },
+  "unit": {
+    "b": "B",
+    "gb": "GB",
+    "h": "h",
+    "kb": "KB",
+    "mb": "MB",
+    "min": "min",
+    "minute": "minute",
+    "minute_plural": "minutes",
+    "ml": "ml",
+    "rpm": "RPM"
+  },
+  "upld": {
+    "direct": {
+      "choose": "Click to choose a {{file}} file or drag it here",
+      "description": "Upload file directly to the printer via local network",
+      "title": "Direct upload"
+    },
+    "remote": {
+      "description": "Upload file from remote URL directly to the printer",
+      "hint-fdm": "Type URL of G-CODE file",
+      "hint-sla": "Type URL of compatible file",
+      "source": "Source URL",
+      "file": "File name",
+      "file-hint": "Type file name",
+      "title": "Remote url"
+    },
+    "start-pt": "Start print after transfer",
+    "title": "Upload file"
+  },
+  "user": {
+    "new-password": "new password",
+    "password": "password",
+    "re-password": "repeat password",
+    "title": "user",
+    "username": "username"
+  },
+  "version": {
+    "api": "api",
+    "fe": "frontend",
+    "firmware": "firmware",
+    "hostname": "hostname",
+    "sdk": "sdk",
+    "server": "server",
+    "text": "text",
+    "title": "version"
+  }
+}
