@@ -34,7 +34,8 @@
 <!-- prettier-ignore -->
 {%
   set section_logs = [
-    {'text': 'select file', 'label': 'logs.select-file', 'type': 'dropdown', 'editable': true, 'value': 'log.log', 'button': {id: 'download-log', text: 'download file'} }
+    {'text': 'select file', 'label': 'logs.select-file', 'type': 'dropdown', 'editable': true, 'value': 'log.log', 
+    'button': {id: 'download-log', label:'btn.download', text: 'Download'} }
   ]
 %}
 
@@ -93,7 +94,7 @@
     {'text': 'connection', 'label': 'conn.title', 'settings': section_connection, 'condition': env.WITH_CONNECTION },
     {'text': 'printer', 'label': 'printer.title', 'settings': section_printer },
     {'text': 'user', 'label': 'user.title', 'settings': section_user },
-    {'text': 'serial number', 'label': 'serial.title', 'settings': section_serial, 'condition': env.WITH_SERIAL },
+    {'text': 'serial number', 'label': 'serial.label', 'settings': section_serial, 'condition': env.WITH_SERIAL },
     {'text': 'logs', 'label': 'logs.title', 'settings': section_logs, 'condition': env.WITH_LOGS }
   ]
 %}
@@ -109,7 +110,7 @@
           id="{{section.id}}"
         {% endif %}
       >
-        <p class="txt-bold txt-white txt-sm" data-label="{{section.label}}">{{section.text}}</p>
+        <p class="txt-grey txt-md" data-label="{{section.label}}">{{section.text}}</p>
         <div class="table">
           {% for values in section.settings %}
             <div class="row">

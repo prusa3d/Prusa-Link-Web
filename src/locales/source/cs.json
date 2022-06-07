@@ -26,31 +26,31 @@
   },
   "conn": {
     "err-conn": "Nelze se připojit k tiskárně",
-    "printer-status" : "stav připojení 3D tiskárny",
-    "prusa-connect-status": "stav připojení PRUSA CONNECT",
-    "prusa-connect-url": "adresa PRUSA CONNECT",
+    "printer-status" : "Stav připojení 3D tiskárny",
+    "prusa-connect-status": "Stav připojení PRUSA CONNECT",
+    "prusa-connect-url": "Adresa PRUSA CONNECT",
     "suc": "Úspěšně připojeno",
     "title": "připojení",
     "unsuc": "Připojení se nezdařilo"
   },
   "control": {
     "axis": {
-      "x": "osa X",
-      "y": "osa Y",
-      "z": "osa Z"
+      "x": "Osa X",
+      "y": "Osa Y",
+      "z": "Osa Z"
     },
-    "coordinates": "souřadnice tiskárny",
-    "extrude-retract-step": "krok vytlačení/vtažení [mm]",
-    "extruder": "extrudér",
-    "flow": "průtok",
-    "heated-bed-move": "pohyb podložky v ose X a Y",
-    "heated-bed-temp": "heated bed temperature",
+    "coordinates": "Souřadnice tiskárny",
+    "extrude-retract-step": "Krok vytlačení/vtažení [mm]",
+    "extruder": "Extrudér",
+    "flow": "Průtok",
+    "heated-bed-move": "Pohyb podložky v ose X a Y",
+    "heated-bed-temp": "Heated bed temperature",
     "link": "Ovládání",
-    "move-step": "krok pohybu [mm]",
-    "nozzle-temp": "nozzle temperature",
-    "nozzle-z-move": "pohyb extrudéru v ose Z",
-    "speed": "rychlost",
-    "stepper-motors": "krokové motory",
+    "move-step": "Krok pohybu [mm]",
+    "nozzle-temp": "Nozzle temperature",
+    "nozzle-z-move": "Pohyb extrudéru v ose Z",
+    "speed": "Rychlost",
+    "stepper-motors": "Krokové motory",
     "title": "Ovládání tiskárny"
   },
   "download": {
@@ -71,7 +71,7 @@
     "title": "Tisková nastavení"
   },
   "glob": {
-    "hd-st": "stav zařízení",
+    "hd-st": "Stav zařízení",
     "hostname": "Hostname"
   },
   "home": {
@@ -82,9 +82,9 @@
     "empty-file": "Soubor je prázdný!",
     "file-too-large": "Soubory logů o velikosti větší než {{size}} jsou k dispozici pouze ke stažení!",
     "not-selected": "Není vybrán soubor logů!",
-    "select-file": "vyberte soubor",
+    "select-file": "Vyberte soubor",
     "select-file-placeholder": "Vyberte soubor logů",
-    "title": "logy"
+    "title": "Logy"
   },
   "msg": {
     "api-key-1": "Vítejte ve webovém rozhraní Prusa Link Web!",
@@ -128,8 +128,8 @@
     }
   },
   "printer": {
-    "location": "umístění tiskárny",
-    "name": "název tiskárny",
+    "location": "Umístění tiskárny",
+    "name": "Název tiskárny",
     "title": "Tiskárna"
   },
   "proj": {
@@ -157,7 +157,6 @@
     "d+": "D+",
     "est-end": "Odhadovaný konec",
     "est-pnt-time": "Odhad doby tisku",
-    "exp-time": "doba expozice",
     "exp-times": "Doba expozice",
     "false": "Ne",
     "fan-blower": "Ventilátor",
@@ -166,7 +165,7 @@
     "fdm-sensor": "Senzor filamentu",
     "flow": "Tok tisku",
     "last-mod": "Naposledy upraveno",
-    "layer-1st": "první vrstva",
+    "layer-1st": "První vrstva",
     "layer-ht": "Výška vrstvy",
     "layers": "Vrstvy",
     "current-layer": "Aktuální vrstva",
@@ -201,18 +200,17 @@
     "z-height": "Výška Z"
   },
   "serial": {
-    "title": "sériové číslo",
-    "label": "sériové číslo"
+    "label": "Sériové číslo"
   },
   "settings": {
     "title": "Nastavení"
   },
   "sys-version": {
-    "description": "popis",
+    "description": "Popis",
     "id": "ID",
     "os": "OS",
-    "python": "python",
-    "title": "verze systému"
+    "python": "Python",
+    "title": "Verze systému"
   },
   "temps": {
     "title": "Teploty",
@@ -250,20 +248,20 @@
     "title": "Nahrát soubor"
   },
   "user": {
-    "new-password": "nové heslo",
-    "password": "heslo",
-    "re-password": "zopakujte heslo",
-    "title": "uživatel",
-    "username": "uživatelské jméno"
+    "new-password": "Nové heslo",
+    "password": "Heslo",
+    "re-password": "Zopakujte heslo",
+    "title": "Uživatel",
+    "username": "Uživatelské jméno"
   },
   "version": {
-    "api": "api",
-    "fe": "frontend",
-    "firmware": "firmware",
-    "hostname": "hostname",
-    "sdk": "sdk",
-    "server": "server",
-    "text": "text",
-    "title": "verze"
+    "api": "API",
+    "fe": "Frontend",
+    "firmware": "Firmware",
+    "hostname": "Hostname",
+    "sdk": "SDK",
+    "server": "Server",
+    "text": "Text",
+    "title": "Verze"
   }
 }
