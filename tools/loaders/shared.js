@@ -15,6 +15,8 @@ const languages = fs.readdirSync(source_dir)
 let count = 0;
 
 const loader_module = {
+  getWordsFromHTML,
+  getWordsFromJS,
   saveWords,
 };
 
@@ -32,19 +34,17 @@ function createHierarchy(object, keys) {
   }
 }
 
+function getJsonFromFile(fileName, getFallback) {
+  return fs.existsSync(fileName)
+    ? JSON.parse(fs.readFileSync(fileName).toString())
+    : getFallback();
+}
+
 function getContent() {
-  let content = new Object();
-
-  if (fs.existsSync(output_file)) {
-    content = JSON.parse(fs.readFileSync(output_file).toString());
-  } else {
-    content = {
-      langs: languages,
-      texts: {},
-    }
-  }
-
-  return content;
+  return getJsonFromFile(output_file, () => ({
+    langs: languages,
+    texts: {},
+  }));
 }
 
 function writeJson(path, data) {
@@ -116,6 +116,66 @@ function logMissingTranslation(word, missing, languages) {
     + colors.red(" missing translation for ")
     + colors.red.bold(`"${word.split('\n').join('\\n')}"`)
   );
+}
+
+function getWordsFromHTML(source) {
+  let words = [];
+
+  let regex = /data-label=\"(.*?)\"/g
+  let result = source.match(regex);
+  let extended = false; // also parse template macroses
+  
+  if (result) {
+    for (let match of result) { // data-label="prop.time-est"
+      let word = match.replace("data-label=", "").trim(); // remove data-label=
+      word = word.substr(1, word.length - 2); // remove quotes
+      word = word.replace(/(\\")/g, '"'); // replace /" with "
+      word = word.replace(/(\\n)/g, '\n'); // fix problems with \n characters
+      if (word.startsWith('{{')) {
+        extended = true;
+      } else {
+        words.push(word);
+      }
+    }
+  }
+
+  if (extended) {
+    regex = /label: \'(.*?)\'/g
+    result = source.match(regex);
+      
+    if (result) {
+      for (let match of result) { // label: 'prop.time-est'
+        let word = match.replace("label: ", "").trim(); // remove label: 
+        word = word.substr(1, word.length - 2); // remove quotes
+        word = word.replace(/(\\')/g, '"'); // replace /" with "
+        word = word.replace(/(\\n)/g, '\n'); // fix problems with \n characters
+        words.push(word);
+      }
+    }
+  }
+  
+  return words;
+}
+
+function getWordsFromJS(source) {
+  /* search for: translate('Some word') | translate("Some word")
+   * translate(`Some word`) | translate( 'Some_word ', {param: 32}) | ... */
+  let regex = /translate\(\s*(?:'|"|`)\s*(.*?)\s*(?:'|"|`)\s*(?:,|\))/g
+  let result = source.match(regex);
+  let words = [];
+
+  if (result) {
+    for (let match of result) {
+      let word = match.replace('translate', '').trim(); // remove translate word
+      word = word.substr(1, word.length - 2).trim(); // remove ()
+      word = word.substr(1, word.length - 2); // remove quotes
+      word = word.replace(/(\\")/g, '"'); // replace /" with "
+      word = word.replace(/(\\n)/g, '\n'); // fix problems with \n characters
+      words.push(word);
+    }
+  }
+
+  return words;
 }
 
 module.exports = loader_module;
