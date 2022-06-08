@@ -8,38 +8,38 @@
 <!-- prettier-ignore -->
 {% set inputs_rows = [
     {
-      "nozzle temperature": {
-        label: "control.nozzle-temp",
-        value: "0°C",
-        format: "temp_int",
-        location: "temperature.tool0.target",
-        type: "control",
-        action: "nozzle"
+      'nozzle temperature': {
+        label: 'control.nozzle-temp',
+        value: '0°C',
+        format: 'temp_int',
+        location: 'temperature.tool0.target',
+        type: 'control',
+        action: 'nozzle'
       },
-      "speed": {
-        label: "control.speed",
-        value: "100%",
-        format: "percent",
-        location: "telemetry.print-speed",
-        type: "control",
-        action: "speed"
+      'speed': {
+        label: 'control.speed',
+        value: '100%',
+        format: 'percent',
+        location: 'telemetry.print-speed',
+        type: 'control',
+        action: 'speed'
       }
     }, {
-      "heated bed temperature": {
-        label: "control.heated-bed-temp",
-        value: "0°C",
-        format: "temp_int",
-        location: "temperature.bed.target",
-        type: "control",
-        action: "bed"
+      'heated bed temperature': {
+        label: 'control.heated-bed-temp',
+        value: '0°C',
+        format: 'temp_int',
+        location: 'temperature.bed.target',
+        type: 'control',
+        action: 'bed'
       },
-      "flow": {
-        label: "control.flow",
-        value: "100%",
-        format: "percent",
-        location: "job.progress.flow_factor",
-        type: "control",
-        action: "flowrate"
+      'flow': {
+        label: 'control.flow',
+        value: '100%',
+        format: 'percent',
+        location: 'job.progress.flow_factor',
+        type: 'control',
+        action: 'flowrate'
       }
     }
   ]
@@ -47,23 +47,23 @@
 
 {%
   set printer_coordinates = {
-    "X axis": {
-      label: "control.axis.x",
-      format: "pos",
-      location: "telemetry.axis_x",
-      type: "control"
+    'X axis': {
+      label: 'control.axis.x',
+      format: 'pos',
+      location: 'telemetry.axis_x',
+      type: 'control'
     },
-    "Y axis": {
-      label: "control.axis.y",
-      format: "pos",
-      location: "telemetry.axis_y",
-      type: "control"
+    'Y axis': {
+      label: 'control.axis.y',
+      format: 'pos',
+      location: 'telemetry.axis_y',
+      type: 'control'
     },
-    "Z axis": {
-      label: "control.axis.z",
-      format: "pos",
-      location: "telemetry.axis_z",
-      type: "control"
+    'Z axis': {
+      label: 'control.axis.z',
+      format: 'pos',
+      location: 'telemetry.axis_z',
+      type: 'control'
     }
   }
 %}
