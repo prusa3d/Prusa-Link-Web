@@ -1610,7 +1610,7 @@ input .autoresize {
     display: none;
   }
   .header {
-    padding: 16px 0 0;
+    padding: 4px 0 0;
     position: sticky;
     top: 0;
     z-index: 3;
