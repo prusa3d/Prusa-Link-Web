@@ -112,7 +112,8 @@ const sla = {
   ].filter(route => route != null),
   init: (apiResult) => {
     updateContext(apiResult);
-    context.fileExtensions = apiResult.profiles?.data?.profiles[0]?.projectExtensions || process.env.FILE_EXTENSIONS;
+    const exts = apiResult.profiles?.payload?.data?.profiles[0]?.projectExtensions;
+    context.fileExtensions = exts || process.env.FILE_EXTENSIONS;
     document.title = context.version.hostname + " - " + process.env.APP_NAME;
     initTemperatureGraph();
   },
