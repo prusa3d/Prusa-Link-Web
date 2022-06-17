@@ -6,7 +6,7 @@ import * as graph from "../components/temperature_graph";
 import dashboard from "./dashboard.js";
 import files from "../components/files";
 import question from "../components/question.js";
-import temperature from "./temperature.js";
+import { getPrinterLabel } from "../common.js";
 import { updateProperties } from "../components/updateProperties.js";
 import { translate } from "../../locale_provider";
 import updateConnectionStatus from "../components/updateConnectionStatus";
@@ -39,15 +39,7 @@ const updatePrinterTitle = (obj) => {
   return obj;
 };
 
-const getPrinterName = () => {
-  const parts = [];
-  const location = context.version?.location
-  const name = context.version?.name
-  location && parts.push(location)
-  name && parts.push(name)
-  parts.push(context.version?.hostname || "localhost")
-  return parts.join(", ")
-}
+const getPrinterName = () => getPrinterLabel(context);
 
 const buildTitle = (title) => getPrinterName() + " - " +
   (title.trim() || process.env.APP_NAME) +
