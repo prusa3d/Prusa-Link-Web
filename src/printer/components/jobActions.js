@@ -6,7 +6,7 @@ import { doQuestion } from "./question";
 import { getJson } from "../../auth";
 import { handleError } from "./errors";
 import { modal } from "./modal";
-import { navigate, navigateShallow } from "../../router.js";
+import { navigate } from "../../router.js";
 import { translate } from "../../locale_provider";
 
 

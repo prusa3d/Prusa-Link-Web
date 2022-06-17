@@ -15,8 +15,9 @@ const load = (context) => {
 };
 
 const update = (context) => {
+  const flags = context.printer.state.flags;
   job.update(context);
-  upload.update();
+  upload.update(flags.ready && flags.operational);
 };
 
 export default { load, update };

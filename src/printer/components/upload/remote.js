@@ -8,6 +8,7 @@ import { setDisabled } from "../../../helpers/element";
 import { error, success } from "../toast";
 import { translate } from "../../../locale_provider";
 import { updateProgressBar } from "../progressBar";
+import { attachConfirmModalToCheckbox } from "./confirm";
 import updateProperties from "../updateProperties";
 
 let isUploading = false;
@@ -20,6 +21,8 @@ function init(origin, path) {
     const nameInput = elm.querySelector("#remote-file-name");
     const uploadBtn = elm.querySelector("#upld-file");
     const startPtCheckbox = elm.querySelector("#upld-remote-start-pt");
+
+    startPtCheckbox && attachConfirmModalToCheckbox(startPtCheckbox);
 
     uploadBtn.onclick = () => startUpload(
       urlInput.value,
@@ -47,7 +50,14 @@ function init(origin, path) {
   update();
 }
 
-function update() {
+function update(canStartPrinting) {
+  const startPrintCheckbox = document.querySelector("#upld-remote-start-pt");
+  if (startPrintCheckbox) {
+    if (!canStartPrinting) {
+      startPrintCheckbox.checked = false;
+    }
+    setDisabled(startPrintCheckbox, !canStartPrinting)
+  }
   getJson("api/download").then(result => {
     lastResult = result;
     handleResult(result);
