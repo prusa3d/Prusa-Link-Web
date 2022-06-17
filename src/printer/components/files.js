@@ -110,6 +110,8 @@ function initUpload(context) {
  * load files page
  */
 export function load(context) {
+  translate("proj.link", { query: "#title-status-label" });
+
   if (!context)
     context = printer.getContext();
 
@@ -153,10 +155,6 @@ export function load(context) {
       let path = metadata.current_path[i];
       view = view.find((elm) => elm.name === path).children;
     }
-
-    document.getElementById(
-      "title-status-label"
-    ).innerHTML = metadata.current_path.join(" > ");
 
     files.appendChild(createCurrent());
     if (metadata.current_path.length > 1)

@@ -87,7 +87,7 @@ const fdm = {
         path: "files",
         html: require("../../views/files.html"),
         module: updatePrinterTitle(files),
-        getTitle: () => buildTitle(translate("proj.link")),
+        getTitle: () => buildTitle(translate("proj.storage")),
       }
       : null,
     process.env.WITH_SETTINGS ?

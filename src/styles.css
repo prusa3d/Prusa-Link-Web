@@ -738,6 +738,11 @@ nav .burger-icon.burger-open {
   pointer-events: none;
   opacity: 0.3;
 }
+
+#node-storage {
+  margin-top: 16px;
+}
+
 .node-storage-space {
   display: flex;
   margin-top: 10px;
