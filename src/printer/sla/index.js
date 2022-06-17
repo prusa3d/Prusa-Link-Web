@@ -10,6 +10,7 @@ import refill from "./refill.js";
 import { updateProperties } from "../components/updateProperties.js";
 import { translate } from "../../locale_provider";
 import { showLoading, hideLoading } from "../../helpers/element";
+import { getPrinterLabel } from "../common.js";
 import updateConnectionStatus from "../components/updateConnectionStatus";
 
 const context = {
@@ -40,7 +41,8 @@ const updatePrinterTitle = (obj) => {
   return obj;
 };
 
-const getPrinterName = () => context.version?.hostname || "localhost";
+const getPrinterName = () => getPrinterLabel(context);
+
 const buildTitle = (title) => getPrinterName() + " - " +
   (title.trim() || process.env.APP_NAME) +
   " - " + process.env.APP_NAME;
