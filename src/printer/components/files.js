@@ -94,9 +94,10 @@ const updateData = () => {
  * @param {object} context
  */
 export const update = (context) => {
+  const flags = context.printer.state.flags;
   updateData();
   job.update(context, true);
-  upload.update();
+  upload.update(flags.ready && flags.operational);
 };
 
 function initUpload(context) {

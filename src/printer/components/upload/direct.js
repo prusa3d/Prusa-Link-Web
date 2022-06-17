@@ -4,8 +4,10 @@
 
 import { error, success } from "../toast";
 import { handleError } from "../errors";
+import { setDisabled } from "../../../helpers/element";
 import { translate } from "../../../locale_provider";
 import uploadRequest from "../../../helpers/upload_request";
+import { attachConfirmModalToCheckbox } from "./confirm";
 
 let isUploading = false;
 let progress = 0;
@@ -19,14 +21,26 @@ function init(origin, path, fileExtensions) {
   }
 }
 
+function update(canStartPrinting) {
+  const startPrintCheckbox = document.querySelector("#upld-direct-start-pt");
+  if (startPrintCheckbox) {
+    if (!canStartPrinting) {
+      startPrintCheckbox.checked = false;
+    }
+    setDisabled(startPrintCheckbox, !canStartPrinting)
+  }
+}
+
 function initInput(origin, path, fileExtensions) {
-  var input = document.querySelector('#upld-direct input[type="file"]');
+  const input = document.querySelector('#upld-direct input[type="file"]');
+  const startPtCheckbox = document.getElementById("upld-direct-start-pt");
+  startPtCheckbox && attachConfirmModalToCheckbox(startPtCheckbox);
   if (input) {
     input.setAttribute("accept", fileExtensions.join(", "));
     input.onchange = () => {
       if (input.files.length > 0 && !isUploading) {
         let file = input.files[0];
-        let print = document.getElementById("upld-direct-start-pt")?.checked || false;
+        let print = startPtCheckbox?.checked || false;
         uploadFile(file, origin, path, print);
       }
     }
@@ -94,6 +108,7 @@ function onUploadError(fileName, result) {
 
 export default {
   init,
+  update,
   get isUploading () {
     return isUploading;
   },
