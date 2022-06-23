@@ -38,7 +38,42 @@ paths:
         401:
           $ref: "#/components/responses/Unauthorized"
 
+  /api/v1/storage:
+    get:
+      summary: storage info
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  storage_list:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Storage"
+        401:
+          $ref: "#/components/responses/Unauthorized"
+
   /api/v1/files/{storage}/{path}:
+    parameters:
+      - in: path
+        name: storage
+        required: true
+        description: The target storage
+        schema:
+          type: string
+          enum:
+            - local
+            - sdcard
+      - in: path
+        name: path
+        required: true
+        description: Path to the file
+        schema:
+          type: string
+          example: "PrusaLink gcodes/Spice_Harvester_0.3mm_PLA_MK3S_12m.gcode"
     get:
       summary: file metadata
       responses:
@@ -82,6 +117,45 @@ components:
         - printer
         - text
         - firmware
+
+    Storage:
+      type: object
+      properties:
+        name:
+          type: string
+          example: 'PrusaLink gcodes'
+        type:
+          type: string
+          description: Storage source
+          enum: ["LOCAL", "SDCARD", "USB"]
+        path:
+          type: string
+          description: Path to storage (not display path)
+          example: "/local"
+        print_files:
+          type: integer
+          description: Size of all print files in bytes
+          example: 19216842
+        system_files:
+          type: integer
+          description: Size of all system files in bytes
+          example: 4242
+        free_space:
+          type: integer
+          description: System free space in bytes
+          example: 1921681142
+        total_space:
+          type: integer
+          description: System total space in bytes
+          example: 8589934592
+        available:
+          type: boolean
+          description: Whether the storage is available or not
+          example: True
+      required:
+        - available
+        - path
+        - type
 
     FileInfo:
       type: object
@@ -395,8 +469,7 @@ components:
       schema:
         type: string
         default: text/plain
-      description: Parameter specifying supported data format from client. PCL has to support it.
-      Slicer doesn't have to use this. If the header is not present, it defaults to text/plain
+      description: Parameter specifying supported data format from client. PCL has to support it. Slicer doesn't have to use this. If the header is not present, it defaults to text/plain
     Content-Location:
       schema:
         type: string
