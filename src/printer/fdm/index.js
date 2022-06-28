@@ -106,7 +106,7 @@ const fdm = {
   },
   update: (apiResult) => {
     updateContext(apiResult);
-    updateProperties("telemetry", context.printer);
+    updateProperties("telemetry", {...context.printer, version: context.version});
     updatePrinterStatus(context.printer.state);
     updateTemperatureGraph(context.printer);
     updateModule();

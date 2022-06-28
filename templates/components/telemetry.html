@@ -9,35 +9,36 @@
 {% if env.PRINTER_TYPE == "sla" %}
   {%
       set telemetry_list = [
-          {'text': 'CPU temperature', 'label': 'prop.temp-cpu', 'icon': 'temperature_color.svg', 'format': 'temp',  "locations": ["temperature.bed.actual"] },
-          {'text': 'UV LED temperature', 'label': 'prop.temp-led', 'icon': 'temperature_color.svg', 'format': 'temp',  "locations": ["temperature.tool0.actual"] },
-          {'text': 'ambient temperature', 'label': 'prop.temp-amb', 'icon': 'temperature_color.svg', 'format': 'temp',  "locations": ["temperature.chamber.actual"] },
-          {'text': 'UV LED fan', 'label': 'prop.fan-led', 'icon': 'fan_color.svg', 'format': 'fan',  "location": "telemetry.fanUvLed" },
-          {'text': 'blower fan', 'label': 'prop.fan-blower', 'icon': 'fan_color.svg', 'format': 'fan',  "location": "telemetry.fanBlower" },
-          {'text': 'rear fan', 'label': 'prop.fan-rear', 'icon': 'fan_color.svg', 'format': 'fan',  "location": "telemetry.fanRear" },
-          {'text': 'cover state', 'label': 'prop.cover', 'icon': 'cover_color.svg', 'format': 'cover',  "location": "telemetry.coverClosed" }
+          {'text': 'CPU temperature', label: 'prop.temp-cpu', 'icon': 'temperature_color.svg', 'format': 'temp',  "locations": ["temperature.bed.actual"] },
+          {'text': 'UV LED temperature', label: 'prop.temp-led', 'icon': 'temperature_color.svg', 'format': 'temp',  "locations": ["temperature.tool0.actual"] },
+          {'text': 'ambient temperature', label: 'prop.temp-amb', 'icon': 'temperature_color.svg', 'format': 'temp',  "locations": ["temperature.chamber.actual"] },
+          {'text': 'UV LED fan', label: 'prop.fan-led', 'icon': 'fan_color.svg', 'format': 'fan',  "location": "telemetry.fanUvLed" },
+          {'text': 'blower fan', label: 'prop.fan-blower', 'icon': 'fan_color.svg', 'format': 'fan',  "location": "telemetry.fanBlower" },
+          {'text': 'rear fan', label: 'prop.fan-rear', 'icon': 'fan_color.svg', 'format': 'fan',  "location": "telemetry.fanRear" },
+          {'text': 'cover state', label: 'prop.cover', 'icon': 'cover_color.svg', 'format': 'cover',  "location": "telemetry.coverClosed" }
       ]
   %}
 {% else %}
   {%
       set telemetry_list = [
-          {'text': 'Nozzle Temperature', 'label': 'prop.temp-nozzle', 'icon': 'status_nozzle.svg', 'format': 'temp', "locations": ["telemetry.temp-nozzle", "temperature.tool0.target"] },
-          {'text': 'Heatbed', 'label': 'prop.temp-bed', 'icon': 'status_heatbed.svg', 'format': 'temp', "locations": ["telemetry.temp-bed", "temperature.bed.target"] },
-          {'text': 'Printing Speed', 'label': 'prop.speed', 'icon': 'status_prnspeed.svg', 'format': 'print', "location": "telemetry.print-speed" },
-          {'text': 'Z - Height', 'label': 'prop.z-height', 'icon': 'status_z_axis.svg', "location": "telemetry.z-height", 'format': 'pos' }
+          {'text': 'Nozzle Temperature', label: 'prop.temp-nozzle', 'icon': 'status_nozzle.svg', 'format': 'temp', "locations": ["telemetry.temp-nozzle", "temperature.tool0.target"] },
+          {'text': 'Heatbed', label: 'prop.temp-bed', 'icon': 'status_heatbed.svg', 'format': 'temp', "locations": ["telemetry.temp-bed", "temperature.bed.target"] },
+          {'text': 'Printing Speed', label: 'prop.speed', 'icon': 'status_prnspeed.svg', 'format': 'print', "location": "telemetry.print-speed" },
+          {'text': 'Z - Height', label: 'prop.z-height', 'icon': 'status_z_axis.svg', "location": "telemetry.z-height", 'format': 'pos' },
+          {'text': 'Nozzle Diameter', label: 'prop.nozzle-diameter', 'icon': 'status_filament.svg', "location": "version.nozzle_diameter", 'format': 'pos' }
       ]
   %}
 {% endif %}
 
 <!--
   Material is temporarly anavailable on FDM
-  {'text': 'Material', 'label': 'prop.material', 'icon': 'status_filament.svg', "location": "telemetry.material" } 
+  {'text': 'Material', label: 'prop.material', 'icon': 'status_filament.svg', "location": "telemetry.material" }
 -->
 
 {%
     set connection_status_list = [
-      {'text': 'PRUSA CONNECT connection status', 'label': 'conn.prusa-connect-status', 'id': 'conn-status-connect', 'id_msg': 'conn-status-connect-msg' },
-      {'text': 'PRINTER connection status', 'label': 'conn.printer-status', 'id': 'conn-status-printer', 'id_msg': 'conn-status-printer-msg' }
+      {'text': 'PRUSA CONNECT connection status', label: 'conn.prusa-connect-status', 'id': 'conn-status-connect', 'id_msg': 'conn-status-connect-msg' },
+      {'text': 'PRINTER connection status', label: 'conn.printer-status', 'id': 'conn-status-printer', 'id_msg': 'conn-status-printer-msg' }
     ]
 %}
 
