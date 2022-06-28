@@ -4,9 +4,9 @@
 
 import { getFile, getJson } from "../../auth";
 import { handleError } from "./errors";
-import { doQuestion } from "./question";
 import { translate } from "../../locale_provider";
 import download from "../../helpers/download";
+import { modal } from "./modal";
 
 /**
  * download file
@@ -20,6 +20,24 @@ export const downloadFile = (file) => {
   }).catch((result) => handleError(result))
 };
 
+
+const createDeleteFileModal = (close, file) => {
+  const template = document.getElementById("modal-question");
+  const node = document.importNode(template.content, true);
+  const label = node.getElementById("modal-question-label");
+  label.innerText = translate("msg.del-proj", { file_name: file.display || file.name });
+  const yesButton = node.getElementById("yes");
+  yesButton.addEventListener("click", (event) => {
+    event.preventDefault();
+    getJson(file.refs.resource, { method: "DELETE" })
+        .catch((result) => handleError(result))
+        .finally((result) => close());
+  });
+  const noButton = node.getElementById("no");
+  noButton.addEventListener("click", close);
+  return node;
+};
+
 /**
  * delete file
  */
@@ -27,17 +45,9 @@ export const downloadFile = (file) => {
   if (!file?.refs?.resource)
     return; // TODO: Consider showing error
 
-  const page = window.location.hash;
-  doQuestion({
-    title: translate("proj.del"),
-    // TODO: add strong - Do you really want to delete <strong>${file.name}</strong>?
-    questionChildren: translate("msg.del-proj", { file_name: file.display || file.name }),
-    yes: (close) => {
-      getJson(file.refs.resource, { method: "DELETE" })
-        .catch((result) => handleError(result))
-        .finally((result) => close());
-    },
-    next: page,
+  modal((close) => createDeleteFileModal(close, file), {
+    timeout: 0,
+    closeOutside: false,
   });
 };
 
