@@ -2,7 +2,6 @@
 // Copyright (C) 2021 Prusa Research a.s. - www.prusa3d.com
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-import { doQuestion } from "./question";
 import { getJson } from "../../auth";
 import { handleError } from "./errors";
 import { modal } from "./modal";
@@ -62,26 +61,39 @@ export const pauseJob = () => {
 }
 
 /**
+ * Cancel job modal.
+ */
+ const createCancelJobModal = (close) => {
+  const template = document.getElementById("modal-question");
+  const node = document.importNode(template.content, true);
+  const label = node.getElementById("modal-question-label");
+  label.innerText = translate("msg.cancel");
+  const yesButton = node.getElementById("yes");
+  yesButton.addEventListener("click", (event) => {
+    event.preventDefault();
+    getJson("/api/job", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ command: "cancel" }),
+    }).catch(
+      (result) => handleError(result)
+    );
+    close();
+  });
+  const noButton = node.getElementById("no");
+  noButton.addEventListener("click", close);
+  return node;
+};
+
+/**
  * Shows modal, then stops printing.
  */
  export const cancelJob = () => {
-  const page = window.location.hash;
-  doQuestion({
-    title: translate("btn.cancel"),
-    questionChildren: translate("msg.cancel"),
-    yes: (close) => {
-      getJson("/api/job", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ command: "cancel" }),
-      }).catch(
-        (result) => handleError(result)
-      );
-      close();
-    },
-    next: page,
+  modal((close) => createCancelJobModal(close), {
+    timeout: 0,
+    closeOutside: false,
   });
 };
 

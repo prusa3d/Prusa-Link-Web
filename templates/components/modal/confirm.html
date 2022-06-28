@@ -1,0 +1,24 @@
+<!-- prettier-ignore -->
+{#
+  # This file is part of the Prusa Link Web
+  # Copyright (C) 2021 Prusa Research a.s. - www.prusa3d.com
+  # SPDX-License-Identifier: GPL-3.0-or-later
+#}
+
+<template id="modal-question">
+  <div class="modal-confirm">
+    <div>
+      <p id="modal-question-label"></p>
+    </div>
+    <div class="flex-row">
+      <button class="yes mr-md" id="yes">
+        <img src="{{ pre.countOrRenderAssets('yes_color.svg') | safe }}" />
+        <p data-label="btn.confirm">Confirm</p>
+      </button>
+      <button class="no" id="no">
+        <img src="{{ pre.countOrRenderAssets('cancel.svg') | safe }}" />
+        <p data-label="btn.cancel">Cancel</p>
+      </button>
+    </div>
+  </div>
+</template>
