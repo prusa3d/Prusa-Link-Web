@@ -41,6 +41,7 @@ paths:
   /api/v1/storage:
     get:
       summary: storage info
+      description: Returns info about each available file storage (e.g. SD Card or local storage)
       responses:
         200:
           description: OK
@@ -58,22 +59,32 @@ paths:
 
   /api/v1/files/{storage}/{path}:
     parameters:
+      - in: header
+        name: Accept-Language
+        description: Defines a language of the response
+        schema:
+          type: string
+          example: "cs"
+      - in: header
+        name: Accept
+        description: Preferred content-type of response - application/json or text/html, all other are returned as text/plain
+        schema:
+          type: string
+          default: text/plain
       - in: path
         name: storage
-        required: true
         description: The target storage
+        required: true
         schema:
           type: string
-          enum:
-            - local
-            - sdcard
+          example: "/local"
       - in: path
         name: path
-        required: true
         description: Path to the file
+        required: true
         schema:
           type: string
-          example: "PrusaLink gcodes/Spice_Harvester_0.3mm_PLA_MK3S_12m.gcode"
+          example: "/examples/Spice_Harvester_0.3mm_PLA_MK3S_12m.gcode"
     get:
       summary: file metadata
       responses:
@@ -83,10 +94,60 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/FileInfo"
+    put:
+      summary: upload file or create folder
+      parameters:
+        - in: header
+          name: Content-Length
+          description: Length of file to upload
+          schema:
+            type: integer
+            example: 101342
+        - in: header
+          name: Content-Type
+          description: Type of uploaded media
+          schema:
+            type: string
+            default: application/octet-stream
+        - in: header
+          name: Print-After-Upload
+          description: Whether to start printing the file after upload
+          schema:
+            type: boolean
+            default: False
+      responses:
+        201:
+          description: Created
         401:
           $ref: "#/components/responses/Unauthorized"
         404:
           $ref: "#/components/responses/NotFound"
+        409:
+          $ref: "#/components/responses/Conflict"
+    head:
+      summary: file presence and state check
+      responses:
+        200:
+          description: OK
+          headers:
+            Read-Only:
+              description: Whether the file or storage is read-only
+              required: true
+              schema:
+                type: boolean
+                example: true
+            Currently-Printed:
+              description: Whether this file is currently being printed
+              required: true
+              schema:
+                type: boolean
+                example: true
+        401:
+          $ref: "#/components/responses/Unauthorized"
+        404:
+          $ref: "#/components/responses/NotFound"
+        409:
+          $ref: "#/components/responses/Conflict"
 
 components:
   schemas:
@@ -123,7 +184,7 @@ components:
       properties:
         name:
           type: string
-          example: 'PrusaLink gcodes'
+          example: "PrusaLink gcodes"
         type:
           type: string
           description: Storage source
@@ -151,7 +212,7 @@ components:
         available:
           type: boolean
           description: Whether the storage is available or not
-          example: True
+          example: true
       required:
         - available
         - path
@@ -169,19 +230,19 @@ components:
           properties:
             download:
               type: string
-              example: "/api/files/local/Spice_Harvester_0.3mm_PLA_MK3S_42m.gcode/raw"
+              example: "/api/files/local/examples/Spice_Harvester_0.3mm_PLA_MK3S_42m.gcode/raw"
             icon:
               type: string
-              example: "/api/thumbnails/local/Spice_Harvester_0.3mm_PLA_MK3S_42m.gcode.small.png"
+              example: "/api/thumbnails/local/examples/Spice_Harvester_0.3mm_PLA_MK3S_42m.gcode.small.png"
             thumbnail:
               type: string
-              example: "/api/thumbnails/local/Spice_Harvester_0.3mm_PLA_MK3S_42m.gcode.orig.png"
+              example: "/api/thumbnails/local/examples/Spice_Harvester_0.3mm_PLA_MK3S_42m.gcode.orig.png"
         size:
           type: integer
           example: 424242
         display_path:
           type: string
-          example: "/PrusaLink gcodes/Dune"
+          example: "/PrusaLink gcodes/examples"
         display_name:
           type: string
           description: Long Filename
