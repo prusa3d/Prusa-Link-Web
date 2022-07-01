@@ -28,7 +28,7 @@ const load = (context) => {
 
 const update = (context) => {
   logsModule?.update();
-  updateConnectionSettings(context);
+  updateConnectionSettings(context, false);
 };
 
 function initBaseSettings() {
@@ -42,7 +42,7 @@ function initBaseSettings() {
 }
 
 function initConnectionSettings(context) {
-  updateConnectionSettings(context);
+  updateConnectionSettings(context, true);
 
   document.getElementById(
     "edit-connect-del"
@@ -81,10 +81,10 @@ function initConnectionSettings(context) {
   );
 }
 
-function updateConnectionSettings(context) {
+function updateConnectionSettings(context, updateInputValue) {
   if (context.connection) {
     updateProperties("con-settings", context.connection);
-    updatePrusaConnectStatus(context.connection);
+    updatePrusaConnectStatus(context.connection, updateInputValue);
     updatePrinterStatus(context.connection);
   }
 }
@@ -200,7 +200,7 @@ function updateConnectionStatus(statusElm, msgElm, ok, message, customMessage) {
     msgElm.innerHTML = (ok ? "" : message + "</br>") + customMessage;
 }
 
-function updatePrusaConnectStatus(data) {
+function updatePrusaConnectStatus(data, updateInputValue) {
   const statusElm = document.getElementById("conn-prusa-connect-status");
   const msgElm = document.getElementById("conn-prusa-connect-status-msg");
   const urlIn = document.getElementById("conn-prusa-connect-url");
@@ -213,7 +213,9 @@ function updatePrusaConnectStatus(data) {
   const urlString = `${protocol}://${hostname}${port}`;
   const customMessage = `(${urlString})`;
 
-  urlIn.value = urlString;
+  if (updateInputValue) {
+    urlIn.value = urlString;
+  }
   setHidden(urlIn.parentNode.parentNode, isFinished);
 
   updateConnectionStatus(statusElm, msgElm, ok && isFinished, message, customMessage);
