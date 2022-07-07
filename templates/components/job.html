@@ -22,6 +22,8 @@
       {% set current_stats = props %}
       {% include "components/job/props.html" %}
     </div>
+    <!-- prettier-ignore -->
+    {% include "components/job/loading-overlay.html" %}
   </div>
   <!-- prettier-ignore -->
   {% if env.PRINTER_TYPE == "sla" %}
@@ -35,9 +37,6 @@
     <!-- prettier-ignore -->
     {% include "components/job/buttons.html" %}
   </div>
-
-    <!-- prettier-ignore -->
-  {% include "components/job/loading-overlay.html" %}
 </div>
 
 <!-- prettier-ignore -->

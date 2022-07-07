@@ -773,6 +773,7 @@ nav .burger-icon.burger-open {
   display: flex;
   flex-grow: 1;
   flex-wrap: wrap;
+  position: relative;
 }
 .preview-img {
   width: 100%;
@@ -903,7 +904,6 @@ button:disabled {
 #job {
   width: 100%;
   margin-top: 1rem;
-  position: relative;
 }
 #job .file-name {
   margin-bottom: 20px;
