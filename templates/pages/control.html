@@ -162,7 +162,7 @@
           move step [mm]
         </p>
         <div class="row" id="move-step">
-          {% for value in[0.1, 1, 10] %}
+          {% for value in[0.1, 1, 10, 100] %}
             <button class="action square" data-step="{{ value }}">
               <p>{{ value }}</p>
             </button>
@@ -220,7 +220,7 @@
         extrude/retract step [mm]
       </p>
       <div class="row" id="extrude-retract-step">
-        {% for value in[0.1, 1, 10] %}
+        {% for value in[0.1, 1, 10, 50] %}
           <button class="action square" data-step="{{ value }}">
             <p>{{ value }}</p>
           </button>

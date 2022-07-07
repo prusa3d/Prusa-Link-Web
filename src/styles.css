@@ -1910,9 +1910,7 @@ input .autoresize {
     width: 30%;
     margin-left: 0;
   }
-  #control {
-    max-width: 750px;
-  }
+
   #control .square, #control .rectangle {
     min-width: 3.5rem;
     height: 3.5rem;
