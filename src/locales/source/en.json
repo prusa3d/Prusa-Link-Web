@@ -23,6 +23,8 @@
   "btn.upld-file": "Upload File",
   "btn.yes": "Yes",
 
+  "camera.link": "Camera",
+
   "conn.err-conn": "Cannot connect to the printer",
   "conn.printer-status": "3D Printer Connection Status",
   "conn.prusa-connect-status": "PRUSA CONNECT Status",

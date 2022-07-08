@@ -12,8 +12,6 @@ import { navigateShallow } from "../../router.js";
 import { translate, translateLabels } from "../../locale_provider.js";
 import { createFolder, deleteFolder, deleteFile, downloadFile, renameFolder, renameFile, startPrint } from "./fileActions.js";
 import printer from "../index";
-import { error } from "./toast.js";
-import { cancelPreview } from "./jobActions";
 import scrollIntoViewIfNeeded from "../../helpers/scroll_into_view_if_needed.js";
 import * as job from "./job";
 import { initKebabMenu } from "./kebabMenu.js";

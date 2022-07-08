@@ -11,6 +11,7 @@
     'link-home': {'text': 'Dashboard', label: 'home.link', path: '#dashboard' },
     'link-proj': {'text': 'Storage', label: 'proj.link', path: '#files', condition: env.WITH_FILES },
     'link-ctrl': {'text': 'Control', label: 'control.link', path: '#control', condition: env.WITH_CONTROLS },
+    'link-cmra': {'text': 'Camera', label: 'camera.link', path: '#camera', condition: env.WITH_CAMERA, hidden: true },
     'separator': {},
     'link-sett': {'text': 'Settings', label: 'settings.title', path: '#settings', condition: env.WITH_SETTINGS }
   }
@@ -21,7 +22,11 @@
     {% if key == "separator" %}
       <div class="separator"></div>
     {% elif not "condition" in values or values.condition %}
-      <li>
+      {% if values.hidden %}
+      <li id="{{ values.label }}" hidden="true">
+      {% else %}
+      <li id="{{ values.label }}">
+      {% endif %}
         <a href="{{ values.path }}" data-label="{{ values.label }}">{{ values.text }}</a>
       </li>
     {% endif %}

@@ -23,6 +23,8 @@
   "btn.upld-file": "Nahrát soubor",
   "btn.yes": "Ano",
 
+  "camera.link": "Kamera",
+
   "conn.err-conn": "Nelze se připojit k tiskárně",
   "conn.printer-status": "Stav připojení 3D tiskárny",
   "conn.prusa-connect-status": "Stav připojení PRUSA CONNECT",

@@ -17,6 +17,7 @@ import { initMenu } from "./printer/components/menu";
 import { translate, translateLabels } from "./locale_provider";
 import { handleError } from "./printer/components/errors";
 import langSelect from "./printer/components/dropdown/language";
+import { setVisible } from "./helpers/element";
 
 const UPDATE_INTERVAL = process.env.UPDATE_INTERVAL;
 let connectionProblem = false;
@@ -115,6 +116,13 @@ window.onload = () => {
 
 async function appLoop(version) {
   let initialized = false;
+  
+  if (process.env.WITH_CAMERA) {
+    const cameraLink = document.getElementById("camera.link");
+    if (cameraLink) {
+      setVisible(cameraLink, !!version.active_camera);
+    }
+  }
 
   while (true) {
     let apiProblem = false;
