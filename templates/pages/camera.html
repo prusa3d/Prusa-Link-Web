@@ -9,5 +9,7 @@
 {% include "components/title_default.html" %}
 
 <div class="main-wrapper" id="control">
-  <img src="{{ pre.countOrRenderAssets('thumbnail.svg') | safe }}" id="camera-image" />
+  <div style="max-width: {{ env.WITH_CAMERA_RESX }}px; max-height: {{ env.WITH_CAMERA_RESY }}px;">
+    <img src="{{ pre.countOrRenderAssets('thumbnail.svg') | safe }}" id="camera-image" />
+  </div>
 </div>

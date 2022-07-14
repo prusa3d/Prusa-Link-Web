@@ -21,7 +21,20 @@ const update = (context) => {
 
 const updateImage = (currentTimestamp) => {
   timestamp = currentTimestamp;
-  getImage("/api/camera", timestamp, "POST").then(
+  getImage(
+    "/api/camera",
+    timestamp,
+    {
+      method: "POST",
+      headers: { "Content-Type": "text/json" },
+      body: JSON.stringify({
+        resolution: {
+          width: process.env['WITH_CAMERA_RESX'],
+          height: process.env['WITH_CAMERA_RESY'],
+        }
+      })
+    }
+  ).then(
     url => {
       const img = document.getElementById("camera-image");
       img.src = url;
