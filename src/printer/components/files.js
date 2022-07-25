@@ -21,6 +21,9 @@ import { setEnabled } from "../../helpers/element.js";
 import storage from "./storage.js";
 
 let lastData = null;
+let intersectionObserver = null;
+let previewLazyQueue = [];
+
 
 /**
  * file context
@@ -112,6 +115,42 @@ function initUpload(context) {
  */
 export function load(context) {
   translate("proj.link", { query: "#title-status-label" });
+
+  if (!intersectionObserver) {
+    const config = {
+      rootMargin: '0px 0px 50px 0px',
+      threshold: 0
+    };
+
+    intersectionObserver = new IntersectionObserver((entries, self) => {
+      entries.forEach(entry => {
+        if(entry.isIntersecting) {
+          if (process.env.WITH_PREVIEW_LAZY_QUEUE) {
+            const loadPreviewQueued = () => {
+              if (previewLazyQueue.length) {
+                const target = previewLazyQueue[0];
+                getImage(target.getAttribute('data-src')).then((url) => {
+                  target.src = url;
+                }).finally(() => {
+                  self.unobserve(target);
+                  previewLazyQueue.shift();
+                  loadPreviewQueued();
+                });
+              }
+            };
+            previewLazyQueue.push(entry.target);
+            if (previewLazyQueue.length === 1) {
+              loadPreviewQueued();
+            }
+          } else {
+            getImage(entry.target.getAttribute('data-src')).then((url) => {
+              entry.target.src = url;
+            });
+          }
+        }
+      });
+    }, config);
+  }
 
   if (!context)
     context = printer.getContext();
@@ -316,9 +355,10 @@ function createFile(node) {
   });
   if (node.refs && node.refs.thumbnailBig) {
     const img = elm.querySelector("img.node-img");
-    getImage(node.refs.thumbnailBig, node.date).then((url) => {
-      img.src = url;
-    });
+    img.setAttribute(
+      "data-src", node.date ? `${node.refs.thumbnailBig}?ct=${node.date}` : node.refs.thumbnailBig
+    );
+    intersectionObserver.observe(img);
   }
 
   initKebabMenu(elm);
