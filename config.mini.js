@@ -18,6 +18,7 @@ module.exports = (env, args) => {
         WITH_EMBEDDED_SVGS: true,
         WITH_COMMAND_SELECT: false,
         WITH_PRINT_BUTTON: true,
+        WITH_PREVIEW_LAZY_QUEUE: true,
         ...env,
     };
     return webpackConfig(config, args);

@@ -54,6 +54,7 @@ module.exports = (env, args) => {
     WITH_COMMAND_SELECT: withDefault(env["WITH_COMMAND_SELECT"], true),
     WITH_V1_API: withDefault(env["WITH_V1_API"], false),
     WITH_PRINT_BUTTON: withDefault(env["WITH_PRINT_BUTTON"], true),
+    WITH_PREVIEW_LAZY_QUEUE: withDefault(env["WITH_PREVIEW_LAZY_QUEUE"], false),
   };
   config["TPL_ASSETS_PATH"] = config["PRINTER_CODE"] == "m1" ? "../assets/m1" : "../assets";
 
