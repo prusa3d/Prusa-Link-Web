@@ -65,6 +65,19 @@ const getInitialMetadataFiles = (data) => {
   return files;
 }
 
+const sortFiles = (files) => {
+  const compareFiles = (f1, f2) => {
+    if (f1.type === "folder" && f2.type !== "folder") return -1;
+    if (f1.type !== "folder" && f2.type === "folder") return 1;
+    const ts1 = f1.date || 0;
+    const ts2 = f2.date || 0;
+    return (ts1 === ts2) ? f1.display.localeCompare(f2.display) : ts2 - ts1;
+  };
+  files.sort(compareFiles);
+  files.forEach(n => n.children && sortFiles(n.children));
+  return files;
+}
+
 /**
  * callback for update the file context
  * @param {object} status
@@ -79,7 +92,7 @@ const updateData = () => {
       const newData = JSON.stringify(data);
       if (data && lastData !== newData) {
         lastData = newData;
-        metadata.files = getInitialMetadataFiles(data);
+        metadata.files = sortFiles(getInitialMetadataFiles(data));
         metadata.free = data.free;
         metadata.total = data.total;
         metadata.eTag = result.eTag;
