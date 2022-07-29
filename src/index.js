@@ -14,7 +14,7 @@ import { navigate, navigateShallow } from "./router.js";
 import printer from "./printer";
 import { getJson, initAuth } from "./auth.js";
 import { initMenu } from "./printer/components/menu";
-import { translate, translateLabels } from "./locale_provider";
+import { translateLabels } from "./locale_provider";
 import { handleError } from "./printer/components/errors";
 import langSelect from "./printer/components/dropdown/language";
 
@@ -84,8 +84,8 @@ async function getRequests(initialized) {
   const promises = Object.values(apiRequests);
   const responses = await Promise.all(
     promises.map(i => i
-      .then(payload => { return { ok: true, payload, }; })
-      .catch(error => { return { ok: false, error, }; })
+      .then(payload => ({ ok: true, payload, }))
+      .catch(error => ({ ok: error.code ? false : null, error, }))
     )
   );
   const result = Object.fromEntries(
@@ -122,13 +122,15 @@ async function appLoop(version) {
     try {
       const responses = await getRequests(initialized);
       if (responses.printer)
-        connectionProblem = !responses.printer.ok;
+        connectionProblem = responses.printer.ok === null;
 
 
       Object.values(responses).forEach(({ ok, error }) => {
         if (!ok) {
           apiProblem = true;
-          handleApiError(error);
+          if (ok !== null) {
+            handleApiError(error);
+          }
         }
       });
 

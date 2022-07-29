@@ -19,6 +19,7 @@ const modal = (createElement, options = {}) => {
   const count = modalData.count;
   modalData.count = modalData.count + 1;
   const modalBox = document.querySelector(".modal-box");
+  options.className && modalBox.classList.add(options.className);
   const modalWrapper = modalBox.parentElement;
 
   while (modalBox.firstChild) {

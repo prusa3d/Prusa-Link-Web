@@ -56,6 +56,7 @@ module.exports = (env, args) => {
     WITH_PRINT_BUTTON: withDefault(env["WITH_PRINT_BUTTON"], true),
     WITH_PREVIEW_LAZY_QUEUE: withDefault(env["WITH_PREVIEW_LAZY_QUEUE"], false),
     WITH_DOWNLOAD_BUTTON: withDefault(env["WITH_DOWNLOAD_BUTTON"], true),
+    WITH_FAILURES_BEFORE_OFFLINE_SCREEN: withDefault(env["WITH_FAILURES_BEFORE_OFFLINE_SCREEN"], 3),
   };
   config["TPL_ASSETS_PATH"] = config["PRINTER_CODE"] == "m1" ? "../assets/m1" : "../assets";
 

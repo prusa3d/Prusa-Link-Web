@@ -87,6 +87,9 @@
   "msg.modal-p1": "Welcome to the web interface of your",
   "msg.modal-p2": "Please note that values are shown only when the printer is printing.",
   "msg.modal-p3": "ORIGINAL PRUSA 3D PRINTER",
+  "msg.offline.not-responsing": "Printer is not responding.",
+  "msg.offline.please-wait": "Please wait...",
+
   "msg.sla-pour-resin": "Pour enough resin for selected file into the tank and close the lid. Minimal amount of the resin is displayed on the touchscreen.",
   "msg.sla-refill": "Refill the tank to 100 % and close the lid.",
 

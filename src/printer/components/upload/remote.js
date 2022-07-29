@@ -62,7 +62,9 @@ function update(canStartPrinting) {
     lastResult = result;
     handleResult(result);
   }).catch(result => {
-    handleError(result);
+    if (result.code) {
+      handleError(result);
+    }
     reset();
   });
 }
