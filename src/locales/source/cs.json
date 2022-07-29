@@ -87,6 +87,8 @@
   "msg.modal-p1": "Vítejte na webovém rozhraní vaší",
   "msg.modal-p2": "Upozornění: některé hodnoty jsou zobrazeny pouze v průběhu tisku.",
   "msg.modal-p3": "3D TISKÁRNA ORIGINAL PRUSA",
+  "msg.offline.not-responsing": "Tiskárna nereaguje.",
+  "msg.offline.please-wait": "Prosím, čekejte...",
   "msg.sla-pour-resin": "Nalijte do vaničky dostatečné množství resinu pro vybraný soubor a zavřete víko. Minimální objem resinu je zobrazen na dotykovém displeji tiskárny.",
   "msg.sla-refill": "Dolijte vaničku do 100 % a zavřete víko.",
 

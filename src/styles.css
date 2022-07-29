@@ -1123,6 +1123,11 @@ button:disabled {
   z-index: 1000;
 }
 
+.modal-box.offline-screen {
+  background-color: transparent;
+  text-align: center;
+}
+
 .close-button {
   float: right;
   text-align: center;
