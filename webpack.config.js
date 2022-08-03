@@ -84,6 +84,11 @@ module.exports = (env, args) => {
     output_dir: path.resolve(__dirname, "src/views"),
   });
 
+  let commitHash = require('child_process')
+    .execSync('git rev-parse --short HEAD')
+    .toString()
+    .trim();
+
   return {
     mode: config.MODE,
     entry: "./src/index.js",
@@ -106,6 +111,9 @@ module.exports = (env, args) => {
         template: "./src/views/index.html",
         minify: !env.dev,
       }),
+      new webpack.DefinePlugin({
+        __COMMIT_HASH__: JSON.stringify(commitHash)
+      })
     ],
 
     module: {

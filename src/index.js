@@ -95,7 +95,7 @@ async function getRequests(initialized) {
 }
 
 window.onload = () => {
-  console.log(`${process.env.APP_NAME} v.${process.env.APP_VERSION}`);
+  console.log(`${process.env.APP_NAME} v.${process.env.APP_VERSION} #${__COMMIT_HASH__}`);
   initMenu();
   langSelect.init("lang-dropdown", "lang-dropdown");
   translateLabels(); // Translate menu and telemetry
