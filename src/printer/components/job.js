@@ -508,11 +508,11 @@ function setupSlaResumeButton(state, selector) {
 
 function setupDeleteButton(jobState, file, isFilePreview) {
   const btn = document.querySelector("#job #delete");
-  setEnabled(btn, file.refs?.resource);
-  setVisible(btn, isFilePreview || jobState === "Operational");
-
-  if (btn)
+  if (btn) {
+    setEnabled(btn, !file.ro && file.refs?.resource);
+    setVisible(btn, isFilePreview || jobState === "Operational");
     btn.onclick = () => deleteFile(file);
+  }
 }
 
 function setupDownloadButton(jobState, file, isFilePreview) {
