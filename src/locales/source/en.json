@@ -228,6 +228,11 @@
   "user.re-password": "Repeat Password",
   "user.title": "User",
   "user.username": "User Name",
+  "user.format.name": "Username length must be at least 3 characters long.",
+  "user.format.password-1": "Password can't contain spaces on the beggining nor the end and must meet at least one of these options:",
+  "user.format.password-2": "- Minimal length 8 characters, including one lowercase letter, one uppercase letter and one number",
+  "user.format.password-3": "- Minimal length 8 characters, including one non-alphanumeric character (e.g. @)",
+  "user.format.password-4": "- Minimal length 15 characters",
 
   "version.api": "API",
   "version.fe": "Frontend",

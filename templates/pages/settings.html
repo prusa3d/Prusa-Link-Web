@@ -69,8 +69,13 @@
 {%
   set section_user = [
     {text: 'username', label: 'user.username', id: 'username', type: 'text', editable: true, spacer: true },
+    {text: '', label: 'user.format.name', translate: true, className: 'txt-sm'},
     {text: 'new password', label: 'user.new-password', id: 'new-password', type: 'password', editable: true, spacer: true },
     {text: 'repeat password', label: 'user.re-password', id: 're-password', type: 'password', editable: true, spacer: true },
+    {text: '', label: 'user.format.password-1', translate: true, className: 'txt-sm'},
+    {text: '', label: 'user.format.password-2', translate: true, className: 'txt-sm'},
+    {text: '', label: 'user.format.password-3', translate: true, className: 'txt-sm'},
+    {text: '', label: 'user.format.password-4', translate: true, className: 'txt-sm'},
     {text: ''},
     {text: ''},
     {text: 'current password', label: 'user.password', id: 'password', type: 'password', editable: true, spacer: true},
@@ -116,7 +121,9 @@
             <div class="row">
 
               <div class="col txt-sm">
+                {% if values.text %}
                 <p class="txt-bold txt-grey" data-label="{{values.label}}">{{ values.text }}</p>
+                {% endif %}
               </div>
 
               {% if values.type != "btn-only" %}
@@ -148,7 +155,15 @@
                       {% if values.location %}
                         data-where="{{values.location}}"
                       {% endif %}
-                    >{{values.value}}</p>
+                      {% if values.translate %}
+                        data-label="{{values.label}}"
+                      {% endif %}
+                      {% if values.className %}
+                        class="{{values.className}}"
+                      {% endif %}
+                    >
+                      {{values.value}}
+                    </p>
                   {% endif %}
                 </div>
               {% endif %}
