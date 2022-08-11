@@ -56,11 +56,30 @@ function initDisableSteppersBtn() {
 }
 
 function updateButtons(state) {
-  const disabled = state.flags.printing || state.flags.pausing || state.flags.paused;
-  const whitelist = ["move-step", "extrude-retract-step"];
-  document.querySelectorAll("#control button").forEach(
-    btn => setDisabled(btn, !(whitelist.includes(btn.parentNode.id) || !disabled))
-  );
+  const controls = document.querySelectorAll("#control button");
+  const whitelistWhenPrinting = [
+    "flowrate",
+    "bed",
+    "nozzle",
+    "speed"
+  ];
+
+  const whitelistWhenPaused = [
+    ...whitelistWhenPrinting,
+    "move-step",
+    "extrude",
+    "retract",
+    "extrude-retract-step",
+    "heated-bed-xy-move",
+  ];
+
+  if (state.flags.printing || state.flags.pausing || state.flags.paused) {
+    const whitelist = state.flags.paused ? whitelistWhenPaused : whitelistWhenPrinting;
+    controls.forEach(btn => {
+      const controlId =  btn.id || btn.parentNode.id || btn.parentNode.parentNode.id;
+      setDisabled(btn, !whitelist.includes(controlId));
+    });
+  }
 }
 
 function initExtrudeBtn() {

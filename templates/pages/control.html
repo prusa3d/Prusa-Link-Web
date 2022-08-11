@@ -150,7 +150,7 @@
           <button class="action square" data-action="move" data-value="y-">
             <img src="{{ pre.countOrRenderAssets('arrow_down.svg') | safe }}"/>
           </button>
-          <button class="action square" data-action="home" data-value="x,y">
+          <button id="home" class="action square" data-action="home" data-value="x,y">
             <img src="{{ pre.countOrRenderAssets('home.svg') | safe }}"/>
           </button>
         </div>
@@ -195,7 +195,7 @@
       </div>
     </div>
 
-    <div class="col">
+    <div class="col" id="extrude-retract">
       <p
         data-label="control.extruder"
         class="txt-bold txt-grey txt-md txt-underline title"
@@ -240,7 +240,7 @@
         >
           {{ key }}
         </p>
-        <div class="input-wrapper">
+        <div class="input-wrapper" id="{{ values.action }}">
           <div class="square">
             <p
               data-format="{{ values.format }}"
