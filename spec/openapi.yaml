@@ -172,6 +172,27 @@ components:
         sdk:
           type: string
           example: "0.7.0"
+        capabilities:
+          description: |
+            Additional capabilities the printer has. The object is expected to
+            be extended in the future with more capabilities. The absence of a
+            capability in the object, or the complete absence of the object
+            means the printer doesn't support such capability (probably doesn't
+            even know such capability might exist).
+          type: object
+          default: {}
+          properties:
+            upload-by-put:
+              description: |
+                The printer supports uploading GCodes by the PUT method (as
+                described in this document). It is capable of doing the PUT and
+                HEAD to /api/v1/files/{storage}/{path} and it is capable of
+                answering the /api/v1/storage endpoint.
+
+                In absence of this capability, client MAY opt to try the legacy
+                "octoprint" POST to /api/files/{storage}.
+              type: boolean
+              default: false
       required:
         - api
         - version
