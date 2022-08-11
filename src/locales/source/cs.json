@@ -228,6 +228,12 @@
   "user.title": "Uživatel",
   "user.username": "Uživatelské jméno",
 
+  "user.format.name": "Uživatelské jméno musí obsahovat alespoň 3 znaky.",
+  "user.format.password-1": "Heslo nesmí začínat či končit mezerami, a zároveň musí splňovat jednu z následujících podmínek:",
+  "user.format.password-2": "- Heslo musí obsahovat minimálně 8 znaků, zahrnujících alespoň 1 malé písmeno, 1 velké písmeno a 1 číslo",
+  "user.format.password-3": "- Heslo musí obsahovat minimálně 8 znaků, zahrnujících alespoň 1 speciální symbol (např. @)",
+  "user.format.password-4": "- Heslo musí obsahovat minimálně 15 znaků", 
+
   "version.api": "API",
   "version.fe": "Frontend",
   "version.firmware": "Firmware",
