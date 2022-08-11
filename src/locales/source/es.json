@@ -1,7 +1,7 @@
 {
   "btn.back": "Atrás",
   "btn.cancel": "Cancelar",
-  "btn.cancel-pt": "Cancelar impresión",
+  "btn.stop-print": "Cancelar impresión",
   "btn.chg-exp": "Ajustes de Impresión",
   "btn.confirm": "Confirmar",
   "btn.continue": "Continuar",

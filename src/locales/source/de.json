@@ -1,7 +1,7 @@
 {
   "btn.back": "Zurück",
   "btn.cancel": "Abbrechen",
-  "btn.cancel-pt": "Druck abbrechen",
+  "btn.stop-print": "Druck abbrechen",
   "btn.chg-exp": "Druckeinstellungen",
   "btn.confirm": "Bestätigen",
   "btn.continue": "Fortfahren",

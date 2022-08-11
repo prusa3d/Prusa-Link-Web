@@ -1,7 +1,7 @@
 {
   "btn.back": "Indietro",
   "btn.cancel": "Annulla",
-  "btn.cancel-pt": "Annulla stampa",
+  "btn.stop-print": "Annulla stampa",
   "btn.chg-exp": "Impostazioni di stampa",
   "btn.confirm": "Conferma",
   "btn.continue": "Continua",

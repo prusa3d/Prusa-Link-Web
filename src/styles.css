@@ -1886,6 +1886,13 @@ input .autoresize {
   .button-yes {
     border-radius: 5px;
   }
+  .job-title {
+    display: flex;
+    flex-direction: row;
+  }
+  .job-title p {
+    flex: 1 0 0;
+  }
   .job-buttons-first {
     margin-right: auto;
     justify-content: flex-start;

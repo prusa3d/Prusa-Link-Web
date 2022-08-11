@@ -1,7 +1,7 @@
 {
   "btn.back": "Zpět",
   "btn.cancel": "Zrušit",
-  "btn.cancel-pt": "Zrušit tisk",
+  "btn.stop-print": "Zrušit tisk",
   "btn.chg": "Změnit",
   "btn.chg-exp": "Tisková nastavení",
   "btn.confirm": "Potvrdit",
