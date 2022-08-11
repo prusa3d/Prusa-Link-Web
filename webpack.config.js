@@ -84,7 +84,7 @@ module.exports = (env, args) => {
     output_dir: path.resolve(__dirname, "src/views"),
   });
 
-  let commitHash = require('child_process')
+  let commitHash = process.env['GIT_COMMIT_HASH'] || require('child_process')
     .execSync('git rev-parse --short HEAD')
     .toString()
     .trim();
