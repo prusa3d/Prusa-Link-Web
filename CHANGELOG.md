@@ -1,5 +1,9 @@
 # Changelog
 
+## 2022-08-11 (3.11.2)
+
+* Disable delete buttons for files from SD card
+
 ## 2022-05-10 (3.11.1)
 
 * Hide print button on MINI

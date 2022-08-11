@@ -408,7 +408,7 @@ function setupFileButtons(node, elm) {
 
   const deleteBtn = elm.getElementById("delete");
   if (deleteBtn) {
-    setEnabled(deleteBtn, node.refs?.resource);
+    setEnabled(deleteBtn, !node.ro && node.refs?.resource);
     deleteBtn.onclick = (e) => {
       deleteFile(node);
       e.stopPropagation();

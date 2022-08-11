@@ -1,6 +1,6 @@
 {
   "name": "prusalink",
-  "version": "3.11.1",
+  "version": "3.11.2",
   "description": "This is a printer connect webservice. It is compatible with other 3D printer services, so many applications can use this service.",
   "private": false,
   "scripts": {
