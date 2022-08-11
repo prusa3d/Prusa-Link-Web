@@ -1,7 +1,7 @@
 {
   "btn.back": "뒤로",
   "btn.cancel": "취소",
-  "btn.cancel-pt": "출력을 취소하기",
+  "btn.stop-print": "출력을 취소하기",
   "btn.chg": "교체",
   "btn.chg-exp": "프린트 세팅",
   "btn.confirm": "결정",

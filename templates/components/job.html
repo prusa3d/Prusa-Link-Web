@@ -6,11 +6,14 @@
 #}
 
 <div id="job" {{ to_hidden }}>
-  <p
-    data-type="job"
-    data-where="job.file.display"
-    class="txt-bold txt-md file-name"
-  ></p>
+  <div class="job-title">
+    <p
+      data-type="job"
+      data-where="job.file.display"
+      class="txt-bold txt-md file-name"
+    ></p>
+    <button id="job-close" class="close-button"></button>
+  </div>
   <div id="preview-wrapper">
     <div class="preview-img">
       <img id="preview-img" src="{{ pre.countOrRenderAssets('thumbnail.svg') | safe }}" />

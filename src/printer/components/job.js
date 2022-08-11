@@ -428,30 +428,35 @@ function setupButtons(context, jobResult, file, isFilePreview) {
 }
 
 function setupCancelButton(state, isFilePreview) {
-  const btn = document.querySelector("#job #cancel");
+  const btnStop = document.querySelector("#job #stop");
+  const btnClose = document.querySelector("#job-close");
+  const isJobPreview = state.flags.ready && state.flags.operational;
 
-  if (isFilePreview) {
-    if (btn)
-      btn.onclick = () => selectFilePreview(null);
-  } else {
-    const isJobPreview = state.flags.ready && state.flags.operational;
+  if (btnStop) {
+    if (!isFilePreview) {
+      const isVisible = !isJobPreview || (process.env.PRINTER_TYPE === "sla" && state.text != "Feed me");
+      setVisible(btnStop, isVisible);
+      btnStop.onclick = cancelJob;
+    }
+  }
 
-    if (process.env.PRINTER_TYPE === "sla")
-      setVisible(btn, state.text != "Feed me");
-
-    if (btn)
-      btn.onclick = isJobPreview ? cancelPreview : cancelJob;
+  if (btnClose) {
+    setVisible(btnClose, isJobPreview || isFilePreview);
+    btnClose.onclick = isFilePreview 
+      ? () => selectFilePreview(null)
+      : cancelPreview;
   }
 }
 
 function setupStartButton(state, fileUrl, isFilePreview) {
   const btn = document.querySelector("#job #start");
   const canPrint = state.flags.ready && state.flags.operational;
-  setVisible(btn, isFilePreview || canPrint)
-  setEnabled(btn, canPrint);
 
-  if (btn)
+  if (btn) {
+    setVisible(btn, isFilePreview || canPrint)
+    setEnabled(btn, canPrint);
     btn.onclick = () => startJob(!state.flags.checked, fileUrl);
+  }
 }
 
 function setupPauseButton(state, selector) {
