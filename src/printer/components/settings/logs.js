@@ -11,7 +11,7 @@ import formatData from "../dataFormat";
 
 let selectedFileName = null;
 let selectedFileDate = null;
-const sizeLimit = 1_000_000;
+const sizeLimit = 1024 * 1024;
 
 const load = () => {
   initLogs();
@@ -67,7 +67,7 @@ function showLogExceedSizeLimit() {
 }
 
 function createLi(innerHTML) {
-  return `<li class="txt-md>${innerHTML}</li>`;
+  return `<li class="txt-md">${innerHTML}</li>`;
 }
 
 const update = () => {
