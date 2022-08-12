@@ -22,7 +22,6 @@
   "btn.start-pt": "Start tisku",
   "btn.upld-file": "Nahrát soubor",
   "btn.yes": "Ano",
-
   "conn.err-conn": "Nelze se připojit k tiskárně",
   "conn.printer-status": "Stav připojení 3D tiskárny",
   "conn.prusa-connect-status": "Stav připojení PRUSA CONNECT",
@@ -30,11 +29,9 @@
   "conn.suc": "Úspěšně připojeno",
   "conn.title": "připojení",
   "conn.unsuc": "Připojení se nezdařilo",
-
   "control.axis.x": "Osa X",
   "control.axis.y": "Osa Y",
   "control.axis.z": "Osa Z",
-
   "control.coordinates": "Souřadnice tiskárny",
   "control.extrude-retract-step": "Krok vytlačení/vtažení [mm]",
   "control.extruder": "Extrudér",
@@ -48,12 +45,9 @@
   "control.speed": "Rychlost",
   "control.stepper-motors": "Krokové motory",
   "control.title": "Ovládání tiskárny",
-
   "download.start-pt": "Spustit tisk",
   "download.dl-started": "Začátek stahování",
-
   "error.401-title": "Přihlášení selhalo",
-
   "exp-times.exp-time": "Doba osvitu [s]",
   "exp-times.faster": "Rychlejší",
   "exp-times.inc": "Navýšení expozice (s)",
@@ -62,20 +56,16 @@
   "exp-times.slower": "Pomalejší",
   "exp-times.high-viscosity": "Velmi Viskózní",
   "exp-times.title": "Tisková nastavení",
-
   "glob.hd-st": "Stav zařízení",
   "glob.hostname": "Hostname",
-
   "home.link": "Přehled",
   "home.title": "Stav tiskárny",
-
   "logs.empty-file": "Soubor je prázdný!",
   "logs.file-too-large": "Soubory logů o velikosti větší než {{size}} jsou k dispozici pouze ke stažení!",
   "logs.not-selected": "Není vybrán soubor logů!",
   "logs.select-file": "Vyberte soubor",
   "logs.select-file-placeholder": "Vyberte soubor logů",
   "logs.title": "Logy",
-
   "msg.api-key-1": "Vítejte ve webovém rozhraní Prusa Link Web!",
   "msg.api-key-2": "Vložte API klíč.",
   "msg.api-key-3": "Otevřete menu Nastavení -> Síť -> PrusaLink.",
@@ -91,7 +81,6 @@
   "msg.offline.please-wait": "Prosím, čekejte...",
   "msg.sla-pour-resin": "Nalijte do vaničky dostatečné množství resinu pro vybraný soubor a zavřete víko. Minimální objem resinu je zobrazen na dotykovém displeji tiskárny.",
   "msg.sla-refill": "Dolijte vaničku do 100 % a zavřete víko.",
-
   "ntf.actn-pending": "Akce se vykoná po dokončení vytvrzení vrstvy.",
   "ntf.e-307": "Chyba při měření množství resinu!",
   "ntf.error": "Chyba",
@@ -105,22 +94,17 @@
   "ntf.upld-suc": "Soubor {{file_name}} byl úspěšně nahrán.",
   "ntf.upld-unsuc": "Nahrání souboru {{file_name}} selhalo.",
   "ntf.upld-start": "Požadavek na nahrání souboru byl přijat",
-
   "print.fdm.1": "Je tiskárna připravena?",
   "print.fdm.2": "Je tisková podložka prázdná a čistá?",
-
   "print.sla.1": "Spouštíte vzdálený tisk pomocí webového rozhraní. Ujistěte se, že vaše 3D tiskárna je správně nastavena a je připravena k tisku.",
   "print.sla.2": "Tisková platforma je čistá a správně nainstalovaná.",
   "print.sla.3": "Ve vaničce je dostatečné množství resinu",
-
   "printer.location": "Umístění tiskárny",
   "printer.name": "Název tiskárny",
   "printer.title": "Tiskárna",
-
   "proj.add-from.local": "Lokálního úložiště",
   "proj.add-from.remote": "Vzdálené url",
   "proj.add-from.title": "Nahrát soubor z",
-
   "proj.del": "Smazat",
   "proj.details": "Detaily souboru",
   "proj.download": "Stáhnout",
@@ -131,7 +115,6 @@
   "proj.storage": "Úložiště",
   "proj.title": "Soubory",
   "proj.up-folder": "nadřazená složka",
-
   "prop.at": "v",
   "prop.cover": "Stav víka",
   "prop.cover-closed": "Uzavřené",
@@ -181,21 +164,16 @@
   "prop.today-at": "Dnes v",
   "prop.true": "Ano",
   "prop.z-height": "Výška Z",
-
   "serial.label": "Sériové číslo",
-
   "settings.title": "Nastavení",
-
   "sys-version.description": "Popis",
   "sys-version.id": "ID",
   "sys-version.os": "OS",
   "sys-version.python": "Python",
   "sys-version.title": "Verze systému",
-
   "temps.title": "Teploty",
   "temps.x": "Čas [s]",
   "temps.y": "Teplota [°C]",
-
   "unit.b": "B",
   "unit.gb": "GB",
   "unit.h": "h",
@@ -206,11 +184,9 @@
   "unit.minute_plural": "minut",
   "unit.ml": "ml",
   "unit.rpm": "RPM",
-
   "upld.direct.choose": "Vyberte {{file}} nebo jej přetáhněte sem.",
   "upld.direct.description": "Nahrajte soubor do tiskárny prostřednictvím místní sítě",
   "upld.direct.title": "Přímé nahrání",
-
   "upld.remote.description": "Nahrajte soubor ze vzdálené adresy URL přímo do tiskárny",
   "upld.remote.hint-fdm": "Zadejte URL souboru souboru G-CODE",
   "upld.remote.hint-sla": "Zadejte URL adresu kompatibilního souboru",
@@ -218,22 +194,18 @@
   "upld.remote.file": "Název souboru",
   "upld.remote.file-hint": "Zadejte název souboru souboru",
   "upld.remote.title": "Vzdálené URL",
-
   "upld.start-pt": "po přenosu zahájit tisk",
   "upld.title": "Nahrát soubor",
-
   "user.new-password": "Nové heslo",
   "user.password": "Heslo",
   "user.re-password": "Zopakujte heslo",
   "user.title": "Uživatel",
   "user.username": "Uživatelské jméno",
-
   "user.format.name": "Uživatelské jméno musí obsahovat alespoň 3 znaky.",
   "user.format.password-1": "Heslo nesmí začínat či končit mezerami, a zároveň musí splňovat jednu z následujících podmínek:",
   "user.format.password-2": "- Heslo musí obsahovat minimálně 8 znaků, zahrnujících alespoň 1 malé písmeno, 1 velké písmeno a 1 číslo",
   "user.format.password-3": "- Heslo musí obsahovat minimálně 8 znaků, zahrnujících alespoň 1 speciální symbol (např. @)",
-  "user.format.password-4": "- Heslo musí obsahovat minimálně 15 znaků", 
-
+  "user.format.password-4": "- Heslo musí obsahovat minimálně 15 znaků",
   "version.api": "API",
   "version.fe": "Frontend",
   "version.firmware": "Firmware",
@@ -241,5 +213,6 @@
   "version.sdk": "SDK",
   "version.server": "Server",
   "version.text": "Text",
-  "version.title": "Verze"
+  "version.title": "Verze",
+  "msg.offline.${id}": null
 }

@@ -207,5 +207,14 @@
   "version.sdk": "SDK",
   "version.server": "서버",
   "version.text": "텍스트",
-  "version.title": "버전"
+  "version.title": "버전",
+  "msg.offline.${id}": null,
+  "msg.offline.not-responsing": null,
+  "msg.offline.please-wait": null,
+  "prop.nozzle-diameter": null,
+  "user.format.name": "",
+  "user.format.password-1": "",
+  "user.format.password-2": "",
+  "user.format.password-3": "",
+  "user.format.password-4": ""
 }
