@@ -115,6 +115,14 @@ paths:
           schema:
             type: boolean
             default: False
+        - in: header
+          name: Overwrite
+          description: Whether to overwrite already existing files
+          schema:
+            type: string
+            description: ?0=False, ?1=True, according RFC8941/3.3.6
+            enum: ["?0", "?1"]
+            default: "?0"
       responses:
         201:
           description: Created
