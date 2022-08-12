@@ -22,7 +22,6 @@
   "btn.start-pt": "Start Print",
   "btn.upld-file": "Upload File",
   "btn.yes": "Yes",
-
   "conn.err-conn": "Cannot connect to the printer",
   "conn.printer-status": "3D Printer Connection Status",
   "conn.prusa-connect-status": "PRUSA CONNECT Status",
@@ -30,11 +29,9 @@
   "conn.suc": "Successfully connected",
   "conn.title": "Connection",
   "conn.unsuc": "Connection failed",
-
   "control.axis.x": "X axis",
   "control.axis.y": "Y axis",
   "control.axis.z": "Z axis",
-
   "control.coordinates": "Printer Coordinates",
   "control.extrude-retract-step": "Extrude/Retract Step [mm]",
   "control.extruder": "Extruder",
@@ -48,12 +45,9 @@
   "control.speed": "Speed",
   "control.stepper-motors": "Stepper Motors",
   "control.title": "Printer Control",
-
   "download.start-pt": "Autostart",
   "download.dl-started": "Download Started",
-
   "error.401-title": "Login failed",
-
   "exp-times.exp-time": "Exposure [s]",
   "exp-times.faster": "Faster",
   "exp-times.inc": "Exposure time incr. [s]",
@@ -62,20 +56,16 @@
   "exp-times.slower": "Slower",
   "exp-times.high-viscosity": "High Viscosity",
   "exp-times.title": "Print Settings",
-
   "glob.hd-st": "Hardware state",
   "glob.hostname": "Hostname",
-
   "home.link": "Dashboard",
   "home.title": "Printer Status",
-
   "logs.empty-file": "Log file is empty!",
   "logs.file-too-large": "Log files of size larger than {{size}} are available only for downloading.",
   "logs.not-selected": "No log file is selected!",
   "logs.select-file": "Select File",
   "logs.select-file-placeholder": "Select log file",
   "logs.title": "Logs",
-
   "msg.api-key-1": "Welcome to the Prusa Link Web web interface.",
   "msg.api-key-2": "Please insert the API key.",
   "msg.api-key-3": "You can find it in Settings -> Network -> PrusaLink.",
@@ -89,10 +79,8 @@
   "msg.modal-p3": "ORIGINAL PRUSA 3D PRINTER",
   "msg.offline.not-responsing": "Printer is not responding.",
   "msg.offline.please-wait": "Please wait...",
-
   "msg.sla-pour-resin": "Pour enough resin for selected file into the tank and close the lid. Minimal amount of the resin is displayed on the touchscreen.",
   "msg.sla-refill": "Refill the tank to 100 % and close the lid.",
-
   "ntf.actn-pending": "Action will be executed after layer finish.",
   "ntf.e-307": "Resin measuring failed!",
   "ntf.error": "Error",
@@ -106,22 +94,17 @@
   "ntf.upld-suc": "The file {{file_name}} was uploaded successfully.",
   "ntf.upld-unsuc": "The file {{file_name}} upload was unsuccessful.",
   "ntf.upld-start": "Upload request has been accepted",
-
   "print.fdm.1": "Is the printer ready?",
   "print.fdm.2": "Is printing sheet empty and clean?",
-
   "print.sla.1": "You are about to start a remote print using the web UI. Please, make sure your 3D printer is set up correctly and ready for the print.",
   "print.sla.2": "The printing platform is clean and installed in the printer",
   "print.sla.3": "A sufficient amount of resin is in the tank",
-
   "printer.location": "Printer location",
   "printer.name": "Printer name",
   "printer.title": "Printer",
-
   "proj.add-from.local": "Local storage",
   "proj.add-from.remote": "Remote url",
   "proj.add-from.title": "Add file from",
-
   "proj.del": "Delete",
   "proj.download": "Download",
   "proj.details": "File details",
@@ -132,7 +115,6 @@
   "proj.storage": "Storage",
   "proj.title": "Files",
   "proj.up-folder": "parent folder",
-
   "prop.at": "at",
   "prop.cover": "Cover state",
   "prop.cover-closed": "Closed",
@@ -182,21 +164,16 @@
   "prop.today-at": "Today at",
   "prop.true": "Yes",
   "prop.z-height": "Z-Height",
-
   "serial.label": "Serial Number",
-
   "settings.title": "Settings",
-
   "sys-version.description": "Description",
   "sys-version.id": "ID",
   "sys-version.os": "OS",
   "sys-version.python": "Python",
   "sys-version.title": "System Version",
-
   "temps.title": "Temperatures",
   "temps.x": "Time [s]",
   "temps.y": "Temperature [°C]",
-
   "unit.b": "B",
   "unit.gb": "GB",
   "unit.h": "h",
@@ -207,11 +184,9 @@
   "unit.minute_plural": "minutes",
   "unit.ml": "ml",
   "unit.rpm": "RPM",
-
   "upld.direct.choose": "Click to choose a {{file}} file or drag it here",
   "upld.direct.description": "Upload file directly to the printer via local network",
   "upld.direct.title": "Direct upload",
-
   "upld.remote.description": "Upload file from remote URL directly to the printer",
   "upld.remote.hint-fdm": "Type URL of G-CODE file",
   "upld.remote.hint-sla": "Type URL of compatible file",
@@ -219,10 +194,8 @@
   "upld.remote.file": "File name",
   "upld.remote.file-hint": "Type file name",
   "upld.remote.title": "Remote url",
-
   "upld.start-pt": "Start print after transfer",
   "upld.title": "Upload file",
-
   "user.new-password": "New Password",
   "user.password": "Password",
   "user.re-password": "Repeat Password",
@@ -233,7 +206,6 @@
   "user.format.password-2": "- Minimal length 8 characters, including one lowercase letter, one uppercase letter and one number",
   "user.format.password-3": "- Minimal length 8 characters, including one non-alphanumeric character (e.g. @)",
   "user.format.password-4": "- Minimal length 15 characters",
-
   "version.api": "API",
   "version.fe": "Frontend",
   "version.firmware": "Firmware",
@@ -241,5 +213,6 @@
   "version.sdk": "SDK",
   "version.server": "Server",
   "version.text": "Text",
-  "version.title": "Version"
+  "version.title": "Version",
+  "msg.offline.${id}": null
 }
