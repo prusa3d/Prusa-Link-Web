@@ -11,7 +11,7 @@ const locales = require("./locales/locales.json");
 const languages = locales.langs;
 /** All known texts */
 const texts = locales.texts;
-
+const fallbackLang = languages.indexOf("en");
 /** Current language */
 let lang;
 /** Index of current language in languages array. */
@@ -67,8 +67,11 @@ export function getLanguages() {
 export function translate(textId, parameters) {
   let word = getNestedValue(texts, `${textId}.${langIndex}`);
 
-  if (word === null || word === undefined) {
-    word = textId;
+  if (!word) {
+    word = getNestedValue(texts, `${textId}.${fallbackLang}`);
+    if (!word) {
+      word = textId;
+    }
     if (process.env.MODE == "development") {
       console.warn(
         `[${lang}] missing translation for "${textId.split("\n").join("\\n")}"`
