@@ -12,6 +12,10 @@ export function renderProgressImg(root, src, progress = 0) {
   if (!root)
     return;
 
+  while (root.firstChild) {
+    root.removeChild(root.firstChild)
+  }
+
   const wrapper = document.createElement("div");
   wrapper.className = "progress-img";
 

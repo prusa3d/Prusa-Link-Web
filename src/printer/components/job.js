@@ -140,7 +140,6 @@ function updateJob(context, isFilePreview) {
     let loading = isLoading(context.current.state);
 
     if (path && path !== metadata.path) {
-      console.log(`File Path was changed\nold path: ${metadata.path}\nnew path: ${path}`)
       metadata = getDefaultMetadata();
       metadata.path = path;
       loading = true;
@@ -160,7 +159,6 @@ function updateJob(context, isFilePreview) {
 }
 
 function reFetch(path) {
-  console.log("Refetch");
   getJson(`/api/files/${path}`).then((result) => {
     if (!result?.data)
       console.error("No data from BE!");
@@ -179,8 +177,6 @@ function reFetch(path) {
       console.warn("Missing refs for " + path);
 
     getThumbnailImgUrl(data.refs?.thumbnailBig, data.date).then(url => {
-      console.log("Ref to thumbnail: " + data.refs?.thumbnailBig);
-      console.log("URL to thumbnail img: " + url);
       if (canEditMetadata(path)) {
         metadata.thumbnail = {
           ready: true,
@@ -298,13 +294,17 @@ function setupRefill(stateText) {
 }
 
 function setupThumbnail(url) {
+  const newUrl = url || fallbackThumbnailUrl;
   const img = document.getElementById("preview-img");
-  if (!img) {
-    console.error("Thumbnail element was not found!");
-    return;
-  }
-  if (url || fallbackThumbnailUrl) {
-    img.src = url || fallbackThumbnailUrl;
+  const container = img.parentElement;
+
+  if (img && img.src !== newUrl) {
+    // force re-render image to avoid issues on FF
+    const newImg = document.createElement("img");
+    newImg.src = newUrl;
+    newImg.id = "preview-img";
+    container.removeChild(img);
+    container.appendChild(newImg);
   }
 }
 
@@ -312,7 +312,7 @@ function setupProgress(progressIsVisible) {
   const {
     thumbnail,
   } = metadata;
-
+  let thumbnailChanged = false;
   const progressWithImg = document.querySelector(".progress-with-img");
   const progressWithoutImg = document.querySelector(".progress-without-img");
 
@@ -323,10 +323,16 @@ function setupProgress(progressIsVisible) {
   }
 
   const previewImgWrapper = document.querySelector(".progress-img-wrapper");
+  const currentThumbnail = previewImgWrapper.getAttribute("data-file");
+  if (currentThumbnail !== thumbnail.url) {
+    thumbnailChanged = true;
+    previewImgWrapper.setAttribute("data-file", thumbnail.url);
+  }
+
 
   // Render (mount) progress image
   const haveThumbnail = Boolean(thumbnail.ready && thumbnail.url);
-  if (haveThumbnail && thumbnail.url && !previewImgWrapper?.hasChildNodes()) {
+  if (haveThumbnail && thumbnail.url && !thumbnailChanged) {
     renderProgressImg(previewImgWrapper, thumbnail.url);
   }
 
