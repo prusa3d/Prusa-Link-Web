@@ -7,6 +7,7 @@ import { handleError } from "./errors";
 import { translate } from "../../locale_provider";
 import download from "../../helpers/download";
 import { modal } from "./modal";
+import { setDisabled } from "../../helpers/element";
 
 /**
  * download file
@@ -27,14 +28,17 @@ const createDeleteFileModal = (close, file) => {
   const label = node.getElementById("modal-question-label");
   label.innerText = translate("msg.del-proj", { file_name: file.display || file.name });
   const yesButton = node.getElementById("yes");
+  const noButton = node.getElementById("no");
+  noButton.addEventListener("click", close);
   yesButton.addEventListener("click", (event) => {
     event.preventDefault();
+    setDisabled(yesButton, true);
+    setDisabled(noButton, true);
     getJson(file.refs.resource, { method: "DELETE" })
         .catch((result) => handleError(result))
         .finally((result) => close());
   });
-  const noButton = node.getElementById("no");
-  noButton.addEventListener("click", close);
+
   return node;
 };
 

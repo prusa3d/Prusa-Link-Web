@@ -7,7 +7,7 @@ import { handleError } from "./errors";
 import { modal } from "./modal";
 import { navigate } from "../../router.js";
 import { translate } from "../../locale_provider";
-
+import { setDisabled } from "../../helpers/element";
 
 /**
  * Start printing.
@@ -69,8 +69,12 @@ export const pauseJob = () => {
   const label = node.getElementById("modal-question-label");
   label.innerText = translate("msg.cancel");
   const yesButton = node.getElementById("yes");
+  const noButton = node.getElementById("no");
+
   yesButton.addEventListener("click", (event) => {
     event.preventDefault();
+    setDisabled(yesButton, true);
+    setDisabled(noButton, true);
     getJson("/api/job", {
       method: "POST",
       headers: {
@@ -82,7 +86,7 @@ export const pauseJob = () => {
     );
     close();
   });
-  const noButton = node.getElementById("no");
+  
   noButton.addEventListener("click", close);
   return node;
 };
@@ -104,14 +108,16 @@ export const pauseJob = () => {
   const template = document.getElementById("modal-confirm");
   const node = document.importNode(template.content, true);
   const yesButton = node.getElementById("yes");
+  const noButton = node.getElementById("no");
   yesButton.addEventListener("click", (event) => {
     event.preventDefault();
+    setDisabled(yesButton, true);
+    setDisabled(noButton, true);
     confirmJob(fileUrl)
       .then(() => navigate("#dashboard"))
       .catch((result) => handleError(result))
       .finally(() => close());
   });
-  const noButton = node.getElementById("no");
   noButton.addEventListener("click", close);
   return node;
 };

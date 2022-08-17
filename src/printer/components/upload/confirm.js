@@ -1,15 +1,19 @@
 import { modal } from "../modal";
+import { setDisabled } from "../../../helpers/element";
 
 const createConfirmUpload = (close, checkbox) => {
     const template = document.getElementById("modal-confirm");
     const node = document.importNode(template.content, true);
     const yesButton = node.getElementById("yes");
+    const noButton = node.getElementById("no");
     yesButton.addEventListener("click", (event) => {
       event.preventDefault();
+      setDisabled(yesButton, true);
+      setDisabled(noButton, true);
       checkbox.checked = true;
       close();
     });
-    const noButton = node.getElementById("no");
+    
     noButton.addEventListener("click", () => {
         checkbox.checked = false;
         close();
