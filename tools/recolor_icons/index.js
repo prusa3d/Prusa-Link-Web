@@ -39,10 +39,15 @@ function recolor(config) {
           console.log("⬤ ", outputFilePath);
         }
       } else if (referencing) {
-        if (lnk.sync(filePath, outputDir, {type: 'symbolic', force: true})) {
-          stats.referenced++;
-          console.log("◯ ", outputFilePath);
+        try {
+          if (lnk.sync(filePath, outputDir, {type: 'symbolic', force: true})) {
+            stats.referenced++;
+          }
+        } catch (e) {
+          console.warn(e.message);
+          stats.unchanged += 1;
         }
+        console.log("◯ ", outputFilePath);
       }
     }
   }
