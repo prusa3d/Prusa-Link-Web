@@ -438,6 +438,8 @@ function setupCancelButton(state, isFilePreview) {
   const btnClose = document.querySelector("#job-close");
   const isJobPreview = state.flags.ready && state.flags.operational;
 
+  setEnabled(btnStop, state.flags.printing && !state.flags.cancelling)
+
   if (btnStop) {
     if (!isFilePreview) {
       const isVisible = !isJobPreview || (process.env.PRINTER_TYPE === "sla" && state.text != "Feed me");
@@ -468,7 +470,7 @@ function setupStartButton(state, fileUrl, isFilePreview) {
 function setupPauseButton(state, selector) {
   const btn = document.querySelector(selector);
   setVisible(btn, state.flags.printing && !state.flags.paused);
-  setEnabled(btn, state.flags.printing);
+  setEnabled(btn, state.flags.printing && !state.flags.pausing);
 
   if (btn && !btn.onclick)
     btn.onclick = pauseJob;
