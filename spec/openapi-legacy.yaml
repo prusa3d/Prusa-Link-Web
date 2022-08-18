@@ -1706,6 +1706,9 @@ components:
             busy:
               type: boolean
               example: false
+            link_state:
+              type: string
+              enum: ["IDLE", "BUSY", "PRINTING", "PAUSED", "FINISHED", "STOPPED", "ERROR", "ATTENTION", "READY"]
 
     Job:
       oneOf:
