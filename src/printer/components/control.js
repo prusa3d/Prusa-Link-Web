@@ -37,7 +37,7 @@ const update = (context) => {
     telemetry: context.printer.telemetry,
     job: context.current,
   });
-  updateButtons(context.printer.state);
+  updateButtons(context.printer.state, context.printer.telemetry, context.version);
 }
 
 function initButtons() {
@@ -55,8 +55,9 @@ function initDisableSteppersBtn() {
     };
 }
 
-function updateButtons(state) {
+function updateButtons(state, telemetry, info) {
   const controls = document.querySelectorAll("#control button");
+  const nozzleControls = ["extrude", "retract"];
   const whitelistWhenPrinting = [
     "flowrate",
     "bed",
@@ -66,9 +67,8 @@ function updateButtons(state) {
 
   const whitelistWhenPaused = [
     ...whitelistWhenPrinting,
+    ...nozzleControls,
     "move-step",
-    "extrude",
-    "retract",
     "extrude-retract-step",
     "heated-bed-xy-move",
   ];
@@ -80,6 +80,12 @@ function updateButtons(state) {
       setDisabled(btn, !whitelist.includes(controlId));
     });
   }
+
+  const canControlNozzle = (telemetry && info && telemetry["temp-nozzle"] >= info["min_extrusion_temp"]);
+
+  nozzleControls.forEach(
+    control => setDisabled(document.getElementById(control), !canControlNozzle)
+  );
 }
 
 function initExtrudeBtn() {
