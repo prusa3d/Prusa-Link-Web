@@ -394,6 +394,12 @@ components:
         farm_mode:
           type: boolean
           example: false
+        nozzle_diameter:
+          type: number
+          example: 0.4
+        min_extrusion_temp:
+          type: integer
+          example: 170
         serial:
           type: string
           example: "CZPX4720X004XC34242"
