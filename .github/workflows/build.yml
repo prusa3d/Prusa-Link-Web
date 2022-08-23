@@ -8,15 +8,12 @@ on:
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
-
     strategy:
       matrix:
         node-version: [18.x]
         printer: ["mini", "sl1", "m1"]
         # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
-
     steps:
     - uses: actions/checkout@v3
     - name: Use Node.js ${{ matrix.node-version }}
@@ -25,6 +22,9 @@ jobs:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
     - run: npm ci
-    - run: npm run words:extract
+    - run: npm run words:extract -- --ci
+      env:
+          PRUSALATOR_SERVER: ${{ secrets.PRUSALATOR_SERVER }}
+          PRUSALATOR_PROJECT_ID: ${{ secrets.PRUSALATOR_PROJECT_ID }}
+          PRUSALATOR_TOKEN: ${{ secrets.PRUSALATOR_TOKEN }}
     - run: npm run build:${{ matrix.printer }}
-
