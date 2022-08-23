@@ -44,18 +44,27 @@ const updateConnectionStatus = ({ connection, isConnected }) => {
   }
 }
 
+const getOfflineScreenTranslation = (textId) => {
+  switch (textId) {
+    case 'not-responsing':
+      return translate("msg.offline.not-responsing");
+    case 'please-wait':
+      return translate("msg.offline.please-wait");
+    default:
+      return "";
+  }
+}
+
 const openOfflineScreen = () => {
   const createOfflineScreen = (close) => {
     const template = document.getElementById("offline-screen");
     const node = document.importNode(template.content, true);
-    ["not-responsing", "please-wait"].forEach(
-      id => {
-        const label = node.getElementById(`offline-screen.${id}`);
-        if (label) {
-          label.innerHTML = translate(`msg.offline.${id}`);
-        }
+    ["not-responsing", "please-wait"].forEach(id => {
+      const label = node.getElementById(`offline-screen.${id}`);
+      if (label) {
+        label.innerHTML = getOfflineScreenTranslation(id);
       }
-    );
+    });
     offlineScreen = {
       node,
       close: () => {
