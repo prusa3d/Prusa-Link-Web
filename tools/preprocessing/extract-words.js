@@ -1,3 +1,5 @@
+require('dotenv').config();
+
 const fs = require("fs");
 const path = require("path");
 const { createApiClient } = require('./prusalator/apiClient')
@@ -9,6 +11,7 @@ const WORDS_DIR = path.resolve(__dirname, "../../src/locales/source");
 const JS_SRC = 'src/';
 const HTML_SRC = 'templates/';
 const PRUSALATOR_UNSUPPORTED = ["kr"];
+
 
 const readDirRecursive = (dir, extension) => {
     return fs.readdirSync(dir).flatMap(fileName => {
