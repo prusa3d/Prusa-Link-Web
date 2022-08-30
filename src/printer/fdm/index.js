@@ -9,6 +9,7 @@ import question from "../components/question.js";
 import { getPrinterLabel } from "../common.js";
 import { updateProperties } from "../components/updateProperties.js";
 import { translate } from "../../locale_provider";
+import { LinkState, translateState } from "../../state";
 import updateConnectionStatus from "../components/updateConnectionStatus";
 
 const context = {
@@ -46,18 +47,11 @@ const buildTitle = (title) => getPrinterName() + " - " +
   " - " + process.env.APP_NAME;
 
 const updatePrinterStatus = (state) => {
-  const query = { query: "#printer-status" };
-  if (state) {
-    if (state.flags.printing && !state.flags.ready) {
-      if (state.flags.paused) {
-        translate("prop.st-paused", query);
-      } else {
-        translate("prop.st-printing", query);
-      }
-      return;
-    }
+  const linkState = LinkState.fromApi(state);
+  const elem = document.getElementById("printer-status");
+  if (elem) {
+    elem.innerHTML = translateState(linkState);
   }
-  translate("prop.st-idle", query);
 };
 
 let currentModule = dashboard;
