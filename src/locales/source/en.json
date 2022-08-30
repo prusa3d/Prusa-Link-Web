@@ -214,5 +214,10 @@
   "version.server": "Server",
   "version.text": "Text",
   "version.title": "Version",
-  "msg.offline.${id}": null
+  "prop.st-attention": "Attention",
+  "prop.st-error": "Error",
+  "prop.st-finished": "Finished",
+  "prop.st-ready": "Ready",
+  "prop.st-stopped": "Stopped",
+  "prop.st-unknown": "Unknown"
 }

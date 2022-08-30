@@ -49,7 +49,6 @@
   "msg.pour-resin": "Füllen Sie genügend Harz für das gewählte Projekt in den Behälter und schließen Sie den Deckel.",
   "msg.sla-fill": "Bitte füllen Sie den Harztank und schließen Sie den Deckel.",
   "msg.sla-fly-fill": "Bitte füllen Sie den Harztank vollständig auf.",
-  "msg.offline.${id}": null,
   "msg.offline.not-responsing": "Der Drucker antwortet nicht.",
   "msg.offline.please-wait": "Bitte warten...",
   "msg.sla-pour-resin": "Füllen Sie genügend Harz für die ausgewählte Datei in den Tank und schließen Sie den Deckel. Die minimale Menge des Harzes wird auf dem Touchscreen angezeigt.",
@@ -224,5 +223,11 @@
   "version.sdk": "SDK",
   "version.server": "Server",
   "version.text": "Text",
-  "version.title": "Version"
+  "version.title": "Version",
+  "prop.st-attention": "",
+  "prop.st-error": "",
+  "prop.st-finished": "",
+  "prop.st-ready": "",
+  "prop.st-stopped": "",
+  "prop.st-unknown": ""
 }

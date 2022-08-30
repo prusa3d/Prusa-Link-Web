@@ -147,7 +147,6 @@
   "logs.file-too-large": null,
   "logs.not-selected": null,
   "logs.select-file-placeholder": null,
-  "msg.offline.${id}": null,
   "msg.offline.not-responsing": null,
   "msg.offline.please-wait": null,
   "msg.sla-pour-resin": null,
@@ -205,5 +204,11 @@
   "user.format.password-1": "",
   "user.format.password-2": "",
   "user.format.password-3": "",
-  "user.format.password-4": ""
+  "user.format.password-4": "",
+  "prop.st-attention": "",
+  "prop.st-error": "",
+  "prop.st-finished": "",
+  "prop.st-ready": "",
+  "prop.st-stopped": "",
+  "prop.st-unknown": ""
 }
