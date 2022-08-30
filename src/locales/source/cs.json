@@ -214,5 +214,10 @@
   "version.server": "Server",
   "version.text": "Text",
   "version.title": "Verze",
-  "msg.offline.${id}": null
+  "prop.st-attention": "",
+  "prop.st-error": "",
+  "prop.st-finished": "",
+  "prop.st-ready": "",
+  "prop.st-stopped": "",
+  "prop.st-unknown": ""
 }

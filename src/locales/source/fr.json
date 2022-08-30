@@ -195,7 +195,6 @@
   "version.text": "texte",
   "version.title": "version",
   "btn.upld-file": null,
-  "msg.offline.${id}": null,
   "msg.offline.not-responsing": null,
   "msg.offline.please-wait": null,
   "ntf.upld-start": null,
@@ -216,5 +215,11 @@
   "user.format.password-1": "",
   "user.format.password-2": "",
   "user.format.password-3": "",
-  "user.format.password-4": ""
+  "user.format.password-4": "",
+  "prop.st-attention": "",
+  "prop.st-error": "",
+  "prop.st-finished": "",
+  "prop.st-ready": "",
+  "prop.st-stopped": "",
+  "prop.st-unknown": ""
 }
