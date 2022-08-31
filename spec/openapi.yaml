@@ -156,6 +156,19 @@ paths:
           $ref: "#/components/responses/NotFound"
         409:
           $ref: "#/components/responses/Conflict"
+    delete:
+      summary: Delete a file or folder.
+      responses:
+        204:
+          description: No Content
+                       No Error
+        403:
+          $ref: "#/components/responses/Unauthorized"
+        404:
+          $ref: "#/components/responses/NotFound"
+        409:
+          $ref: "#/components/responses/Conflict"
+          description: If the file to be deleted is currently being printed
 
 components:
   schemas:
