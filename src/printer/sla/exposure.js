@@ -117,9 +117,11 @@ const setUpElements = (file, elements, div) => {
         pressed = true;
         setMinus();
       };
-      minus.onmouseup = () => {
-        pressed = false;
-        effectiveRepeatInterval = repeatInterval;
+      minus.onmousemove  = () => {
+        if(pressed) {
+            pressed = false;
+            effectiveRepeatInterval = repeatInterval;
+          }
       };
       const setPlus = setValue(expo, value, min, max, config[expo].step);
       plus.onclick = setPlus;
@@ -127,10 +129,16 @@ const setUpElements = (file, elements, div) => {
         pressed = true;
         setPlus();
       };
-      plus.onmouseup = () => {
+      plus.onmousemove  = () => {
+        if(pressed) {
+          pressed = false;
+          effectiveRepeatInterval = repeatInterval;
+        }
+      };
+      div.onmouseup = () => {
         pressed = false;
         effectiveRepeatInterval = repeatInterval;
-      };
+      }
       elements[expo] = value;
       div.appendChild(elm);
     }
