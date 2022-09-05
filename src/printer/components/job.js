@@ -14,6 +14,7 @@ import { updateProgressBar } from "./progressBar";
 import { translate } from "../../locale_provider";
 import changeExposureTimesQuestion from "../sla/exposure";
 import { resinRefill } from "../sla/refill";
+import { LinkState } from "../../state";
 
 let metadata = getDefaultMetadata();
 let filePreviewMetadata = getDefaultFilePreviewMetadata();
@@ -461,9 +462,10 @@ function setupStartButton(state, fileUrl, isFilePreview) {
   const canPrint = state.flags.ready && state.flags.operational;
 
   if (btn) {
+    const linkState = LinkState.fromApi(state);
     setVisible(btn, isFilePreview || canPrint)
     setEnabled(btn, canPrint);
-    btn.onclick = () => startJob(!state.flags.checked, fileUrl);
+    btn.onclick = () => startJob(linkState !== LinkState.READY, fileUrl);
   }
 }
 
