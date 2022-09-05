@@ -663,7 +663,7 @@ nav .burger-icon.burger-open {
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: rgba(10, 10, 10, 0.5);
 }
 .loading-overlay > img {
   width: 20%;
