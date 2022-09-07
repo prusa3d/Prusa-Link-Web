@@ -19,6 +19,12 @@ export const LinkState = {
     },
 };
 
+export const OperationalStates = [
+    LinkState.IDLE,
+    LinkState.READY,
+    LinkState.FINISHED
+];
+
 // Preferred way
 const fromLinkState = (linkState) => {
     switch (linkState.toUpperCase()) {

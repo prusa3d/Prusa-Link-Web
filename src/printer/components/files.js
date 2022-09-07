@@ -19,6 +19,7 @@ import * as job from "./job";
 import { initKebabMenu } from "./kebabMenu.js";
 import { setEnabled } from "../../helpers/element.js";
 import storage from "./storage.js";
+import { LinkState, OperationalStates } from "../../state.js";
 
 let lastData = null;
 let intersectionObserver = null;
@@ -110,10 +111,10 @@ const updateData = () => {
  * @param {object} context
  */
 export const update = (context) => {
-  const flags = context.printer.state.flags;
+  const linkState = LinkState.fromApi(context.printer.state);
   updateData();
   job.update(context, true);
-  upload.update(flags.ready && flags.operational);
+  upload.update(OperationalStates.includes(linkState));
 };
 
 function initUpload(context) {
