@@ -14,7 +14,7 @@ import { updateProgressBar } from "./progressBar";
 import { translate } from "../../locale_provider";
 import changeExposureTimesQuestion from "../sla/exposure";
 import { resinRefill } from "../sla/refill";
-import { LinkState } from "../../state";
+import { LinkState, OperationalStates } from "../../state";
 
 let metadata = getDefaultMetadata();
 let filePreviewMetadata = getDefaultFilePreviewMetadata();
@@ -238,8 +238,9 @@ function updateComponent(context, isFilePreview) {
     if (process.env.PRINTER_TYPE === "sla") {
       setupRefill(state.text);
     }
+    const linkState = LinkState.fromApi(state);
+    const isJobPreview = OperationalStates.includes(linkState);
 
-    const isJobPreview = state.flags.ready && state.flags.operational;
     setupProperties(isJobPreview);
 
     updateProperties("job", jobResult);
@@ -437,7 +438,8 @@ function setupButtons(context, jobResult, file, isFilePreview) {
 function setupCancelButton(state, isFilePreview) {
   const btnStop = document.querySelector("#job #stop");
   const btnClose = document.querySelector("#job-close");
-  const isJobPreview = state.flags.ready && state.flags.operational;
+  const linkState = LinkState.fromApi(state);
+  const isJobPreview = OperationalStates.includes(linkState);
 
   setEnabled(btnStop, state.flags.printing && !state.flags.cancelling)
 
@@ -458,8 +460,9 @@ function setupCancelButton(state, isFilePreview) {
 }
 
 function setupStartButton(state, fileUrl, isFilePreview) {
+  const linkState = LinkState.fromApi(state);
   const btn = document.querySelector("#job #start");
-  const canPrint = state.flags.ready && state.flags.operational;
+  const canPrint = OperationalStates.includes(linkState);
 
   if (btn) {
     const linkState = LinkState.fromApi(state);
