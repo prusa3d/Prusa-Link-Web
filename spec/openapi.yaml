@@ -255,6 +255,10 @@ components:
           type: boolean
           description: Whether the storage is available or not
           example: true
+        read_only:
+          type: boolean
+          description: Whether the storage is read ony
+          example: false
       required:
         - available
         - path
