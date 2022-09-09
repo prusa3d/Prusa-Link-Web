@@ -282,6 +282,8 @@ const fdmFormatData = (format, value) => {
       return formatSize(value);
     case "boolean":
       return formatBoolean(value);
+    case "diameter":
+      return numberFormat(value, true, 2) + " mm";
     default:
       return value;
   }
