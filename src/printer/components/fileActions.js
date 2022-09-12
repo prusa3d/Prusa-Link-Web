@@ -16,8 +16,15 @@ export const downloadFile = (file) => {
   if (!file?.refs?.download)
     return; // TODO: Consider showing error
 
+  const displayFileName = file.display || jobFile.display || file.name || jobFile.name;
+
+  if (!process.env["WITH_API_KEY_AUTH"]) {
+    download(file.refs.download, displayFileName);
+    return;
+  }
+
   getFile(file.refs.download).then((url) => {
-    download(url, file.display || jobFile.display || file.name || jobFile.name);
+    download(url, displayFileName);
   }).catch((result) => handleError(result))
 };
 

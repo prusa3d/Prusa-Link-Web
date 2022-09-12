@@ -59,6 +59,7 @@ module.exports = (env, args) => {
     WITH_FAILURES_BEFORE_OFFLINE_SCREEN: withDefault(env["WITH_FAILURES_BEFORE_OFFLINE_SCREEN"], 3),
     WITH_TELEMETRY_NOZZLE_DIAMETER: withDefault(env["WITH_TELEMETRY_NOZZLE_DIAMETER"], false),
     WITH_TELEMETRY_MATERIAL: withDefault(env["WITH_TELEMETRY_MATERIAL"], false),
+    WITH_API_KEY_AUTH: withDefault(env["WITH_API_KEY_AUTH"], false),
   };
   config["TPL_ASSETS_PATH"] = config["PRINTER_CODE"] == "m1" ? "../assets/m1" : "../assets";
 

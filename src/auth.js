@@ -70,11 +70,13 @@ const setUpAuth = () =>
           sessionStorage.setItem("authType", auth_type);
           sessionStorage.removeItem("apiKey");
           if (auth_type == "ApiKey") {
+            // ApiKey
             return askApiKey().then(() =>
               setUpAuth().then((data) => resolve(data))
-            ); // ApiKey
+            );
           }
-          return setUpAuth().then((data) => resolve(data)); // http-digest
+          // http-digest
+          return setUpAuth().then((data) => resolve(data)); 
         } else {
           const result = response.json();
           if (response.status != 200) {
