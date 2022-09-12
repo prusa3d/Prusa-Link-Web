@@ -20,6 +20,7 @@ import { initKebabMenu } from "./kebabMenu.js";
 import { setEnabled } from "../../helpers/element.js";
 import storage from "./storage.js";
 import { LinkState, OperationalStates } from "../../state.js";
+import { setButtonLoading, unsetButtonLoading } from "../../helpers/button.js";
 
 let lastData = null;
 let intersectionObserver = null;
@@ -420,7 +421,8 @@ function setupFileButtons(node, elm) {
   if (downloadBtn) {
     setEnabled(downloadBtn, node.refs?.download);
     downloadBtn.onclick = (e) => {
-      downloadFile(node);
+      setButtonLoading(downloadBtn);
+      downloadFile(node, () => unsetButtonLoading(downloadBtn));
       e.stopPropagation();
     }
   }

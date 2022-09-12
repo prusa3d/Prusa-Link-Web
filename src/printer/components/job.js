@@ -15,6 +15,7 @@ import { translate } from "../../locale_provider";
 import changeExposureTimesQuestion from "../sla/exposure";
 import { resinRefill } from "../sla/refill";
 import { LinkState, OperationalStates } from "../../state";
+import { setButtonLoading, unsetButtonLoading } from "../../helpers/button";
 
 let metadata = getDefaultMetadata();
 let filePreviewMetadata = getDefaultFilePreviewMetadata();
@@ -512,7 +513,6 @@ function setupSlaResumeButton(state, selector) {
   }
 }
 
-
 function setupDeleteButton(jobState, file, isFilePreview) {
   const btn = document.querySelector("#job #delete");
   if (btn) {
@@ -524,28 +524,32 @@ function setupDeleteButton(jobState, file, isFilePreview) {
 
 function setupDownloadButton(jobState, file, isFilePreview) {
   const btn = document.querySelector("#job #download");
-  setEnabled(btn, file.refs?.download);
-  setVisible(btn, isFilePreview || jobState === "Operational");
-
-  if (btn)
-    btn.onclick = () => downloadFile(file);
+  if (btn) {
+    setEnabled(btn, file.refs?.download);
+    setVisible(btn, isFilePreview || jobState === "Operational");
+    btn.onclick = () => {
+      setButtonLoading(btn);
+      downloadFile(file, () => unsetButtonLoading(btn));
+    }
+  }
 }
 
 function setupExposureButton(state, jobFile, changeExposureTimesQuestion) {
   const btn = document.querySelector("#job #exposure");
-  setVisible(btn, state.text === "Pour in resin" || state.text === "Printing");
-  setEnabled(btn, state.flags.operational);
-
-  if (btn)
+  if (btn) {
+    setVisible(btn, state.text === "Pour in resin" || state.text === "Printing");
+    setEnabled(btn, state.flags.operational);
     btn.onclick = () => changeExposureTimesQuestion(jobFile);
+  }
 }
 
 function setupBackButton(state) {
   const btn = document.querySelector("#job #back");
-  setVisible(btn, state.flags.paused && state.text === "Feed me");
 
-  if (btn)
+  if (btn) {
+    setVisible(btn, state.flags.paused && state.text === "Feed me");
     btn.onclick = resumeJob;
+  }
 }
 
 export default { render, update, showLoading, hideLoading };
