@@ -18,7 +18,7 @@ const load = (context) => {
 const update = (context) => {
   const linkState = LinkState.fromApi(context.printer.state);
   job.update(context);
-  upload.update(OperationalStates.includes(linkState));
+  upload.update(linkState);
 };
 
 export default { load, update };

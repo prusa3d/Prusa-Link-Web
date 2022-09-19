@@ -10,6 +10,7 @@ import { translate } from "../../../locale_provider";
 import { updateProgressBar } from "../progressBar";
 import { attachConfirmModalToCheckbox } from "./confirm";
 import updateProperties from "../updateProperties";
+import { OperationalStates } from "../../../state";
 
 let isUploading = false;
 let lastResult = null;
@@ -50,9 +51,11 @@ function init(origin, path) {
   update();
 }
 
-function update(canStartPrinting) {
+function update(linkState) {
+  const canStartPrinting = OperationalStates.includes(linkState);
   const startPrintCheckbox = document.querySelector("#upld-remote-start-pt");
   if (startPrintCheckbox) {
+    startPrintCheckbox.setAttribute("data-link-state", linkState);
     if (!canStartPrinting) {
       startPrintCheckbox.checked = false;
     }

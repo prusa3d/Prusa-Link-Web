@@ -1,5 +1,6 @@
 import { modal } from "../modal";
 import { setDisabled } from "../../../helpers/element";
+import { LinkState } from "../../../state";
 
 const createConfirmUpload = (close, checkbox) => {
     const template = document.getElementById("modal-confirm");
@@ -23,7 +24,7 @@ const createConfirmUpload = (close, checkbox) => {
 
 export const attachConfirmModalToCheckbox = (checkbox) => {
     checkbox.addEventListener("change", (event) => {       
-        if (!checkbox.checked) {
+        if (!checkbox.checked || checkbox.getAttribute("data-link-state") === LinkState.READY) {
             return;
         }
         modal((close) => createConfirmUpload(close, checkbox), {

@@ -21,9 +21,9 @@ function hide(isHidden) {
   setHidden(document.getElementById("upld"), isHidden);
 }
 
-function update(canStartPrinting = false) {
-  direct?.update(canStartPrinting);
-  remote?.update(canStartPrinting);
+function update(linkState) {
+  direct?.update(linkState);
+  remote?.update(linkState);
   updateTabs();
 }
 

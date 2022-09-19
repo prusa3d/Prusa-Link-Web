@@ -8,6 +8,7 @@ import { setDisabled } from "../../../helpers/element";
 import { translate } from "../../../locale_provider";
 import uploadRequest from "../../../helpers/upload_request";
 import { attachConfirmModalToCheckbox } from "./confirm";
+import { LinkState, OperationalStates } from "../../../state";
 
 let isUploading = false;
 let progress = 0;
@@ -21,9 +22,11 @@ function init(origin, path, fileExtensions) {
   }
 }
 
-function update(canStartPrinting) {
+function update(linkState) {
+  const canStartPrinting = OperationalStates.includes(linkState);
   const startPrintCheckbox = document.querySelector("#upld-direct-start-pt");
   if (startPrintCheckbox) {
+    startPrintCheckbox.setAttribute("data-link-state", linkState);
     if (!canStartPrinting) {
       startPrintCheckbox.checked = false;
     }

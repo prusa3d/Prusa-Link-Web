@@ -115,7 +115,7 @@ export const update = (context) => {
   const linkState = LinkState.fromApi(context.printer.state);
   updateData();
   job.update(context, true);
-  upload.update(OperationalStates.includes(linkState));
+  upload.update(linkState);
 };
 
 function initUpload(context) {
