@@ -6,6 +6,7 @@ import * as graph from "../components/temperature_graph";
 import upload from "../components/upload";
 import { translate } from "../../locale_provider";
 import * as job from "../components/job";
+import { LinkState } from "../../state";
 
 const load = (context) => {
   translate("home.link", { query: "#title-status-label" });
@@ -15,9 +16,9 @@ const load = (context) => {
 };
 
 const update = (context) => {
-  const flags = context.printer.state.flags;
+  const linkState = LinkState.fromApi(context.printer.state);
   job.update(context);
-  upload.update(flags.ready && flags.operational);
+  upload.update(linkState);
 };
 
 export default { load, update };
