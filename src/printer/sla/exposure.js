@@ -148,7 +148,7 @@ const changeExposureTimesQuestion = (jobFile) => {
   const div = document.createElement("div");
   setUpElements(jobFile, elements, div);
   doQuestion({
-    title: translate("exp-times.title"),
+    title: translate("btn.chg-print-set"),
     questionChildren: [div],
     yes: (close) => {
       // setBusy();
