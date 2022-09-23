@@ -4,7 +4,7 @@
     "cancel": "Annuler",
     "cancel-pt": "Annuler l'impression",
     "chg": "changer",
-    "chg-exp": "Modifier les temps d'exposition",
+    "chg-print-set": "Réglages d'Impression",
     "confirm": "Confirmer",
     "continue": "Continuer",
     "del": "supprimer",
@@ -67,8 +67,7 @@
     "layer-1st": "Première couche Expo. [s]",
     "profile": "Profil d'Impression",
     "slower": "Plus lent",
-    "superslow": "SuperLent",
-    "title": "Modifier les temps d'exposition"
+    "superslow": "SuperLent"
   },
   "glob": {
     "hd-st": "état du matériel",

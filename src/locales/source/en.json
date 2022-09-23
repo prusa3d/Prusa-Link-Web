@@ -4,7 +4,7 @@
     "cancel": "Cancel",
     "cancel-pt": "Cancel print",
     "chg": "change",
-    "chg-exp": "Print Settings",
+    "chg-print-set": "Print Settings",
     "confirm": "Confirm",
     "continue": "Continue",
     "del": "delete",
@@ -67,8 +67,7 @@
     "layer-1st": "First Layer Expo. [s]",
     "profile": "Print profile",
     "slower": "Slower",
-    "superslow": "SuperSlow",
-    "title": "Print Settings"
+    "superslow": "SuperSlow"
   },
   "glob": {
     "hd-st": "hardware state",

@@ -4,7 +4,7 @@
     "cancel": "Anuluj",
     "cancel-pt": "Anuluj wydruk",
     "chg": "zmień",
-    "chg-exp": "Zmień czasy naświetlania",
+    "chg-print-set": "Ustawienia druku",
     "confirm": "Potwierdzam",
     "continue": "Kontynuuj",
     "del": "usuń",
@@ -67,8 +67,7 @@
     "layer-1st": "Naśw. 1. warstwy [s]",
     "profile": "Profil druku",
     "slower": "Wolniej",
-    "superslow": "Bardzo wolno",
-    "title": "Zmień czasy naświetlania"
+    "superslow": "Bardzo wolno"
   },
   "glob": {
     "hd-st": "Stan sprzętu",

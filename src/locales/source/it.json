@@ -4,7 +4,7 @@
     "cancel": "Annulla",
     "cancel-pt": "Annulla stampa",
     "chg": "cambia",
-    "chg-exp": "Cambia i tempi di esposizione",
+    "chg-print-set": "Impostazioni di stampa",
     "confirm": "Conferma",
     "continue": "Continua",
     "del": "elimina",
@@ -67,8 +67,7 @@
     "layer-1st": "Esposizione Primo layer [s]",
     "profile": "Profilo di stampa",
     "slower": "Più lento",
-    "superslow": "SuperSlow",
-    "title": "Cambia i tempi di esposizione"
+    "superslow": "SuperSlow"
   },
   "glob": {
     "hd-st": "stato hardware",

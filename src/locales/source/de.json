@@ -4,7 +4,7 @@
     "cancel": "Abbrechen",
     "cancel-pt": "Druck abbrechen",
     "chg": "Ändern",
-    "chg-exp": "Belichtungszeiten ändern",
+    "chg-print-set": "Druckeinstellungen",
     "confirm": "Bestätigen",
     "continue": "Fortfahren",
     "del": "löschen",
@@ -67,8 +67,7 @@
     "layer-1st": "Erste Schicht Bel. [s]",
     "profile": "Druckprofil",
     "slower": "Langsamer",
-    "superslow": "Super langsam",
-    "title": "Belichtungszeiten ändern"
+    "superslow": "Super langsam"
   },
   "glob": {
     "hd-st": "Hardwarestatus",
