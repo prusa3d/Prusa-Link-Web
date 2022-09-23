@@ -1110,7 +1110,7 @@ button:disabled {
 
 .modal-exposure {
   display: grid;
-  grid-template-columns: 7fr 1fr 2fr 1fr;
+  grid-template-columns: 7fr 1fr 3fr 1fr;
   grid-template-rows: auto;
   margin-bottom: 10px;
   justify-items: center;
