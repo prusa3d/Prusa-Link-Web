@@ -20,6 +20,7 @@ import { setButtonLoading, unsetButtonLoading } from "../../helpers/button";
 let metadata = getDefaultMetadata();
 let filePreviewMetadata = getDefaultFilePreviewMetadata();
 let fallbackThumbnailUrl = null;
+let pendingDownload = null;
 
 function isLoading(state) {
   return ["Busy", "Cancelling"].includes(state)
@@ -525,11 +526,21 @@ function setupDeleteButton(jobState, file, isFilePreview) {
 function setupDownloadButton(jobState, file, isFilePreview) {
   const btn = document.querySelector("#job #download");
   if (btn) {
-    setEnabled(btn, file.refs?.download);
-    setVisible(btn, isFilePreview || jobState === "Operational");
-    btn.onclick = () => {
-      setButtonLoading(btn);
-      downloadFile(file, () => unsetButtonLoading(btn));
+    const isVisible = file.refs?.download && (
+      isFilePreview || jobState === "Operational"
+    ) && (
+      !pendingDownload || pendingDownload === file.refs.download
+    );
+    setVisible(btn, isVisible);
+    if (isVisible) {
+      btn.onclick = () => {
+        pendingDownload = file.refs?.download;
+        setButtonLoading(btn);
+        downloadFile(file, () => {
+          pendingDownload = null;
+          unsetButtonLoading(btn)
+        });
+      }
     }
   }
 }
