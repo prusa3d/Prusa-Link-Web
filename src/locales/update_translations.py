@@ -5,11 +5,12 @@ path = os.path.dirname(os.path.realpath(__file__)) + "/source/"
 languages = [
     ("en","en_US"),     # this is used to get all groups
     ("cs","cs_CZ"),
+    ("sk","sk_SK"),
+    ("pl","pl_PL"),
     ("de","de_DE"),
     ("es","es_ES"),
     ("fr","fr_FR"),
     ("it","it_IT"),
-    ("pl","pl_PL"),
     ("kr","kr_KR")
 ]
 new_file = dict()
