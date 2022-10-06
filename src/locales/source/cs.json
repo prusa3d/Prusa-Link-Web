@@ -24,7 +24,7 @@
   "btn.yes": "Ano",
   "conn.err-conn": "Nelze se připojit k tiskárně",
   "conn.printer-status": "Stav připojení 3D tiskárny",
-  "conn.prusa-connect-status": "Stav připojení PRUSA CONNECT",
+  "conn.prusa-connect-status": "Stav připojení PrusaConnect",
   "conn.prusa-connect-url": "Adresa PRUSA CONNECT",
   "conn.suc": "Úspěšně připojeno",
   "conn.title": "připojení",
@@ -65,7 +65,7 @@
   "logs.select-file": "Vyberte soubor",
   "logs.select-file-placeholder": "Vyberte soubor logů",
   "logs.title": "Logy",
-  "msg.api-key-1": "Vítejte ve webovém rozhraní Prusa Link Web!",
+  "msg.api-key-1": "Vítejte ve webovém rozhraní PrusaLink Web!",
   "msg.api-key-2": "Vložte API klíč.",
   "msg.api-key-3": "Otevřete menu Nastavení -> Síť -> PrusaLink.",
   "msg.cancel": "Chcete opravdu zrušit tisk?",
@@ -216,7 +216,7 @@
   "prop.st-attention": "Vyžaduje pozornost",
   "prop.st-error": "",
   "prop.st-finished": "",
-  "prop.st-ready": "Připraveno",
+  "prop.st-ready": "Připravena",
   "prop.st-stopped": "Zastaveno",
   "prop.st-unknown": ""
 }

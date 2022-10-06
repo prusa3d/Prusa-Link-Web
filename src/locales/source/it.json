@@ -24,7 +24,7 @@
   "glob.hostname": "Nome host",
   "home.link": "Dashboard",
   "home.title": "Stato della stampante",
-  "msg.api-key-1": "Benvenuti nell'interfaccia web di Prusa Link Web.",
+  "msg.api-key-1": "Benvenuti nell'interfaccia web di PrusaLink Web.",
   "msg.api-key-2": "Si prega di inserire la chiave API.",
   "msg.api-key-3": "È possibile trovarla in Impostazioni -> Rete -> PrusaLink",
   "msg.cancel": "Vuoi davvero annullare la stampa?",
