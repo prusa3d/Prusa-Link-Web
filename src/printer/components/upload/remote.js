@@ -85,14 +85,15 @@ function handleAccept(result) {
 function handleResult(result) {
   const data = result.data;
 
-  if (!data && isUploading) {
-    displaySuccess();
-    reset();
-    return;
-  }
-
-  setState(data ? "uploading" : "choose");
-  if (data) {
+  if (!data) {
+    if (isUploading) {
+      displaySuccess();
+      reset();
+      return;
+    }
+    setState("choose");
+  } else if (data.type === "FROM_WEB") {
+    setState("uploading");
     updateProperties("download", data);
     const progressBar = document.querySelector("#upld-remote .progress-bar");
     updateProgressBar(progressBar, data.progress || 0);
