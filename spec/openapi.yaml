@@ -162,13 +162,164 @@ paths:
         204:
           description: No Content
                        No Error
+        401:
+          $ref: "#/components/responses/Unauthorized"
+        404:
+          $ref: "#/components/responses/NotFound"
+        409:
+          # If the file to be deleted is currently being printed
+          $ref: "#/components/responses/Conflict"
+
+  /api/v1/cameras:
+    get:
+      summary: Get a list of active cameras and its properties
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Camera"
+        401:
+          $ref: "#/components/responses/Unauthorized"
         403:
+          $ref: "#/components/responses/Forbidden"
+    put:
+      summary: List of cameras in intended order
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: string
+                description: Printer ID
+                example: "sh42arta"
+      responses:
+        200:
+          description: OK
+        401:
+          $ref: "#/components/responses/Unauthorized"
+
+  /api/v1/cameras/{id}:
+    get:
+      summary: Get current settings and properties of specific camera
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CameraConfig"
+        401:
+          $ref: "#/components/responses/Unauthorized"
+        404:
+          $ref: "#/components/responses/NotFound"
+    post:
+      summary: Setup a new camera or fix a broken one
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CameraConfigSet"
+      responses:
+        200:
+          description: OK
+        400:
+          $ref: "#/components/responses/BadRequest"
+        401:
           $ref: "#/components/responses/Unauthorized"
         404:
           $ref: "#/components/responses/NotFound"
         409:
           $ref: "#/components/responses/Conflict"
-          description: If the file to be deleted is currently being printed
+    patch:
+      summary: Edit a camera settings and / or configuration
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CameraConfigSet"
+      responses:
+        200:
+          description: OK
+        401:
+          $ref: "#/components/responses/Unauthorized"
+        404:
+          $ref: "#/components/responses/NotFound"
+        409:
+          $ref: "#/components/responses/Conflict"
+    delete:
+      summary: Delete a camera
+      responses:
+        204:
+          description: No Content
+            No Error
+        401:
+          $ref: "#/components/responses/Unauthorized"
+        404:
+          $ref: "#/components/responses/NotFound"
+        409:
+          $ref: "#/components/responses/Conflict"
+
+  /api/v1/cameras/snap:
+    get:
+      summary: Return a captured image from the default camera
+      responses:
+        200:
+          description: OK
+          content:
+            image/png:
+              schema:
+                type: string
+                format: binary
+        401:
+          $ref: "#/components/responses/Unauthorized"
+        404:
+          $ref: "#/components/responses/NotFound"
+
+  /api/v1/cameras/{id}/snap:
+    get:
+      summary: Return a captured image
+      responses:
+        200:
+          description: OK
+          content:
+            image/png:
+              schema:
+                type: string
+                format: binary
+        204:
+          description: No Content
+            No Error
+        401:
+          $ref: "#/components/responses/Unauthorized"
+        404:
+          $ref: "#/components/responses/NotFound"
+    post:
+      summary: Make a snapshot with the camera
+      description: Can be manually done only during camera initialization
+      requestBody:
+        content:
+          application/json: {}
+      responses:
+        200:
+          description: OK
+          content:
+            image/png:
+              schema:
+                type: string
+                format: binary
+        401:
+          $ref: "#/components/responses/Unauthorized"
+        404:
+          $ref: "#/components/responses/NotFound"
+        408:
+          $ref: "#/components/responses/RequestTimeout"
+        409:
+          $ref: "#/components/responses/Conflict"
 
 components:
   schemas:
@@ -257,12 +408,105 @@ components:
           example: true
         read_only:
           type: boolean
-          description: Whether the storage is read ony
+          description: Whether the storage is read only
           example: false
       required:
         - available
         - path
         - type
+
+    Camera:
+      type: object
+      properties:
+        camera_id:
+          type: string
+          example: "sh42arta"
+        status:
+          type: string
+          enum: [ DETECTED, CONNECTED, ERROR, DISCONNECTED ]
+
+    CameraConfig:
+      type: object
+      description: Camera configuration
+      properties:
+        name:
+          type: string
+          description: Name of the camera
+          example: "MuadDib_Camera_1"
+        path:
+          type: string
+          description: Path to the video device file in system
+          example: "/dev/video0"
+        driver:
+          type: string
+          description: Name of the driver
+          example: "L4L2"
+        trigger_scheme:
+          type: string
+          description: When the snapshot is taken
+          enum: [ EVERY_10_MIN, ON_LAYER_CHANGE ]
+        available_resolutions:
+          type: array
+          items:
+            type: object
+            properties:
+              width:
+                type: integer
+                example: 640
+              height:
+                type: integer
+                example: 640
+        resolution:
+          type: object
+          properties:
+            width:
+              type: integer
+              example: 640
+            height:
+              type: integer
+              example: 640
+        rotation:
+          type: integer
+          description: Current rotation of the output image
+          example: 180
+        exposure:
+          type: number
+          example: 4.2
+        send_to_connect:
+          type: boolean
+          example: true
+
+    CameraConfigSet:
+      type: object
+      description: Camera configuration to set
+      properties:
+        name:
+          type: string
+          description: Name of the camera
+          example: "MuadDib_Camera_1"
+        trigger_scheme:
+          type: string
+          description: When the snapshot is taken
+          enum: [ EVERY_10_MIN, ON_LAYER_CHANGE ]
+        resolution:
+          type: object
+          properties:
+            width:
+              type: integer
+              example: 640
+            height:
+              type: integer
+              example: 640
+        rotation:
+          type: integer
+          description: Current rotation of the output image
+          example: 180
+        exposure:
+          type: number
+          example: 4.2
+        send_to_connect:
+          type: boolean
+          example: true
 
     FileInfo:
       type: object
@@ -423,6 +667,9 @@ components:
         sd_ready:
           type: boolean
           example: true
+        active_camera:
+          type: boolean
+          example: true
         hostname:
           type: string
           example: "prusa-mk3.lan"
@@ -513,6 +760,19 @@ components:
 
     NotFound: # 404
       description: Not Found
+      headers:
+        Content-Location:
+          $ref: "#/components/headers/Content-Location"
+      content:
+        text/plain:
+          schema:
+            $ref: "#/components/schemas/ResponsePlaintext"
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+
+    RequestTimeout: # 408
+      description: Request Timeout
       headers:
         Content-Location:
           $ref: "#/components/headers/Content-Location"
