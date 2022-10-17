@@ -19,8 +19,8 @@ module.exports = (env, args) => {
         WITH_COMMAND_SELECT: false,
         WITH_PRINT_BUTTON: true,
         WITH_PREVIEW_LAZY_QUEUE: true,
-        WITH_DOWNLOAD_BUTTON: false,
-        WITH_API_KEY_AUTH: true,
+        WITH_DOWNLOAD_BUTTON: true,
+        WITH_API_KEY_AUTH: false,
         ...env,
     };
     return webpackConfig(config, args);
