@@ -208,7 +208,7 @@ function updatePrusaConnectStatus(data, updateInputValue) {
   const isFinished = (data.connect.registration === "FINISHED");
   const { hostname, tls } = data.connect;
   const { ok, message } = data.states.connect;
-  const protocol = tls ? 'http' : 'https'
+  const protocol = tls ? 'https' : 'http'
   const port = data.connect.port ? `:${data.connect.port}` : '' // 0 = protocol default port
   const urlString = `${protocol}://${hostname}${port}`;
   const customMessage = `(${urlString})`;
