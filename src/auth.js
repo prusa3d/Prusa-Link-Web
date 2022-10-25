@@ -190,7 +190,8 @@ const getFileURL = (url, opts, timestamp) =>
  * Async function for fetch image
  * @param {string} url
  */
-const getImage = (url, timestamp) => getFileURL(url, { headers: { "Content-Type": "image/png" } }, timestamp);
+const getImage = (url, timestamp, opts={}) =>
+  getFileURL(url, { headers: { "Content-Type": "image/png" }, ...opts }, timestamp);
 
 /**
  * Async function for fetch file

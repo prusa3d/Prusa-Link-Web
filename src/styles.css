@@ -434,6 +434,10 @@ nav .burger-icon.burger-open {
   line-height: 1.0;
 }
 
+.component-inline {
+  padding-top: 0px;
+}
+
 .component-fixed {
   flex: 0 0 auto;
 }
@@ -1749,9 +1753,46 @@ input .autoresize {
   margin: -7px 0 7px 0;
 }
 
+/* ========================================== CAMERAS ============================================ */
+
+.camera-snapshot {
+  padding-top: 16px;
+}
+
+.camera-previews,
+.camera-snapshot-meta {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.camera-snapshot-meta {
+  display: flex;
+  flex-direction: row;
+  gap: 16px;
+  margin: 16px 0;
+}
+
+.camera-snapshot-meta p {
+  line-height: 1.5;
+}
+
+.camera-previews {
+  display: grid;
+  column-gap: 16px;
+  row-gap: 16px;
+  padding-bottom: 16px;
+}
+
 @media only screen and (max-width: 991.5px) {
   .pc-only {
     display: none;
+  }
+  .camera-previews {
+    grid-template-columns: repeat(1, 1fr);
+  }
+  .camera-snapshot-meta {
+    flex-direction: column;
   }
 }
 
@@ -2048,5 +2089,11 @@ input .autoresize {
   }
   .job-buttons-separator {
     flex: 1 0 0;
+  }
+  .camera-previews {
+    grid-template-columns: repeat(4, 1fr);
+  }
+  .camera-snapshot-meta {
+    flex-direction: row;
   }
 }

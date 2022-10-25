@@ -24,3 +24,7 @@
     <div id="graph"></div>
   </div>
 </div>
+
+{% if env.WITH_CAMERA %}
+{% include "components/cameras.html" %}
+{% endif %}

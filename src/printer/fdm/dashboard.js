@@ -4,6 +4,7 @@
 
 import * as graph from "../components/temperature_graph";
 import upload from "../components/upload";
+import camera from "../components/camera";
 import { translate } from "../../locale_provider";
 import * as job from "../components/job";
 import { LinkState, OperationalStates } from "../../state";
@@ -13,12 +14,18 @@ const load = (context) => {
   upload.init("local", "", context.fileExtensions);
   graph.render();
   update(context);
+  if (process.env['WITH_CAMERA']) {
+    camera.init();
+  }
 };
 
 const update = (context) => {
   const linkState = LinkState.fromApi(context.printer.state);
   job.update(context);
   upload.update(linkState);
+  if (process.env['WITH_CAMERA']) {
+    camera.update();
+  }
 };
 
 export default { load, update };
