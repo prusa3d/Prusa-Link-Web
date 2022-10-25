@@ -1,0 +1,36 @@
+<!-- prettier-ignore -->
+{#
+  # This file is part of the Prusa Link Web
+  # Copyright (C) 2021 Prusa Research a.s. - www.prusa3d.com
+  # SPDX-License-Identifier: GPL-3.0-or-later
+#}
+
+<template id="cameras">
+<div id="camera">
+    <div class="component component-inline">
+        <p data-label="camera.title" class="txt-grey txt-md">Cameras</p>
+        <div class="camera-snapshot">
+            <img id="camera-snapshot-picture" />
+            <ul class="camera-snapshot-meta">
+                <li>
+                    <p class="txt-sm txt-grey" data-label="camera.name">
+                        Camera Name
+                    </p>
+                    <p id="camera-snapshot-name" class="txt-bold txt-md">
+                        -
+                    </p>
+                </li>
+                <li>
+                    <p class="txt-sm txt-grey" data-label="camera.time">
+                        Snapshot Time
+                    </p>
+                    <p id="camera-snapshot-time" class="txt-bold txt-md">
+                        -
+                    </p>
+                </li>
+            </li>
+        </div>
+        <ul id="camera-previews" class="camera-previews"></ul>
+    </div>
+</div>
+</template>
