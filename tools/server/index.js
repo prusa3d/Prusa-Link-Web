@@ -60,6 +60,7 @@ const devServer = (app, conf) => {
   app.use("/api/settings", require("./settings"));
   app.use("/api/system", require("./system"));
   app.use("/api/thumbnails", require("./thumbnails"));
+  app.use("/api/v1/cameras", require("./cameras"));
   app.use("/error", require("./error"));
 };
 
