@@ -218,5 +218,8 @@
   "prop.st-finished": "완료됨",
   "prop.st-ready": "준비",
   "prop.st-stopped": "정지됨",
-  "prop.st-unknown": "알수없음"
+  "prop.st-unknown": "알수없음",
+  "camera.name": "",
+  "camera.time": "",
+  "camera.title": ""
 }

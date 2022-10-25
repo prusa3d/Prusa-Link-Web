@@ -220,5 +220,8 @@
   "prop.st-ready": "Pripravené",
   "prop.st-stopped": "Zastavené",
   "prop.st-unknown": "Neznáme",
-  "btn.chg-print-set": ""
+  "btn.chg-print-set": "",
+  "camera.name": "",
+  "camera.time": "",
+  "camera.title": ""
 }

@@ -228,5 +228,8 @@
   "prop.st-finished": "",
   "prop.st-ready": "",
   "prop.st-stopped": "",
-  "prop.st-unknown": ""
+  "prop.st-unknown": "",
+  "camera.name": "",
+  "camera.time": "",
+  "camera.title": ""
 }
