@@ -638,6 +638,31 @@ class Printer {
     this.statusText = "Printing";
     return true;
   }
+
+  cameras() {
+    return {
+      "camera_list": [
+        {
+          "camera_id": "Qi1kAbifJy7X",
+          "config": {
+            "path": "/dev/video0",
+            "name": "Integrated Camera: Integrated C",
+            "driver": "V4L2",
+            "resolution": "1280x720"
+          }, 
+          "status": "Connected"
+        }, {
+          "camera_id": "t3S63iEc39ES",
+          "config": {
+            "path": "/dev/video2",
+            "name": "Integrated Camera: Integrated I",
+            "driver": "V4L2"
+          }, 
+          "status": "Detected"
+        }
+      ]
+    };
+  }
 }
 
 module.exports = Printer;
