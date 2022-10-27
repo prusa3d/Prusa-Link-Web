@@ -12,8 +12,6 @@ import { navigateShallow } from "../../router.js";
 import { translate, translateLabels } from "../../locale_provider.js";
 import { createFolder, deleteFolder, deleteFile, downloadFile, renameFolder, renameFile, startPrint } from "./fileActions.js";
 import printer from "../index";
-import { error } from "./toast.js";
-import { cancelPreview } from "./jobActions";
 import scrollIntoViewIfNeeded from "../../helpers/scroll_into_view_if_needed.js";
 import * as job from "./job";
 import { initKebabMenu } from "./kebabMenu.js";
@@ -293,28 +291,26 @@ function createNodeFolder(name, path, details, origin) {
 }
 
 function createCurrent() {
-  const p = metadata.current_path;
-  const title = p.length > 0 ? p[p.length - 1] : "Root";
-  const elm = createElement("node-current", title);
-  elm.getElementById("path").innerHTML = `/${joinPaths(metadata.current_path.slice(0, -1))}`
+  const current_path = [...metadata.current_path];
+  const current_folder = current_path.pop() || "Root";
+  const component = createElement("node-current", current_folder);
+  component.getElementById("path").innerHTML = `${joinPaths(current_path)}/`
 
-  const createBtn = elm.getElementById("create");
+  const createBtn = component.getElementById("create");
   if (createBtn) {
     createBtn.onclick = (e) => {
       e.stopPropagation();
       createFolder();
     }
   }
-  return elm;
+  return component;
 }
 
 /**
  * create a up button element
  */
 function createUp() {
-  const p = metadata.current_path;
-  const title = p[p.length - 1];
-  const elm = createElement("node-up", title, () => {
+  const elm = createElement("node-up", "", () => {
     metadata.current_path.pop();
     load();
   });

@@ -14,8 +14,8 @@
 <template id="node-current">
   <div class="line-y node-current">
     <img class="icon icon-small" src="{{ pre.countOrRenderAssets('folder_opened.svg') | safe }}"/>
+    <p id="path" class="txt-sm txt-grey"></p>
     <p id="name" class="txt-sm uppercase"></p>
-    <p id="path" class="txt-sm txt-grey">/PrusaLink g-codes/MK3/</p>
     <div class="separator"></div>
     <ul class="node-btn-list">
       {% for key, values in buttons %}
