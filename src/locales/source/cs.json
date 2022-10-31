@@ -221,5 +221,8 @@
   "prop.st-finished": "",
   "prop.st-ready": "Připravena",
   "prop.st-stopped": "Zastaveno",
-  "prop.st-unknown": ""
+  "prop.st-unknown": "",
+  "sort.by-date": "",
+  "sort.by-name": "",
+  "sort.by-size": ""
 }

@@ -212,5 +212,8 @@
   "prop.st-unknown": "",
   "camera.name": "",
   "camera.time": "",
-  "camera.title": ""
+  "camera.title": "",
+  "sort.by-date": "",
+  "sort.by-name": "",
+  "sort.by-size": ""
 }

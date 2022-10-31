@@ -96,6 +96,10 @@ nav {
   flex-direction: column;
 }
 
+.grow {
+  flex-grow: 1;
+}
+
 .mr-md {
   margin-right: 12px;
 }
@@ -718,12 +722,15 @@ nav .burger-icon.burger-open {
 }
 .node-current {
   display: flex;
-  align-items: center;
-  gap: 6px;
+  flex-direction: column;
+  align-items: stretch;
+  padding: 6px 0;
 }
 .node-btn-list {
   display: flex;
   list-style: none;
+  margin: 0;
+  padding: 0;
 }
 .node-btn-list > li {
   padding: 5px;
@@ -1784,6 +1791,36 @@ input .autoresize {
   padding-bottom: 16px;
 }
 
+.sort-bar {
+  margin: 0;
+  padding: 0;
+}
+
+.sort-by {
+  margin-left: 16px;
+  cursor: pointer;
+  align-items: center;
+}
+
+.sort-by p {
+  margin-right: 8px;
+}
+
+.sort-asc,
+.sort-desc {
+  fill: #efefef;
+}
+
+.asc .sort-asc,
+.desc .sort-desc {
+  fill: $orange;
+}
+
+.sort-direction {
+  justify-content: center;
+}
+
+
 @media only screen and (max-width: 991.5px) {
   .pc-only {
     display: none;
@@ -1907,6 +1944,11 @@ input .autoresize {
     height: 20px;
     min-width: 20px;
   }
+  .icon-tiny {
+    width: 10px;
+    height: 10px;
+    min-width: 10px;
+  }
   button {
     border-radius: 4px;
   }
@@ -1997,6 +2039,9 @@ input .autoresize {
   }
   #job .progress {
     font-size: $font-size-default;
+  }
+  .node-current {
+    flex-direction: row;
   }
   .node,
   .node-btn-list {
