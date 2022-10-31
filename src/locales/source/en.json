@@ -221,5 +221,8 @@
   "prop.st-finished": "Finished",
   "prop.st-ready": "Ready",
   "prop.st-stopped": "Stopped",
-  "prop.st-unknown": "Unknown"
+  "prop.st-unknown": "Unknown",
+  "sort.by-name": "Name",
+  "sort.by-size": "Size",
+  "sort.by-date": "Date"
 }

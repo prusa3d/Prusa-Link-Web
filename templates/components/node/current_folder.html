@@ -11,20 +11,48 @@
   }
 %}
 
+{%
+  set sort_by = ['name', 'date', 'size']
+%}
+
 <template id="node-current">
   <div class="line-y node-current">
-    <img class="icon icon-small" src="{{ pre.countOrRenderAssets('folder_opened.svg') | safe }}"/>
-    <p id="path" class="txt-sm txt-grey"></p>
-    <p id="name" class="txt-sm uppercase"></p>
+    <div class="flex-row">
+      <img class="icon icon-small" src="{{ pre.countOrRenderAssets('folder_opened.svg') | safe }}"/>
+      <p id="path" class="txt-sm txt-grey"></p>
+      <p id="name" class="txt-sm uppercase"></p>
+    </div>
+
     <div class="separator"></div>
-    <ul class="node-btn-list">
-      {% for key, values in buttons %}
-        {% if values.implemented %}
-          <li id="{{ key }}">
-            <img class="icon icon-small" src="{{ pre.countOrRenderAssets(values.icon) | safe }}"/>
-          </li>
-        {% endif %}
-      {% endfor %}
-    </ul>
+
+    <div class="flex-row grow">
+      <ul class="node-btn-list">
+        {% for key, values in buttons %}
+          {% if values.implemented %}
+            <li id="{{ key }}">
+              <img class="icon icon-small" src="{{ pre.countOrRenderAssets(values.icon) | safe }}"/>
+            </li>
+          {% endif %}
+        {% endfor %}
+      </ul>
+
+      <div class="separator"></div>
+
+      <ul class="sort-bar flex-row">
+        {% for field in sort_by %}
+        <li id="sort-by-{{ field }}" class="flex-row sort-by">
+          <p class="txt-sm">{{ field }}</p>
+          <div class="sort-direction flex-col">
+            <svg class="sort-asc" xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 3997.6 3997.6">
+              <path d="M1999 499.7L3997.6 3497.9 0 3497.9z"></path>
+            </svg>
+            <svg class="sort-desc" xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 571.36 571.36">
+              <path d="M285.71 499.94L571.36 71.42 0 71.42z"></path>
+            </svg>
+          </div>
+        </li>
+        {% endfor %}
+      </ul>
+    </div>
   </div>
 </template>

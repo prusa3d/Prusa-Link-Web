@@ -17,13 +17,13 @@ import * as job from "./job";
 import { initKebabMenu } from "./kebabMenu.js";
 import { setEnabled } from "../../helpers/element.js";
 import storage from "./storage.js";
-import { LinkState, OperationalStates } from "../../state.js";
+import { LinkState } from "../../state.js";
 import { setButtonLoading, unsetButtonLoading } from "../../helpers/button.js";
 
+const SORT_FIELDS = ["name", "date", "size"];
 let lastData = null;
 let intersectionObserver = null;
 let previewLazyQueue = [];
-
 
 /**
  * file context
@@ -36,6 +36,10 @@ const metadata = {
   free: 0,
   total: 0,
   firstTime: true,
+  sort: {
+    field: "name",
+    order: "asc",
+  }
 };
 
 const getInitialMetadataFiles = (data) => {
@@ -69,12 +73,24 @@ const sortFiles = (files) => {
   const compareFiles = (f1, f2) => {
     if (f1.type === "folder" && f2.type !== "folder") return -1;
     if (f1.type !== "folder" && f2.type === "folder") return 1;
-    const ts1 = f1.date || 0;
-    const ts2 = f2.date || 0;
-    return (ts1 === ts2) ? f1.display.localeCompare(f2.display) : ts2 - ts1;
+
+    const order = metadata.sort.order === "desc" ? -1 : 1;
+
+    switch(metadata.sort.field) {
+      case "date":
+        const ts1 = f1.date || 0;
+        const ts2 = f2.date || 0;
+        return order * (ts1 - ts2);
+      case "size":
+        const s1 = f1.size || 0;
+        const s2 = f2.size || 0;
+        return order * (s1 - s2);
+      case "name":
+      default:
+        return order * f1.display.localeCompare(f2.display);
+    }
   };
   files.sort(compareFiles);
-  files.forEach(n => n.children && sortFiles(n.children));
   return files;
 }
 
@@ -92,7 +108,7 @@ const updateData = () => {
       const newData = JSON.stringify(data);
       if (data && lastData !== newData) {
         lastData = newData;
-        metadata.files = sortFiles(getInitialMetadataFiles(data));
+        metadata.files = getInitialMetadataFiles(data);
         metadata.free = data.free;
         metadata.total = data.total;
         metadata.eTag = result.eTag;
@@ -203,7 +219,7 @@ export function load(context) {
   }
 
   if (metadata.current_path.length > 0) {
-    let view = metadata.files.find((elm) => elm.origin === metadata.origin).children;
+    let view = sortFiles(metadata.files.find((elm) => elm.origin === metadata.origin).children);
     for (let i = 1; i < metadata.current_path.length; i++) {
       let path = metadata.current_path[i];
       view = view.find((elm) => elm.name === path).children;
@@ -303,6 +319,33 @@ function createCurrent() {
       createFolder();
     }
   }
+
+  component.querySelector("#sort-by-name p").innerText = translate("sort.by-name");
+  component.querySelector("#sort-by-date p").innerText = translate("sort.by-date");
+  component.querySelector("#sort-by-size p").innerText = translate("sort.by-size");
+
+  component.querySelector(`#sort-by-${metadata.sort.field}`).classList.add(metadata.sort.order);
+
+  SORT_FIELDS.forEach(field => {
+    component.getElementById(`sort-by-${field}`).addEventListener("click", (e) => {
+      const newToggle = document.getElementById(`sort-by-${field}`);
+      const oldToggle = document.getElementById(`sort-by-${metadata.sort.field}`);
+
+      oldToggle.classList.remove(metadata.sort.order);
+
+      const order = (metadata.sort.field === field)
+        ? (metadata.sort.order === "asc" ? "desc" : "asc")
+        : "asc";
+
+      newToggle.classList.add(order);
+
+      metadata.sort.field = field;
+      metadata.sort.order = order;
+
+      load();
+    }, false);
+  });
+
   return component;
 }
 
