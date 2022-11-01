@@ -20,12 +20,13 @@ function selectCamera(cameraId, config, timestamp) {
     });
 }
 
-function createCamera(cameraId, config, timestamp) {
+function createCamera(cameraId, status, config, timestamp) {
     const node = document.createElement("li");
     const link = document.createElement("a");
     const img = document.createElement("img");
     link.appendChild(img);
     node.appendChild(link);
+    img.alt = `${config.name} - ${status.toUpperCase()}`;
     
     getImage(`/api/v1/cameras/${cameraId}/snap`, timestamp).then(url => img.src = url);
 
@@ -49,9 +50,7 @@ function update() {
     const timestamp = Math.round(now / 1000);
     
     getJson("/api/v1/cameras").then(result => {
-        const items = result?.data?.camera_list.filter(
-            camera => camera.status.toUpperCase() === "CONNECTED"
-        ) || [];
+        const items = result?.data?.camera_list || [];
         const hasCameras = !!items.length;
 
         if (selectedCamera && !items.find(({camera_id}) => camera_id === selectedCamera)) {
@@ -72,9 +71,9 @@ function update() {
             }
 
             items.forEach(
-                ({camera_id, config}) => {
+                ({camera_id, status, config}) => {
                     cameraPreviews.appendChild(
-                        createCamera(camera_id, config, timestamp)
+                        createCamera(camera_id, status, config, timestamp)
                     );
                     if (!selectedCamera || selectedCamera === camera_id) {
                         selectCamera(camera_id, config, timestamp);
