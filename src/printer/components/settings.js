@@ -23,6 +23,8 @@ const load = (context) => {
   initUserSettings();
   if (process.env.WITH_SERIAL)
     initSerialSettings();
+  if (process.env.WITH_API_KEY_SETTING)
+    initApiKey();
   logsModule?.load();
 };
 
@@ -30,6 +32,27 @@ const update = (context) => {
   logsModule?.update();
   updateConnectionSettings(context, false);
 };
+
+function initApiKey() {
+  const resetApiKeyButton = document.getElementById("api_key-reset");
+  if (resetApiKeyButton) {
+    resetApiKeyButton.addEventListener("click", () => {
+      getJson("api/settings/apikey", {method: "POST"}).then(result => {
+        updateApiKey(result.data["api-key"]);
+        displaySuccess(result);
+      }).catch(
+        (result) => handleError(result)
+      );
+    }, false);
+  }
+}
+
+function updateApiKey(apiKey) {
+  const apiKeyInput = document.getElementById("api_key");
+  if (apiKeyInput) {
+    apiKeyInput.innerText = apiKey;
+  }
+}
 
 function initBaseSettings() {
   getJson("api/version?system=true").then(result => {
@@ -103,6 +126,9 @@ function initPrinterSettings() {
     const data = result.data;
     nameInput.value = data.printer?.name || "";
     locationInput.value = data.printer?.location || "";
+    if ("api-key" in result.data) {
+      updateApiKey(result.data["api-key"]);
+    }
   }).catch((result) => handleError(result))
     .finally(() => {
       updateEditBtn();

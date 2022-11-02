@@ -234,5 +234,7 @@
   "camera.title": "",
   "sort.by-date": "",
   "sort.by-name": "",
-  "sort.by-size": ""
+  "sort.by-size": "",
+  "api_key.label": "",
+  "btn.reset": ""
 }

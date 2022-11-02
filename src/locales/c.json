@@ -1,4 +1,5 @@
 {
+  "api_key.label": "",
   "btn.back": "",
   "btn.cancel": "",
   "btn.chg": "",
@@ -12,6 +13,7 @@
   "btn.login": "",
   "btn.no": "",
   "btn.pause-pt": "",
+  "btn.reset": "",
   "btn.resume-pt": "",
   "btn.retract": "",
   "btn.save-chgs": "",

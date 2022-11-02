@@ -93,6 +93,14 @@
 
 <!-- prettier-ignore -->
 {%
+  set section_api_key = [
+    {text: 'api key', label: 'api_key.label', id: 'api_key', type: 'text', placeholder: '', editable: false, spacer: true,
+      button: {id: 'api_key-reset', text: 'reset', label: 'btn.reset', disabled: false} }
+  ]
+%}
+
+<!-- prettier-ignore -->
+{%
   set settings = [
     {'text': 'version', 'label': 'version.title', 'settings': version_section },
     {'text': 'system version', 'label': 'sys-version.title', 'settings': [], 'id': 'sys-version' },
@@ -100,6 +108,7 @@
     {'text': 'printer', 'label': 'printer.title', 'settings': section_printer },
     {'text': 'user', 'label': 'user.title', 'settings': section_user },
     {'text': 'serial number', 'label': 'serial.label', 'settings': section_serial, 'condition': env.WITH_SERIAL },
+    {'text': 'api key', 'label': 'api_key.label', 'settings': section_api_key, 'condition': env.WITH_API_KEY_SETTING },
     {'text': 'logs', 'label': 'logs.title', 'settings': section_logs, 'condition': env.WITH_LOGS }
   ]
 %}

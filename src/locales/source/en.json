@@ -22,6 +22,8 @@
   "btn.start-pt": "Start Print",
   "btn.upld-file": "Upload File",
   "btn.yes": "Yes",
+  "btn.reset": "Reset",
+  "api_key.label": "API Key",
   "camera.title": "Cameras",
   "camera.name": "Camera Name",
   "camera.time": "Snapshot Time",
