@@ -37,8 +37,8 @@ const metadata = {
   total: 0,
   firstTime: true,
   sort: {
-    field: "name",
-    order: "asc",
+    field: "date",
+    order: "desc",
   }
 };
 
