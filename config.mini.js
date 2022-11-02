@@ -21,6 +21,7 @@ module.exports = (env, args) => {
         WITH_PREVIEW_LAZY_QUEUE: true,
         WITH_DOWNLOAD_BUTTON: true,
         WITH_API_KEY_AUTH: false,
+        WITH_NAME_SORTING_ONLY: true,
         ...env,
     };
     return webpackConfig(config, args);

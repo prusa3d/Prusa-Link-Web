@@ -20,7 +20,7 @@ import storage from "./storage.js";
 import { LinkState } from "../../state.js";
 import { setButtonLoading, unsetButtonLoading } from "../../helpers/button.js";
 
-const SORT_FIELDS = ["name", "date", "size"];
+const SORT_FIELDS = process.env["WITH_NAME_SORTING_ONLY"] ? ["name"] : ["name", "date", "size"];
 let lastData = null;
 let intersectionObserver = null;
 let previewLazyQueue = [];
@@ -321,8 +321,10 @@ function createCurrent() {
   }
 
   component.querySelector("#sort-by-name p").innerText = translate("sort.by-name");
-  component.querySelector("#sort-by-date p").innerText = translate("sort.by-date");
-  component.querySelector("#sort-by-size p").innerText = translate("sort.by-size");
+  if (!process.env["WITH_NAME_SORTING_ONLY"]) {
+    component.querySelector("#sort-by-date p").innerText = translate("sort.by-date");
+    component.querySelector("#sort-by-size p").innerText = translate("sort.by-size");
+  }
 
   component.querySelector(`#sort-by-${metadata.sort.field}`).classList.add(metadata.sort.order);
 

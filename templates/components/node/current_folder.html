@@ -11,9 +11,15 @@
   }
 %}
 
+{% if env.WITH_NAME_SORTING_ONLY %}
+{%
+  set sort_by = ['name']
+%}
+{% else %}
 {%
   set sort_by = ['name', 'date', 'size']
 %}
+{% endif %}
 
 <template id="node-current">
   <div class="line-y node-current">
