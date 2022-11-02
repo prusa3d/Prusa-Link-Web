@@ -219,7 +219,7 @@ export function load(context) {
   }
 
   if (metadata.current_path.length > 0) {
-    let view = sortFiles(metadata.files.find((elm) => elm.origin === metadata.origin).children);
+    let view = metadata.files.find((elm) => elm.origin === metadata.origin).children;
     for (let i = 1; i < metadata.current_path.length; i++) {
       let path = metadata.current_path[i];
       view = view.find((elm) => elm.name === path).children;
@@ -229,7 +229,7 @@ export function load(context) {
     if (metadata.current_path.length > 1)
       files.appendChild(createUp());
 
-    for (let node of view) {
+    for (let node of sortFiles(view)) {
       if (node.type === "folder") {
         // TODO: Cache file/folder count or count async.
         const filesCount = countFilesRecursively(node);
