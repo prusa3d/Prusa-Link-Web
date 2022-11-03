@@ -63,7 +63,7 @@ export const pauseJob = () => {
 /**
  * Cancel job modal.
  */
- const createCancelJobModal = (close) => {
+ const createCancelJobModal = (close, onConfirm) => {
   const template = document.getElementById("modal-question");
   const node = document.importNode(template.content, true);
   const label = node.getElementById("modal-question-label");
@@ -73,6 +73,7 @@ export const pauseJob = () => {
 
   yesButton.addEventListener("click", (event) => {
     event.preventDefault();
+    onConfirm && onConfirm();
     setDisabled(yesButton, true);
     setDisabled(noButton, true);
     getJson("/api/job", {
@@ -94,8 +95,8 @@ export const pauseJob = () => {
 /**
  * Shows modal, then stops printing.
  */
- export const cancelJob = () => {
-  modal((close) => createCancelJobModal(close), {
+ export const cancelJob = (onConfirm) => {
+  modal((close) => createCancelJobModal(close, onConfirm), {
     timeout: 0,
     closeOutside: false,
   });

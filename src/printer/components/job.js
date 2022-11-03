@@ -17,6 +17,7 @@ import { resinRefill } from "../sla/refill";
 import { LinkState, OperationalStates } from "../../state";
 import { setButtonLoading, unsetButtonLoading } from "../../helpers/button";
 
+let pendingCommand = null;
 let metadata = getDefaultMetadata();
 let filePreviewMetadata = getDefaultFilePreviewMetadata();
 let fallbackThumbnailUrl = null;
@@ -70,17 +71,23 @@ export function selectFilePreview(filePreview) {
 
   filePreviewMetadata = getDefaultFilePreviewMetadata();
   filePreviewMetadata.file = filePreview;
-  showLoading();
-  getThumbnailImgUrl(filePreview.refs?.thumbnailBig, filePreview.date).then(({url}) => {
-    if (canEditFilePreviewMetadata(filePreview)) {
-      filePreviewMetadata.thumbnail = {
-        ready: true,
-        url,
-      };
-    } else {
-      console.warn("Can't edit file preview metadata because path was changed");
-    }
-  });
+
+  const thumbnailBig = filePreview.refs?.thumbnailBig;
+  if (thumbnailBig) {
+    showLoading();
+    getThumbnailImgUrl(thumbnailBig, filePreview.date).then(({url}) => {
+      if (canEditFilePreviewMetadata(filePreview)) {
+        filePreviewMetadata.thumbnail = {
+          ready: true,
+          url,
+        };
+      } else {
+        console.warn("Can't edit file preview metadata because path was changed");
+      }
+    });
+  } else {
+    filePreviewMetadata.thumbnail.ready = true;
+  }
 }
 
 /**
@@ -105,6 +112,11 @@ export function render(context) {
  */
 export function update(context, isFilePreview = false) {
   const visible = setComponentVisibility(context, isFilePreview);
+
+  if (pendingCommand && pendingCommand.state !== context.printer.state.text) {
+    pendingCommand = null;
+  } 
+
   if (visible)
     updateJob(context, isFilePreview);
 };
@@ -179,16 +191,24 @@ function reFetch(path) {
     if (!data.refs)
       console.warn("Missing refs for " + path);
 
-    getThumbnailImgUrl(data.refs?.thumbnailBig, data.date).then(({url}) => {
-      if (canEditMetadata(path)) {
-        metadata.thumbnail = {
-          ready: true,
-          url,
-        };
-      } else {
-        console.warn("Can't edit metadata because path was changed");
-      }
-    });
+    const thumbnailBig = data.refs?.thumbnailBig;
+
+    if (thumbnailBig) {
+      getThumbnailImgUrl(thumbnailBig, data.date).then(({url}) => {
+        if (canEditMetadata(path)) {
+          metadata.thumbnail = {
+            ready: true,
+            url,
+          };
+        } else {
+          console.warn("Can't edit metadata because path was changed");
+        }
+      })
+    } else {
+      metadata.thumbnail.ready = true;
+    }
+
+;
 
   }).catch((result) => handleError(result)); // TODO: Consider better error handling
 }
@@ -422,7 +442,6 @@ function setupButtons(context, jobResult, file, isFilePreview) {
 
     if (process.env.PRINTER_TYPE === "fdm") {
       setupPauseButton(state, "#job #pause");
-      setupPausingButton(state);
       setupResumeButton(state);
     }
 
@@ -443,13 +462,18 @@ function setupCancelButton(state, isFilePreview) {
   const linkState = LinkState.fromApi(state);
   const isJobPreview = OperationalStates.includes(linkState);
 
-  setEnabled(btnStop, state.flags.printing && !state.flags.cancelling)
+  setEnabled(btnStop, !pendingCommand && (state.flags.printing || state.flags.paused) && !state.flags.cancelling)
 
   if (btnStop) {
     if (!isFilePreview) {
       const isVisible = !isJobPreview || (process.env.PRINTER_TYPE === "sla" && state.text != "Feed me");
       setVisible(btnStop, isVisible);
-      btnStop.onclick = cancelJob;
+      btnStop.onclick = () => {
+        cancelJob(() => {
+          pendingCommand = {code: "stop", state: state.text};
+          setEnabled(btnStop, false);
+        });
+      };
     }
   }
 
@@ -477,24 +501,29 @@ function setupStartButton(state, fileUrl, isFilePreview) {
 function setupPauseButton(state, selector) {
   const btn = document.querySelector(selector);
   setVisible(btn, state.flags.printing && !state.flags.paused);
-  setEnabled(btn, state.flags.printing && !state.flags.pausing);
+  setEnabled(btn, !pendingCommand && state.flags.printing && !state.flags.pausing);
 
-  if (btn && !btn.onclick)
-    btn.onclick = pauseJob;
-}
-
-function setupPausingButton(state) {
-  const btn = document.querySelector("#job #pausing");
-  setVisible(btn, state.flags.pausing);
+  if (btn) {
+    btn.onclick = () => {
+      setEnabled(btn, false);
+      pendingCommand = {code: "pause", state: state.text};
+      pauseJob();
+    };
+  }
 }
 
 function setupResumeButton(state) {
   const btn = document.querySelector("#job #resume");
   setVisible(btn, state.flags.paused);
-  setEnabled(btn, state.flags.paused);
+  setEnabled(btn, !pendingCommand && state.flags.paused);
 
-  if (btn && !btn.onclick)
-    btn.onclick = resumeJob;
+  if (btn) {
+    btn.onclick = () => {
+      setEnabled(btn, false);
+      pendingCommand = {code: "resume", state: state.text};
+      resumeJob();
+    }
+  }
 }
 
 function setupSlaResumeButton(state, selector) {
