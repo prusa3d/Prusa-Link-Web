@@ -219,12 +219,12 @@
   "prop.st-ready": "준비",
   "prop.st-stopped": "정지됨",
   "prop.st-unknown": "알수없음",
-  "camera.name": "",
-  "camera.time": "",
-  "camera.title": "",
-  "sort.by-date": "",
-  "sort.by-name": "",
-  "sort.by-size": "",
-  "api_key.label": "",
-  "btn.reset": ""
+  "camera.name": "카메라 명칭",
+  "camera.time": "스냅샷 시간",
+  "camera.title": "카메라",
+  "sort.by-date": "날짜로 정렬하기",
+  "sort.by-name": "이름으로 정렬하기",
+  "sort.by-size": "크기로 정렬하기",
+  "api_key.label": "API KEY",
+  "btn.reset": "리셋"
 }
