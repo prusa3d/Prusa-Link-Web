@@ -226,5 +226,17 @@
   "sort.by-name": "",
   "sort.by-size": "",
   "api_key.label": "",
-  "btn.reset": ""
+  "btn.reset": "",
+  "camera.driver": "",
+  "camera.path": "",
+  "camera.send-to-connect": "",
+  "camera.settings": "",
+  "camera.resolution": "",
+  "cameras.link": "",
+  "camera.try-connect": "",
+  "ntf.camera-suc": "",
+  "cameras.trigger-scheme.each-layer": "",
+  "cameras.trigger-scheme.manual": "",
+  "cameras.trigger-scheme.ten-min": "",
+  "camera.trigger-scheme": ""
 }

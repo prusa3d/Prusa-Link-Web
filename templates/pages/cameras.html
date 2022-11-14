@@ -1,0 +1,73 @@
+<!-- prettier-ignore -->
+{#
+  # This file is part of the Prusa Link Web
+  # Copyright (C) 2021 Prusa Research a.s. - www.prusa3d.com
+  # SPDX-License-Identifier: GPL-3.0-or-later
+#}
+
+<!-- prettier-ignore -->
+{% include "components/title_default.html" %}
+
+<div class="main-wrapper" id="cameras">
+  <div class="camera-snapshot">
+    <ul class="camera-snapshot-meta">
+      <li>
+        <p class="txt-sm txt-grey" data-label="camera.name">
+          Camera Name
+        </p>
+        <p id="camera-snapshot-name" class="txt-bold txt-md">
+          -
+        </p>
+      </li>
+      <li>
+        <p class="txt-sm txt-grey" data-label="camera.time">
+          Snapshot Time
+        </p>
+        <p id="camera-snapshot-time" class="txt-bold txt-md">
+          -
+        </p>
+      </li>
+    </ul>
+    <div id="camera-snapshot-container">
+      <img id="camera-snapshot-picture" />
+    </div>
+  </div>
+  <div class="cameras-list">
+    <div class="line"></div>
+    <ul id="cameras-list"></ul>
+  </div>
+</div>
+
+<template id="camera-list-item">
+  <li class="node line">
+    <div class="flex-row grow">
+      <div class="camera__preview mr-md">
+        <img class="camera__no-snapshot" src="{{ pre.countOrRenderAssets('no-camera.svg') | safe }}" alt="" />
+        <img class="camera__snapshot" alt="" />
+      </div>
+      <div class="flex-col grow justify-between">
+        <div class="flex-row">
+          <div class="camera__name grow"></div>
+          <div class="camera__controls flex-row">
+            <button class="camera__settings ml-md rounded"><img class="icon icon-small" src="{{ pre.countOrRenderAssets('settings.svg') | safe }}"/></button>
+            <button class="camera__connect ml-md rounded"><img class="icon icon-small" src="{{ pre.countOrRenderAssets('print-start.svg') | safe }}"/></button>
+            <button class="camera__disconnect ml-md rounded"><img class="icon icon-small" src="{{ pre.countOrRenderAssets('print-stop.svg') | safe }}"/></button>
+          </div>
+        </div>
+        <div class="flex-row">
+          <div class="mr-md">
+            <p class="camera__path__label txt-sm txt-grey"></p>
+            <p class="camera__path txt-bold txt-md"></p>
+          </div>
+          <div class="mr-md">
+            <p class="camera__driver__label txt-sm txt-grey"></p>
+            <p class="camera__driver txt-bold txt-md"></p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </li>
+</template>
+
+<!-- prettier-ignore -->
+{% include "../components/modal/confirm.html" %}

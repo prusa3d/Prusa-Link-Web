@@ -93,6 +93,7 @@ export class Dropdown {
       li.innerHTML = option;
       li.onclick = () => {
         this.select(option);
+        this.value = option;
         if (this.onselect)
           this.onselect(option);
         this.close();

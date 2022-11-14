@@ -27,6 +27,7 @@
   "camera.title": "Cameras",
   "camera.name": "Camera Name",
   "camera.time": "Snapshot Time",
+  "camera.try-connect": "Camera is not detected. Do you want to detect it manually?",
   "conn.err-conn": "Cannot connect to the printer",
   "conn.printer-status": "3D Printer Connection Status",
   "conn.prusa-connect-status": "PrusaConnect Status",
@@ -86,6 +87,7 @@
   "msg.sla-pour-resin": "Pour enough resin for selected file into the tank and close the lid. Minimal amount of the resin is displayed on the touchscreen.",
   "msg.sla-refill": "Refill the tank to 100 % and close the lid.",
   "ntf.actn-pending": "Action will be executed after layer finish.",
+  "ntf.camera-suc": "Camera control request has been sent",
   "ntf.e-307": "Resin measuring failed!",
   "ntf.error": "Error",
   "ntf.n-calibrated": "Printer is not calibrated!",
@@ -226,5 +228,15 @@
   "prop.st-unknown": "Unknown",
   "sort.by-name": "Name",
   "sort.by-size": "Size",
-  "sort.by-date": "Date"
+  "sort.by-date": "Date",
+  "camera.driver": "Driver",
+  "camera.path": "Path",
+  "camera.send-to-connect": "Send to CONNECT",
+  "camera.settings": "Camera Settings",
+  "camera.resolution": "Resolution",
+  "cameras.link": "Cameras",
+  "cameras.trigger-scheme.each-layer": "On layer change",
+  "cameras.trigger-scheme.manual": "Manual",
+  "cameras.trigger-scheme.ten-min": "Every 10 minutes",
+  "camera.trigger-scheme": "Trigger Scheme"
 }
