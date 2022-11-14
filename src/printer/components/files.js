@@ -158,7 +158,7 @@ export function load(context) {
             const loadPreviewQueued = () => {
               if (previewLazyQueue.length) {
                 const target = previewLazyQueue[0];
-                getImage(target.getAttribute('data-src')).then((url) => {
+                getImage(target.getAttribute('data-src')).then(({url}) => {
                   target.src = url;
                 }).finally(() => {
                   self.unobserve(target);
@@ -172,7 +172,7 @@ export function load(context) {
               loadPreviewQueued();
             }
           } else {
-            getImage(entry.target.getAttribute('data-src')).then((url) => {
+            getImage(entry.target.getAttribute('data-src')).then(({url}) => {
               entry.target.src = url;
             });
           }

@@ -91,6 +91,13 @@ const fdm = {
         module: updatePrinterTitle(require("../components/control.js").default),
         getTitle: () => buildTitle(translate("control.link")),
       } : null,
+    process.env.WITH_CAMERAS ?
+      {
+        path: "cameras",
+        html: require("../../views/cameras.html"),
+        module: updatePrinterTitle(require("../components/cameras.js").default),
+        getTitle: () => buildTitle(translate("cameras.link")),
+      } : null,
   ].filter(route => route != null),
   init: (apiResult) => {
     updateContext(apiResult);

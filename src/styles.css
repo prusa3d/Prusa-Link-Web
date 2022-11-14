@@ -91,6 +91,10 @@ nav {
   display: flex;
 }
 
+.items-center {
+  align-items: center;
+}
+
 .flex-col {
   display: flex;
   flex-direction: column;
@@ -100,8 +104,35 @@ nav {
   flex-grow: 1;
 }
 
+.justify-between {
+  justify-content: space-between;
+}
+
 .mr-md {
   margin-right: 12px;
+}
+
+.ml-md {
+  margin-left: 12px;
+}
+
+.rounded {
+  border-radius: 50%;
+}
+
+button.rounded {
+  background-color: transparent;
+  padding: 0;
+  margin: 0;
+}
+
+button.rounded img {
+  padding: 4px;
+  margin: 0;
+}
+
+button.rounded:hover {
+  background-color: #5b5b5b;
 }
 
 /* ===================================== TEXT ======================================= */
@@ -332,6 +363,7 @@ nav .burger-icon.burger-open {
   order: 2;
   align-items: center;
   display: flex;
+  text-transform: uppercase; 
 }
 
 /* ===================================== TELEMETRY ======================================= */
@@ -1324,6 +1356,7 @@ $toast-success-bg: #effaf3;
 $toast-success-color: #257942;
 $toast-success-title-bg: #48c774;
 $toast-success-title-color: $text-white;
+
 #prusa-toast > article {
   display: block;
   text-align: center;
@@ -1453,7 +1486,6 @@ $toast-success-title-color: $text-white;
 
 .dropdown {
   align-self: center;
-  text-transform: uppercase;
   position: relative;
   width: max-content;
 }
@@ -1479,6 +1511,7 @@ $toast-success-title-color: $text-white;
 .dropdown li {
   cursor: pointer;
   padding: 15px 20px;
+  white-space: nowrap;
 }
 .dropdown li:hover {
   background: $orange;
@@ -1762,11 +1795,29 @@ input .autoresize {
 
 /* ========================================== CAMERAS ============================================ */
 
+.camera__snapshot {
+  display: block;
+}
+
+#cameras-snapshots {
+  display: flex;
+  flex-direction: row;
+  list-style: none;
+  margin: 24px 0 0;
+  padding: 0;
+  flex-wrap: wrap;
+}
+
+#cameras-snapshots li {
+  width: 300px;
+  margin-right: 24px;
+  margin-bottom: 24px;
+}
+
 .camera-snapshot {
   padding-top: 16px;
 }
 
-.camera-previews,
 .camera-snapshot-meta {
   list-style: none;
   margin: 0;
@@ -1784,11 +1835,42 @@ input .autoresize {
   line-height: 1.5;
 }
 
-.camera-previews {
-  display: grid;
-  column-gap: 16px;
-  row-gap: 16px;
-  padding-bottom: 16px;
+.camera-settings__form label {
+  padding-right: 8px;
+  text-align: left;
+}
+
+.camera-settings__form .flex-row {
+  margin: 16px 0;
+}
+
+#cameras-list {
+  margin: 0;
+  padding: 0;
+}
+
+#cameras-list li {
+  list-style: none;
+}
+
+.camera__snapshot {
+  cursor: pointer;
+}
+
+.camera__preview {
+  width: 100px;
+  height: 100px;
+  display: flex;
+  align-items: center;
+}
+
+.camera__preview img {
+  width: 100%;
+  height: auto;
+}
+
+.camera-settings__form .dropdown-btn {
+  padding: 0;
 }
 
 .sort-bar {

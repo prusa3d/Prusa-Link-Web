@@ -176,7 +176,10 @@ const getFileURL = (url, opts, timestamp) =>
           reject(response);
         }
         if (response.ok) {
-          response.blob().then((blob) => resolve(URL.createObjectURL(blob)));
+          response.blob().then((blob) => resolve({
+            url: URL.createObjectURL(blob),
+            headers: response.headers
+          }));
         } else {
           reject(response)
         }

@@ -71,7 +71,7 @@ export function selectFilePreview(filePreview) {
   filePreviewMetadata = getDefaultFilePreviewMetadata();
   filePreviewMetadata.file = filePreview;
   showLoading();
-  getThumbnailImgUrl(filePreview.refs?.thumbnailBig, filePreview.date).then(url => {
+  getThumbnailImgUrl(filePreview.refs?.thumbnailBig, filePreview.date).then(({url}) => {
     if (canEditFilePreviewMetadata(filePreview)) {
       filePreviewMetadata.thumbnail = {
         ready: true,
@@ -179,7 +179,7 @@ function reFetch(path) {
     if (!data.refs)
       console.warn("Missing refs for " + path);
 
-    getThumbnailImgUrl(data.refs?.thumbnailBig, data.date).then(url => {
+    getThumbnailImgUrl(data.refs?.thumbnailBig, data.date).then(({url}) => {
       if (canEditMetadata(path)) {
         metadata.thumbnail = {
           ready: true,

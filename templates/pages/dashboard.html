@@ -25,6 +25,36 @@
   </div>
 </div>
 
-{% if env.WITH_CAMERA %}
-{% include "components/cameras.html" %}
+{% if env.WITH_CAMERAS %}
+<div class="main-wrapper component component-inline" id="cameras">
+  <p data-label="camera.title" class="txt-grey txt-md">Cameras</p>
+  <div class="camera-snapshot">
+    <ul class="camera-snapshot-meta">
+      <li>
+        <p class="txt-sm txt-grey" data-label="camera.name"></p>
+        <p id="camera-snapshot-name" class="txt-bold txt-md">
+          -
+        </p>
+      </li>
+      <li>
+        <p class="txt-sm txt-grey" data-label="camera.time"></p>
+        <p id="camera-snapshot-time" class="txt-bold txt-md">
+          -
+        </p>
+      </li>
+    </ul>
+    <div id="camera-snapshot-container">
+      <img id="camera-snapshot-picture" class="camera__snapshot" />
+    </div>
+  </div>
+  <ul id="cameras-snapshots"></ul>
+</div>
+{% endif %}
+
+{% if env.WITH_CAMERAS %}
+<template id="cameras-snapshots__item">
+  <li>
+    <img class="camera__snapshot" src="{{ pre.countOrRenderAssets('thumbnail.svg') | safe }}" alt="" />
+  </li>
+</template
 {% endif %}

@@ -60,7 +60,7 @@ module.exports = (env, args) => {
     WITH_TELEMETRY_NOZZLE_DIAMETER: withDefault(env["WITH_TELEMETRY_NOZZLE_DIAMETER"], false),
     WITH_TELEMETRY_MATERIAL: withDefault(env["WITH_TELEMETRY_MATERIAL"], false),
     WITH_API_KEY_AUTH: withDefault(env["WITH_API_KEY_AUTH"], false),
-    WITH_CAMERA: withDefault(env["WITH_CAMERA"], false),
+    WITH_CAMERAS: withDefault(env["WITH_CAMERAS"], false),
     WITH_API_KEY_SETTING: withDefault(env["WITH_API_KEY_SETTING"], false),
     WITH_NAME_SORTING_ONLY: withDefault(env["WITH_NAME_SORTING_ONLY"], false),
   };
