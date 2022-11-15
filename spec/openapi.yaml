@@ -186,6 +186,8 @@ paths:
           $ref: "#/components/responses/Unauthorized"
         403:
           $ref: "#/components/responses/Forbidden"
+        503:
+          $ref: "#/components/responses/ServiceUnavailable"
     put:
       summary: List of cameras in intended order
       requestBody:
@@ -202,6 +204,10 @@ paths:
           description: OK
         401:
           $ref: "#/components/responses/Unauthorized"
+        403:
+          $ref: "#/components/responses/Forbidden"
+        503:
+          $ref: "#/components/responses/ServiceUnavailable"
 
   /api/v1/cameras/{id}:
     get:
@@ -215,8 +221,12 @@ paths:
                 $ref: "#/components/schemas/CameraConfig"
         401:
           $ref: "#/components/responses/Unauthorized"
+        403:
+          $ref: "#/components/responses/Forbidden"
         404:
           $ref: "#/components/responses/NotFound"
+        503:
+          $ref: "#/components/responses/ServiceUnavailable"
     post:
       summary: Setup a new camera or fix a broken one
       requestBody:
@@ -231,10 +241,14 @@ paths:
           $ref: "#/components/responses/BadRequest"
         401:
           $ref: "#/components/responses/Unauthorized"
+        403:
+          $ref: "#/components/responses/Forbidden"
         404:
           $ref: "#/components/responses/NotFound"
         409:
           $ref: "#/components/responses/Conflict"
+        503:
+          $ref: "#/components/responses/ServiceUnavailable"
     patch:
       summary: Edit a camera settings and / or configuration
       requestBody:
@@ -247,22 +261,27 @@ paths:
           description: OK
         401:
           $ref: "#/components/responses/Unauthorized"
+        403:
+          $ref: "#/components/responses/Forbidden"
         404:
           $ref: "#/components/responses/NotFound"
-        409:
-          $ref: "#/components/responses/Conflict"
+        503:
+          $ref: "#/components/responses/ServiceUnavailable"
     delete:
       summary: Delete a camera
       responses:
-        204:
-          description: No Content
-            No Error
+        200:
+          description: OK
         401:
           $ref: "#/components/responses/Unauthorized"
+        403:
+          $ref: "#/components/responses/Forbidden"
         404:
           $ref: "#/components/responses/NotFound"
         409:
           $ref: "#/components/responses/Conflict"
+        503:
+          $ref: "#/components/responses/ServiceUnavailable"
 
   /api/v1/cameras/snap:
     get:
@@ -275,14 +294,23 @@ paths:
               schema:
                 type: string
                 format: binary
+        204:
+          description: No Content
+            No Error
+        304:
+          $ref: "#/components/responses/NotModified"
         401:
           $ref: "#/components/responses/Unauthorized"
+        403:
+          $ref: "#/components/responses/Forbidden"
         404:
           $ref: "#/components/responses/NotFound"
+        503:
+          $ref: "#/components/responses/ServiceUnavailable"
 
   /api/v1/cameras/{id}/snap:
     get:
-      summary: Return a captured image
+      summary: Return a captured image from the camera with a given id
       responses:
         200:
           description: OK
@@ -294,10 +322,16 @@ paths:
         204:
           description: No Content
             No Error
+        304:
+          $ref: "#/components/responses/NotModified"
         401:
           $ref: "#/components/responses/Unauthorized"
+        403:
+          $ref: "#/components/responses/Forbidden"
         404:
           $ref: "#/components/responses/NotFound"
+        503:
+          $ref: "#/components/responses/ServiceUnavailable"
     post:
       summary: Make a snapshot with the camera
       description: Can be manually done only during camera initialization
@@ -314,12 +348,83 @@ paths:
                 format: binary
         401:
           $ref: "#/components/responses/Unauthorized"
+        403:
+          $ref: "#/components/responses/Forbidden"
         404:
           $ref: "#/components/responses/NotFound"
         408:
           $ref: "#/components/responses/RequestTimeout"
         409:
           $ref: "#/components/responses/Conflict"
+        503:
+          $ref: "#/components/responses/ServiceUnavailable"
+
+  /api/v1/cameras/{id}/config:
+    patch:
+      summary: Set new settings to a working camera
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CameraConfigSet"
+      responses:
+        200:
+          description: OK
+        401:
+          $ref: "#/components/responses/Unauthorized"
+        403:
+          $ref: "#/components/responses/Forbidden"
+        404:
+          $ref: "#/components/responses/NotFound"
+        503:
+          $ref: "#/components/responses/ServiceUnavailable"
+    delete:
+      summary: Reset settings of a camera
+      responses:
+        200:
+          description: OK
+        401:
+          $ref: "#/components/responses/Unauthorized"
+        403:
+          $ref: "#/components/responses/Forbidden"
+        404:
+          $ref: "#/components/responses/NotFound"
+        503:
+          $ref: "#/components/responses/ServiceUnavailable"
+
+  /api/v1/cameras/{id}/connection:
+    post:
+      summary: Registers a camera to Connect
+      responses:
+        200:
+          description: OK
+        401:
+          $ref: "#/components/responses/Unauthorized"
+        403:
+          $ref: "#/components/responses/Forbidden"
+        404:
+          $ref: "#/components/responses/NotFound"
+        408:
+          $ref: "#/components/responses/RequestTimeout"
+        409:
+          $ref: "#/components/responses/Conflict"
+        503:
+          $ref: "#/components/responses/ServiceUnavailable"
+    delete:
+      summary: Un-registers a camera from Connect
+      responses:
+        200:
+          description: OK
+        401:
+          $ref: "#/components/responses/Unauthorized"
+        403:
+          $ref: "#/components/responses/Forbidden"
+        404:
+          $ref: "#/components/responses/NotFound"
+        409:
+          $ref: "#/components/responses/Conflict"
+        503:
+          $ref: "#/components/responses/ServiceUnavailable"
 
 components:
   schemas:
@@ -825,6 +930,19 @@ components:
 
     NotImplemented: # 501
       description: Not Implemented
+      headers:
+        Content-Location:
+          $ref: "#/components/headers/Content-Location"
+      content:
+        text/plain:
+          schema:
+            $ref: "#/components/schemas/ResponsePlaintext"
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+
+    ServiceUnavailable: # 503
+      description: Service Unavailable
       headers:
         Content-Location:
           $ref: "#/components/headers/Content-Location"
