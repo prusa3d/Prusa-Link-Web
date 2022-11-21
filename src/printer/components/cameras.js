@@ -141,7 +141,7 @@ const updateCameraNode = (cameraNode, camera, firstTime = false) => {
     const btnDisconnect = cameraNode.querySelector(".camera__disconnect");
     const btnSettings = cameraNode.querySelector(".camera__settings");
 
-    setVisible(btnConnect, !camera.connected);
+    setVisible(btnConnect, !camera.connected && camera.detected);
     setVisible(btnDisconnect, false);
     setVisible(btnSettings, camera.connected);
 
