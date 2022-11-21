@@ -526,9 +526,33 @@ components:
         camera_id:
           type: string
           example: "sh42arta"
-        status:
-          type: string
-          enum: [ DETECTED, CONNECTED, ERROR, DISCONNECTED ]
+        config:
+          type: object
+          properties:
+            path:
+              type: string
+              example: "/dev/video0"
+            name:
+              type: string
+              example: "Camera L4D"
+            driver:
+              type: string
+              example: "V4L2"
+            resolution:
+              type: string
+              example: "1280x720"
+        connected:
+          type: boolean
+          description: Camera is successfully connected to PrusaLink
+        detected:
+          type: boolean
+          description: Camera is detected by PrusaLink, but not saved yet
+        stored:
+          type: boolean
+          description: Camera configuration is saved in PrusaLink
+        linked:
+          type: boolean
+          description: Camera is linked to PrusaConnect
 
     CameraConfig:
       type: object
