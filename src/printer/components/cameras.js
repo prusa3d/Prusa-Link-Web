@@ -8,6 +8,7 @@ import { success } from "./toast";
 import { modal } from "./modal";
 import { Dropdown } from "./dropdown";
 
+let allowCloud = false;
 let currentCameraId = null;
 let cameras = [];
 
@@ -39,6 +40,7 @@ const load = (context) => {
 };
 
 const update = (context, updateUI = updateCamerasUI) => {
+    allowCloud = context.connection.states.connect.ok;
     getJson("/api/v1/cameras").then(result => {
         const list = (result?.data?.camera_list || []).map(
             item => {
@@ -56,6 +58,7 @@ const update = (context, updateUI = updateCamerasUI) => {
                     connected: item.connected,
                     detected: item.detected,
                     stored: item.stored,
+                    registered: item.registered,
                     nextSnapshotAt: camera?.nextSnapshotAt,
                     lastSnapshotAt: camera?.lastSnapshotAt,
                     lastSnapshotUrl: camera?.lastSnapshotUrl,
@@ -136,11 +139,18 @@ const updateCameraNode = (cameraNode, camera, firstTime = false) => {
     cameraNode.querySelector(".camera__name").innerText = camera.config.name;
     cameraNode.querySelector(".camera__path").innerText = camera.config.path;
     cameraNode.querySelector(".camera__driver").innerText = camera.config.driver;
+    cameraNode.querySelector(".camera__cloud").innerText = camera.config.registered
+        ? translate("camera.cloud.registered")
+        : translate("camera.cloud.unregistered");
 
+    const btnRegister = cameraNode.querySelector(".camera__register");
+    const btnUnregister = cameraNode.querySelector(".camera__unregister");
     const btnConnect = cameraNode.querySelector(".camera__connect");
     const btnDisconnect = cameraNode.querySelector(".camera__disconnect");
     const btnSettings = cameraNode.querySelector(".camera__settings");
 
+    setVisible(btnRegister, allowCloud && camera.connected && !camera.registered);
+    setVisible(btnUnregister, allowCloud && camera.connected && camera.registered);
     setVisible(btnConnect, !camera.connected && camera.detected);
     setVisible(btnDisconnect, false);
     setVisible(btnSettings, camera.connected);
@@ -151,21 +161,28 @@ const updateCameraNode = (cameraNode, camera, firstTime = false) => {
             tryConnectCamera(camera.id);
         }, false);
 
-        /*
-        btnDisconnect.addEventListener("click", (e) => {
-            e.stopPropagation();
-            getJson(`/api/v1/cameras/${camera.id}`, {
-                method: "DELETE"
-            }).then(() => displaySuccess())
-        }, false);
-        */
-
         btnSettings.addEventListener("click", (e) => {
             e.stopPropagation();
             openCameraSettingsModal(camera.id);
         }, false);
+
+        btnRegister.addEventListener("click", (e) => {
+            e.stopPropagation();
+            controlCloudConnection("POST");
+        }, false)
+
+        btnUnregister.addEventListener("click", (e) => {
+            e.stopPropagation();
+            controlCloudConnection("DELETE");
+        }, false)
     }
 };
+
+const controlCloudConnection = (method) => {
+    getJson(`/api/v1/cameras/connection`, {
+        method
+    }).finally(displaySuccess);
+}
 
 const tryConnectCamera = (cameraId) => {
     const camera = cameras.find(c => c.id === cameraId);
@@ -206,6 +223,7 @@ const createCameraNode = (camera) => {
     listItemNode.id = getCameraNodeId(camera.id);
     node.querySelector(".camera__path__label").innerText = translate("camera.path");
     node.querySelector(".camera__driver__label").innerText = translate("camera.driver");
+    node.querySelector(".camera__cloud__label").innerText = translate("camera.cloud.label");
 
     setVisible(node.querySelector(".camera__snapshot"), false);
     updateCameraNode(node, camera, true);
@@ -269,7 +287,6 @@ const createCameraSettingsModal = (cameraId, resolve) => {
         const node = document.importNode(template.content, true);
         
         const inputName = node.getElementById("camera-settings__name");
-        const inputSendToConnect = node.getElementById("camera-settings__send-to-connect");
 
         const inputResolution = Dropdown.init(
             node.getElementById("camera-settings__resolution"), "camera-settings__resolution"
@@ -293,7 +310,6 @@ const createCameraSettingsModal = (cameraId, resolve) => {
             inputResolution.value = `${data.resolution.width}x${data.resolution.height}`;
             inputTriggerScheme.setOptions(triggerSchemesOptions);
             inputTriggerScheme.value = translateTriggerScheme(data.trigger_scheme);
-            inputSendToConnect.checked = !!data.send_to_connect;
 
             btnConfirm.addEventListener("click", () => {
                 const [resX, resY] = inputResolution.value.split("x").map(val => parseInt(val));
@@ -312,13 +328,6 @@ const createCameraSettingsModal = (cameraId, resolve) => {
                             height: resY,
                         },
                         trigger_scheme,
-                    })
-                }).then(() => {
-                    if (inputSendToConnect.checked === !!data.send_to_connect) {
-                        return;
-                    }
-                    return getJson(`${apiCameraUrl}/connection`, {
-                        method: inputSendToConnect.checked ? "POST" : "DELETE"
                     })
                 })
                 .finally(close);
