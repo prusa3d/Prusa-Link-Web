@@ -238,5 +238,8 @@
   "cameras.trigger-scheme.each-layer": "",
   "cameras.trigger-scheme.manual": "",
   "cameras.trigger-scheme.ten-min": "",
-  "camera.trigger-scheme": ""
+  "camera.trigger-scheme": "",
+  "camera.cloud.label": "",
+  "camera.cloud.registered": "",
+  "camera.cloud.unregistered": ""
 }

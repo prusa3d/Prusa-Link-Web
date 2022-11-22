@@ -238,5 +238,8 @@
   "cameras.trigger-scheme.each-layer": "On layer change",
   "cameras.trigger-scheme.manual": "Manual",
   "cameras.trigger-scheme.ten-min": "Every 10 minutes",
-  "camera.trigger-scheme": "Trigger Scheme"
+  "camera.trigger-scheme": "Trigger Scheme",
+  "camera.cloud.label": "CONNECT",
+  "camera.cloud.registered": "Registered",
+  "camera.cloud.unregistered": "Unregistered"
 }
