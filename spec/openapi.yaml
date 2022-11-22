@@ -643,7 +643,7 @@ components:
         type:
           type: string
           description: File could be Print file, firmware or other (e.g. configuration file)
-          enum: ["PRINT", "FW", "OTHER"]
+          enum: ["PRINT_FILE", "FIRMWARE", "FILE", "FOLDER"]
         refs:
           type: object
           properties:
