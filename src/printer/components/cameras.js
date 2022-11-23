@@ -13,17 +13,26 @@ let currentCameraId = null;
 let cameras = [];
 
 const triggerScheme = {
-    "TEN_MIN": "TEN_MIN", // "Every 10 minutes"
-    "EACH_LAYER": "EACH_LAYER", // "On layer change"
-    "MANUAL": "MANUAL", // "Manual"
+    "TEN_SEC": "TEN_SEC",
+    "THIRTY_SEC": "THIRTY_SEC",
+    "SIXTY_SEC": "SIXTY_SEC",
+    "EACH_LAYER": "EACH_LAYER",
+    "FIFTH_LAYER": "FIFTH_LAYER",
+    "MANUAL": "MANUAL",
 };
 
 const translateTriggerScheme = (scheme) => {
     switch (scheme) {
-        case triggerScheme.TEN_MIN:
-            return translate("cameras.trigger-scheme.ten-min");
+        case triggerScheme.TEN_SEC:
+            return translate("cameras.trigger-scheme.ten-sec");
+        case triggerScheme.THIRTY_SEC:
+            return translate("cameras.trigger-scheme.thirty-sec");
+        case triggerScheme.SIXTY_SEC:
+            return translate("cameras.trigger-scheme.sixty-sec");
         case triggerScheme.EACH_LAYER:
             return translate("cameras.trigger-scheme.each-layer");
+        case triggerScheme.FIFTH_LAYER:
+            return translate("cameras.trigger-scheme.fifth-layer");
         case triggerScheme.MANUAL:
             return translate("cameras.trigger-scheme.manual");
         default:
@@ -302,7 +311,7 @@ const createCameraSettingsModal = (cameraId, resolve) => {
             const resolutions = data.available_resolutions.sort(
                 (r1, r2) => r1.width === r2.width ? r2.height - r1.height : r2.width - r1.width
             ).map((res, index) => `${res.width}x${res.height}`);
-            const triggerSchemes = ["TEN_MIN", "EACH_LAYER", "MANUAL"];
+            const triggerSchemes = Object.keys(triggerScheme);
             const triggerSchemesOptions = triggerSchemes.map(s => translateTriggerScheme(s));
 
             inputName.value = data.name;
