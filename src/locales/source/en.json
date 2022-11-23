@@ -244,5 +244,9 @@
   "camera.trigger-scheme": "Trigger Scheme",
   "camera.cloud.label": "CONNECT",
   "camera.cloud.linked": "Linked",
-  "camera.cloud.not-linked": "Not Linked"
+  "camera.cloud.not-linked": "Not Linked",
+  "camera.btn.connect": "Try to enable camera",
+  "camera.btn.link": "Link camera to CONNECT",
+  "camera.btn.settings": "Open camera settings",
+  "camera.btn.unlink": "Unlink camera from CONNECT"
 }

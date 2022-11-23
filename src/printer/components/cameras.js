@@ -152,19 +152,24 @@ const updateCameraNode = (cameraNode, camera, firstTime = false) => {
         ? translate("camera.cloud.linked")
         : translate("camera.cloud.not-linked");
 
-    const btnRegister = cameraNode.querySelector(".camera__register");
-    const btnUnregister = cameraNode.querySelector(".camera__unregister");
+    const btnLink = cameraNode.querySelector(".camera__register");
+    const btnUnlink = cameraNode.querySelector(".camera__unregister");
     const btnConnect = cameraNode.querySelector(".camera__connect");
     const btnDisconnect = cameraNode.querySelector(".camera__disconnect");
     const btnSettings = cameraNode.querySelector(".camera__settings");
 
-    setVisible(btnRegister, allowCloud && camera.connected && !camera.registered);
-    setVisible(btnUnregister, allowCloud && camera.connected && camera.registered);
+    setVisible(btnLink, allowCloud && camera.connected && !camera.registered);
+    setVisible(btnUnlink, allowCloud && camera.connected && camera.registered);
     setVisible(btnConnect, !camera.connected && camera.detected);
     setVisible(btnDisconnect, false);
     setVisible(btnSettings, camera.connected);
 
     if (firstTime) {
+        btnConnect.title = translate("camera.btn.connect");
+        btnSettings.title = translate("camera.btn.settings");
+        btnLink.title = translate("camera.btn.link");
+        btnUnlink.title = translate("camera.btn.unlink");
+
         btnConnect.addEventListener("click", (e) => {
             e.stopPropagation();
             tryConnectCamera(camera.id);
@@ -175,12 +180,12 @@ const updateCameraNode = (cameraNode, camera, firstTime = false) => {
             openCameraSettingsModal(camera.id);
         }, false);
 
-        btnRegister.addEventListener("click", (e) => {
+        btnLink.addEventListener("click", (e) => {
             e.stopPropagation();
             controlCloudConnection("POST");
         }, false)
 
-        btnUnregister.addEventListener("click", (e) => {
+        btnUnlink.addEventListener("click", (e) => {
             e.stopPropagation();
             controlCloudConnection("DELETE");
         }, false)
