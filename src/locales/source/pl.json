@@ -237,5 +237,9 @@
   "camera.cloud.not-linked": "",
   "cameras.trigger-scheme.fifth-layer": "",
   "cameras.trigger-scheme.sixty-sec": "",
-  "cameras.trigger-scheme.thirty-sec": ""
+  "cameras.trigger-scheme.thirty-sec": "",
+  "camera.btn.connect": "",
+  "camera.btn.link": "",
+  "camera.btn.settings": "",
+  "camera.btn.unlink": ""
 }
