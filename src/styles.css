@@ -1503,6 +1503,8 @@ $toast-success-title-color: $text-white;
   list-style: none;
   padding: 0;
   margin: 0;
+  max-height: 280px;
+  overflow-y: auto;
 }
 .dropdown-btn {
   cursor: pointer;
@@ -1513,7 +1515,12 @@ $toast-success-title-color: $text-white;
   padding: 15px 20px;
   white-space: nowrap;
 }
-.dropdown li:hover {
+.dropdown li.selected {
+  color: $orange;
+}
+
+.dropdown li.select {
+  color: #ffffff;
   background: $orange;
 }
 
