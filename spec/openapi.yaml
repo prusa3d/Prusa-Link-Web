@@ -562,18 +562,10 @@ components:
           type: string
           description: Name of the camera
           example: "MuadDib_Camera_1"
-        path:
-          type: string
-          description: Path to the video device file in system
-          example: "/dev/video0"
-        driver:
-          type: string
-          description: Name of the driver
-          example: "L4L2"
         trigger_scheme:
           type: string
           description: When the snapshot is taken
-          enum: [ EVERY_10_MIN, ON_LAYER_CHANGE ]
+          enum: [ TEN_SEC, THIRTY_SEC, SIXTY_SEC, EACH_LAYER, FIFTH_LAYER, MANUAL ]
         available_resolutions:
           type: array
           items:
@@ -584,7 +576,7 @@ components:
                 example: 640
               height:
                 type: integer
-                example: 640
+                example: 480
         resolution:
           type: object
           properties:
@@ -593,17 +585,12 @@ components:
               example: 640
             height:
               type: integer
-              example: 640
-        rotation:
-          type: integer
-          description: Current rotation of the output image
-          example: 180
-        exposure:
-          type: number
-          example: 4.2
-        send_to_connect:
-          type: boolean
-          example: true
+              example: 480
+        capabilities:
+          type: array
+          items:
+            type: string
+            enum: [TRIGGER_SCHEME, IMAGING, RESOLUTION, ROTATION, EXPOSURE]
 
     CameraConfigSet:
       type: object
