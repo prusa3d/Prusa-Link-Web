@@ -240,6 +240,6 @@
   "cameras.trigger-scheme.ten-min": "Every 10 minutes",
   "camera.trigger-scheme": "Trigger Scheme",
   "camera.cloud.label": "CONNECT",
-  "camera.cloud.registered": "Registered",
-  "camera.cloud.unregistered": "Unregistered"
+  "camera.cloud.linked": "Linked",
+  "camera.cloud.not-linked": "Not Linked"
 }

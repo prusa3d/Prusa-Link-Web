@@ -140,8 +140,8 @@ const updateCameraNode = (cameraNode, camera, firstTime = false) => {
     cameraNode.querySelector(".camera__path").innerText = camera.config.path;
     cameraNode.querySelector(".camera__driver").innerText = camera.config.driver;
     cameraNode.querySelector(".camera__cloud").innerText = camera.config.registered
-        ? translate("camera.cloud.registered")
-        : translate("camera.cloud.unregistered");
+        ? translate("camera.cloud.linked")
+        : translate("camera.cloud.not-linked");
 
     const btnRegister = cameraNode.querySelector(".camera__register");
     const btnUnregister = cameraNode.querySelector(".camera__unregister");
