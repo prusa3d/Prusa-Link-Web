@@ -252,6 +252,6 @@
   "cameras.trigger-scheme.ten-min": "",
   "camera.trigger-scheme": "",
   "camera.cloud.label": "",
-  "camera.cloud.registered": "",
-  "camera.cloud.unregistered": ""
+  "camera.cloud.linked": "",
+  "camera.cloud.not-linked": ""
 }
