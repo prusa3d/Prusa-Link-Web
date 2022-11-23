@@ -241,9 +241,12 @@
   "ntf.camera-suc": "",
   "cameras.trigger-scheme.each-layer": "",
   "cameras.trigger-scheme.manual": "",
-  "cameras.trigger-scheme.ten-min": "",
+  "cameras.trigger-scheme.ten-sec": "",
   "camera.trigger-scheme": "",
   "camera.cloud.label": "",
   "camera.cloud.linked": "",
-  "camera.cloud.not-linked": ""
+  "camera.cloud.not-linked": "",
+  "cameras.trigger-scheme.fifth-layer": "",
+  "cameras.trigger-scheme.sixty-sec": "",
+  "cameras.trigger-scheme.thirty-sec": ""
 }
