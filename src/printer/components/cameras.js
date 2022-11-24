@@ -182,20 +182,20 @@ const updateCameraNode = (cameraNode, camera, firstTime = false) => {
 
         btnLink.addEventListener("click", (e) => {
             e.stopPropagation();
-            controlCloudConnection("POST");
+            controlCloudConnection(camera.id, "POST");
         }, false)
 
         btnUnlink.addEventListener("click", (e) => {
             e.stopPropagation();
-            controlCloudConnection("DELETE");
+            controlCloudConnection(camera.id, "DELETE");
         }, false)
     }
 };
 
-const controlCloudConnection = (method) => {
-    getJson(`/api/v1/cameras/connection`, {
+const controlCloudConnection = (cameraId, method) => {
+    getJson(`/api/v1/cameras/${cameraId}/connection`, {
         method
-    }).finally(displaySuccess);
+    }).then(() => displaySuccess());
 }
 
 const tryConnectCamera = (cameraId) => {
