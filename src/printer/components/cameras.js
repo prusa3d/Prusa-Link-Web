@@ -224,7 +224,7 @@ const createCameraNode = (camera) => {
         if (camera) {
             if (camera.connected) {
                 updateCurrentCamera(camera.id);
-            } else {
+            } else if (camera.detected) {
                 modal((close) => createConfirmCameraConnect(close, cameraId), {
                     timeout: 0,
                     closeOutside: true,
