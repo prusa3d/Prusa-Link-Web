@@ -88,6 +88,7 @@
   "msg.sla-refill": "Refill the tank to 100 % and close the lid.",
   "ntf.actn-pending": "Action will be executed after layer finish.",
   "ntf.camera-suc": "Camera control request has been sent",
+  "ntf.camera-config-success": "Camera configuration has been updated",
   "ntf.e-307": "Resin measuring failed!",
   "ntf.error": "Error",
   "ntf.n-calibrated": "Printer is not calibrated!",
