@@ -33,8 +33,8 @@
 
 {%
     set connection_status_list = [
-      {'text': 'PRUSA CONNECT connection status', label: 'conn.prusa-connect-status', 'id': 'conn-status-connect', 'id_msg': 'conn-status-connect-msg' },
-      {'text': 'PRINTER connection status', label: 'conn.printer-status', 'id': 'conn-status-printer', 'id_msg': 'conn-status-printer-msg' }
+      {'text': 'PRUSA CONNECT connection status', label: 'conn.prusa-connect-status', 'id': 'conn-status-connect', 'id_msg': 'conn-status-connect-msg', 'success_icon': 'prusa-connect.svg' },
+      {'text': 'PRINTER connection status', label: 'conn.printer-status', 'id': 'conn-status-printer', 'id_msg': 'conn-status-printer-msg', 'success_icon': 'yes_color.svg' }
     ]
 %}
 
@@ -42,7 +42,8 @@
   <div class="telemetry" id="telemetry-div">
     {% for values in connection_status_list %}
       <div class="tel-prop" id="{{ values.id }}" hidden="true">
-        <img class="icon" src="{{ pre.countOrRenderAssets('warning.svg') | safe }}" />
+        <img class="icon icon-success" src="{{ pre.countOrRenderAssets(values.success_icon) | safe }}" />
+        <img class="icon icon-warning" src="{{ pre.countOrRenderAssets('warning.svg') | safe }}" />
         <div class="value">
           <p
             class="txt-sm txt-grey"

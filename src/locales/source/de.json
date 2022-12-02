@@ -261,5 +261,10 @@
   "camera.btn.link": "",
   "camera.btn.settings": "",
   "camera.btn.unlink": "",
-  "ntf.camera-config-success": ""
+  "ntf.camera-config-success": "",
+  "conn.connect.linked": "",
+  "conn.printer.not-connected": "",
+  "btn.connect.link": "",
+  "btn.connect.unlink": "",
+  "conn.connect.not-linked": ""
 }

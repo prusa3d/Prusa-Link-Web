@@ -1737,8 +1737,12 @@ input .autoresize {
   line-height: 1.5;
   width: 100%;
 }
+#settings button {
+  min-width: 120px;
+}
 #settings .table {
   padding: 7px 0 7px 0;
+  max-width: 800px;
 }
 #settings .row {
   display: flex;
@@ -1796,8 +1800,8 @@ input .autoresize {
 .connection-status img {
   margin-left: 7px;
 }
-#conn-prusa-connect-status-msg, #conn-printer-status-msg {
-  margin: -7px 0 7px 0;
+.conn-status-msg {
+  margin: 0;
 }
 
 /* ========================================== CAMERAS ============================================ */
