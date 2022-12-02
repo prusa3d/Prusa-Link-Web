@@ -1,65 +1,83 @@
-import { setHidden, setVisible } from "../../helpers/element";
+import { setHidden } from "../../helpers/element";
 import { translate } from "../../locale_provider";
 import { modal } from "./modal";
 
-const failuresBeforeOfflineScreen = process.env.WITH_FAILURES_BEFORE_OFFLINE_SCREEN;
+const failuresBeforeOfflineScreen =
+  process.env.WITH_FAILURES_BEFORE_OFFLINE_SCREEN;
 let casesCount = 0;
 let offlineScreen = null;
 
 /** Updates connection status in telemetry. */
 const updateConnectionStatus = ({ connection, isConnected }) => {
-  if (isConnected) {
-    const states = connection?.states || {"printer": {"ok": true, "message": ""}};
-
-    if (offlineScreen) {
-      if (casesCount < failuresBeforeOfflineScreen) {
-        casesCount += 1;
-      } else {
-        offlineScreen.close();
-        casesCount = 0;
+  const fallbackStates = {
+    printer: {
+      ok: isConnected,
+      message: translate("conn.printer.not-connected"),
+    },
+  };
+  const states = isConnected
+    ? {
+        ...fallbackStates,
+        ...connection?.states, // states could not be ready yet
       }
-    }
+    : fallbackStates; // connection.states could exist, but outdated
+  const alwaysShowStateOf = ["connect"];
 
-    for (const name in states) {
-      const { ok, message } = states[name];
-      const msgElm = document.getElementById(`conn-status-${name}-msg`);
-      if (msgElm)
-        msgElm.innerHTML = message;
-      setHidden(document.getElementById(`conn-status-${name}`), ok);
+  for (const name in states) {
+    const { ok, message } = states[name];
+    const msgElm = document.getElementById(`conn-status-${name}-msg`)
+    if (msgElm) {
+      msgElm.innerHTML =
+        ok && name === "connect"
+          ? message.toLowerCase() === "ok"
+            ? translate("conn.connect.linked")
+            : translate("conn.connect.not-linked")
+          : message;
     }
-  } else {
-    const msgElm = document.getElementById("conn-status-printer-msg");
-    if (msgElm)
-      msgElm.innerHTML = translate("conn.err-conn");
-    setVisible(document.getElementById("conn-status-printer"));
+    const stateNode = document.getElementById(`conn-status-${name}`);
+    const stateSuccessIcon = stateNode.querySelector(".icon-success");
+    const stateWarningIcon = stateNode.querySelector(".icon-warning");
+    const isHidden = ok && !alwaysShowStateOf.includes(name);
 
-    if (!offlineScreen) {
-      if (casesCount < failuresBeforeOfflineScreen) {
-        casesCount += 1;
-      } else {
-        openOfflineScreen();
-        casesCount = 0;
-      }
+    setHidden(stateNode, isHidden);
+    if (!isHidden) {
+      setHidden(stateSuccessIcon, !ok);
+      setHidden(stateWarningIcon, ok);
     }
   }
-}
+
+  const countCaseAndToggleOfflineScreen = (toShow) => {
+    if (casesCount < failuresBeforeOfflineScreen) {
+      casesCount += 1;
+    } else {
+      toShow ? openOfflineScreen() : offlineScreen.close();
+      casesCount = 0;
+    }
+  };
+
+  if (isConnected) {
+    offlineScreen && countCaseAndToggleOfflineScreen(false);
+  } else {
+    !offlineScreen && countCaseAndToggleOfflineScreen(true);
+  }
+};
 
 const getOfflineScreenTranslation = (textId) => {
   switch (textId) {
-    case 'not-responsing':
+    case "not-responsing":
       return translate("msg.offline.not-responsing");
-    case 'please-wait':
+    case "please-wait":
       return translate("msg.offline.please-wait");
     default:
       return "";
   }
-}
+};
 
 const openOfflineScreen = () => {
   const createOfflineScreen = (close) => {
     const template = document.getElementById("offline-screen");
     const node = document.importNode(template.content, true);
-    ["not-responsing", "please-wait"].forEach(id => {
+    ["not-responsing", "please-wait"].forEach((id) => {
       const label = node.getElementById(`offline-screen.${id}`);
       if (label) {
         label.innerHTML = getOfflineScreenTranslation(id);
@@ -70,15 +88,15 @@ const openOfflineScreen = () => {
       close: () => {
         close();
         offlineScreen = null;
-      }
+      },
     };
     return node;
   };
   modal((close) => createOfflineScreen(close), {
     timeout: 0,
     closeOutside: false,
-    className: 'offline-screen'
+    className: "offline-screen",
   });
-}
+};
 
 export default updateConnectionStatus;

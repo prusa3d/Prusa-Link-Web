@@ -12,11 +12,11 @@
   {% endif %}
 >
   <p ok=true>
-    <span data-label="conn.suc">Successfully connected</span>
+    <span class="conn-status-msg" id="{{add_id}}-ok">Successfully connected</span>
     <img class="icon" src="{{ pre.countOrRenderAssets('ok.svg') | safe }}" />
   </p>
   <p ok=false>
-    <span data-label="conn.unsuc">Connection failed</span>
+    <span class="conn-status-msg" id="{{add_id}}-not-ok"></span>
     <img class="icon" src="{{ pre.countOrRenderAssets('warning.svg') | safe }}" />
   </p>
 </div>
