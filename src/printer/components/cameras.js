@@ -142,6 +142,9 @@ const updateSnapshot = (cameraId) => {
 
 const updateCurrentCamera = (cameraId) => {
   const camera = cameraId ? cameras.find((c) => c.id === cameraId) : null;
+  const snapshotPicture = document.getElementById("camera-snapshot-picture");
+  const snapshotTime = document.getElementById("camera-snapshot-time");
+  const snapshotName = document.getElementById("camera-snapshot-name");
   const [id, name, time, url] = camera?.lastSnapshotAt
     ? [
         camera.id,
@@ -151,9 +154,16 @@ const updateCurrentCamera = (cameraId) => {
       ]
     : [null, "-", "-", ""];
   currentCameraId = id;
-  document.getElementById("camera-snapshot-picture").src = url;
-  document.getElementById("camera-snapshot-time").innerText = time;
-  document.getElementById("camera-snapshot-name").innerText = name;
+
+  if (snapshotPicture) {
+    snapshotPicture.src = url;
+  }
+  if (snapshotTime) {
+    snapshotTime.innerText = time;
+  }
+  if (snapshotName) {
+    snapshotName.innerText = name;
+  }
 };
 
 const updateCameraNode = (cameraNode, camera, firstTime = false) => {
