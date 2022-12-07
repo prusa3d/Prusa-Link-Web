@@ -25,6 +25,13 @@ const createApiKey = (resolve) => {
       close();
       resolve(apiKey);
     });
+
+    const apiKeyShowPasswordEl = node.getElementById('apiKeyShowPassword');
+    apiKeyShowPasswordEl.addEventListener("click", modalApiKeyShowPassword);
+  
+    const apiKeyHiddenPasswordEl = node.getElementById('apiKeyHiddenPassword');
+    apiKeyHiddenPasswordEl.addEventListener("click", modalApiKeyHiddenPassword);
+  
     return node;
   };
 };
@@ -226,4 +233,26 @@ const initAuth = () => {
   }
 };
 
-export { getJson, initAuth, getImage, getFile, getPlainText, getHeaders };
+const modalApiKeyShowPassword = () => {
+  const apiKeyEl = document.getElementById('apiKey');
+  apiKeyEl.type = 'text';
+
+  const apiKeyShowPasswordEl = document.getElementById('apiKeyShowPassword');
+  apiKeyShowPasswordEl.style.display = 'none';
+
+  const apiKeyHiddenPasswordEl = document.getElementById('apiKeyHiddenPassword');
+  apiKeyHiddenPasswordEl.style.display = 'block';
+};
+
+const modalApiKeyHiddenPassword = () => {
+  const apiKeyEl = document.getElementById('apiKey');
+  apiKeyEl.type = 'password';
+
+  const apiKeyShowPasswordEl = document.getElementById('apiKeyShowPassword');
+  apiKeyShowPasswordEl.style.display = 'block';
+
+  const apiKeyHiddenPasswordEl = document.getElementById('apiKeyHiddenPassword');
+  apiKeyHiddenPasswordEl.style.display = 'none';
+};
+
+export { getJson, initAuth, getImage, getFile, getPlainText, getHeaders, modalApiKeyShowPassword, modalApiKeyHiddenPassword };

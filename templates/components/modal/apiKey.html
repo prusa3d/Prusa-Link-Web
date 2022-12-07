@@ -15,7 +15,9 @@
         You can find it in Settings -> Network -> Login credentials.
       </span>
     </p>
-    <input id="apiKey" class="txt-md txt-grey" type="text" autofocus />
+    <input id="apiKey" class="txt-md txt-grey" type="password" autofocus />
+    <img class="icon open-eye" id="apiKeyShowPassword" src="{{ pre.countOrRenderAssets('open_eye_light.svg') | safe }}" style="display: block;" />
+    <img class="icon close-eye" id="apiKeyHiddenPassword" src="{{ pre.countOrRenderAssets('close_eye_light.svg') | safe }}" style="display: none;" />
     <button class="yes" id="login">
       <img src="{{ pre.countOrRenderAssets('yes_color.svg') | safe }}" />
       <p data-label="btn.login">Login</p>

@@ -1266,6 +1266,18 @@ button:disabled {
   float: right;
 }
 
+.modal-apiKey > img.open-eye {
+  position: absolute;
+  top: 64.5%;
+  left: 87%;
+}
+
+.modal-apiKey > img.close-eye {
+  position: absolute;
+  top: 64.5%;
+  left: 87%;
+}
+
 /* ===================================== MODAL CONFIRM ======================================= */
 
 .modal-confirm > div > div {
