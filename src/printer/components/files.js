@@ -37,8 +37,8 @@ const metadata = {
   total: 0,
   firstTime: true,
   sort: {
-    field: "date",
-    order: "desc",
+    field: process.env["WITH_NAME_SORTING_ONLY"] ? "name" : "date",
+    order: process.env["WITH_NAME_SORTING_ONLY"] ? "asc" : "desc",
   }
 };
 
