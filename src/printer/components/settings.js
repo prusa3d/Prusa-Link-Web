@@ -122,14 +122,12 @@ function updateConnectionSettings(context, updateInputValue) {
 
 function initSettings() {
   getJson("api/settings")
-    .then(
-      (result) => {
-        const settings = result.data;
-        initPrinterSettings(settings);
-        initUserSettings(settings);
-      }
-    )
-    .catch((result) => handleError(result))
+    .then((result) => {
+      const settings = result.data;
+      initPrinterSettings(settings);
+      initUserSettings(settings);
+    })
+    .catch((result) => handleError(result));
 }
 
 function initPrinterSettings(settings) {
@@ -137,7 +135,10 @@ function initPrinterSettings(settings) {
   const locationInput = document.querySelector("#settings #printer-location");
   const editBtn = document.querySelector("#settings #edit-printer");
   const updateEditBtn = () => {
-    setEnabled(editBtn, nameInput.value.length > 0 && locationInput.value.length > 0);
+    setEnabled(
+      editBtn,
+      nameInput.value.length > 0 && locationInput.value.length > 0
+    );
   };
 
   nameInput.oninput = updateEditBtn;
@@ -250,6 +251,7 @@ function updateConnectionStatus(statusElm, msgElm, ok, message, customMessage) {
 function updatePrusaConnectStatus(data, updateInputValue) {
   const statusElm = document.getElementById("conn-prusa-connect-status");
   const urlIn = document.getElementById("conn-prusa-connect-url");
+  const unlinkButton = document.getElementById("edit-connect-del");
 
   const isFinished = data.connect.registration === "FINISHED";
   const { hostname, tls } = data.connect;
@@ -267,6 +269,9 @@ function updatePrusaConnectStatus(data, updateInputValue) {
     urlIn.value = urlString;
   }
   setHidden(urlIn.parentNode.parentNode, isFinished);
+  if (unlinkButton) {
+    setVisible(unlinkButton, isFinished || !ok);
+  }
 
   updateConnectionStatus(statusElm, msgElm, ready, message, customMessage);
 }
