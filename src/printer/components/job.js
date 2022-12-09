@@ -52,6 +52,7 @@ function getDefaultMetadata() {
 function getDefaultFilePreviewMetadata() {
   return {
     file: null,
+    path: null,
     thumbnail: {
       ready: false,
       url: null,
@@ -60,10 +61,10 @@ function getDefaultFilePreviewMetadata() {
 }
 
 export function getPreviewFile() {
-  return filePreviewMetadata.file;
+  return filePreviewMetadata.path;
 }
 
-export function selectFilePreview(filePreview) {
+export function selectFilePreview(filePreview, filePath) {
   if (!filePreview) {
     filePreviewMetadata = getDefaultFilePreviewMetadata();
     return;
@@ -71,11 +72,12 @@ export function selectFilePreview(filePreview) {
 
   filePreviewMetadata = getDefaultFilePreviewMetadata();
   filePreviewMetadata.file = filePreview;
+  filePreviewMetadata.path = filePath;
 
-  const thumbnailBig = filePreview.refs?.thumbnailBig;
-  if (thumbnailBig) {
+  const thumbnail = filePreview.refs?.thumbnail;
+  if (thumbnail) {
     showLoading();
-    getThumbnailImgUrl(thumbnailBig, filePreview.date).then(({url}) => {
+    getThumbnailImgUrl(thumbnail, filePreview.date).then(({url}) => {
       if (canEditFilePreviewMetadata(filePreview)) {
         filePreviewMetadata.thumbnail = {
           ready: true,
@@ -87,6 +89,7 @@ export function selectFilePreview(filePreview) {
     });
   } else {
     filePreviewMetadata.thumbnail.ready = true;
+    filePreviewMetadata.thumbnail.url = null;
   }
 }
 
@@ -151,7 +154,15 @@ function updateJob(context, isFilePreview) {
     }
 
     const jobFile = context.current.job.file;
-    const path = joinPaths(jobFile.origin, jobFile.path);
+    const origin = jobFile.origin.replace("/", "");
+    // TODO: use `path` when BE is fixed
+    const path = jobFile.path.startsWith("/PrusaLink gcodes/")
+      ? jobFile.path.replace("/PrusaLink gcodes/", `/${origin}/`)
+      : (
+        jobFile.path.startsWith("/SD Card/")
+        ? jobFile.path.replace("/SD Card/", `/${origin}/`)
+        : jobFile.path
+      );
     let loading = isLoading(context.current.state);
 
     if (path && path !== metadata.path) {
@@ -174,7 +185,7 @@ function updateJob(context, isFilePreview) {
 }
 
 function reFetch(path) {
-  getJson(`/api/files/${path}`).then((result) => {
+  getJson(`/api/v1/files${path}`).then((result) => {
     if (!result?.data)
       console.error("No data from BE!");
 
@@ -191,10 +202,10 @@ function reFetch(path) {
     if (!data.refs)
       console.warn("Missing refs for " + path);
 
-    const thumbnailBig = data.refs?.thumbnailBig;
+    const thumbnail = data.refs?.thumbnail;
 
-    if (thumbnailBig) {
-      getThumbnailImgUrl(thumbnailBig, data.date).then(({url}) => {
+    if (thumbnail) {
+      getThumbnailImgUrl(thumbnail, data.m_timestamp).then(({url}) => {
         if (canEditMetadata(path)) {
           metadata.thumbnail = {
             ready: true,
@@ -205,11 +216,9 @@ function reFetch(path) {
         }
       })
     } else {
+      metadata.thumbnail.url = null;
       metadata.thumbnail.ready = true;
     }
-
-;
-
   }).catch((result) => handleError(result)); // TODO: Consider better error handling
 }
 
@@ -231,7 +240,7 @@ function updateComponent(context, isFilePreview) {
     updateProperties("file", file);
     const nameElm = document.querySelector('#job [data-where="job.file.display"]');
     if (nameElm) {
-      nameElm.innerHTML = file.display || file.name;
+      nameElm.innerHTML = file.display_name || file.display || file.name;
     }
     setupButtons(context, null, file, isFilePreview);
 
@@ -380,7 +389,7 @@ function setupProperties(isPreview) {
   const estEnd = document.querySelector("#job #est-end p[data-format]");
   if (estEnd) {
     estEnd.setAttribute("data-where",
-      isPreview ? "gcodeAnalysis.estimatedPrintTime" : "progress.printTimeLeft");
+      isPreview ? "meta.estimatedPrintTime" : "progress.printTimeLeft");
     estEnd.setAttribute("data-type", isPreview ? "file" : "job");
   }
 }
@@ -420,14 +429,14 @@ function hideNaProperties(state, isFilePreview) {
 function setupButtons(context, jobResult, file, isFilePreview) {
   const state = context.printer.state;
   const jobState = context.current.state;
-
+  
   if (isFilePreview) {
     setupCancelButton(state, isFilePreview);
 
     if (file) {
-      const fileUrl = file.refs.resource;
-      setupStartButton(state, fileUrl, isFilePreview);
-      setupDeleteButton(jobState, file, isFilePreview);
+      const resource = filePreviewMetadata.path;
+      setupStartButton(state, resource, isFilePreview);
+      setupDeleteButton(jobState, file, resource, isFilePreview);
       setupDownloadButton(jobState, file, isFilePreview);
     }
   } else { // job or remote preview
@@ -543,12 +552,20 @@ function setupSlaResumeButton(state, selector) {
   }
 }
 
-function setupDeleteButton(jobState, file, isFilePreview) {
+function setupDeleteButton(jobState, file, resource, isFilePreview) {
   const btn = document.querySelector("#job #delete");
+  // TODO: remove display when job V1 is ready
+  const fileDisplayName = file.display_name || file.display || file.name;
   if (btn) {
-    setEnabled(btn, !file.ro && file.refs?.resource);
+    setEnabled(btn, !file.ro && resource);
     setVisible(btn, isFilePreview || jobState === "Operational");
-    btn.onclick = () => deleteFile(file);
+    btn.onclick = () => {
+      deleteFile(resource, fileDisplayName, () => {
+        if (isFilePreview) {
+          filePreviewMetadata = getDefaultFilePreviewMetadata();
+        }
+      });
+    }
   }
 }
 
@@ -560,12 +577,15 @@ function setupDownloadButton(jobState, file, isFilePreview) {
     ) && (
       !pendingDownload || pendingDownload === file.refs.download
     );
+    
+    // TODO: remove display when job V1 is ready
+    const fileDisplayName = file.display_name || file.display || file.name;
     setVisible(btn, isVisible);
     if (isVisible) {
       btn.onclick = () => {
-        pendingDownload = file.refs?.download;
+        pendingDownload = file.refs.download;
         setButtonLoading(btn);
-        downloadFile(file, () => {
+        downloadFile(file.refs.download, fileDisplayName, () => {
           pendingDownload = null;
           unsetButtonLoading(btn)
         });

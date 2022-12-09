@@ -24,7 +24,7 @@
           text: 'Print Time Estimate',
           label: 'prop.time-est',
           format: 'time',
-          location: 'gcodeAnalysis.estimatedPrintTime',
+          location: 'meta.estimated_print_time',
           type: 'file'
         },
         {
@@ -51,14 +51,14 @@
           text: 'Layer',
           label: 'prop.layers',
           format: 'int',
-          location: 'gcodeAnalysis.layers',
+          location: 'meta.layers',
           type: 'file'
         },
         {
           text: 'Layer Height',
           label: 'prop.layer-ht',
           format: 'layer',
-          location: 'gcodeAnalysis.layerHeight',
+          location: 'meta.layerHeight',
           type: 'file'
         },
         {
@@ -111,7 +111,7 @@
           text: 'Last Modified',
           label: 'prop.last-mod',
           format: 'date',
-          location: 'date',
+          location: 'm_timestamp',
           type: 'file'
         }
       ]
@@ -123,7 +123,14 @@
           text: 'Material',
           label: 'prop.material',
           format: 'material',
-          location: 'gcodeAnalysis.material',
+          location: 'meta.filament_type',
+          type:'file'
+        },
+        {
+          text: 'Layer Height',
+          label: 'prop.layer-ht',
+          format: 'layer',
+          location: 'meta.layer_height',
           type:'file'
         }
       ]

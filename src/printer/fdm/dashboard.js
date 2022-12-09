@@ -8,15 +8,26 @@ import cameras from "../components/cameras";
 import { translate } from "../../locale_provider";
 import * as job from "../components/job";
 import { LinkState } from "../../state";
+import { getJson } from "../../auth";
 
 const load = (context) => {
+  // TODO: request API for  the storage
   translate("home.link", { query: "#title-status-label" });
-  upload.init("local", "", context.fileExtensions);
   graph.render();
   update(context);
   if (process.env['WITH_CAMERAS']) {
     cameras.update(context, updateSnapshots);
   }
+  getJson("/api/v1/storage")
+    .then(result => {
+      const storage = result.data.storage_list.find(
+        storage => storage.available && !storage.read_only
+      );
+      if (storage) {
+        const origin = storage.path.replace("/", "");
+        upload.init(origin, "", context.fileExtensions);
+      }
+    });
 };
 
 const update = (context) => {
