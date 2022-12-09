@@ -9,7 +9,7 @@ import {setHidden} from "../../../helpers/element"
 const remote = process.env.WITH_REMOTE_UPLOAD ? require("./remote").default : null;
 const tabs = new TabsController();
 
-function init(origin="local", path="", fileExtensions) {
+function init(origin, path="", fileExtensions) {
   direct.init(origin, path, fileExtensions);
   remote?.init(origin, path);
 

@@ -9,21 +9,21 @@
 {% if env.PRINTER_TYPE == "sla" %}
     {%
         set file_list = [
-          {"text": "Printing time", "label": "prop.est-pnt-time", "format": "est-time", "location": "gcodeAnalysis.estimatedPrintTime", "icon": "time_color.svg" },
-          {"text": "Material", "label": "prop.material", "format": "material", "location": "gcodeAnalysis.material", "icon": "status_filament.svg" },
-          {"text": "Layer Height", "label": "prop.layer-ht", "format": "layer", "location": "gcodeAnalysis.layerHeight", "icon": "quality_medium.svg" },
+          {"text": "Printing time", "label": "prop.est-pnt-time", "format": "est-time", "location": "meta.estimatedPrintTime", "icon": "time_color.svg" },
+          {"text": "Material", "label": "prop.material", "format": "material", "location": "meta.material", "icon": "status_filament.svg" },
+          {"text": "Layer Height", "label": "prop.layer-ht", "format": "layer", "location": "meta.layerHeight", "icon": "quality_medium.svg" },
           {"separator": true},
-          {"additional": true, "format": "date", "location": "date" },
+          {"additional": true, "format": "date", "location": "m_timestamp" },
           {"additional": true, "format": "size", "location": "size" }
         ]
     %}
 {% else %}
     {%
         set file_list = [
-          {"text": "Printing time", "label": "prop.pnt-time", "format": "time", "location": "gcodeAnalysis.estimatedPrintTime", "icon": "time_color.svg" },
-          {"text": "Material", "label": "prop.material", "format": "material", "location": "gcodeAnalysis.material", "icon": "status_filament.svg" },
+          {"text": "Printing time", "label": "prop.pnt-time", "format": "time", "location": "meta.estimatedPrintTime", "icon": "time_color.svg" },
+          {"text": "Material", "label": "prop.material", "format": "material", "location": "meta.filament_type", "icon": "status_filament.svg" },
           {"separator": true},
-          {"additional": true, "format": "date", "location": "date" },
+          {"additional": true, "format": "date", "location": "m_timestamp" },
           {"additional": true, "format": "size", "location": "size" }
         ]
     %}

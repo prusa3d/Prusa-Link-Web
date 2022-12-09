@@ -7,10 +7,16 @@ import joinPaths from "../../helpers/join_paths";
 import upload from "./upload";
 import { getJson, getImage } from "../../auth.js";
 import { getValue } from "./updateProperties.js";
-import { handleError } from "./errors";
-import { navigateShallow } from "../../router.js";
 import { translate, translateLabels } from "../../locale_provider.js";
-import { createFolder, deleteFolder, deleteFile, downloadFile, renameFolder, renameFile, startPrint } from "./fileActions.js";
+import {
+  createFolder,
+  deleteFolder,
+  deleteFile,
+  downloadFile,
+  renameFolder,
+  renameFile,
+  startPrint,
+} from "./fileActions.js";
 import printer from "../index";
 import scrollIntoViewIfNeeded from "../../helpers/scroll_into_view_if_needed.js";
 import * as job from "./job";
@@ -20,8 +26,9 @@ import storage from "./storage.js";
 import { LinkState } from "../../state.js";
 import { setButtonLoading, unsetButtonLoading } from "../../helpers/button.js";
 
-const SORT_FIELDS = process.env["WITH_NAME_SORTING_ONLY"] ? ["name"] : ["name", "date", "size"];
-let lastData = null;
+const SORT_FIELDS = process.env["WITH_NAME_SORTING_ONLY"]
+  ? ["name"]
+  : ["name", "date", "size"];
 let intersectionObserver = null;
 let previewLazyQueue = [];
 
@@ -29,57 +36,52 @@ let previewLazyQueue = [];
  * file context
  */
 const metadata = {
-  origin: "",
+  origin: null,
   current_path: [],
+  storages: {},
   files: [],
   eTag: null,
-  free: 0,
-  total: 0,
-  firstTime: true,
   sort: {
     field: process.env["WITH_NAME_SORTING_ONLY"] ? "name" : "date",
     order: process.env["WITH_NAME_SORTING_ONLY"] ? "asc" : "desc",
-  }
+  },
 };
 
-const getInitialMetadataFiles = (data) => {
-  if (process.env.PRINTER_TYPE === "fdm") {
-    return data.files;
-  }
-
-  let files = [{
-    name: "local",
-    display: "Local",
-    origin: "local",
-    path: "/local",
-    type: "folder",
-    children: data.files.filter((elm) => elm.origin === "local"),
-  }];
-  let usb_files = data.files.filter((elm) => elm.origin === "usb");
-  if (usb_files.length > 0) {
-    files.push({
-      name: "usb",
-      display: "USB",
-      origin: "usb",
-      path: "/usb",
-      type: "folder",
-      children: usb_files,
-    });
-  }
-  return files;
+function getCurrentStorage() {
+  const origin = metadata.origin;
+  return metadata.storages[origin];
 }
+
+function getCurrentPath() {
+  return metadata.current_path.map((segment) => segment.path).join("/");
+}
+
+function getCurrentApiPath(fileName) {
+  const storage = getCurrentStorage();
+  const path = getCurrentPath();
+  console.log(`storage: ${storage.path}, path: ${path}`)
+  return getApiPath(storage.path, path, fileName);
+}
+
+function getApiPath(origin, path, file) {
+  const apiPath = ["/api/v1/files", origin, path, file].filter((e) => !!e)
+    .join("/");
+
+  return file ? apiPath : `${apiPath}/`;
+}
+
 
 const sortFiles = (files) => {
   const compareFiles = (f1, f2) => {
-    if (f1.type === "folder" && f2.type !== "folder") return -1;
-    if (f1.type !== "folder" && f2.type === "folder") return 1;
+    if (f1.type === "FOLDER" && f2.type !== "FOLDER") return -1;
+    if (f1.type !== "FOLDER" && f2.type === "FOLDER") return 1;
 
     const order = metadata.sort.order === "desc" ? -1 : 1;
 
-    switch(metadata.sort.field) {
+    switch (metadata.sort.field) {
       case "date":
-        const ts1 = f1.date || 0;
-        const ts2 = f2.date || 0;
+        const ts1 = f1.m_timestamp || 0;
+        const ts2 = f2.m_timestamp || 0;
         return order * (ts1 - ts2);
       case "size":
         const s1 = f1.size || 0;
@@ -87,38 +89,150 @@ const sortFiles = (files) => {
         return order * (s1 - s2);
       case "name":
       default:
-        return order * f1.display.localeCompare(f2.display);
+        return order * f1.display_name.localeCompare(f2.display_name);
     }
   };
   files.sort(compareFiles);
   return files;
-}
+};
 
-/**
- * callback for update the file context
- * @param {object} status
- * @param {object} data
- */
-const updateData = () => {
-  getJson("/api/files?recursive=true", {
-    headers: { "If-None-Match": metadata.eTag },
-  })
-    .then((result) => {
-      const data = result.data;
-      const newData = JSON.stringify(data);
-      if (data && lastData !== newData) {
-        lastData = newData;
-        metadata.files = getInitialMetadataFiles(data);
-        metadata.free = data.free;
-        metadata.total = data.total;
-        metadata.eTag = result.eTag;
-        metadata.firstTime = false;
-        if (window.location.hash === "#files") {
-          navigateShallow("#files");
+const updateStorage = (opts = {}) => {
+  getJson("/api/v1/storage", {
+    // headers: { "If-None-Match": metadata.eTag },
+  }).then((result) => {
+    const list = result.data?.storage_list;
+    let redrawTabs = !!opts.redraw;
+    let redrawStorageDetails = !!opts.redraw;
+    if (list) {
+      list.forEach((entry) => {
+        const storageType = entry.type;
+        const storageData = {
+          name: entry.name || entry.type,
+          path: entry.path.replaceAll('/', ''),
+          available: entry.available,
+          readOnly: entry.read_only,
+          freeSpace: entry.free_space,
+          totalSpace: entry.total_space,
+          // NOTE: unused on FE
+          // systemFiles: entry.system_files,
+          // printFiles: entry.print_files,
+        };
+
+        if (storageType in metadata.storages) {
+          const storage = metadata.storages[storageType];
+
+          if (storage.available !== storageData.available) {
+            redrawTabs = true;
+            // check if selected storage became inavailable (i.e. USB was disconnected)
+            // if (metadata.origin === storageType && !storageData.available) {
+            //   metadata.origin = false;
+            // }
+          }
+
+          if (
+            storage.freeSpace !== storageData.freeSpace &&
+            metadata.origin === storageType
+          ) {
+            redrawStorageDetails = true;
+          }
+        } else {
+          redrawTabs = true;
+          redrawStorageDetails = true;
         }
+
+        metadata.storages[storageType] = storageData;
+      });
+    }
+
+    if (!metadata.origin) {
+      // try first available storage to set as active
+      let storage = Object.keys(metadata.storages).find(
+        (storage) => metadata.storages[storage].available
+      );
+
+      // try the first storage
+      if (!storage) {
+        storage = Object.keys(metadata.storages).find(() => true);
       }
-    })
-    .catch((result) => handleError(result));
+
+      if (storage) {
+        selectStorage(storage);
+      }
+    }
+
+    if (redrawTabs) {
+      storage.update(
+        metadata.storages,
+        metadata.origin,
+        selectStorage,
+        redrawStorageDetails
+      );
+    }
+  });
+};
+
+const updateFiles = (opts = {}) => {
+  const selectedStorage = getCurrentStorage();
+  if (!selectedStorage) return;
+
+  const url = getCurrentApiPath();
+
+  let lastETag = metadata.eTag;
+
+  if (opts.force) {
+    metadata.eTag = null;
+    lastETag = null;
+    initUpload(printer.getContext());
+  }
+
+  getJson(url, {
+    headers: { "If-None-Match": lastETag },
+  }).then((result) => {
+    if (url !== getCurrentApiPath()) {
+      // user navigated to other folder
+      return;
+    }
+    const eTag = result.eTag;
+    if (!eTag || eTag !== lastETag) {
+      metadata.eTag = eTag;
+      metadata.files = result.data.children || [];
+      // in case if files on the printer have changed, clearing on response makes more sense
+      clearFiles();
+      redrawFiles();
+    }
+  });
+};
+
+const clearFiles = () => {
+  const files = document.getElementById("files");
+  if (files) {
+    while (files?.firstChild) {
+      files.removeChild(files.firstChild);
+    }
+    files.appendChild(createCurrent());
+    if (metadata.current_path.length) {
+      files.appendChild(createUp());
+    }
+  }
+};
+
+const redrawFiles = () => {
+  const filesNode = document.getElementById("files");
+  if (filesNode) {
+    for (let entry of sortFiles(metadata.files)) {
+      if (entry.type.toUpperCase() === "FOLDER") {
+        filesNode.appendChild(
+          createNodeFolder(entry.display_name || entry.name, entry.name, {
+            // NOTE: currently unsupported because of BE limitations
+            files: undefined,
+            folders: undefined,
+          })
+        );
+      } else {
+        filesNode.appendChild(createFile(entry));
+      }
+    }
+  }
 };
 
 /**
@@ -127,44 +241,49 @@ const updateData = () => {
  */
 export const update = (context) => {
   const linkState = LinkState.fromApi(context.printer.state);
-  updateData();
+  updateStorage();
+  updateFiles();
   job.update(context, true);
   upload.update(linkState);
 };
 
 function initUpload(context) {
-  const origin = metadata.origin;
-  const path = joinPaths(getCurrentPath());
-  upload.init(origin, path, context?.fileExtensions);
-  upload.hide(metadata.origin === "sdcard");
+  const storage = getCurrentStorage();
+  const path = getCurrentPath();
+  upload.init(storage.path, path, context?.fileExtensions);
+  upload.hide(!!storage?.readOnly);
 }
 
 /**
  * load files page
  */
 export function load(context) {
+  metadata.eTag = null;
+
   translate("proj.link", { query: "#title-status-label" });
 
   if (!intersectionObserver) {
     const config = {
-      rootMargin: '0px 0px 50px 0px',
-      threshold: 0
+      rootMargin: "0px 0px 50px 0px",
+      threshold: 0,
     };
 
     intersectionObserver = new IntersectionObserver((entries, self) => {
-      entries.forEach(entry => {
-        if(entry.isIntersecting) {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
           if (process.env.WITH_PREVIEW_LAZY_QUEUE) {
             const loadPreviewQueued = () => {
               if (previewLazyQueue.length) {
                 const target = previewLazyQueue[0];
-                getImage(target.getAttribute('data-src')).then(({url}) => {
-                  target.src = url;
-                }).finally(() => {
-                  self.unobserve(target);
-                  previewLazyQueue.shift();
-                  loadPreviewQueued();
-                });
+                getImage(target.getAttribute("data-src"))
+                  .then(({ url }) => {
+                    target.src = url;
+                  })
+                  .finally(() => {
+                    self.unobserve(target);
+                    previewLazyQueue.shift();
+                    loadPreviewQueued();
+                  });
               }
             };
             previewLazyQueue.push(entry.target);
@@ -172,7 +291,7 @@ export function load(context) {
               loadPreviewQueued();
             }
           } else {
-            getImage(entry.target.getAttribute('data-src')).then(({url}) => {
+            getImage(entry.target.getAttribute("data-src")).then(({ url }) => {
               entry.target.src = url;
             });
           }
@@ -181,12 +300,8 @@ export function load(context) {
     }, config);
   }
 
-  if (!context)
+  if (!context) {
     context = printer.getContext();
-
-  if (metadata.firstTime) {
-    update(context);
-    return;
   }
 
   const previewFile = job.getPreviewFile();
@@ -200,48 +315,10 @@ export function load(context) {
   }
   job.update(context, true);
 
-  const files = document.getElementById("files");
-  while (files.firstChild) {
-    files.removeChild(files.firstChild);
-  }
+  storage.load();
 
-  if (!metadata.firstTime && !metadata.origin) {
-    const origin = process.env.WITH_STORAGES[0] || "local";
-    metadata.origin = origin;
-    selectStorage(origin);
-    return;
-  }
-
-  if (context) {
-    initUpload(context);
-    const origins = process.env.WITH_STORAGES;
-    storage.load(context, origins, metadata.origin, selectStorage);
-  }
-
-  if (metadata.current_path.length > 0) {
-    let view = metadata.files.find((elm) => elm.origin === metadata.origin).children;
-    for (let i = 1; i < metadata.current_path.length; i++) {
-      let path = metadata.current_path[i];
-      view = view.find((elm) => elm.name === path).children;
-    }
-
-    files.appendChild(createCurrent());
-    if (metadata.current_path.length > 1)
-      files.appendChild(createUp());
-
-    for (let node of sortFiles(view)) {
-      if (node.type === "folder") {
-        // TODO: Cache file/folder count or count async.
-        const filesCount = countFilesRecursively(node);
-        const folders = countFoldersRecursively(node);
-        files.appendChild(createNodeFolder(node.display || node.name, node.path, { files: filesCount, folders }));
-      } else {
-        files.appendChild(createFile(node));
-      }
-    }
-  } else {
-    console.log("This storage is not available");
-  }
+  updateStorage({ redraw: true });
+  updateFiles({ force: true });
 }
 
 /**
@@ -272,20 +349,19 @@ function createElement(templateName, name, cb) {
  */
 function createNodeFolder(name, path, details, origin) {
   const elm = createElement("node-folder", name, () => {
-    if (origin)
-      metadata.origin = origin;
-
-    if (!origin && process.env.PRINTER_TYPE === "sla") {
-      metadata.current_path = [metadata.origin, ...path.split("/").filter(str => str !== "")];
-    } else {
-      metadata.current_path = path.split("/").filter(str => str !== "");
-    }
-    load();
+    metadata.current_path.push({
+      path: path.replace("/", ""),
+      name,
+    });
+    clearFiles();
+    updateFiles({ force: true });
   });
 
   const filesText = details?.files ? `${details.files} files` : null;
   const foldersText = details?.folders ? `${details.folders} folders` : null;
-  const detailsText = [filesText, foldersText].filter(i => i != null).join(" | ");
+  const detailsText = [filesText, foldersText]
+    .filter((i) => i != null)
+    .join(" | ");
 
   elm.getElementById("details").innerHTML = detailsText;
 
@@ -294,58 +370,79 @@ function createNodeFolder(name, path, details, origin) {
     deleteBtn.onclick = (e) => {
       e.stopPropagation();
       deleteFolder();
-    }
+    };
   }
   const renameBtn = elm.getElementById("rename");
   if (renameBtn) {
     renameBtn.onclick = (e) => {
       e.stopPropagation();
       renameFolder();
-    }
+    };
   }
   return elm;
 }
 
 function createCurrent() {
-  const current_path = [...metadata.current_path];
+  const storage = getCurrentStorage();
+  const current_path = [
+    storage.name, ...metadata.current_path.map((segment) => segment.name)
+  ];
   const current_folder = current_path.pop() || "Root";
   const component = createElement("node-current", current_folder);
-  component.getElementById("path").innerHTML = `${joinPaths(current_path)}/`
+  component.getElementById("path").innerHTML = `${current_path.join("/")}/`;
 
   const createBtn = component.getElementById("create");
   if (createBtn) {
     createBtn.onclick = (e) => {
       e.stopPropagation();
       createFolder();
-    }
+    };
   }
 
-  component.querySelector("#sort-by-name p").innerText = translate("sort.by-name");
+  component.querySelector("#sort-by-name p").innerText = translate(
+    "sort.by-name"
+  );
   if (!process.env["WITH_NAME_SORTING_ONLY"]) {
-    component.querySelector("#sort-by-date p").innerText = translate("sort.by-date");
-    component.querySelector("#sort-by-size p").innerText = translate("sort.by-size");
+    component.querySelector("#sort-by-date p").innerText = translate(
+      "sort.by-date"
+    );
+    component.querySelector("#sort-by-size p").innerText = translate(
+      "sort.by-size"
+    );
   }
 
-  component.querySelector(`#sort-by-${metadata.sort.field}`).classList.add(metadata.sort.order);
+  component
+    .querySelector(`#sort-by-${metadata.sort.field}`)
+    .classList.add(metadata.sort.order);
 
-  SORT_FIELDS.forEach(field => {
-    component.getElementById(`sort-by-${field}`).addEventListener("click", (e) => {
-      const newToggle = document.getElementById(`sort-by-${field}`);
-      const oldToggle = document.getElementById(`sort-by-${metadata.sort.field}`);
+  SORT_FIELDS.forEach((field) => {
+    component.getElementById(`sort-by-${field}`).addEventListener(
+      "click",
+      (e) => {
+        const newToggle = document.getElementById(`sort-by-${field}`);
+        const oldToggle = document.getElementById(
+          `sort-by-${metadata.sort.field}`
+        );
 
-      oldToggle.classList.remove(metadata.sort.order);
+        oldToggle.classList.remove(metadata.sort.order);
 
-      const order = (metadata.sort.field === field)
-        ? (metadata.sort.order === "asc" ? "desc" : "asc")
-        : "asc";
+        const order =
+          metadata.sort.field === field
+            ? metadata.sort.order === "asc"
+              ? "desc"
+              : "asc"
+            : "asc";
 
-      newToggle.classList.add(order);
+        newToggle.classList.add(order);
 
-      metadata.sort.field = field;
-      metadata.sort.order = order;
+        metadata.sort.field = field;
+        metadata.sort.order = order;
 
-      load();
-    }, false);
+        clearFiles();
+        redrawFiles();
+      },
+      false
+    );
   });
 
   return component;
@@ -357,7 +454,8 @@ function createCurrent() {
 function createUp() {
   const elm = createElement("node-up", "", () => {
     metadata.current_path.pop();
-    load();
+    clearFiles();
+    updateFiles({ force: true });
   });
   translateLabels(elm);
   return elm;
@@ -373,13 +471,17 @@ const onClickFile = (node) => {
 
 function showPreview(file) {
   const currentPreview = job.getPreviewFile();
-  if (!currentPreview
-    || currentPreview.origin !== file.origin
-    || currentPreview.path !== file.path
-  ) {
-    job.selectFilePreview(file);
-    job.update(printer.getContext(), true);
+  const path = getCurrentApiPath(file.name);
+
+  if (currentPreview === path) {
+    return;
   }
+
+  getJson(path)
+    .then(result => {
+      job.selectFilePreview(result.data, path)
+      job.update(printer.getContext(), true)
+    });
 
   const jobElement = document.getElementById("job");
   if (jobElement) {
@@ -392,7 +494,7 @@ function showPreview(file) {
  * @param {object} node
  */
 function createFile(node) {
-  const elm = createElement("node-file", node.display || node.name, (e) =>
+  const elm = createElement("node-file", node.display_name || node.name, (e) =>
     onClickFile(node)
   );
   const nodeDetails = elm.querySelector(".node-details");
@@ -400,19 +502,17 @@ function createFile(node) {
     translateLabels(element);
     const value = getValue(element.dataset.where, node);
     if (value) {
-      const data = formatData(
-        element.dataset.format,
-        value
-      );
+      const data = formatData(element.dataset.format, value);
       element.querySelector("p[data-value]").innerHTML = data;
     } else {
       nodeDetails.removeChild(element);
     }
   });
-  if (node.refs && node.refs.thumbnailBig) {
+  if (node.refs && node.refs.thumbnail) {
     const img = elm.querySelector("img.node-img");
     img.setAttribute(
-      "data-src", node.date ? `${node.refs.thumbnailBig}?ct=${node.date}` : node.refs.thumbnailBig
+      "data-src",
+      node.date ? `${node.refs.thumbnail}?ct=${node.date}` : node.refs.thumbnail
     );
     intersectionObserver.observe(img);
   }
@@ -424,38 +524,37 @@ function createFile(node) {
 }
 
 function setupFileButtons(node, elm) {
-  // Setup buttons
-  const paths = getNodeFilePaths(node.name);
-  const fileUrl = joinPaths("/api/files/", ...paths);
+  const fileUrl = getCurrentApiPath(node.name);
+  const fileDisplayName = node.display_name || node.name;
 
   const detailsBtn = elm.getElementById("details");
   if (detailsBtn) {
     detailsBtn.onclick = (e) => {
       onClickFile(node);
-    }
+    };
   }
   const startBtn = elm.getElementById("start");
   if (startBtn) {
     startBtn.onclick = (e) => {
       e.stopPropagation();
       startPrint();
-    }
+    };
   }
   const renameBtn = elm.getElementById("rename");
   if (renameBtn) {
     renameBtn.onclick = (e) => {
       e.stopPropagation();
       renameFile();
-    }
+    };
   }
 
   const deleteBtn = elm.getElementById("delete");
   if (deleteBtn) {
-    setEnabled(deleteBtn, !node.ro && node.refs?.resource);
+    setEnabled(deleteBtn, !node.ro);
     deleteBtn.onclick = (e) => {
-      deleteFile(node);
+      deleteFile(fileUrl, fileDisplayName);
       e.stopPropagation();
-    }
+    };
   }
 
   const downloadBtn = elm.getElementById("download");
@@ -463,80 +562,47 @@ function setupFileButtons(node, elm) {
     setEnabled(downloadBtn, node.refs?.download);
     downloadBtn.onclick = (e) => {
       setButtonLoading(downloadBtn);
-      downloadFile(node, () => unsetButtonLoading(downloadBtn));
+      downloadFile(node.refs?.download, fileDisplayName, () =>
+        unsetButtonLoading(downloadBtn)
+      );
       e.stopPropagation();
+    };
+  }
+}
+
+
+function selectStorage(origin) {
+  if (origin in metadata.storages) {
+    const storage = metadata.storages[origin];
+
+    metadata.origin = origin;
+    metadata.current_path = [];
+    clearFiles();
+
+    if (storage.available) {
+      updateFiles({ force: true });
     }
   }
 }
 
-/**
- * Get current path. Not include origin.
- * For SlA without "local" or "sdcard"
- * For FDM without "Prusa Link gcodes" or "SD Card"
- */
-function getCurrentPath() {
-  return metadata.current_path.slice(1, metadata.current_path.length);
-}
-
-function getNodeFilePaths(nodeName) {
-  const paths = [
-    metadata.origin,
-    ...(process.env.PRINTER_TYPE === "fdm" ? metadata.current_path : getCurrentPath()),
-    nodeName
-  ];
-  return paths;
-}
-
-function countFoldersRecursively(node) {
-  const folders = node?.children?.filter(i => i.type === "folder") || [];
-  let count = folders.length || 0;
-  folders.forEach(i => count += countFoldersRecursively(i));
-  return count;
-}
-
-function countFilesRecursively(node) {
-  const files = node?.children?.filter(i => i.type === "machinecode") || [];
-  const folders = node?.children?.filter(i => i.type === "folder") || [];
-  let count = files.length || 0;
-  folders.forEach(i => count += countFilesRecursively(i));
-  return count;
-}
-
-function selectStorage(origin) {
-  if (metadata.firstTime)
-    return;
-
-  const root = metadata.files.find(i => i.origin === origin);
-  if (root) {
-    metadata.origin = root.origin;
-    metadata.current_path = [...joinPaths(root.path).split("/").filter(str => str !== "")];
-  } else {
-    metadata.origin = origin;
-    metadata.current_path = [];
-  }
-  load();
-
-  upload.hide(origin === "sdcard")
-}
-
 function findFile(origin, path) {
-  if (!origin || !path)
-    return null;
+  if (!origin || !path) return null;
 
-  let target = metadata.files.find(i => i.origin === origin);
-  const pathSegments = process.env.PRINTER_TYPE === "fdm"
-    ? path.split("/").filter(i => i).slice(1)
-    : path.split("/").filter(i => i);
+  let target = metadata.files.find((i) => i.origin === origin);
+  const pathSegments =
+    process.env.PRINTER_TYPE === "fdm"
+      ? path
+          .split("/")
+          .filter((i) => i)
+          .slice(1)
+      : path.split("/").filter((i) => i);
 
   for (const segment of pathSegments) {
-    if (!target)
-      break;
-    target = target.children.find(i => i.name === segment);
+    if (!target) break;
+    target = target.children.find((i) => i.name === segment);
   }
 
-  return target?.type === "machinecode"
-    ? target
-    : null;
+  return target?.type === "machinecode" ? target : null;
 }
 
-export default { load, update };
+export default { load, update, getApiPath };

@@ -106,20 +106,18 @@ function setProgress(pct) {
 }
 
 const uploadFile = (file, origin, path, print) => {
-  let url = `/api/files/${origin}`;
-  var data = new FormData();
-  data.append("path", path);
-  data.append("file", file);
-  data.append("print", print);
-
-  setState("uploading");
-  setProgress(0);
-  uploadRequest(url, data, {
-    onProgress: (progress) => onProgressChanged(progress.percentage),
-  })
-    .then((result) => onUploadSuccess(file.display || file.name))
-    .catch((result) => onUploadError(file.display || file.name, result))
-    .finally(() => reset());
+  const url = ["/api/v1/files", origin, path, file.name].filter(e => !!e).join('/');
+  file.arrayBuffer().then((data) => {
+    setState("uploading");
+    setProgress(0);
+    uploadRequest(url, data, {
+      onProgress: (progress) => onProgressChanged(progress.percentage),
+      print,
+    })
+      .then(() => onUploadSuccess(file.display_name || file.name))
+      .catch((result) => onUploadError(file.display_name || file.name, result))
+      .finally(() => reset());
+  });
 };
 
 function onProgressChanged(pct) {

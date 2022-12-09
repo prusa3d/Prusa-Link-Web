@@ -7,21 +7,15 @@
 
 {%
   set origins = {
-    'local': {
-      origin: 'local',
-      text: env.LOCAL_STORAGE_NAME,
+    'LOCAL': {
       pc_icon: 'prusa-link-favicon.svg',
       mobile_icon: 'prusa-link-favicon.svg'
     },
-    'sdcard': {
-      text: 'SD card',
-      origin: 'sdcard',
+    'SDCARD': {
       pc_icon: 'sd_card.svg',
       mobile_icon: 'micro_sd_card_light.svg'
     },
-    'usb': {
-      text: 'USB',
-      origin: 'usb',
+    'USB': {
       pc_icon: 'usb-flash-drive-icon.svg',
       mobile_icon: 'usb-flash-drive-icon-light.svg'
     }
@@ -40,13 +34,11 @@
     </div>
     <ul class="storage-select-content">
       {% for key, values in origins %}
-        {% if env.WITH_STORAGES.includes(key) %}
-          <li data-location="{{ key }}" data-origin="{{ values.origin }}">
+          <li data-storage="{{ key }}" hidden="true">
             <img class="icon pc-only" src="{{ pre.countOrRenderAssets(values.pc_icon) | safe }}"/>
             <img class="icon mobile-only" src="{{ pre.countOrRenderAssets(values.mobile_icon) | safe }}"/>
-            <p class="txt-md">{{ values.text }}</p>
+            <p class="txt-md"></p>
           </li>
-        {% endif %}
       {% endfor %}
     </ul>
     <div class="storage-select-right"></div>

@@ -12,31 +12,28 @@ import { setDisabled } from "../../helpers/element";
 /**
  * download file
  */
-export const downloadFile = (file, onComplete) => {
-  if (!file?.refs?.download)
-    return; // TODO: Consider showing error
-
-  const displayFileName = file.display || jobFile.display || file.name || jobFile.name;
-
+export const downloadFile = (fileUrl, fileDisplayName, onComplete) => {
   if (process.env["WITH_API_KEY_AUTH"]) {
-    getFile(file.refs.download).then((url) => {
-      download(url, displayFileName);
+    getFile(fileUrl).then((result) => {
+      
+      download(result.url, fileDisplayName);
     }).catch(
       (result) => handleError(result)
     ).finally(onComplete);
     return;
   }
 
-  download(file.refs.download, displayFileName);
+
+  download(fileUrl, fileDisplayName);
   onComplete();
 };
 
 
-const createDeleteFileModal = (close, file) => {
+const createDeleteFileModal = (close, url, fileDisplayName, onComplete) => {
   const template = document.getElementById("modal-question");
   const node = document.importNode(template.content, true);
   const label = node.getElementById("modal-question-label");
-  label.innerText = translate("msg.del-proj", { file_name: file.display || file.name });
+  label.innerText = translate("msg.del-proj", { file_name: fileDisplayName });
   const yesButton = node.getElementById("yes");
   const noButton = node.getElementById("no");
   noButton.addEventListener("click", close);
@@ -44,7 +41,8 @@ const createDeleteFileModal = (close, file) => {
     event.preventDefault();
     setDisabled(yesButton, true);
     setDisabled(noButton, true);
-    getJson(file.refs.resource, { method: "DELETE" })
+    getJson(url, { method: "DELETE" })
+        .then(() => onComplete && onComplete())
         .catch((result) => handleError(result))
         .finally((result) => close());
   });
@@ -55,11 +53,8 @@ const createDeleteFileModal = (close, file) => {
 /**
  * delete file
  */
- export const deleteFile = (file) => {
-  if (!file?.refs?.resource)
-    return; // TODO: Consider showing error
-
-  modal((close) => createDeleteFileModal(close, file), {
+ export const deleteFile = (url, fileDisplayName, onComplete) => {
+  modal((close) => createDeleteFileModal(close, url, fileDisplayName, onComplete), {
     timeout: 0,
     closeOutside: false,
   });
