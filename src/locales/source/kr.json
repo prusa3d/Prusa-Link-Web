@@ -252,9 +252,9 @@
   "camera.btn.settings": "카메라 설정 열기",
   "camera.btn.unlink": "카메라를 CONNECT에서 연결 해제하기",
   "ntf.camera-config-success": "카메라 구성이 업데이트되었습니다.",
-  "conn.connect.linked": "",
-  "conn.printer.not-connected": "",
-  "btn.connect.link": "",
-  "btn.connect.unlink": "",
-  "conn.connect.not-linked": ""
+  "conn.connect.linked": "연결됨",
+  "conn.printer.not-connected": "접속안됨",
+  "btn.connect.link": "연결",
+  "btn.connect.unlink": "연결끊기",
+  "conn.connect.not-linked": "연결안됨"
 }
