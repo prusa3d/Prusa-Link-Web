@@ -2,7 +2,6 @@ const webpackConfig = require("./webpack.config");
 
 module.exports = (env, args) => {
     const config = {
-        PRINTER_NAME: "Original Prusa Mini",
         PRINTER_TYPE: "fdm",
 
         WITH_STORAGES: ["usb"],
