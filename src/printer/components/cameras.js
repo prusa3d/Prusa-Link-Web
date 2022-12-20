@@ -100,8 +100,8 @@ const updateSnapshot = (cameraId) => {
   const camera = cameras.find((c) => c.id === cameraId);
   if (!camera) return;
 
+  const now = new Date();
   if (camera.lastSnapshotAt && camera.nextSnapshotAt) {
-    const now = new Date();
     if (now < camera.nextSnapshotAt) {
       return;
     }
@@ -124,13 +124,28 @@ const updateSnapshot = (cameraId) => {
       snapshotNode.src = url;
     }
     if (camera) {
+      const cacheControl = headers.get("cache-control");
+      const maxAgeMatch = `${cacheControl}`.match(/max-age=(\d+)/);
+
+      let maxAge;
+      if (maxAgeMatch) {
+        maxAge = parseInt(maxAgeMatch[1], 10);
+      }
+      if (!maxAge) {
+        maxAge = 11;
+      }
+
       const expires = headers.get("expires");
       const date = headers.get("last-modified");
-      const autoExpires = () => {
+      const autoExpires = (maxAgeSeconds) => {
         const now = new Date();
-        return new Date(now.getTime() + 10000);
+        return new Date(now.getTime() + maxAgeSeconds * 1000);
       };
-      camera.nextSnapshotAt = expires ? new Date(expires) : autoExpires();
+      camera.nextSnapshotAt = expires ? new Date(expires) : autoExpires(maxAge);
+      // NOTE: workaround for BE issue when `expires` is in the past
+      if (camera.nextSnapshotAt < now) {
+        camera.nextSnapshotAt = autoExpires(maxAge);
+      }
       camera.lastSnapshotAt = date ? new Date(date) : new Date();
       camera.lastSnapshotUrl = url;
       if (!currentCameraId || camera.id === currentCameraId) {
