@@ -124,8 +124,8 @@ const updateSnapshot = (cameraId) => {
       snapshotNode.src = url;
     }
     if (camera) {
-      const expires = headers["epires"];
-      const date = headers["date"];
+      const expires = headers.get("expires");
+      const date = headers.get("last-modified");
       const autoExpires = () => {
         const now = new Date();
         return new Date(now.getTime() + 10000);
