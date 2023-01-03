@@ -289,7 +289,6 @@ function updatePrinterStatus(data) {
   updateConnectionStatus(statusElm, msgElm, ok, message, customMessage);
 }
 
-// TODO: Cleanup the hardcoded classes after completing the layout for settings page
 function updateSystemVersionProperties(data) {
   const table = document.querySelector("#sys-version .table");
   if (table) {

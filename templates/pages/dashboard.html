@@ -14,20 +14,19 @@
 
 <div class="main-wrapper home-row">
   <div class="component">
-    <p data-label="upld.title" class="txt-grey txt-md">Upload file</p>
-    <div style="margin-top: 15px"></div>
+    <p data-label="upld.title" class="txt-grey txt-md title">Upload file</p>
     {% include "components/upload.html" %}
   </div>
 
   <div class="component component-fixed">
-    <p data-label="temps.title" class="txt-grey txt-md">Temperatures</p>
+    <p data-label="temps.title" class="txt-grey txt-md title">Temperatures</p>
     <div id="graph"></div>
   </div>
 </div>
 
 {% if env.WITH_CAMERAS %}
 <div class="main-wrapper component component-inline" id="cameras">
-  <p data-label="camera.title" class="txt-grey txt-md">Cameras</p>
+  <p data-label="camera.title" class="txt-grey txt-md title">Cameras</p>
   <div class="camera-snapshot">
     <ul class="camera-snapshot-meta">
       <li>

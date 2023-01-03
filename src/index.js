@@ -9,7 +9,6 @@ if (process.env.PRINTER_TYPE == "sla") {
 if (process.env.PRINTER_CODE == "m1") {
   import("./m1-styles.css");
 }
-import "./layout";
 import { navigate, navigateShallow } from "./router.js";
 import printer from "./printer";
 import { getJson, initAuth } from "./auth.js";

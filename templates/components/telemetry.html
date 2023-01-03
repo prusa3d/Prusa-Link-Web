@@ -39,7 +39,7 @@
 %}
 
 <div id="telemetry-wrapper">
-  <div class="telemetry" id="telemetry-div">
+  <div class="telemetry">
     {% for values in connection_status_list %}
       <div class="tel-prop" id="{{ values.id }}" hidden="true">
         <img class="icon icon-success" src="{{ pre.countOrRenderAssets(values.success_icon) | safe }}" />
