@@ -107,7 +107,13 @@ const updateSnapshot = (cameraId) => {
     }
   }
 
-  getImage(`/api/v1/cameras/${cameraId}/snap`).then(({ url, headers }) => {
+  getImage(`/api/v1/cameras/${cameraId}/snap`, 0, {
+    headers: camera.lastSnapshotAt
+      ? {
+          "If-Modified-Since": camera.lastSnapshotAt.toUTCString(),
+        }
+      : {},
+  }).then(({ url, headers }) => {
     const camera = cameras.find((c) => c.id === cameraId);
     const cameraNodeId = getCameraNodeId(cameraId);
     const noSnapshotNode = document.querySelector(

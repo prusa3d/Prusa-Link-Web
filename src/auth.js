@@ -61,7 +61,9 @@ const getHeaders = (accept = "application/json") => {
 const setUpAuth = () =>
   new Promise((resolve, reject) => {
     sessionStorage.setItem("auth", "pending");
-    return fetch(process.env.WITH_V1_API ? "/api/v1/info" : "/api/version", { headers: getHeaders() })
+    return fetch(process.env.WITH_V1_API ? "/api/v1/info" : "/api/version", {
+      headers: getHeaders(),
+    })
       .then((response) => {
         if (response.status == 401) {
           const auth_type = response.headers
@@ -76,11 +78,11 @@ const setUpAuth = () =>
             );
           }
           // http-digest
-          return setUpAuth().then((data) => resolve(data)); 
+          return setUpAuth().then((data) => resolve(data));
         } else {
           const result = response.json();
           if (response.status != 200) {
-            result.then(data => handleError({ data }));
+            result.then((data) => handleError({ data }));
           }
           return result; // done
         }
@@ -139,11 +141,11 @@ async function fetchUrl(url, opts = {}, accept, parse) {
           if (text.length > 0) {
             try {
               result["data"] = JSON.parse(text);
-            } catch { }
+            } catch {}
           }
           result["data"] = result["data"] || {
             title: `Error ${status}`,
-            message: response.statusText
+            message: response.statusText,
           };
           throw result;
         }
@@ -170,20 +172,24 @@ const getFileURL = (url, opts, timestamp) =>
     const auth = sessionStorage.getItem("auth");
     if (auth == "true") {
       opts.headers = { ...getHeaders(), ...opts.headers };
-      fetch(timestamp ? `${url}?ct=${timestamp}` : url, opts).then((response) => {
-        if (response.status == 401) {
-          sessionStorage.setItem("auth", "false");
-          reject(response);
-        }
-        if (response.ok) {
-          response.blob().then((blob) => resolve({
-            url: URL.createObjectURL(blob),
-            headers: response.headers
-          }));
-        } else {
-          reject(response)
-        }
-      }).catch((e) => reject(e));
+      fetch(timestamp ? `${url}?ct=${timestamp}` : url, opts)
+        .then((response) => {
+          if (response.status == 401) {
+            sessionStorage.setItem("auth", "false");
+            reject(response);
+          }
+          if (response.ok) {
+            response.blob().then((blob) =>
+              resolve({
+                url: URL.createObjectURL(blob),
+                headers: response.headers,
+              })
+            );
+          } else {
+            reject(response);
+          }
+        })
+        .catch((e) => reject(e));
     } else {
       reject();
     }
@@ -193,8 +199,18 @@ const getFileURL = (url, opts, timestamp) =>
  * Async function for fetch image
  * @param {string} url
  */
-const getImage = (url, timestamp, opts={}) =>
-  getFileURL(url, { headers: { "Accept": "image/*" }, ...opts }, timestamp);
+const getImage = (url, timestamp, opts = {}) =>
+  getFileURL(
+    url,
+    {
+      ...opts,
+      headers: {
+        ...opts.headers,
+        Accept: "image/*",
+      },
+    },
+    timestamp
+  );
 
 /**
  * Async function for fetch file
