@@ -256,5 +256,6 @@
   "conn.printer.not-connected": "접속안됨",
   "btn.connect.link": "연결",
   "btn.connect.unlink": "연결끊기",
-  "conn.connect.not-linked": "연결안됨"
+  "conn.connect.not-linked": "연결안됨",
+  "msg.drop-zone.label": ""
 }
