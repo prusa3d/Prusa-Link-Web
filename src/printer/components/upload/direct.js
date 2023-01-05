@@ -4,7 +4,7 @@
 
 import { error, success } from "../toast";
 import { handleError } from "../errors";
-import { setDisabled } from "../../../helpers/element";
+import { setDisabled, setVisible } from "../../../helpers/element";
 import { translate } from "../../../locale_provider";
 import uploadRequest from "../../../helpers/upload_request";
 import { attachConfirmModalToCheckbox } from "./confirm";
@@ -14,7 +14,10 @@ let isUploading = false;
 let progress = 0;
 
 function init(origin, path, fileExtensions) {
-  translate("upld.direct.choose", { query: "#upld-direct p", file: fileExtensions.join(", ") });
+  translate("upld.direct.choose", {
+    query: "#upld-direct p",
+    file: fileExtensions.join(", "),
+  });
   initInput(origin, path, fileExtensions);
   if (isUploading) {
     setState("uploading");
@@ -30,30 +33,62 @@ function update(linkState) {
     if (!canStartPrinting) {
       startPrintCheckbox.checked = false;
     }
-    setDisabled(startPrintCheckbox, !canStartPrinting)
+    setDisabled(startPrintCheckbox, !canStartPrinting);
   }
 }
 
 function initInput(origin, path, fileExtensions) {
-  const input = document.querySelector('#upld-direct input[type="file"]');
-  const startPtCheckbox = document.getElementById("upld-direct-start-pt");
-  startPtCheckbox && attachConfirmModalToCheckbox(startPtCheckbox);
+  const startPrintCheckbox = document.getElementById("upld-direct-start-pt");
+  startPrintCheckbox && attachConfirmModalToCheckbox(startPrintCheckbox);
+
+  const dropZone = document.getElementById("drop-zone");
+
+  if (dropZone) {
+    document.ondragenter = (e) => setVisible(dropZone, true);
+    dropZone.ondragleave = (e) => setVisible(dropZone, false);
+    document.ondrop = (e) => setVisible(dropZone, false);
+
+    initInputByQuery(
+      '#drop-zone input[type="file"]',
+      origin,
+      path,
+      fileExtensions,
+      startPrintCheckbox
+    );
+  }
+
+  initInputByQuery(
+    '#upld-direct input[type="file"]',
+    origin,
+    path,
+    fileExtensions,
+    startPrintCheckbox
+  );
+}
+
+function initInputByQuery(
+  query,
+  origin,
+  path,
+  fileExtensions,
+  startPrintCheckbox = undefined
+) {
+  const input = document.querySelector(query);
   if (input) {
     input.setAttribute("accept", fileExtensions.join(", "));
     input.onchange = () => {
       if (input.files.length > 0 && !isUploading) {
         let file = input.files[0];
-        let print = startPtCheckbox?.checked || false;
+        let print = startPrintCheckbox?.checked || false;
         uploadFile(file, origin, path, print);
       }
-    }
+    };
   }
 }
 
 function reset() {
   const input = document.querySelector('#upld-direct input[type="file"]');
-  if (input)
-    input.value = "";
+  if (input) input.value = "";
   setProgress(0);
   setState("choose");
 }
@@ -61,32 +96,31 @@ function reset() {
 function setState(state) {
   isUploading = state === "uploading";
   const el = document.getElementById("upld-direct");
-  if (el)
-    el.setAttribute("data-state", state);
+  if (el) el.setAttribute("data-state", state);
 }
 
 function setProgress(pct) {
   progress = pct;
   const el = document.getElementById("upld-progress");
-  if (el)
-    el.innerHTML = `${pct} %`;
+  if (el) el.innerHTML = `${pct} %`;
 }
 
 const uploadFile = (file, origin, path, print) => {
   let url = `/api/files/${origin}`;
-  var data = new FormData()
-  data.append('path', path);
-  data.append('file', file);
-  data.append('print', print);
+  var data = new FormData();
+  data.append("path", path);
+  data.append("file", file);
+  data.append("print", print);
 
   setState("uploading");
   setProgress(0);
   uploadRequest(url, data, {
-    onProgress: (progress) => onProgressChanged(progress.percentage)
-  }).then(result => onUploadSuccess(file.display || file.name))
-    .catch(result => onUploadError(file.display || file.name, result))
+    onProgress: (progress) => onProgressChanged(progress.percentage),
+  })
+    .then((result) => onUploadSuccess(file.display || file.name))
+    .catch((result) => onUploadError(file.display || file.name, result))
     .finally(() => reset());
-}
+};
 
 function onProgressChanged(pct) {
   setState("uploading");
@@ -112,7 +146,8 @@ function onUploadError(fileName, result) {
 export default {
   init,
   update,
-  get isUploading () {
+  get isUploading() {
     return isUploading;
   },
+  initInputByQuery,
 };

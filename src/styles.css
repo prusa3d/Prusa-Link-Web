@@ -589,6 +589,35 @@ nav .burger-icon.burger-open {
   display: none;
 }
 
+#drop-zone {
+  position: fixed;
+  top: 0;
+  left: 0;
+  background-color: $text-black;
+  opacity: 0.8;
+  z-index: 9999;
+  width: 100%;
+  height: 100%;
+  padding: 10px;
+}
+
+#drop-zone input[type="file"] {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+}
+
+#drop-zone div {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  align-items: center;
+  justify-content: center;
+}
+
 #graph {
   position: relative;
   width: 520px;

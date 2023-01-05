@@ -258,5 +258,6 @@
   "conn.printer.not-connected": "",
   "btn.connect.link": "",
   "btn.connect.unlink": "",
-  "conn.connect.not-linked": ""
+  "conn.connect.not-linked": "",
+  "msg.drop-zone.label": ""
 }
