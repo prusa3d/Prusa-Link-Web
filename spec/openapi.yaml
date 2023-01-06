@@ -426,6 +426,45 @@ paths:
         503:
           $ref: "#/components/responses/ServiceUnavailable"
 
+  /api/v1/update/{env}:
+    parameters:
+      - in: path
+        name: env
+        description: The target environment (python or system) for update
+        required: true
+        schema:
+          type: string
+          enum: ["python"]
+    get:
+      summary: Retrieve information about available updates of packages and their versions
+      responses:
+        200:
+          description: OK
+          headers:
+            Update-Available:
+              schema:
+                type: boolean
+                description: Whether there's a package update available
+                example: true
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: "#/components/schemas/PythonPackageUpdateInfo"
+        204:
+          description: No Content
+        401:
+          $ref: "#/components/responses/Unauthorized"
+    post:
+      summary: Update packages
+      responses:
+        200:
+          description: OK
+        401:
+          $ref: "#/components/responses/Unauthorized"
+        409:
+          $ref: "#/components/responses/Conflict"
+
 components:
   schemas:
     Version:
@@ -792,6 +831,31 @@ components:
         port:
           type: string
           example: "/dev/tty"
+
+    PythonPackageUpdateInfo:
+      type: object
+      properties:
+        available_updates:
+          type: array
+          items:
+            type: object
+            properties:
+              name:
+                type: string
+                description: Package name
+                example: "paul-muaddib"
+              version:
+                type: string
+                description: Current version of the package
+                example: "1.42.1"
+              available_version:
+                type: string
+                description: Available version of the package for update
+                example: "1.42.2"
+              path:
+                type: string
+                description: Path to package
+                example: "jo/packages"
 
     Error:
       type: object
