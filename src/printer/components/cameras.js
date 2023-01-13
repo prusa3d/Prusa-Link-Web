@@ -289,11 +289,6 @@ const createCameraNode = (camera) => {
       if (camera) {
         if (camera.connected) {
           updateCurrentCamera(camera.id);
-        } else if (camera.detected) {
-          modal((close) => createConfirmCameraConnect(close, cameraId), {
-            timeout: 0,
-            closeOutside: true,
-          });
         }
       }
       e.preventDefault();
@@ -340,29 +335,6 @@ const updateCamerasUI = (list, removed) => {
         listNode.appendChild(node);
       }
     });
-};
-
-const createConfirmCameraConnect = (close, cameraId) => {
-  const template = document.getElementById("modal-question");
-  const node = document.importNode(template.content, true);
-  const yesButton = node.getElementById("yes");
-  const noButton = node.getElementById("no");
-
-  const label = node.getElementById("modal-question-label");
-  label.innerText = translate("camera.try-connect");
-
-  yesButton.addEventListener("click", (event) => {
-    event.preventDefault();
-    tryConnectCamera(cameraId);
-    setDisabled(yesButton, true);
-    setDisabled(noButton, true);
-    close();
-  });
-
-  noButton.addEventListener("click", () => {
-    close();
-  });
-  return node;
 };
 
 const createCameraSettingsModal = (cameraId, resolve) => {
