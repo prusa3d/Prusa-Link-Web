@@ -916,6 +916,7 @@ paths:
                 properties:
                   type:
                     type: string
+                    enum: [ "NO_TRANSFER", "FROM_WEB", "FROM_CONNECT", "FROM_PRINTER", "FROM_SLICER", "FROM_CLIENT", "TO_CONNECT", "TO_CLIENT"]
                     example: "FROM_WEB"
                   url:
                     type: string
