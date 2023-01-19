@@ -88,7 +88,7 @@ paths:
           type: string
           example: "/examples/Spice_Harvester_0.3mm_PLA_MK3S_12m.gcode"
     get:
-      summary: file metadata
+      summary: File or folder metadata
       responses:
         200:
           description: OK
@@ -686,11 +686,11 @@ components:
           type: boolean
           example: true
 
-    FileInfo:
+    GenericFileInfo:
+      description: Basic file info object, common for all files
       type: object
       required:
         - name
-        - path
         - ro
         - type
         - m_timestamp
@@ -719,9 +719,42 @@ components:
           description: Long Filename
           example: "Spice_Harvester_0.3mm_PLA_MK3S_12m.gcode"
 
-    PrintFileInfo:
+    FileInfo:
+      description: Other, not specified files info
       allOf:
-        - $ref: '#/components/schemas/FileInfo'
+        - $ref: '#/components/schemas/GenericFileInfo'
+        - type: object
+          properties:
+            refs:
+              type: object
+              properties:
+                download:
+                  type: string
+                  example: "/api/files/local/file.txt/raw"
+
+    PrintFileInfoBasic:
+      description: Simplified print file info within the folder's children
+      allOf:
+        - $ref: '#/components/schemas/GenericFileInfo'
+        - type: object
+          properties:
+            refs:
+              type: object
+              properties:
+                download:
+                  type: string
+                  example: "/api/files/local/examples/Spice_Harvester_0.3mm_PLA_MK3S_42m.gcode/raw"
+                icon:
+                  type: string
+                  example: "/api/thumbnails/local/examples/Spice_Harvester_0.3mm_PLA_MK3S_42m.gcode.small.png"
+                thumbnail:
+                  type: string
+                  example: "/api/thumbnails/local/examples/Spice_Harvester_0.3mm_PLA_MK3S_42m.gcode.orig.png"
+
+    PrintFileInfo:
+      description: Full print file info from the file's detail
+      allOf:
+        - $ref: '#/components/schemas/PrintFileInfoBasic'
         - type: object
           properties:
             meta:
@@ -819,22 +852,24 @@ components:
                 profile:
                   type: string
                   example: "ultra_fast"
+
+    FirmwareFileInfoBasic:
+      description: Simplified firmware file info within the folder's children
+      allOf:
+        - $ref: '#/components/schemas/GenericFileInfo'
+        - type: object
+          properties:
             refs:
               type: object
               properties:
                 download:
                   type: string
-                  example: "/api/files/local/examples/Spice_Harvester_0.3mm_PLA_MK3S_42m.gcode/raw"
-                icon:
-                  type: string
-                  example: "/api/thumbnails/local/examples/Spice_Harvester_0.3mm_PLA_MK3S_42m.gcode.small.png"
-                thumbnail:
-                  type: string
-                  example: "/api/thumbnails/local/examples/Spice_Harvester_0.3mm_PLA_MK3S_42m.gcode.orig.png"
+                  example: "/api/files/local/firmware.hex/raw"
 
     FirmwareFileInfo:
+      description: Full firmware file info from the file's detail
       allOf:
-        - $ref: '#/components/schemas/FileInfo'
+        - $ref: '#/components/schemas/FirmwareFileInfoBasic'
         - type: object
           properties:
             meta:
@@ -849,8 +884,9 @@ components:
                   type: integer
 
     FolderInfo:
+      description: Info about the folder and its content, except nested children
       allOf:
-        - $ref: '#/components/schemas/FileInfo'
+        - $ref: '#/components/schemas/GenericFileInfo'
         - type: object
           properties:
             children:
@@ -862,8 +898,8 @@ components:
                       schema:
                         anyOf:
                           - $ref: "#/components/schemas/FileInfo"
-                          - $ref: "#/components/schemas/PrintFileInfo"
-                          - $ref: "#/components/schemas/FirmwareFileInfo"
+                          - $ref: "#/components/schemas/PrintFileInfoBasic"
+                          - $ref: "#/components/schemas/FirmwareFileInfoBasic"
                           - $ref: "#/components/schemas/FolderInfo"
 
     Info:
