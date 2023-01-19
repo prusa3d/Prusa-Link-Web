@@ -175,10 +175,10 @@ module.exports = (env, args) => {
             "/": BACKEND_URL
           }
         }: {
-          contentBase: path.join(__dirname, "dist"),
+          static: path.join(__dirname, "dist"),
           compress: true,
-          after: function (app, server, compiler) {
-            devServer(app, config);
+          onAfterSetupMiddleware: function (server) {
+            devServer(server.app, config);
             preprocessing.startWatcher(server);
           },
         }
