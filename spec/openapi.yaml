@@ -140,6 +140,21 @@ paths:
           $ref: "#/components/responses/NotFound"
         409:
           $ref: "#/components/responses/Conflict"
+    post:
+      summary: Start print of file if there's no print job running
+      description: Body is ignored
+      requestBody:
+        required: false
+        content: {}
+      responses:
+        204:
+          description: No Content
+        401:
+          $ref: "#/components/responses/Unauthorized"
+        404:
+          $ref: "#/components/responses/NotFound"
+        409:
+          $ref: "#/components/responses/Conflict"
     head:
       summary: file presence and state check
       responses:
