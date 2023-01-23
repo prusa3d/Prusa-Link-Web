@@ -157,7 +157,16 @@ paths:
         409:
           $ref: "#/components/responses/Conflict"
     delete:
-      summary: Delete a file or folder.
+      summary: Delete a file or folder
+      parameters:
+        - in: header
+          name: Force
+          description: Whether to force delete non-empty folder
+          schema:
+            type: string
+            description: ?0=False, ?1=True, according RFC8941/3.3.6
+            enum: [ "?0", "?1" ]
+            default: "?0"
       responses:
         204:
           description: No Content
