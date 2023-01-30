@@ -63,6 +63,7 @@ module.exports = (env, args) => {
     WITH_CAMERAS: withDefault(env["WITH_CAMERAS"], false),
     WITH_API_KEY_SETTING: withDefault(env["WITH_API_KEY_SETTING"], false),
     WITH_NAME_SORTING_ONLY: withDefault(env["WITH_NAME_SORTING_ONLY"], false),
+    WITH_SYSTEM_UPDATES: withDefault(env["WITH_SYSTEM_UPDATES"], false),
   };
   config["TPL_ASSETS_PATH"] = config["PRINTER_CODE"] == "m1" ? "../assets/m1" : "../assets";
 
