@@ -255,5 +255,9 @@
   "camera.btn.connect": "Probeer de camera in te schakelen",
   "camera.btn.link": "Verbind camera met CONNECT",
   "camera.btn.settings": "Open camera-instellingen",
-  "camera.btn.unlink": "Verbreek verbinding van camera met CONNECT"
+  "camera.btn.unlink": "Verbreek verbinding van camera met CONNECT",
+  "btn.check-updates": "",
+  "btn.upgrade": "",
+  "upgrade.success.message": "",
+  "upgrade.success.title": ""
 }

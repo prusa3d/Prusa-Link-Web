@@ -257,5 +257,9 @@
   "btn.connect.link": "연결",
   "btn.connect.unlink": "연결끊기",
   "conn.connect.not-linked": "연결안됨",
-  "msg.drop-zone.label": ""
+  "msg.drop-zone.label": "",
+  "btn.check-updates": "",
+  "btn.upgrade": "",
+  "upgrade.success.message": "",
+  "upgrade.success.title": ""
 }
