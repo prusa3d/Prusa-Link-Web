@@ -255,5 +255,9 @@
   "conn.printer.not-connected": "",
   "btn.connect.link": "Spárovat",
   "btn.connect.unlink": "Odpojit",
-  "conn.connect.not-linked": ""
+  "conn.connect.not-linked": "",
+  "btn.check-updates": "",
+  "btn.upgrade": "",
+  "upgrade.success.message": "",
+  "upgrade.success.title": ""
 }

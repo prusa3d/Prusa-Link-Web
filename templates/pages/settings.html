@@ -8,7 +8,7 @@
 <!-- prettier-ignore -->
 {% if env.PRINTER_TYPE == "fdm" %}
   {%
-    set version_section = [
+    set section_version = [
       {'text': 'api ', 'label': 'version.api', "location": "version.api", 'type': 'settings' },
       {'text': 'hostname', 'label': 'version.hostname', "location": "version.hostname", 'type': 'settings' },
       {'text': 'firmware', 'label': 'version.firmware', "location": "version.firmware", 'type': 'settings' },
@@ -20,7 +20,7 @@
   %}
 {% else %}
   {%
-    set version_section = [
+    set section_version = [
       {'text': 'api ', 'label': 'version.api', "location": "version.api", 'type': 'settings' },
       {'text': 'hostname', 'label': 'version.hostname', "location": "version.hostname", 'type': 'settings' },
       {'text': 'server', 'label': 'version.server', "location": "version.server", 'type': 'settings' },
@@ -30,6 +30,13 @@
     ]
   %}
 {% endif %}
+
+<!-- prettier-ignore -->
+{%
+  set section_updates = [
+    {type: 'btn-only', button: {id: 'updates-check', label: 'btn.check-updates', text: 'Check Updates'}, spacer: true }
+  ]
+%}
 
 <!-- prettier-ignore -->
 {%
@@ -100,8 +107,9 @@
 <!-- prettier-ignore -->
 {%
   set settings = [
-    {'text': 'version', 'label': 'version.title', 'settings': version_section },
+    {'text': 'version', 'label': 'version.title', 'settings': section_version },
     {'text': 'system version', 'label': 'sys-version.title', 'settings': [], 'id': 'sys-version' },
+    {'text': 'updates', 'label': 'updates.title', 'settings': section_updates, 'condition': env.WITH_SYSTEM_UPDATES },
     {'text': 'connection', 'label': 'conn.title', 'settings': section_connection, 'condition': env.WITH_CONNECTION },
     {'text': 'printer', 'label': 'printer.title', 'settings': section_printer },
     {'text': 'user', 'label': 'user.title', 'settings': section_user },
@@ -186,6 +194,12 @@
                       {{values.button.text}}
                     </p>
                   </button>
+                  <img
+                    id="{{values.button.id}}__spinner"
+                    class="icon"
+                    hidden
+                    src="{{ pre.countOrRenderAssets('dual-ring-1s-200px.svg') | safe }}"
+                  />
                 </div>
               {% elif values.spacer %}
                 <div class="col"></div>

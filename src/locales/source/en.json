@@ -2,6 +2,7 @@
   "btn.back": "Back",
   "btn.cancel": "Cancel",
   "btn.stop-print": "Stop Print",
+  "btn.check-updates": "Check Updates",
   "btn.chg": "Change",
   "btn.chg-print-set": "Print Settings",
   "btn.confirm": "Confirm",
@@ -25,6 +26,7 @@
   "btn.upld-file": "Upload File",
   "btn.yes": "Yes",
   "btn.reset": "Reset",
+  "btn.upgrade": "Upgrade",
   "api_key.label": "API Key",
   "camera.title": "Cameras",
   "camera.name": "Camera Name",
@@ -255,5 +257,8 @@
   "camera.btn.connect": "Try to enable camera",
   "camera.btn.link": "Link camera to CONNECT",
   "camera.btn.settings": "Open camera settings",
-  "camera.btn.unlink": "Unlink camera from CONNECT"
+  "camera.btn.unlink": "Unlink camera from CONNECT",
+  "updates.title": "System Updates",
+  "upgrade.success.title": "Upgrade Successful",
+  "upgrade.success.message": "Page will be reloaded in 5 seconds"
 }
