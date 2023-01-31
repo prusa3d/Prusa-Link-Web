@@ -59,7 +59,6 @@ function getCurrentPath() {
 function getCurrentApiPath(fileName) {
   const storage = getCurrentStorage();
   const path = getCurrentPath();
-  console.log(`storage: ${storage.path}, path: ${path}`)
   return getApiPath(storage.path, path, fileName);
 }
 
@@ -195,7 +194,18 @@ const updateFiles = (opts = {}) => {
     const eTag = result.eTag;
     if (!eTag || eTag !== lastETag) {
       metadata.eTag = eTag;
-      metadata.files = result.data.children || [];
+      // NOTE: Brute force control for printers that temporary do not support eTag.
+      // TODO: remove when supported by all printers
+      const files = result.data.children || [];
+      if (!eTag && !opts.force) {
+        const sortFunc = (f1, f2) => f1.display_name.localeCompare(f2.display_name);
+        const oldFiles = JSON.stringify([...metadata.files].sort(sortFunc));
+        const newFiles = JSON.stringify(files.sort(sortFunc));
+        if (oldFiles === newFiles) {
+          return;
+        }
+      }
+      metadata.files = files;
       // in case if files on the printer have changed, clearing on response makes more sense
       clearFiles();
       redrawFiles();
@@ -508,11 +518,12 @@ function createFile(node) {
       nodeDetails.removeChild(element);
     }
   });
-  if (node.refs && node.refs.thumbnail) {
+  const thumbnail = node?.refs?.thumbnail;
+  if (thumbnail) {
     const img = elm.querySelector("img.node-img");
     img.setAttribute(
       "data-src",
-      node.date ? `${node.refs.thumbnail}?ct=${node.date}` : node.refs.thumbnail
+      node.date ? `${thumbnail}?ct=${node.date}` : thumbnail
     );
     intersectionObserver.observe(img);
   }
