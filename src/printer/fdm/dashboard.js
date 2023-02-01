@@ -9,6 +9,8 @@ import { translate } from "../../locale_provider";
 import * as job from "../components/job";
 import { LinkState } from "../../state";
 import { getJson } from "../../auth";
+import fdm from ".";
+import { getStatusForTitle } from "../common";
 
 const load = (context) => {
   translate("home.link", { query: "#title-status-label" });
@@ -36,6 +38,7 @@ const update = (context) => {
     return;
   }
   const linkState = LinkState.fromApi(context.printer.state);
+
   job.update(context);
   upload.update(linkState);
   if (process.env['WITH_CAMERAS']) {
