@@ -10,8 +10,10 @@ import refill from "./refill.js";
 import { updateProperties } from "../components/updateProperties.js";
 import { translate } from "../../locale_provider";
 import { showLoading, hideLoading } from "../../helpers/element";
-import { getPrinterLabel } from "../common.js";
+import { getPrinterLabel, getStatusForTitle } from "../common.js";
 import updateConnectionStatus from "../components/updateConnectionStatus";
+
+import { currentRoute } from "../../router";
 
 const context = {
   /** Result of `api/version`. */
@@ -43,9 +45,6 @@ const updatePrinterTitle = (obj) => {
 
 const getPrinterName = () => getPrinterLabel(context);
 
-const buildTitle = (title) => getPrinterName() + " - " +
-  (title.trim() || process.env.APP_NAME) +
-  " - " + process.env.APP_NAME;
 
 const updatePrinterStatus = (state) => {
   if (state) {
@@ -69,6 +68,12 @@ const updatePrinterStatus = (state) => {
   }
 };
 
+const buildRouteTitle = (titleItems) => buildTitle([
+  ...titleItems,
+  getPrinterName(),
+  process.env["APP_NAME"]
+]);
+
 let currentModule = dashboard;
 const sla = {
   routes: [
@@ -76,7 +81,7 @@ const sla = {
       path: "dashboard",
       html: require("../../views/dashboard.html"),
       module: updatePrinterTitle(dashboard),
-      getTitle: () => buildTitle(translate("home.link")),
+      getTitle: () => translate("home.link"),
     },
     {
       path: "question",
@@ -93,7 +98,7 @@ const sla = {
         path: "files",
         html: require("../../views/files.html"),
         module: updatePrinterTitle(files),
-        getTitle: () => buildTitle(translate("proj.storage")),
+        getTitle: () => translate("proj.storage"),
       }
       : null,
     process.env.WITH_SETTINGS ?
@@ -101,7 +106,7 @@ const sla = {
         path: "settings",
         html: require("../../views/settings.html"),
         module: updatePrinterTitle(require("../components/settings.js").default),
-        getTitle: () => buildTitle(translate("settings.title")),
+        getTitle: () => translate("settings.title"),
       }
       : null,
     process.env.WITH_CONTROLS ?
@@ -109,17 +114,23 @@ const sla = {
         path: "control",
         html: require("../../views/control.html"),
         module: updatePrinterTitle(require("../components/control.js").default),
-        getTitle: () => buildTitle(translate("control.link")),
+        getTitle: () => translate("control.link"),
       } : null,
   ].filter(route => route != null),
   init: (apiResult) => {
     updateContext(apiResult);
     const exts = apiResult.profiles?.payload?.data?.profiles[0]?.projectExtensions;
     context.fileExtensions = exts || process.env.FILE_EXTENSIONS;
-    document.title = context.version.hostname + " - " + process.env.APP_NAME;
     initTemperatureGraph();
   },
   update: (apiResult) => {
+    const page = currentRoute();
+    const stateText = getStatusForTitle(context);
+    document.title = buildRouteTitle([
+      stateText,
+      fdm.routes.find(route => route.path === page).getTitle()
+    ]);
+
     updateContext(apiResult);
     if (context.printer.state.flags.operational)
       hideLoading();
