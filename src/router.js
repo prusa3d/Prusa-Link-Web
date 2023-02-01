@@ -5,9 +5,16 @@
 import { translateLabels } from "./locale_provider";
 import printer from "./printer";
 
-function doNavigate (url, pushIntoHistory) {
+export const getRouteFromUrl = (url) => {
   const [_, page] = url.split("#");
-  if (!page) return false;
+  return page ? page : "dashboard";
+}
+
+export const currentRoute = () => getRouteFromUrl(window.location.hash);
+
+function doNavigate (url, pushIntoHistory) {
+  const page = getRouteFromUrl(url);
+
   const route = printer.routes.find((r) => r.path === page);
   if (!route) return false;
 
