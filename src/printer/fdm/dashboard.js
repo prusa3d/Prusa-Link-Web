@@ -48,13 +48,18 @@ const updateSnapshots = (list, removed) => {
       updateCameraNode(cameraNode, camera);
     } else {
       const node = createCameraNode(camera);
-      listNode.appendChild(node);
+      if (node) {
+        listNode.appendChild(node);
+      }
     }
   });
 };
 
 const createCameraNode = (camera) => {
-  const template = document.getElementById("cameras-snapshots__item").content;
+  const template = document.getElementById("cameras-snapshots__item")?.content;
+  if (!template) {
+    return null;
+  }
   const node = document.importNode(template, true);
   const listItemNode = node.querySelector("li");
   const nodeId = cameras.getCameraNodeId(camera.id);
