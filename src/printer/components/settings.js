@@ -63,7 +63,7 @@ function updateApiKey(apiKey) {
 }
 
 function initBaseSettings() {
-  getJson("api/version?system=true")
+  getJson("api/version?system=1")
     .then((result) => {
       const data = {
         version: result.data,
