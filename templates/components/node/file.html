@@ -43,7 +43,11 @@
 <template id="node-file">
   <div class="node line">
     <div class="node-img-box">
-      <img class="node-img" src="{{ pre.countOrRenderAssets('thumbnail.svg') | safe }}" />
+      <img
+        class="node-img"
+        src="{{ pre.countOrRenderAssets('thumbnail.svg') | safe }}"
+        data-firmware="{{ pre.countOrRenderAssets('firmware-icon.svg') | safe }}"
+      />
     </div>
     <div class="node-wrapper txt-sm">
       <div class="node-header">
