@@ -21,16 +21,25 @@ import printer from "../index";
 import scrollIntoViewIfNeeded from "../../helpers/scroll_into_view_if_needed.js";
 import * as job from "./job";
 import { initKebabMenu } from "./kebabMenu.js";
-import { setEnabled } from "../../helpers/element.js";
+import { setEnabled, setVisible } from "../../helpers/element.js";
 import storage from "./storage.js";
 import { LinkState } from "../../state.js";
 import { setButtonLoading, unsetButtonLoading } from "../../helpers/button.js";
 
+const FILE_TYPE = {
+  "FOLDER": "FOLDER",
+  "PRINT_FILE": "PRINT_FILE",
+  "FIRMWARE": "FIRMWARE",
+  "FILE": "FILE"
+};
+
 const SORT_FIELDS = process.env["WITH_NAME_SORTING_ONLY"]
   ? ["name"]
   : ["name", "date", "size"];
+
 let intersectionObserver = null;
 let previewLazyQueue = [];
+
 
 /**
  * file context
@@ -72,8 +81,8 @@ function getApiPath(origin, path, file) {
 
 const sortFiles = (files) => {
   const compareFiles = (f1, f2) => {
-    if (f1.type === "FOLDER" && f2.type !== "FOLDER") return -1;
-    if (f1.type !== "FOLDER" && f2.type === "FOLDER") return 1;
+    if (f1.type === FILE_TYPE.FOLDER && f2.type !== FILE_TYPE.FOLDER) return -1;
+    if (f1.type !== FILE_TYPE.FOLDER && f2.type === FILE_TYPE.FOLDER) return 1;
 
     const order = metadata.sort.order === "desc" ? -1 : 1;
 
@@ -228,19 +237,32 @@ const clearFiles = () => {
 
 const redrawFiles = () => {
   const filesNode = document.getElementById("files");
+  let node = undefined;
   if (filesNode) {
     for (let entry of sortFiles(metadata.files)) {
-      if (entry.type.toUpperCase() === "FOLDER") {
-        filesNode.appendChild(
-          createNodeFolder(entry.display_name || entry.name, entry.name, {
+      switch (entry.type.toUpperCase()) {
+        case FILE_TYPE.FOLDER:
+          node = createNodeFolder(entry.display_name || entry.name, entry.name, {
             // NOTE: currently unsupported because of BE limitations
             files: undefined,
             folders: undefined,
-          })
-        );
-      } else {
-        filesNode.appendChild(createFile(entry));
+          });
+          break;
+
+        case FILE_TYPE.PRINT_FILE:
+          node = createPrintFile(entry);
+          break
+
+        case FILE_TYPE.FIRMWARE:
+          node = createFile(entry, "firmware");
+          break;
+
+        case FILE_TYPE.FILE:
+        default:
+          node = createFile(entry);
+          break;
       }
+      filesNode.appendChild(node);
     }
   }
 };
@@ -503,7 +525,7 @@ function showPreview(file) {
  * Create a file element
  * @param {object} node
  */
-function createFile(node) {
+function createPrintFile(node) {
   const elm = createElement("node-file", node.display_name || node.name, (e) =>
     onClickFile(node)
   );
@@ -531,6 +553,36 @@ function createFile(node) {
   initKebabMenu(elm);
   setupFileButtons(node, elm);
   translateLabels(elm);
+  return elm;
+}
+
+function createFile(node, icon) {
+  const elm = createElement("node-file", node.display_name || node.name, (e) => {});
+  const nodeDetails = elm.querySelector(".node-details");
+  nodeDetails.querySelectorAll(".details").forEach((element) => {
+    translateLabels(element);
+    const value = getValue(element.dataset.where, node);
+    if (value) {
+      const data = formatData(element.dataset.format, value);
+      element.querySelector("p[data-value]").innerHTML = data;
+    } else {
+      nodeDetails.removeChild(element);
+    }
+  });
+
+  const img = elm.querySelector("img.node-img");
+  if (icon) {
+    const src = img.getAttribute(`data-${icon}`);
+    if (src) {
+      img.src = src;
+    }
+    intersectionObserver.observe(img);
+  } else {
+    setVisible(img, false);
+  }
+
+  hideFileButtons(elm);
+
   return elm;
 }
 
@@ -581,6 +633,20 @@ function setupFileButtons(node, elm) {
   }
 }
 
+function hideFileButtons(elm) {
+  [
+    "details",
+    "start",
+    "rename",
+    "delete",
+    "download"
+  ].forEach(id => {
+    const button = elm.getElementById(id);
+    if (button) {
+      setVisible(button, false);
+    }
+  });
+}
 
 function selectStorage(origin) {
   if (origin in metadata.storages) {
