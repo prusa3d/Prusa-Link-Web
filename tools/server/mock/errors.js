@@ -83,8 +83,8 @@ class NotMechanicallyCalibrated extends ApiError {
     this.error = {
       code: "#10113",
       title: "CALIBRATION ERROR",
-      message: "The printer is not calibrated. Please run the Wizard first.",
-      url: "https://help.prusa3d.com/en/10409",
+      message: "The printer is not calibrated. Please complete calibration.",
+      url: "https://help.prusa3d.com/en/10113",
     };
   }
 }
