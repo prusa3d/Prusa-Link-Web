@@ -40,6 +40,31 @@ paths:
         401:
           $ref: "#/components/responses/Unauthorized"
 
+  /api/v1/status:
+    get:
+      summary: printer, job and transfer telemetry info
+      description: All values except printer are optional
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  job:
+                    $ref: "#/components/schemas/StatusJob"
+                  printer:
+                      $ref: "#/components/schemas/StatusPrinter"
+                  transfer:
+                      $ref: "#/components/schemas/StatusTransfer"
+                  storage:
+                      $ref: "#/components/schemas/StatusStorage"
+                  camera:
+                      $ref: "#/components/schemas/StatusCamera"
+                required:
+                  - printer
+
   /api/v1/storage:
     get:
       summary: storage info
@@ -916,15 +941,11 @@ components:
             children:
               type: array
               items:
-                type: object
-                description: Array of files or folders objects within the folder (excluded nested children)
-                properties:
-                      schema:
-                        anyOf:
-                          - $ref: "#/components/schemas/FileInfo"
-                          - $ref: "#/components/schemas/PrintFileInfoBasic"
-                          - $ref: "#/components/schemas/FirmwareFileInfoBasic"
-                          - $ref: "#/components/schemas/FolderInfo"
+                oneOf:
+                  - $ref: "#/components/schemas/FileInfo"
+                  - $ref: "#/components/schemas/PrintFileInfoBasic"
+                  - $ref: "#/components/schemas/FirmwareFileInfoBasic"
+                  - $ref: "#/components/schemas/FolderInfo"
 
     Info:
       type: object
@@ -962,6 +983,135 @@ components:
         port:
           type: string
           example: "/dev/tty"
+
+    StatusJob:
+      type: object
+      description: Telemetry info about current job, all values are optional
+      properties:
+        id:
+          type: integer
+          example: 42
+        progress:
+          type: number
+          example: 0.42
+        time_remaining:
+          type: integer
+          example: 520
+        time_printing:
+          type: integer
+          example: 526
+
+    StatusPrinter:
+      type: object
+      description: Telemetry info about printer, all values except state are optional
+      properties:
+        state:
+          type: string
+          enum: [ IDLE, BUSY, PRINTING, PAUSED, FINISHED, STOPPED, ERROR, ATTTENTION, READY ]
+        temp_nozzle:
+          type: number
+          example: 214.9
+        target_nozzle:
+          type: number
+          example: 215.0
+        temp_bed:
+          type: number
+          example: 59.5
+        target_bed:
+          type: number
+          example: 60.0
+        axis_x:
+          type: number
+          description: Available only when printer is not moving
+          example: 23.2
+        axis_y:
+          type: number
+          description: Available only when printer is not moving
+          example: 24.3
+        axis_z:
+          type: number
+          example: 0.5
+        flow:
+          type: integer
+          example: 95
+        speed:
+          type: integer
+          example: 100
+        fan_hotend:
+          type: integer
+          example: 420
+        fan_print:
+          type: integer
+          example: 420
+        status_printer:
+          type: object
+          properties:
+            ok:
+              type: boolean
+              example: true
+            message:
+              type: string
+              example: "OK"
+        status_connect:
+          type: object
+          properties:
+            ok:
+              type: boolean
+              example: true
+            message:
+              type: string
+              example: "OK"
+      required:
+        - state
+
+    StatusTransfer:
+      type: object
+      description: Telemetry info about current transfer status, all values except id and time_transferring are optional
+      properties:
+        id:
+          type: integer
+          example: 72855542
+        time_transferring:
+          type: integer
+          example: 30
+        progress:
+          type: number
+          example: 65.82
+        data_transefered:
+          type: integer
+          example: 123084800
+      required:
+        - id
+        - time_transferring
+
+    StatusStorage:
+      type: object
+      description: Telemetry info about current storage status
+      properties:
+        name:
+          type: string
+          example: "LOCAL"
+        path:
+          type: string
+          example: "/local"
+        read_only:
+          type: boolean
+          example: false
+        free_space:
+          type: integer
+          example: 4202335
+      required:
+        - name
+        - path
+        - read_only
+
+    StatusCamera:
+      type: object
+      description: Telemetry info about default working camera, if available
+      properties:
+        id:
+          type: string
+          example: "Ba1kmCbifTa8X"
 
     PythonPackageUpdateInfo:
       type: object
