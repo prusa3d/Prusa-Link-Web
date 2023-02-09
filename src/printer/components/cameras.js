@@ -80,7 +80,7 @@ const update = (context, updateUI = updateCamerasUI) => {
         (cam1) => !list.find((cam2) => cam1.id === cam2.id)
       );
 
-      updateUI(list, removed);
+      updateUI && updateUI(list, removed);
 
       cameras = list;
     })
@@ -162,6 +162,9 @@ const updateSnapshot = (cameraId) => {
 };
 
 const updateCurrentCamera = (cameraId) => {
+  if (!cameraId) {
+    cameraId = currentCameraId;
+  }
   const camera = cameraId ? cameras.find((c) => c.id === cameraId) : null;
   const snapshotPicture = document.getElementById("camera-snapshot-picture");
   const snapshotTime = document.getElementById("camera-snapshot-time");
@@ -298,7 +301,11 @@ const removeCamera = (cameraId) => {
 };
 
 const createCameraNode = (camera) => {
-  const template = document.getElementById("camera-list-item").content;
+  const template = document.getElementById("camera-list-item")?.content;
+  if (!template) {
+    return null;
+  }
+
   const node = document.importNode(template, true);
   const listItemNode = node.querySelector("li");
   const cameraId = camera.id;
@@ -353,7 +360,9 @@ const updateCamerasUI = (list, removed) => {
         updateCameraNode(cameraNode, camera);
       } else {
         const node = createCameraNode(camera);
-        listNode.appendChild(node);
+        if (node) {
+          listNode.appendChild(node);
+        }
       }
     });
 };
