@@ -154,15 +154,24 @@ function updateJob(context, isFilePreview) {
     }
 
     const jobFile = context.current.job.file;
-    const origin = jobFile.origin.replace("/", "");
+    let path = jobFile.path;
+
     // TODO: use `path` when BE is fixed
-    const path = jobFile.path.startsWith("/PrusaLink gcodes/")
-      ? jobFile.path.replace("/PrusaLink gcodes/", `/${origin}/`)
-      : (
-        jobFile.path.startsWith("/SD Card/")
-        ? jobFile.path.replace("/SD Card/", `/${origin}/`)
-        : jobFile.path
-      );
+    const origin = jobFile.origin?.replace("/", "");
+    if (origin) {
+      const fixedPath = ["/PrusaLink gcodes/", "/SD Card/"]
+        .map((exception) =>
+          path.startsWith(exception)
+            ? path.replace(exception, `/${origin}/`)
+            : null
+        )
+        .find((f) => !!f);
+
+      if (fixedPath) {
+        path = fixedPath;
+      }
+    }
+
     let loading = isLoading(context.current.state);
 
     if (path && path !== metadata.path) {
