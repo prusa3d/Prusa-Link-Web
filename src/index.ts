@@ -4,10 +4,10 @@
 
 import "./styles.css";
 if (process.env.PRINTER_TYPE == "sla") {
-  import("./sla-styles.css");
+  import("./sla-styles.module.css");
 }
 if (process.env.PRINTER_CODE == "m1") {
-  import("./m1-styles.css");
+  import("./m1-styles.module.css");
 }
 import { navigate, navigateShallow } from "./router.js";
 import printer from "./printer";
@@ -16,9 +16,35 @@ import { initMenu } from "./printer/components/menu";
 import { translateLabels } from "./locale_provider";
 import { handleError } from "./printer/components/errors";
 import langSelect from "./printer/components/dropdown/language";
+import { IStatusResponse, getPrinterStatus } from "./api";
+
+declare var __COMMIT_HASH__: string;
 
 const UPDATE_INTERVAL = process.env.UPDATE_INTERVAL;
 let connectionProblem = false;
+
+interface APIRequest<T> {
+  get: () => Promise<T>;
+  init: boolean;
+  update: boolean;
+  updateInterval?: number;
+  timestamp?: number;
+}
+
+interface APIStatusRequest extends APIRequest<IStatusResponse> {
+  type: "status";
+}
+
+type APIRequests = APIStatusRequest;
+type APIRequestTypes = "status";
+
+type Responses = {
+  [k in APIRequestTypes]: {
+    ok: boolean;
+    payload?: any;
+    error?: any;
+  };
+};
 
 /** Contains setup for global api requests.
  *
@@ -31,50 +57,51 @@ let connectionProblem = false;
  * `updateInterval` - change if you want bigger delay than UPDATE_INTERVAL.
  * Time is only approximate, it is not guaranteed!
  */
-const requests = {
-  status: {
-    get: () => getJson("/api/v1/status"),
+const requests: APIRequests[] = [
+  {
+    type: "status",
+    get: () => getPrinterStatus(),
     init: true,
     update: true,
-    // updateInterval: process.env.CONNECTION_UPDATE_INTERVAL,
   },
-};
+];
 
 async function getRequests(initialized) {
   const timestamp = new Date().getTime();
-  const apiRequests = Object.fromEntries(
-    Object.entries(requests)
-      .map(([key, values]) => {
-        const shouldGet = () => {
-          if (!initialized) return values.init;
+  const apiRequests = requests
+    .map((request) => {
+      const shouldGet = () => {
+        if (!initialized) return request.init;
 
-          if (values.update) {
-            if (!values.updateInterval) return true;
-            if (!values.timestamp)
-              values.timestamp = timestamp + values.updateInterval;
-            if (timestamp >= values.timestamp) {
-              values.timestamp = timestamp + values.updateInterval;
-              return true;
-            }
+        if (request.update) {
+          if (!request.updateInterval) return true;
+          if (!request.timestamp) {
+            request.timestamp = timestamp + request.updateInterval;
           }
-        };
-        return [key, shouldGet() ? values.get() : undefined];
-      })
-      .filter(([, values]) => values !== undefined)
-  );
+          if (timestamp >= request.timestamp) {
+            request.timestamp = timestamp + request.updateInterval;
+            return true;
+          }
+        }
+        return false;
+      };
+      return shouldGet()
+        ? request
+            .get()
+            .then((payload) => ({
+              type: request.type,
+              payload,
+            }))
+            .catch((error) => ({
+              type: request.type,
+              no_connection: !error.code,
+              error,
+            }))
+        : undefined;
+    })
+    .filter((request) => !!request);
 
-  const promises = Object.values(apiRequests);
-  const responses = await Promise.all(
-    promises.map((i) =>
-      i
-        .then((payload) => ({ ok: true, payload }))
-        .catch((error) => ({ ok: error.code ? false : null, error }))
-    )
-  );
-  const result = Object.fromEntries(
-    Object.entries(apiRequests).map(([key], i) => [key, responses[i]])
-  );
-  return result;
+  return Promise.all(apiRequests);
 }
 
 window.onload = () => {
@@ -83,15 +110,15 @@ window.onload = () => {
   );
   initMenu();
   langSelect.init("lang-dropdown", "lang-dropdown");
-  translateLabels(); // Translate menu and telemetry
+  translateLabels(null); // Translate menu and telemetry
 
-  document.querySelectorAll("a[href]").forEach((link) => {
+  document.querySelectorAll("a[href]").forEach((link: HTMLLinkElement) => {
     link.addEventListener("click", (e) => {
       if (navigate(link.href)) e.preventDefault();
     });
   });
 
-  initAuth().then(printer => {
+  initAuth().then((printer) => {
     if (printer) appLoop(printer);
   });
 };
@@ -104,22 +131,31 @@ async function appLoop(printerInfo) {
 
     try {
       const responses = await getRequests(initialized);
-      if (responses.status) connectionProblem = responses.status.ok === null;
+      const results = {};
 
-      Object.values(responses).forEach(({ ok, error }) => {
-        if (!ok) {
+      let hasConnectionError = false;
+
+      responses.forEach((response) => {
+        if ("payload" in response) {
+          results[response.type] = response.payload;
+        } else {
+          if (response.no_connection) {
+            hasConnectionError = true;
+          }
           apiProblem = true;
-          if (ok !== null) {
-            handleApiError(error);
+          if (response.error) {
+            handleApiError(response.error);
           }
         }
       });
 
+      connectionProblem = hasConnectionError;
+
       if (initialized) {
-        update(responses);
+        update(results);
       } else {
         if (!apiProblem) {
-          init({...responses, printer: printerInfo});
+          init({ ...results, printer: printerInfo });
           initialized = true;
         }
       }
@@ -128,7 +164,9 @@ async function appLoop(printerInfo) {
     }
 
     printer.setConnected(!connectionProblem);
-    await new Promise((resolve) => setTimeout(resolve, UPDATE_INTERVAL));
+    await new Promise((resolve) =>
+      setTimeout(resolve, parseInt(UPDATE_INTERVAL))
+    );
   }
 }
 

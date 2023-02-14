@@ -52,7 +52,7 @@ const load = (context) => {
 
 const update = (context, updateUI = updateCamerasUI) => {
   if (currentCameraId === undefined) {
-    currentCameraId = context.camera.id;
+    currentCameraId = context.camera?.id;
   }
   allowCloud = context.link.connect.ok;
   getJson("/api/v1/cameras")
