@@ -66,6 +66,13 @@ paths:
                   - printer
 
   /api/v1/storage:
+    parameters:
+      - in: header
+        name: Accept-Language
+        description: Defines a language of the response
+        schema:
+          type: string
+          example: "cs"
     get:
       summary: storage info
       description: Returns info about each available file storage (e.g. SD Card or local storage)
@@ -593,6 +600,7 @@ components:
       properties:
         name:
           type: string
+          description: Name of the storage, based on selected language
           example: "PrusaLink gcodes"
         type:
           type: string
