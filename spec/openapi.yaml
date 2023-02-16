@@ -65,6 +65,25 @@ paths:
                 required:
                   - printer
 
+  /api/v1/job:
+    get:
+      summary: job info
+      description: Returns info about current job
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  job:
+                    $ref: "#/components/schemas/Job"
+        204:
+          description: No Content
+        401:
+          $ref: "#/components/responses/Unauthorized"
+
   /api/v1/storage:
     parameters:
       - in: header
@@ -806,7 +825,7 @@ components:
         type:
           type: string
           description: File could be print file, firmware file, other (e.g. configuration) file, or folder
-          enum: [ "PRINT_FILE", "FIRMWARE", "FILE", "FOLDER" ]
+          enum: [ PRINT_FILE, FIRMWARE, FILE, FOLDER ]
         m_timestamp:
           description: Timestamp in seconds
           type: integer
@@ -1038,15 +1057,18 @@ components:
       properties:
         id:
           type: integer
-          example: 42
+          example: 420
         progress:
           type: number
-          example: 0.42
+          description: Percents
+          example: 42.0
         time_remaining:
           type: integer
+          description: Seconds
           example: 520
         time_printing:
           type: integer
+          description: Seconds
           example: 526
 
     StatusPrinter:
@@ -1220,6 +1242,62 @@ components:
         - transferred
         - time_transferring
         - to_print
+
+    Job:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 420
+        name:
+          type: string
+          description: Short Filename
+          example: "SPICE~1.gco"
+        display_name:
+          type: string
+          description: Long Filename
+          example: "Spice_Harvester_0.3mm_PLA_MK3S_12m.gcode"
+        path:
+          type: string
+          example: "/local"
+        display_path:
+          type: string
+          example: "/PrusaLink gcodes"
+        size:
+          type: integer
+          description: Bytes
+          example: 2393142
+        state:
+          type: string
+          enum: [ PRINTING, PAUSED, FINISHED, STOPPED, ERROR ]
+        progress:
+          type: number
+          description: Percents
+          example: 42.0
+        time_remaining:
+          type: integer
+          description: Seconds
+          example: 520
+        time_printing:
+          type: integer
+          description: Seconds
+          example: 526
+        meta:
+          type: object
+          properties:
+            filament_type:
+              type: string
+              example: "PLA"
+            print_height:
+              type: number
+              example: 0.3
+      required:
+        - id
+        - name
+        - path
+        - state
+        - progress
+        - time_printing
 
     Error:
       type: object
