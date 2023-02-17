@@ -84,6 +84,36 @@ paths:
         401:
           $ref: "#/components/responses/Unauthorized"
 
+  /api/v1/transfer:
+    get:
+      summary: transfer info
+      description: Returns info about current transfer
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  transfer:
+                    $ref: "#/components/schemas/Transfer"
+        204:
+          description: No Content
+        401:
+          $ref: "#/components/responses/Unauthorized"
+    delete:
+      summary: abort transfer
+      description: Abort the current transfer
+      responses:
+        204:
+          description: No Content
+            No Error
+        401:
+          $ref: "#/components/responses/Unauthorized"
+        409:
+          $ref: "#/components/responses/Conflict"
+
   /api/v1/files/{storage}/{path}:
     parameters:
       - in: header
@@ -1086,6 +1116,7 @@ components:
           example: 30
         progress:
           type: number
+          description: Percents
           example: 65.82
         data_transefered:
           type: integer
@@ -1131,6 +1162,56 @@ components:
           type: string
           description: Package version available for update
           example: "4.2-RC1"
+
+    Transfer:
+      type: object
+      properties:
+        type:
+          type: string
+          enum: [ NO_TRANSFER, FROM_WEB, FROM_CONNECT, FROM_PRINTER, FROM_SLICER, FROM_CLIENT, TO_CONNECT, TO_CLIENT ]
+          example: FROM_WEB
+        display_name:
+          type: string
+          description: Long Filename
+          example: "Spice_Harvester_0.3mm_PLA_MK3S_12m.gcode"
+        path:
+          type: string
+          example: "/local"
+        url:
+          type: string
+          example: "https://files.printables.com/media/prints/42/gcodes/42_b42-242-442-8142c-424242/spice_harvester_0.3mm_pla_mk3s_12m.gcode"
+        size:
+          type: string
+          description: Bytes
+          example: 239314
+        progress:
+          type: number
+          description: Percents
+          example: 42.25
+        transferred:
+          type: integer
+          description: Transfered data in bytes
+          example: 3276800
+        time_remaining:
+          type: integer
+          description: Seconds
+          example: 61
+        time_transferring:
+          type: integer
+          description: Seconds
+          example: 42
+        to_print:
+          type: boolean
+          description: Whether or not print after finishing transfer (upload)
+          example: False
+      required:
+        - type
+        - display_name
+        - path
+        - progress
+        - transferred
+        - time_transferring
+        - to_print
 
     Error:
       type: object
