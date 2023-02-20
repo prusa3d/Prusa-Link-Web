@@ -1233,6 +1233,7 @@ components:
 
     Transfer:
       type: object
+      description: PrusaLink package version available to update
       properties:
         type:
           type: string
