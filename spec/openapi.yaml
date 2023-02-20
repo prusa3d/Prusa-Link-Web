@@ -502,13 +502,13 @@ paths:
     parameters:
       - in: path
         name: env
-        description: The target environment (python or system) for update
+        description: The target environment (prusalink or system) for update
         required: true
         schema:
           type: string
-          enum: ["python"]
+          enum: ["prusalink"]
     get:
-      summary: Retrieve information about available updates of packages and their versions
+      summary: Retrieve information about available update of given environment
       responses:
         200:
           description: OK
@@ -522,20 +522,30 @@ paths:
             application/json:
               schema:
                 oneOf:
-                  - $ref: "#/components/schemas/PythonPackageUpdateInfo"
+                  - $ref: "#/components/schemas/PrusaLinkPackage"
+        204:
+          description: No Content
+          headers:
+            Update-Available:
+              schema:
+                type: boolean
+                description: Whether there's a package update available
+                example: false
+        401:
+          $ref: "#/components/responses/Unauthorized"
+        409:
+          $ref: "#/components/responses/BadRequest"
+    post:
+      summary: Update given environment
+      responses:
+        200:
+          description: OK
         204:
           description: No Content
         401:
           $ref: "#/components/responses/Unauthorized"
-    post:
-      summary: Update packages
-      responses:
-        200:
-          description: OK
-        401:
-          $ref: "#/components/responses/Unauthorized"
         409:
-          $ref: "#/components/responses/Conflict"
+          $ref: "#/components/responses/BadRequest"
 
 components:
   schemas:
@@ -1113,30 +1123,14 @@ components:
           type: string
           example: "Ba1kmCbifTa8X"
 
-    PythonPackageUpdateInfo:
+    PrusaLinkPackage:
       type: object
+      description: PrusaLink package version available to update
       properties:
-        available_updates:
-          type: array
-          items:
-            type: object
-            properties:
-              name:
-                type: string
-                description: Package name
-                example: "paul-muaddib"
-              version:
-                type: string
-                description: Current version of the package
-                example: "1.42.1"
-              available_version:
-                type: string
-                description: Available version of the package for update
-                example: "1.42.2"
-              path:
-                type: string
-                description: Path to package
-                example: "jo/packages"
+        new_version:
+          type: string
+          description: Package version available for update
+          example: "4.2-RC1"
 
     Error:
       type: object
