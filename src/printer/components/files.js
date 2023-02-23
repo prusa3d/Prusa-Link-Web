@@ -259,7 +259,7 @@ const redrawFiles = () => {
 
         case FILE_TYPE.FILE:
         default:
-          node = createFile(entry);
+          node = createFile(entry, "file");
           break;
       }
       filesNode.appendChild(node);
