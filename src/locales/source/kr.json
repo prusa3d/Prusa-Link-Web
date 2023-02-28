@@ -257,9 +257,9 @@
   "btn.connect.link": "연결",
   "btn.connect.unlink": "연결끊기",
   "conn.connect.not-linked": "연결안됨",
-  "msg.drop-zone.label": "",
-  "btn.check-updates": "",
-  "btn.upgrade": "",
-  "upgrade.success.message": "",
-  "upgrade.success.title": ""
+  "msg.drop-zone.label": "파일을 여기로 끌어놓으면 업로드가 시작됩니다.",
+  "btn.check-updates": "업데이트 체크",
+  "btn.upgrade": "업그레이드",
+  "upgrade.success.message": "페이지가 5초 뒤 다시 시작됩니다.",
+  "upgrade.success.title": "업그레이드 성공"
 }
