@@ -75,20 +75,12 @@ paths:
           content:
             application/json:
               schema:
-<<<<<<< HEAD
                 $ref: "#/components/schemas/Job"
-=======
-                type: object
-                properties:
-                  job:
-                    $ref: "#/components/schemas/Job"
->>>>>>> e544792 (Added new endpoint api/v1/job)
         204:
           description: No Content
         401:
           $ref: "#/components/responses/Unauthorized"
 
-<<<<<<< HEAD
   /api/v1/job/{id}:
     parameters:
       - in: path
@@ -112,8 +104,6 @@ paths:
         409:
           $ref: "#/components/responses/Conflict"
 
-=======
->>>>>>> e544792 (Added new endpoint api/v1/job)
   /api/v1/storage:
     parameters:
       - in: header
