@@ -272,6 +272,9 @@ const fdmFormatData = (format, value) => {
       return formatTime(value);
     case "timeEst":
       return formatEstimatedTime(value);
+    case "progressPct":
+      return numberFormat((value || 0), true, 0) + "%";
+    // NOTE: keep for compatibility, until complete migration to v1
     case "progress":
       return numberFormat((value || 0) * 100, true, 0) + "%";
     case "percent":

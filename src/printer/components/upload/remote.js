@@ -61,7 +61,7 @@ function update(linkState) {
     }
     setDisabled(startPrintCheckbox, !canStartPrinting)
   }
-  getJson("api/download").then(result => {
+  getJson("api/v1/transfer").then(result => {
     lastResult = result;
     handleResult(result);
   }).catch(result => {
@@ -94,7 +94,12 @@ function handleResult(result) {
     setState("choose");
   } else if (data.type === "FROM_WEB") {
     setState("uploading");
-    updateProperties("download", data);
+    updateProperties("download", {
+      ...data,
+      time_start: data.time_transferring
+        ? Math.round((new Date()).getTime() / 1000) - data.time_transferring
+        : null,
+    });
     const progressBar = document.querySelector("#upld-remote .progress-bar");
     updateProgressBar(progressBar, data.progress || 0);
   }
