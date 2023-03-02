@@ -892,17 +892,117 @@ components:
         - type: object
           properties:
             refs:
-              type: object
-              properties:
-                download:
-                  type: string
-                  example: "/api/files/local/examples/Spice_Harvester_0.3mm_PLA_MK3S_42m.gcode/raw"
-                icon:
-                  type: string
-                  example: "/api/thumbnails/local/examples/Spice_Harvester_0.3mm_PLA_MK3S_42m.gcode.small.png"
-                thumbnail:
-                  type: string
-                  example: "/api/thumbnails/local/examples/Spice_Harvester_0.3mm_PLA_MK3S_42m.gcode.orig.png"
+              $ref: "#/components/schemas/PrintFileRefs"
+
+    PrintFileRefs:
+      description: Reference links for file thumbnail, icon and download
+      type: object
+      properties:
+        download:
+          type: string
+          example: "/api/files/local/examples/Spice_Harvester_0.3mm_PLA_MK3S_42m.gcode/raw"
+        icon:
+          type: string
+          example: "/api/thumbnails/local/examples/Spice_Harvester_0.3mm_PLA_MK3S_42m.gcode.small.png"
+        thumbnail:
+          type: string
+          example: "/api/thumbnails/local/examples/Spice_Harvester_0.3mm_PLA_MK3S_42m.gcode.orig.png"
+
+    PrintFileMetadata:
+      type: object
+      description: Print file metadata parsed from G-code, all data are optional
+      properties:
+        bed_temperature:
+          type: string
+          description: Degrees Celsius
+          example: "60"
+        nozzle_temperature:
+          type: string
+          description: Degrees Celsius
+          example: "215"
+        brim_width:
+          type: string
+          description: Milimeters
+          example: "0"
+        estimated printing time (normal mode):
+          type: string
+          example: "42m 42s"
+        faded_layers:
+          type: string
+          example: "42"
+        filament cost:
+          type: string
+          example: "0.57"
+        filament used [cm3]:
+          type: string
+          example: "12.44"
+        filament used [g]:
+          type: string
+          example: "15.79"
+        filament used [mm]:
+          type: string
+          example: "5170.06"
+        filament_type:
+          type: string
+          example: "PLA"
+        fill_density:
+          type: string
+          description: Percent
+          example: "20%"
+        initial_exposure_time:
+          type: string
+          description: Seconds
+          example: "5"
+        layer_height:
+          type: string
+          description: Milimeters
+          example: "0.3"
+        material_name:
+          type: string
+          example: "PLA Sandstorm Orange"
+        exposure_time:
+          type: string
+          description: Seconds
+          example: "2"
+        max_exposure_time:
+          type: string
+          description: Seconds
+          example: "3"
+        max_initial_exposure_time:
+          type: string
+          description: Seconds
+          example: "3"
+        min_exposure_time:
+          type: string
+          description: Seconds
+          example: "1"
+        min_initial_exposure_time:
+          type: string
+          description: Seconds
+          example: "1"
+        nozzle_diameter:
+          type: string
+          description: Milimeters
+          example: "0.4"
+        print_time:
+          type: integer
+          description: Seconds
+          example: "2562"
+        printer_model:
+          type: string
+          enum: [ "MK3", "MK3S", "MINI" ]
+        support_material:
+          type: string
+          example: "PLA"
+        ironing:
+          type: string
+          example: "0"
+        required_resin_ml:
+          type: string
+          example: "123.4"
+        profile:
+          type: string
+          example: "ultra_fast"
 
     PrintFileInfo:
       description: Full print file info from the file's detail
@@ -911,100 +1011,7 @@ components:
         - type: object
           properties:
             meta:
-              type: object
-              description: Print file metadata parsed from G-code, all data are optional
-              properties:
-                bed_temperature:
-                  type: string
-                  description: Degrees Celsius
-                  example: "60"
-                nozzle_temperature:
-                  type: string
-                  description: Degrees Celsius
-                  example: "215"
-                brim_width:
-                  type: string
-                  description: Milimeters
-                  example: "0"
-                estimated printing time (normal mode):
-                  type: string
-                  example: "42m 42s"
-                faded_layers:
-                  type: string
-                  example: "42"
-                filament cost:
-                  type: string
-                  example: "0.57"
-                filament used [cm3]:
-                  type: string
-                  example: "12.44"
-                filament used [g]:
-                  type: string
-                  example: "15.79"
-                filament used [mm]:
-                  type: string
-                  example: "5170.06"
-                filament_type:
-                  type: string
-                  example: "PLA"
-                fill_density:
-                  type: string
-                  description: Percent
-                  example: "20%"
-                initial_exposure_time:
-                  type: string
-                  description: Seconds
-                  example: "5"
-                layer_height:
-                  type: string
-                  description: Milimeters
-                  example: "0.3"
-                material_name:
-                  type: string
-                  example: "PLA Sandstorm Orange"
-                exposure_time:
-                  type: string
-                  description: Seconds
-                  example: "2"
-                max_exposure_time:
-                  type: string
-                  description: Seconds
-                  example: "3"
-                max_initial_exposure_time:
-                  type: string
-                  description: Seconds
-                  example: "3"
-                min_exposure_time:
-                  type: string
-                  description: Seconds
-                  example: "1"
-                min_initial_exposure_time:
-                  type: string
-                  description: Seconds
-                  example: "1"
-                nozzle_diameter:
-                  type: string
-                  description: Milimeters
-                  example: "0.4"
-                print_time:
-                  type: integer
-                  description: Seconds
-                  example: "2562"
-                printer_model:
-                  type: string
-                  enum: [ "MK3", "MK3S", "MINI" ]
-                support_material:
-                  type: string
-                  example: "PLA"
-                ironing:
-                  type: string
-                  example: "0"
-                required_resin_ml:
-                  type: string
-                  example: "123.4"
-                profile:
-                  type: string
-                  example: "ultra_fast"
+              $ref: '#/components/schemas/PrintFileMetadata'
 
     FirmwareFileInfoBasic:
       description: Simplified firmware file info within the folder's children
@@ -1283,6 +1290,10 @@ components:
     Job:
       type: object
       properties:
+        meta:
+          $ref: '#/components/schemas/PrintFileMetadata'
+        refs:
+          $ref: '#/components/schemas/PrintFileRefs'
         id:
           type: integer
           example: 420
@@ -1319,15 +1330,10 @@ components:
           type: integer
           description: Seconds
           example: 526
-        meta:
-          type: object
-          properties:
-            filament_type:
-              type: string
-              example: "PLA"
-            print_height:
-              type: number
-              example: 0.3
+        inaccurate_estimates:
+          type: boolean
+          description: Whether the time estimates are accurate or inaccurate
+          example: false
       required:
         - id
         - name
