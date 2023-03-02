@@ -15,7 +15,7 @@ export function updateProgressBar(root, progress, direction = "right") {
 
   const insetFor = (dir) => {
     if (dir === direction)
-      return `${100 - (progress * 100)}%`;
+      return `${100 - progress}%`;
     return 0;
   }
 
