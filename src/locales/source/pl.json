@@ -252,5 +252,6 @@
   "btn.check-updates": "Sprawdź aktualizacje",
   "btn.upgrade": "",
   "upgrade.success.message": "Strona zostanie przeładowana za 5 sekund",
-  "upgrade.success.title": null
+  "upgrade.success.title": null,
+  "prop.storage-used-space": ""
 }

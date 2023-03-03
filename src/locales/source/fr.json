@@ -263,5 +263,6 @@
   "btn.check-updates": "Vérifier les Mises à Jour",
   "btn.upgrade": "Mise à niveau",
   "upgrade.success.message": "La page sera rechargée dans 5 secondes",
-  "upgrade.success.title": "Mise à niveau Réussie"
+  "upgrade.success.title": "Mise à niveau Réussie",
+  "prop.storage-used-space": ""
 }

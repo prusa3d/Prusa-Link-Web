@@ -252,5 +252,6 @@
   "btn.check-updates": "Controlla aggiornamenti",
   "btn.upgrade": "Aggiorna",
   "upgrade.success.message": "La pagina verrà ricaricata tra 5 secondi",
-  "upgrade.success.title": "Aggiornamento riuscito"
+  "upgrade.success.title": "Aggiornamento riuscito",
+  "prop.storage-used-space": ""
 }

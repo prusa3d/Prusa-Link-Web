@@ -9,7 +9,7 @@ import formatData from "./dataFormat.js";
 
 /**
  * @param {Object} context Printer context.
- * @param {Object[]]} storages List of available storages.
+ * @param {Object[]} storages List of available storages.
  * @param {String} selectedOrigin Currently selected storage.
  * @param {(String) => void} onSelect Callback when select storage.
  */
@@ -99,14 +99,16 @@ const updateStorageDetails = (storage) => {
   if (isVisible) {
     const free = storage.freeSpace;
     const total = storage.totalSpace;
-    const pct = 1 - (free && total ? free / total : 0);
-    const space = translate("prop.storage-space", {
+    const used = total - free;
+    const pct = Math.round((total ? used / total : 0) * 100);
+    const space = translate("prop.storage-used-space", {
+      used: formatData("size", used),
       free: formatData("size", free),
       total: formatData("size", total),
     });
     updateProgressBar(elm, pct);
     document.getElementById("storage-pct").innerHTML = formatData(
-      "progress",
+      "percent",
       pct
     );
     document.getElementById("storage-space").innerHTML = space;
