@@ -162,7 +162,7 @@
   "prop.st-ready": "",
   "prop.st-stopped": "",
   "prop.st-unknown": "",
-  "prop.storage-space": "",
+  "prop.storage-used-space": "",
   "prop.temp-amb": "",
   "prop.temp-bed": "",
   "prop.temp-cpu": "",

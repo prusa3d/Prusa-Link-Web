@@ -261,5 +261,6 @@
   "btn.check-updates": "업데이트 체크",
   "btn.upgrade": "업그레이드",
   "upgrade.success.message": "페이지가 5초 뒤 다시 시작됩니다.",
-  "upgrade.success.title": "업그레이드 성공"
+  "upgrade.success.title": "업그레이드 성공",
+  "prop.storage-used-space": ""
 }

@@ -168,6 +168,7 @@
   "prop.st-feedme": "Refill resin",
   "prop.st-pour-resin": "Pour in resin",
   "prop.storage-space": "{{free}} of {{total}} free",
+  "prop.storage-used-space": "Used {{used}} of {{total}} ({{free}} free)",
   "prop.temp-amb": "Ambient temperature",
   "prop.temp-bed": "Heatbed",
   "prop.temp-cpu": "CPU temperature",

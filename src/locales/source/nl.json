@@ -259,5 +259,6 @@
   "btn.check-updates": "",
   "btn.upgrade": "",
   "upgrade.success.message": "",
-  "upgrade.success.title": ""
+  "upgrade.success.title": "",
+  "prop.storage-used-space": ""
 }

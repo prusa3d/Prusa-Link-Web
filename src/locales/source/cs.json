@@ -156,6 +156,7 @@
   "prop.st-feedme": "Doplnění resinu",
   "prop.st-pour-resin": "Nalití resinu",
   "prop.storage-space": "{{free}} volných z {{total}}",
+  "prop.storage-used-space": "Použito {{used}} z {{total}} ({{free}} volných)",
   "prop.temp-amb": "Teplota okolí",
   "prop.temp-bed": "Vyhřívaná podložka",
   "prop.temp-cpu": "Teplota CPU",

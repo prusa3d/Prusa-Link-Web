@@ -260,5 +260,6 @@
   "camera.btn.unlink": "Atsieti kamerą nuo CONNECT",
   "updates.title": "Sistemos atnaujinimai",
   "upgrade.success.title": "Atnaujinta sėkmingai",
-  "upgrade.success.message": "Puslapis bus atnaujintas po 5 sekundžių"
+  "upgrade.success.message": "Puslapis bus atnaujintas po 5 sekundžių",
+  "prop.storage-used-space": ""
 }
