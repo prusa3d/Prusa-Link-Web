@@ -1150,7 +1150,7 @@ components:
           type: number
           description: Percents
           example: 65.82
-        data_transefered:
+        data_transferred:
           type: integer
           example: 123084800
       required:
