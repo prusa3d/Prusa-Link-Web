@@ -35,7 +35,7 @@
 
     request.open("PUT", url);
     if (opt.print) {
-      request.setRequestHeader("Print-After-Upload", "1");
+      request.setRequestHeader("Print-After-Upload", "?1");
     }
     request.setRequestHeader("Content-Type", "text/x.gcode");
     for (const [key, value] of Object.entries(getHeaders())) {
