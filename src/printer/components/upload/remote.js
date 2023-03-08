@@ -85,6 +85,12 @@ function handleAccept(result) {
 function handleResult(result) {
   const data = result.data;
 
+  if (![200, 201, 204].includes(result.code)) {
+    handleError(result);
+    reset();
+    return
+  }
+
   if (!data) {
     if (isUploading) {
       displaySuccess();
