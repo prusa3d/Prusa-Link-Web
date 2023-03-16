@@ -84,6 +84,29 @@ paths:
         401:
           $ref: "#/components/responses/Unauthorized"
 
+  /api/v1/job/{id}:
+    parameters:
+      - in: path
+        name: id
+        description: job id
+        required: true
+        schema:
+          type: integer
+          example: 42
+    delete:
+      summary: stop job
+      description: Stop job with given id
+      responses:
+        204:
+          description: No Content
+                       No Error
+        401:
+          $ref: "#/components/responses/Unauthorized"
+        404:
+          $ref: "#/components/responses/NotFound"
+        409:
+          $ref: "#/components/responses/Conflict"
+
   /api/v1/storage:
     parameters:
       - in: header
@@ -128,15 +151,27 @@ paths:
           description: No Content
         401:
           $ref: "#/components/responses/Unauthorized"
+
+  /api/v1/transfer/{id}:
+    parameters:
+      - in: path
+        name: id
+        description: transfer id
+        required: true
+        schema:
+          type: integer
+          example: 42
     delete:
-      summary: abort transfer
-      description: Abort the current transfer
+      summary: stop transfer
+      description: Stop transfer with given id
       responses:
         204:
           description: No Content
-            No Error
+                       No Error
         401:
           $ref: "#/components/responses/Unauthorized"
+        404:
+          $ref: "#/components/responses/NotFound"
         409:
           $ref: "#/components/responses/Conflict"
 
