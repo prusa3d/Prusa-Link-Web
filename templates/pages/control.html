@@ -12,7 +12,7 @@
         label: 'control.nozzle-temp',
         value: '0°C',
         format: 'temp_int',
-        location: 'temperature.tool0.target',
+        location: 'telemetry.temperature.nozzle.target',
         type: 'control',
         action: 'nozzle'
       },
@@ -20,7 +20,7 @@
         label: 'control.speed',
         value: '100%',
         format: 'percent',
-        location: 'telemetry.print-speed',
+        location: 'telemetry.speed',
         type: 'control',
         action: 'speed'
       }
@@ -29,7 +29,7 @@
         label: 'control.heated-bed-temp',
         value: '0°C',
         format: 'temp_int',
-        location: 'temperature.bed.target',
+        location: 'telemetry.temperature.bed.target',
         type: 'control',
         action: 'bed'
       },
@@ -37,7 +37,7 @@
         label: 'control.flow',
         value: '100%',
         format: 'percent',
-        location: 'job.progress.flow_factor',
+        location: 'telemetry.flow',
         type: 'control',
         action: 'flowrate'
       }
@@ -50,19 +50,19 @@
     'X axis': {
       label: 'control.axis.x',
       format: 'pos',
-      location: 'telemetry.axis_x',
+      location: 'telemetry.axis.x',
       type: 'control'
     },
     'Y axis': {
       label: 'control.axis.y',
       format: 'pos',
-      location: 'telemetry.axis_y',
+      location: 'telemetry.axis.y',
       type: 'control'
     },
     'Z axis': {
       label: 'control.axis.z',
       format: 'pos',
-      location: 'telemetry.axis_z',
+      location: 'telemetry.axis.z',
       type: 'control'
     }
   }

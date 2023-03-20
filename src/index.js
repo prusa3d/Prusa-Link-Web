@@ -32,32 +32,12 @@ let connectionProblem = false;
  * Time is only approximate, it is not guaranteed!
  */
 const requests = {
-  printer: {
-    get: () => getJson("/api/printer"),
+  status: {
+    get: () => getJson("/api/v1/status"),
     init: true,
     update: true,
+    // updateInterval: process.env.CONNECTION_UPDATE_INTERVAL,
   },
-  profiles: {
-    // NOTE: I leave it like this until we change the API
-    get: () =>
-      process.env.PRINTER_TYPE === "sla"
-        ? getJson("/api/printerprofiles")
-        : new Promise((resolve) => resolve({})),
-    init: true,
-    update: false,
-  },
-  job: {
-    get: () => getJson("/api/job"),
-    init: false,
-    update: true,
-  },
-  connection: {
-    get: () => getJson("/api/connection"),
-    init: process.env.WITH_CONNECTION,
-    update: process.env.WITH_CONNECTION,
-    updateInterval: process.env.CONNECTION_UPDATE_INTERVAL,
-  },
-  // version will be passed on init
 };
 
 async function getRequests(initialized) {
@@ -111,12 +91,12 @@ window.onload = () => {
     });
   });
 
-  initAuth().then((version) => {
-    if (version) appLoop(version);
+  initAuth().then(printer => {
+    if (printer) appLoop(printer);
   });
 };
 
-async function appLoop(version) {
+async function appLoop(printerInfo) {
   let initialized = false;
 
   while (true) {
@@ -124,7 +104,7 @@ async function appLoop(version) {
 
     try {
       const responses = await getRequests(initialized);
-      if (responses.printer) connectionProblem = responses.printer.ok === null;
+      if (responses.status) connectionProblem = responses.status.ok === null;
 
       Object.values(responses).forEach(({ ok, error }) => {
         if (!ok) {
@@ -139,8 +119,7 @@ async function appLoop(version) {
         update(responses);
       } else {
         if (!apiProblem) {
-          responses.version = { ok: true, payload: version };
-          init(responses);
+          init({...responses, printer: printerInfo});
           initialized = true;
         }
       }

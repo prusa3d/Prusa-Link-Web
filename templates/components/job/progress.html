@@ -5,34 +5,26 @@
   # SPDX-License-Identifier: GPL-3.0-or-later
 #}
 
-<div class="progress progress-with-img" hidden>
+<div class="progress progress-with-img">
   <div>
-    <div class="progress-img-wrapper"></div>
+    <div class="preview-img-wrapper"></div>
     <div class="progress-bar" role="status">
       <div class="fill"></div>
     </div>
     <div class="progress-pct">
       <p
         class="txt-lg"
-        data-format="progress"
+        data-format="percent"
         data-type="job"
-        data-where="progress.completion"
+        data-where="progress"
       >
         0%
     </p>
     </div>
   </div>
-</div>
-<div class="progress progress-without-img" hidden>
-  <p
-    class="txt-lg"
-    data-format="progress"
-    data-type="job"
-    data-where="progress.completion"
-  >
-    0%
-  </p>
-  <div class="progress-bar" role="status">
-    <div class="fill"></div>
-  </div>
+  <img
+    class="thumbnail-fallback"
+    src="{{ pre.countOrRenderAssets('thumbnail.svg') | safe }}"
+    hidden
+  />
 </div>

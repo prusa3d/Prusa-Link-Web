@@ -9,15 +9,13 @@
   <div class="job-title">
     <p
       data-type="job"
-      data-where="job.file.display"
+      data-where="file.displayName"
       class="txt-bold txt-md file-name"
     ></p>
     <button id="job-close" class="close-button"></button>
   </div>
   <div id="preview-wrapper">
-    <div class="preview-img">
-      <img id="preview-img" src="{{ pre.countOrRenderAssets('thumbnail.svg') | safe }}" />
-    </div>
+    
       <!-- prettier-ignore -->
       {% include "components/job/progress.html" %}
     <div class="job-details">

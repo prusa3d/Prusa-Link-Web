@@ -16,6 +16,9 @@ import updateConnectionStatus from "../components/updateConnectionStatus";
 import { currentRoute } from "../../router";
 
 const context = {
+  /** Result of `api/v1/status */
+  status: undefined,
+
   /** Result of `api/version`. */
   version: undefined,
   /** Result of `api/printer`. */
@@ -155,7 +158,12 @@ const sla = {
   },
 };
 
-const updateContext = ({ connection, job, printer, version }) => {
+const updateContext = ({ status, connection, job, printer, version }) => {
+  if (status?.ok && status.payload) {
+    context.status = status.payload.data;
+  }
+
+  /*
   if (connection?.ok && connection.payload) {
     context.connection = connection.payload.data;
   }
@@ -165,6 +173,8 @@ const updateContext = ({ connection, job, printer, version }) => {
   if (printer?.ok && printer.payload) {
     context.printer = printer.payload.data;
   }
+  */
+ 
   if (version?.ok && version.payload) {
     context.version = version.payload;
   }

@@ -12,10 +12,21 @@ export const LinkState = {
     STOPPED: "STOPPED",
     ERROR: "ERROR",
     ATTENTION: "ATTENTION",
-    fromApi: (state) => {
-        return state.flags.link_state
-            ? fromLinkState(state.flags.link_state)
-            : fromFlags(state);
+    fromApi: (linkState) => {
+        switch (linkState) {
+            case "IDLE": return LinkState.IDLE;
+            case "READY": return LinkState.READY;
+            case "BUSY": return LinkState.BUSY;
+            case "PRINTING": return LinkState.PRINTING;
+            case "PAUSED": return LinkState.PAUSED;
+            case "FINISHED": return LinkState.FINISHED;
+            case "STOPPED": return LinkState.STOPPED;
+            case "ERROR": return LinkState.ERROR;
+            case "ATTENTION": return LinkState.ATTENTION;
+            default:
+                console.error(`Unsupported state: ${linkState}`);
+                return LinkState.UNKNOWN;
+        }
     },
 };
 
@@ -25,46 +36,10 @@ export const OperationalStates = [
     LinkState.FINISHED
 ];
 
-// Preferred way
-const fromLinkState = (linkState) => {
-    switch (linkState.toUpperCase()) {
-        case "IDLE": return LinkState.IDLE;
-        case "READY": return LinkState.READY;
-        case "BUSY": return LinkState.BUSY;
-        case "PRINTING": return LinkState.PRINTING;
-        case "PAUSED": return LinkState.PAUSED;
-        case "FINISHED": return LinkState.FINISHED;
-        case "STOPPED": return LinkState.STOPPED;
-        case "ERROR": return LinkState.ERROR;
-        case "ATTENTION": return LinkState.ATTENTION;
-        default:
-            console.error(`Unsupported state: ${linkState}`);
-            return LinkState.UNKNOWN;
-    }
-}
-
-// Compatibility only way
-const fromFlags = (state) => {
-    if (state.flags.error) {
-        return LinkState.ERROR;
-    }
-    if (state.text.toUpperCase() == LinkState.BUSY) {
-        return LinkState.BUSY;
-    }
-    if (state.flags.finished) {
-        return LinkState.FINISHED; 
-    }
-    if (state.flags.pausing || state.flags.paused) {
-        return LinkState.PAUSED;
-    }
-    if (state.flags.printing) {
-        return LinkState.PRINTING;
-    }
-    if (state.flags.ready && state.flags.operational) {
-        return LinkState.READY;
-    }
-    return LinkState.IDLE;
-}
+export const JobPendingStates = [
+    LinkState.PRINTING,
+    LinkState.PAUSED,
+];
 
 export const translateState = (state) => {
     switch (state) {

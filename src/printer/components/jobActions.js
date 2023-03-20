@@ -25,33 +25,25 @@ const confirmJob = (fileUrl) => {
 /**
  * Pause printing.
  */
-export const pauseJob = () => {
-  return getJson("/api/job", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ command: "pause", action: "pause" }),
+export const pauseJob = (jobId) => {
+  return getJson(`/api/v1/job/${jobId}/pause`, {
+    method: "PUT",
   }).catch((result) => handleError(result));
 }
 
 /**
  * Resume printing.
  */
- export const resumeJob = () => {
-  return getJson("/api/job", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ command: "pause", action: "resume" }),
+ export const resumeJob = (jobId) => {
+  return getJson(`/api/v1/job/${jobId}/resume`, {
+    method: "PUT",
   }).catch((result) => handleError(result));
 }
 
 /**
  * Cancel job modal.
  */
- const createCancelJobModal = (close, onConfirm) => {
+ const createCancelJobModal = (close, onConfirm, jobId) => {
   const template = document.getElementById("modal-question");
   const node = document.importNode(template.content, true);
   const label = node.getElementById("modal-question-label");
@@ -64,12 +56,11 @@ export const pauseJob = () => {
     onConfirm && onConfirm();
     setDisabled(yesButton, true);
     setDisabled(noButton, true);
-    getJson("/api/job", {
-      method: "POST",
+    getJson(`/api/v1/job/${jobId}`, {
+      method: "DELETE",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ command: "cancel" }),
     }).catch(
       (result) => handleError(result)
     );
@@ -83,8 +74,8 @@ export const pauseJob = () => {
 /**
  * Shows modal, then stops printing.
  */
- export const cancelJob = (onConfirm) => {
-  modal((close) => createCancelJobModal(close, onConfirm), {
+ export const cancelJob = (jobId, onConfirm) => {
+  modal((close) => createCancelJobModal(close, onConfirm, jobId), {
     timeout: 0,
     closeOutside: false,
   });

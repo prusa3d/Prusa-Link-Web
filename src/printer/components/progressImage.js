@@ -8,29 +8,41 @@
  * @param {string} src Img source url.
  * @param {number} progress Initial progress.
  */
-export function renderProgressImg(root, src, progress = 0) {
+export function renderProgressImg(root, thumbnail, progress) {
   if (!root)
     return;
 
-  while (root.firstChild) {
-    root.removeChild(root.firstChild)
+  const src = thumbnail.url ?? document.querySelector('.thumbnail-fallback')?.src;
+  const currentThumbnailSrc = root.getAttribute("data-src");
+
+  if (currentThumbnailSrc !== src) {
+    while (root.firstChild) {
+      root.removeChild(root.firstChild)
+    }
+
+    root.setAttribute("data-src", src);
+
+    const wrapper = document.createElement("div");
+    wrapper.className = "progress-img";
+
+    const background = document.createElement("img");
+    background.src = src;
+    background.className = "background";
+    wrapper.appendChild(background);
+
+    const foreground = document.createElement("img");
+    foreground.src = src;
+    foreground.className = "foreground";
+    foreground.style.clipPath = progressToClipPath(progress ?? 100);
+    wrapper.appendChild(foreground);
+
+    root.appendChild(wrapper);
+  } else {
+    const foreground = root.querySelector(".foreground");
+    if (foreground) {
+      foreground.style.clipPath = progressToClipPath(progress);
+    }
   }
-
-  const wrapper = document.createElement("div");
-  wrapper.className = "progress-img";
-
-  const background = document.createElement("img");
-  background.src = src;
-  background.className = "background";
-  wrapper.appendChild(background);
-
-  const foreground = document.createElement("img");
-  foreground.src = src;
-  foreground.className = "foreground";
-  foreground.style.clipPath = progressToClipPath(progress);
-  wrapper.appendChild(foreground);
-
-  root.appendChild(wrapper);
 }
 
 /**
@@ -49,5 +61,5 @@ export function updateProgressImg(root, progress) {
 }
 
 function progressToClipPath(progress) {
-  return `inset(${100 - progress * 100}% 0% 0% 0%)`;
+  return `inset(${100 - progress}% 0% 0% 0%)`;
 }

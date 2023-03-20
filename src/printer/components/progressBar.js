@@ -15,11 +15,12 @@ export function updateProgressBar(root, progress, direction = "right") {
 
   const insetFor = (dir) => {
     if (dir === direction)
-      return `${100 - progress}%`;
+      return `${100 - (progress || 0)}%`;
     return 0;
   }
 
   const fill = root.querySelector(".fill");
+
   if (fill) {
     // inset will be for example: "0 0 0 50%"
     const inset = `${["top", "right", "bottom", "left"].map(dir => insetFor(dir)).join(" ")}`;

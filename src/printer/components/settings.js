@@ -169,7 +169,8 @@ function initConnectionSettings(context) {
     .addEventListener("click", (event) => {
       getJson("api/connection", { method: "DELETE" })
         .then(displaySuccess)
-        .catch((result) => handleError(result));
+        .catch((result) => handleError(result))
+        .finally(() => context.updateConnection())
     });
 
   document
@@ -200,11 +201,9 @@ function initConnectionSettings(context) {
 }
 
 function updateConnectionSettings(context, updateInputValue) {
-  if (context.connection) {
-    updateProperties("con-settings", context.connection);
-    updatePrusaConnectStatus(context.connection, updateInputValue);
-    updatePrinterStatus(context.connection);
-  }
+  updateProperties("con-settings", context.link);
+  updatePrusaConnectStatus(context.link, updateInputValue);
+  updatePrinterStatus(context.state, context.link);
 }
 
 function initSettings() {
@@ -341,15 +340,14 @@ function updatePrusaConnectStatus(data, updateInputValue) {
   const unlinkButton = document.getElementById("edit-connect-del");
 
   const isFinished = data.connect.registration === "FINISHED";
-  const { hostname, tls } = data.connect;
-  const { ok, message } = data.states.connect;
+  const { hostname, tls, port } = data.connect.settings;
+  const { ok, message } = data.connect;
   const ready = ok && isFinished;
   const msgElm = document.getElementById(
     `conn-prusa-connect-status-${ready ? "ok" : "not-ok"}`
   );
   const protocol = tls ? "https" : "http";
-  const port = data.connect.port ? `:${data.connect.port}` : ""; // 0 = protocol default port
-  const urlString = `${protocol}://${hostname}${port}`;
+  const urlString = `${protocol}://${hostname}${port || ""}`;
   const customMessage = `(${urlString})`;
 
   if (updateInputValue) {
@@ -363,11 +361,11 @@ function updatePrusaConnectStatus(data, updateInputValue) {
   updateConnectionStatus(statusElm, msgElm, ready, message, customMessage);
 }
 
-function updatePrinterStatus(data) {
+function updatePrinterStatus(state, link) {
   const statusElm = document.getElementById("conn-printer-status");
 
-  const { port, baudrate } = data.current;
-  const { ok, message } = data.states.printer;
+  const { port, baudrate } = link.printer.settings;
+  const { ok, message } = link.printer;
   const msgElm = document.getElementById(
     `conn-printer-status-${ok ? "ok" : "not-ok"}`
   );

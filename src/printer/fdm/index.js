@@ -12,19 +12,9 @@ import { translate } from "../../locale_provider";
 import { LinkState, translateState } from "../../state";
 import updateConnectionStatus from "../components/updateConnectionStatus";
 import { currentRoute } from "../../router";
+import { Context } from "./context";
 
-const context = {
-  /** Result of `api/version`. */
-  version: undefined,
-  /** Result of `api/printer`. */
-  printer: undefined,
-  /** Result of `api/job`.job. */
-  current: undefined,
-  /** Result of `api/connection`. */
-  connection: undefined,
-  /** Supported file extensions. */
-  fileExtensions: [],
-};
+export const context = new Context();
 
 const updatePrinterTitle = (obj) => {
   const newTitle = () => {
@@ -44,7 +34,7 @@ const updatePrinterTitle = (obj) => {
 const getPrinterName = () => getPrinterLabel(context);
 
 const updatePrinterStatus = (state) => {
-  const linkState = LinkState.fromApi(state);
+  const linkState = state;
   const elem = document.getElementById("printer-status");
   if (elem) {
     elem.innerHTML = translateState(linkState);
@@ -103,11 +93,12 @@ const fdm = {
       } : null,
   ].filter(route => route != null),
   init: (apiResult) => {
-    updateContext(apiResult);
-    context.fileExtensions = process.env.FILE_EXTENSIONS;
+    context.update(apiResult);
     initTemperatureGraph();
   },
   update: (apiResult) => {
+    context.update(apiResult);
+
     const page = currentRoute();
     const stateText = getStatusForTitle(context);
     document.title = buildRouteTitle([
@@ -115,10 +106,10 @@ const fdm = {
       fdm.routes.find(route => route.path === page).getTitle()
     ]);
 
-    updateContext(apiResult);
-    updateProperties("telemetry", {...context.printer, version: context.version});
-    updatePrinterStatus(context.printer.state);
-    updateTemperatureGraph(context.printer);
+    updateProperties("telemetry", context);
+    updatePrinterStatus(context.state);
+    updateTemperatureGraph(context.telemetry);
+    // TODO:
     updateModule();
   },
   setConnected: (isConnected) => {
@@ -135,7 +126,11 @@ const fdm = {
   },
 };
 
-const updateContext = ({ connection, job, printer, version }) => {
+const updateContext = ({ status, connection, job, printer, version }) => {
+  if (status?.ok && status.payload) {
+    context.status = status.payload.data;
+  }
+  /*
   if (connection?.ok && connection.payload) {
     context.connection = connection.payload.data;
   }
@@ -145,6 +140,7 @@ const updateContext = ({ connection, job, printer, version }) => {
   if (printer?.ok && printer.payload) {
     context.printer = printer.payload.data;
   }
+  */
   if (version?.ok && version.payload) {
     context.version = version.payload;
   }
@@ -162,10 +158,10 @@ const initTemperatureGraph = () => {
   graph.render();
 };
 
-const updateTemperatureGraph = (data) => {
+const updateTemperatureGraph = (telemetry) => {
   const now = new Date().getTime();
-  graph.update("temp-line-blue", [now, data.temperature.bed.actual]);
-  graph.update("temp-line-orange", [now, data.temperature.tool0.actual]);
+  graph.update("temp-line-blue", [now, telemetry.temperature.bed.current]);
+  graph.update("temp-line-orange", [now, telemetry.temperature.nozzle.current]);
   graph.render();
 };
 

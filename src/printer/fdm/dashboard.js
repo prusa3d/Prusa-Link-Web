@@ -37,7 +37,7 @@ const update = (context) => {
   if (!context.printer) {
     return;
   }
-  const linkState = LinkState.fromApi(context.printer.state);
+  const linkState = context.state;
 
   job.update(context);
   upload.update(linkState);
