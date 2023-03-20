@@ -10,7 +10,7 @@ import { Dropdown } from "./dropdown";
 import { handleError } from "./errors";
 
 let allowCloud = false;
-let currentCameraId = null;
+let currentCameraId = undefined;
 let cameras = [];
 
 const triggerScheme = {
@@ -51,7 +51,10 @@ const load = (context) => {
 };
 
 const update = (context, updateUI = updateCamerasUI) => {
-  allowCloud = context.connection.states.connect.ok;
+  if (currentCameraId === undefined) {
+    currentCameraId = context.camera.id;
+  }
+  allowCloud = context.link.connect.ok;
   getJson("/api/v1/cameras")
     .then((result) => {
       const list = (result?.data?.camera_list || []).map((item) => {

@@ -31,6 +31,7 @@ const load = (context) => {
   if (process.env.WITH_SERIAL) initSerialSettings();
   if (process.env.WITH_API_KEY_SETTING) initApiKey();
   logsModule?.load();
+  context.updateConnection();
 };
 
 const update = (context) => {
@@ -169,12 +170,24 @@ function initConnectionSettings(context) {
     .addEventListener("click", (event) => {
       getJson("api/connection", { method: "DELETE" })
         .then(displaySuccess)
-        .catch((result) => handleError(result));
+        .catch((result) => handleError(result))
+        .finally(() => context.updateConnection())
     });
 
-  document
-    .getElementById("edit-connect-set")
-    .addEventListener("click", (event) => {
+  const linkButton = document.getElementById("edit-connect-set");
+  const linkButtonSpinner = document.getElementById("edit-connect-set__spinner");
+  const setInProgress = value => {
+    if (value) {
+      document.querySelectorAll(".update-pkg").forEach(entry => {
+        entry.parentNode.removeChild(entry);
+      });
+    }
+    setVisible(linkButtonSpinner, value);
+    setEnabled(linkButton, !value);
+  }
+
+  linkButton.addEventListener("click", (event) => {
+      setInProgress(true);
       const val = document.getElementById("conn-prusa-connect-url")?.value;
       if (!val) return;
       const url = new URL(val);
@@ -194,17 +207,22 @@ function initConnectionSettings(context) {
         .then((result) => {
           const url = result?.data?.url;
           url && window.open(url, "_blank");
+          setTimeout(() => {
+            context.updateConnection()
+              .finally(() => setInProgress(false))
+          }, 5000)
         })
-        .catch((result) => handleError(result));
+        .catch((result) => {
+          setInProgress(false);
+          handleError(result)
+        });
     });
 }
 
 function updateConnectionSettings(context, updateInputValue) {
-  if (context.connection) {
-    updateProperties("con-settings", context.connection);
-    updatePrusaConnectStatus(context.connection, updateInputValue);
-    updatePrinterStatus(context.connection);
-  }
+  updateProperties("con-settings", context.link);
+  updatePrusaConnectStatus(context.link, updateInputValue);
+  updatePrinterStatus(context.state, context.link);
 }
 
 function initSettings() {
@@ -341,15 +359,14 @@ function updatePrusaConnectStatus(data, updateInputValue) {
   const unlinkButton = document.getElementById("edit-connect-del");
 
   const isFinished = data.connect.registration === "FINISHED";
-  const { hostname, tls } = data.connect;
-  const { ok, message } = data.states.connect;
+  const { hostname, tls, port } = data.connect.settings;
+  const { ok, message } = data.connect;
   const ready = ok && isFinished;
   const msgElm = document.getElementById(
     `conn-prusa-connect-status-${ready ? "ok" : "not-ok"}`
   );
   const protocol = tls ? "https" : "http";
-  const port = data.connect.port ? `:${data.connect.port}` : ""; // 0 = protocol default port
-  const urlString = `${protocol}://${hostname}${port}`;
+  const urlString = `${protocol}://${hostname}${port || ""}`;
   const customMessage = `(${urlString})`;
 
   if (updateInputValue) {
@@ -363,11 +380,11 @@ function updatePrusaConnectStatus(data, updateInputValue) {
   updateConnectionStatus(statusElm, msgElm, ready, message, customMessage);
 }
 
-function updatePrinterStatus(data) {
+function updatePrinterStatus(state, link) {
   const statusElm = document.getElementById("conn-printer-status");
 
-  const { port, baudrate } = data.current;
-  const { ok, message } = data.states.printer;
+  const { port, baudrate } = link.printer.settings;
+  const { ok, message } = link.printer;
   const msgElm = document.getElementById(
     `conn-printer-status-${ok ? "ok" : "not-ok"}`
   );

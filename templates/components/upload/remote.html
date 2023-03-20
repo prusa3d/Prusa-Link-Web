@@ -10,7 +10,7 @@
     {
       text: 'Progress',
       label: 'prop.progress',
-      format: 'progressPct',
+      format: 'percent',
       location: 'progress',
       type: 'download'
     },
@@ -18,28 +18,28 @@
       text: 'Size',
       label: 'prop.size',
       format: 'size',
-      location: 'size',
+      location: 'file.size',
       type: 'download'
     },
     {
       text: 'Download Started',
       label: 'download.dl-started',
       format: 'date',
-      location: 'time_start',
+      location: 'timeStarted',
       type: 'download'
     },
     {
       text: 'Remaining Time',
       label: 'prop.rem-time',
       format: 'time',
-      location: 'time_remaining',
+      location: 'timeRemaining',
       type: 'download'
     },
     {
       text: 'Autostart',
       label: 'download.start-pt',
       format: 'boolean',
-      location: 'to_print',
+      location: 'file.toPrint',
       type: 'download'
     }
   ]
@@ -114,7 +114,7 @@
     <div class="progress-bar">
       <div class="fill"></div>
       <p class="txt-black hide-scrollbar"
-        data-where="url"
+        data-where="file.displayName"
         data-type="download"
       >
       </p>

@@ -272,7 +272,7 @@ const redrawFiles = () => {
  * @param {object} context
  */
 export const update = (context) => {
-  const linkState = LinkState.fromApi(context.printer.state);
+  const linkState = context.state;
   updateStorage();
   updateFiles();
   job.update(context, true);
@@ -323,9 +323,10 @@ export function load(context) {
               loadPreviewQueued();
             }
           } else {
-            getImage(entry.target.getAttribute("data-src")).then(({ url }) => {
+            const dataSrc = entry.target.getAttribute("data-src");
+            getImage(dataSrc).then(({ url }) => {
               entry.target.src = url;
-            });
+            }).catch(() => {}); // NOTE: ignore missing thumbnails
           }
         }
       });
@@ -336,13 +337,11 @@ export function load(context) {
     context = printer.getContext();
   }
 
-  const previewFile = job.getPreviewFile();
+  const previewFile = context.files.selected;
   if (previewFile) {
     const file = findFile(previewFile.origin, previewFile.path);
     if (!file) {
-      job.selectFilePreview(null);
-    } else if (file.date > previewFile.data) {
-      job.selectFilePreview(file);
+      context.selectFile(null);
     }
   }
   job.update(context, true);
@@ -502,18 +501,26 @@ const onClickFile = (node) => {
 };
 
 function showPreview(file) {
-  const currentPreview = job.getPreviewFile();
-  const path = getCurrentApiPath(file.name);
+  const context = printer.getContext();
+  const currentPreview = context.files.selected;
+  const path = getCurrentPath();
+  const resource = getCurrentApiPath(file.name);
 
   if (currentPreview === path) {
     return;
   }
 
-  getJson(path)
-    .then(result => {
-      job.selectFilePreview(result.data, path)
-      job.update(printer.getContext(), true)
-    });
+  context.selectFile({
+    ...file,
+    path,
+    resource
+  });
+
+  //getJson(path)
+  //  .then(result => {
+  //    job.selectFilePreview(result.data, path)
+  //    job.update(printer.getContext(), true)
+  // });
 
   const jobElement = document.getElementById("job");
   if (jobElement) {

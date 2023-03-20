@@ -11,6 +11,7 @@ import { updateProgressBar } from "../progressBar";
 import { attachConfirmModalToCheckbox } from "./confirm";
 import updateProperties from "../updateProperties";
 import { OperationalStates } from "../../../state";
+import printer from "../..";
 
 let isUploading = false;
 let lastResult = null;
@@ -42,16 +43,17 @@ function init(origin, path) {
     urlInput.oninput = updateUploadBtn;
   }
 
-  if (isUploading) {
-    setState("uploading");
-    if (lastResult)
-      handleResult(lastResult);
-  }
+  // if (isUploading) {
+  //  setState("uploading");
+  //   if (lastResult)
+  //    handleResult(lastResult);
+  // }
 
   update();
 }
 
 function update(linkState) {
+  const context = printer.getContext();
   const canStartPrinting = OperationalStates.includes(linkState);
   const startPrintCheckbox = document.querySelector("#upld-remote-start-pt");
   if (startPrintCheckbox) {
@@ -61,15 +63,15 @@ function update(linkState) {
     }
     setDisabled(startPrintCheckbox, !canStartPrinting)
   }
-  getJson("api/v1/transfer").then(result => {
-    lastResult = result;
-    handleResult(result);
-  }).catch(result => {
-    if (result.code) {
-      handleError(result);
-    }
-    reset();
-  });
+
+  if (context.transfer?.id) {
+    setState("uploading");
+    updateProperties("download", context.transfer);
+    const progressBar = document.querySelector("#upld-remote .progress-bar");
+    updateProgressBar(progressBar, context.transfer.progress || 0);
+  } else {
+    setState("choose");
+  }
 }
 
 function handleAccept(result) {

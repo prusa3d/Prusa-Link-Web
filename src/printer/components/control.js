@@ -7,6 +7,8 @@ import { setDisabled, setEnabled } from "../../helpers/element";
 import updateProperties from "./updateProperties";
 import { disableSteppers, extrude, homePrinthead, movePrinthead, retract, setBedTemperature, setFlowRate, setNozzleTemperature, setSpeed } from "./controlActions";
 import { handleError } from "./errors";
+import { LinkState } from "../../state";
+import { context } from "../fdm";
 
 let moveStep = 1;
 let extrudeRetractStep = 1;
@@ -32,12 +34,8 @@ const load = (context) => {
 };
 
 const update = (context) => {
-  updateProperties("control", {
-    temperature: context.printer.temperature,
-    telemetry: context.printer.telemetry,
-    job: context.current,
-  });
-  updateButtons(context.printer.state, context.printer.telemetry, context.version);
+  updateProperties("control", context);
+  updateButtons(context);
 }
 
 function initButtons() {
@@ -55,7 +53,9 @@ function initDisableSteppersBtn() {
     };
 }
 
-function updateButtons(state, telemetry, info) {
+function updateButtons(context) {
+  const state = context.state;
+
   const controls = document.querySelectorAll("#control button");
   const nozzleControls = ["extrude", "retract"];
   const whitelistWhenPrinting = [
@@ -73,15 +73,17 @@ function updateButtons(state, telemetry, info) {
     "heated-bed-xy-move",
   ];
 
-  if (state.flags.printing || state.flags.pausing || state.flags.paused) {
-    const whitelist = state.flags.paused ? whitelistWhenPaused : whitelistWhenPrinting;
+  if ([LinkState.PRINTING || LinkState.BUSY || LinkState.PAUSED].includes(state)) {
+    const whitelist = state === LinkState.PAUSED ? whitelistWhenPaused : whitelistWhenPrinting;
     controls.forEach(btn => {
       const controlId =  btn.id || btn.parentNode.id || btn.parentNode.parentNode.id;
       setDisabled(btn, !whitelist.includes(controlId));
     });
   }
 
-  const canControlNozzle = (telemetry && info && telemetry["temp-nozzle"] >= info["min_extrusion_temp"]);
+  const nozzleTemp = context.telemetry.temperature.nozzle.current || 0;
+  const minExtrusionTemp = context.printer.minExtrusionTemp || 0;
+  const canControlNozzle = (nozzleTemp && minExtrusionTemp && nozzleTemp >= minExtrusionTemp);
 
   nozzleControls.forEach(
     control => setDisabled(document.getElementById(control), !canControlNozzle)
