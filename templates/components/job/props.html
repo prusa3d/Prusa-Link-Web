@@ -16,7 +16,7 @@
           text: 'Remaining Time',
           label: 'prop.rem-time',
           format: 'time',
-          location: 'progress.printTimeLeft',
+          location: 'timeRemaining',
           type: 'job'
         },
         {
@@ -24,21 +24,23 @@
           text: 'Print Time Estimate',
           label: 'prop.time-est',
           format: 'time',
-          location: 'meta.estimated_print_time',
+          location: 'meta.estimatedPrintTime',
           type: 'file'
         },
         {
           id: 'est-end',
-          text: 'Estimated end',
+          text: 'Estimated End',
           label: 'prop.est-end',
-          format: 'timeEst'
+          format: 'timeEst',
+          location: 'timeRemaining',
+          type: 'job'
         },
         {
           id: 'pnt-time',
           text: 'Printing Time',
           label: 'prop.pnt-time',
           format: 'time',
-          location: 'progress.printTime',
+          location: 'timePrinting',
           type: 'job'
         }
       ]
@@ -111,7 +113,7 @@
           text: 'Last Modified',
           label: 'prop.last-mod',
           format: 'date',
-          location: 'm_timestamp',
+          location: 'lastModified',
           type: 'file'
         }
       ]
@@ -123,14 +125,14 @@
           text: 'Material',
           label: 'prop.material',
           format: 'material',
-          location: 'meta.filament_type',
+          location: 'meta.filamentType',
           type:'file'
         },
         {
           text: 'Layer Height',
           label: 'prop.layer-ht',
           format: 'layer',
-          location: 'meta.layer_height',
+          location: 'meta.layerHeight',
           type:'file'
         }
       ]

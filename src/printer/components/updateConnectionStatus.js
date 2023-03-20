@@ -8,23 +8,13 @@ let casesCount = 0;
 let offlineScreen = null;
 
 /** Updates connection status in telemetry. */
-const updateConnectionStatus = ({ connection, isConnected }) => {
-  const fallbackStates = {
-    printer: {
-      ok: isConnected,
-      message: translate("conn.printer.not-connected"),
-    },
-  };
-  const states = isConnected
-    ? {
-        ...fallbackStates,
-        ...connection?.states, // states could not be ready yet
-      }
-    : fallbackStates; // connection.states could exist, but outdated
+const updateConnectionStatus = ({ link, isConnected }) => {
+
+
   const alwaysShowStateOf = ["connect"];
 
-  for (const name in states) {
-    const { ok, message } = states[name];
+  for (const name in link) {
+    const { ok, message } = link[name];
     const msgElm = document.getElementById(`conn-status-${name}-msg`)
     if (msgElm) {
       msgElm.innerHTML =

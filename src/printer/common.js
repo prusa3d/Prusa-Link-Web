@@ -3,7 +3,7 @@ import { LinkState, translateState } from "../state";
 const SEPARATOR = " - ";
 
 export const getPrinterLabel = (context) => {
-  return buildTitle([context.version?.location, context.version?.name]);
+  return buildTitle([context.printer?.location, context.printer?.name]);
 };
 
 export const buildTitle = (titleItems) => {
@@ -14,7 +14,7 @@ export const buildTitle = (titleItems) => {
 };
 
 export const getStatusForTitle = (context) => {
-  const linkState = LinkState.fromApi(context.printer.state);
+  const linkState = context.state;
   let stateText = translateState(linkState);
 
   switch (linkState) {
@@ -22,10 +22,12 @@ export const getStatusForTitle = (context) => {
       return '';
 
     case 'PRINTING':
-      const progress = Math.round((context?.current?.progress?.completion || 0) * 100);
+      const progress = Math.round((context?.job?.progress || 0));
       return `${stateText} ${progress}%`;
 
     default:
       return stateText;
   }
 }
+
+export const getEstimatedEnd = (timeRemaining) => Math.round(Date.now() / 1000) + timeRemaining;
