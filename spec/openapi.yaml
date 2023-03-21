@@ -75,10 +75,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  job:
-                    $ref: "#/components/schemas/Job"
+                $ref: "#/components/schemas/Job"
         204:
           description: No Content
         401:
@@ -143,10 +140,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  transfer:
-                    $ref: "#/components/schemas/Transfer"
+                $ref: "#/components/schemas/Transfer"
         204:
           description: No Content
         401:
