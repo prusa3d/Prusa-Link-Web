@@ -1,6 +1,6 @@
 # PrusaLink
 
-This is a printer connect webservice. It is compatible with other 3D printer services, so many applications can use this service.
+Our printer connect webservice is a solution for connecting 3D printers with other services. It's compatible with various applications, making integration easy.
 
 ### Install
 
