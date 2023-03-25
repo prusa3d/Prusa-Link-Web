@@ -12,7 +12,8 @@ languages = [
     ("fr","fr_FR"),
     ("it","it_IT"),
     ("kr","kr_KR"),
-    ("nl","nl_NL")
+    ("nl","nl_NL"),
+    ("lt","lt_LT")
 ]
 new_file = dict()
 for language in languages:
