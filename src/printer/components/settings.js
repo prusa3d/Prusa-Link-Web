@@ -25,6 +25,7 @@ const displaySuccess = () =>
 const load = (context) => {
   translate("settings.title", { query: "#title-status-label" });
   initBaseSettings();
+  if (process.env.WITH_SYSTEM_UPDATES) initSystemUpdates();
   if (process.env.WITH_CONNECTION) initConnectionSettings(context);
   initSettings();
   if (process.env.WITH_SERIAL) initSerialSettings();
@@ -63,7 +64,7 @@ function updateApiKey(apiKey) {
 }
 
 function initBaseSettings() {
-  getJson("api/version?system=true")
+  getJson("api/version?system=1")
     .then((result) => {
       const data = {
         version: result.data,
@@ -72,6 +73,92 @@ function initBaseSettings() {
       updateSystemVersionProperties(data);
     })
     .catch((result) => handleError(result));
+}
+
+function initSystemUpdates() {
+  const checkUpdatesBtn = document.getElementById("updates-check");
+  const checkUpdatesSpinner = document.getElementById("updates-check__spinner");
+  const setInProgress = value => {
+    if (value) {
+      document.querySelectorAll(".update-pkg").forEach(entry => {
+        entry.parentNode.removeChild(entry);
+      });
+    }
+    setVisible(checkUpdatesSpinner, value);
+    setEnabled(checkUpdatesBtn, !value);
+  }
+  if (checkUpdatesBtn && checkUpdatesSpinner) {
+    checkUpdatesBtn.onclick = () => {
+      setInProgress(true);
+           
+      getJson("/api/v1/update/prusalink")
+        .then(result => {
+          const new_version = result.data?.new_version;
+          const available_updates = [{
+            name: "PrusaLink",
+            new_version
+          }];
+          const tableNode = checkUpdatesBtn
+            .parentNode // col
+            .parentNode // row
+            .parentNode;
+ 
+          available_updates.forEach(entry => {
+            const row = document.createElement('div');
+            const label = document.createElement('div');
+            const labelText = document.createElement('p');
+            const value = document.createElement('div');
+            const valueText = document.createElement('p');
+            const action = document.createElement('div');
+            const availableVersion = document.createElement('span');
+
+            row.className = "row update-pkg";
+            label.className = "col";
+            value.className = "col";
+            action.className = "col";
+            labelText.className = "txt-bold txt-grey txt-sm";
+            valueText.className = "txt-md";
+            availableVersion.className = "txt-grey txt-sm"
+            labelText.innerText = "PrusaLink";
+
+            if (entry.new_version) {
+              availableVersion.innerText = entry.new_version; 
+              const button = document.createElement('button');
+              const buttonLabel = document.createElement('p');
+              buttonLabel.innerText = translate("btn.upgrade");
+              button.className = 'action';
+              button.appendChild(buttonLabel);
+              action.appendChild(button);
+              button.onclick = () => {
+                setInProgress(true);
+                getJson("/api/v1/update/prusalink", {method: "POST"})
+                  .then(() => {
+                    success(
+                      translate("upgrade.success.title"),
+                      translate("upgrade.success.message"),
+                    );
+                    setTimeout(() => window.location.href = "/", 5000);
+                  })
+                  .catch(e => handleError(e))
+                  .finally(() => setInProgress(false));
+              }
+            } else {
+              availableVersion.innerText = "The package is up to date";
+            }
+
+            valueText.appendChild(availableVersion);
+            label.appendChild(labelText);
+            value.appendChild(valueText);
+            row.appendChild(label);
+            row.appendChild(value);
+            row.appendChild(action);
+            tableNode.appendChild(row);
+          });
+        })
+        .catch(e => handleError(e))
+        .finally(() => setInProgress(false));
+    }
+  }
 }
 
 function initConnectionSettings(context) {
@@ -289,7 +376,6 @@ function updatePrinterStatus(data) {
   updateConnectionStatus(statusElm, msgElm, ok, message, customMessage);
 }
 
-// TODO: Cleanup the hardcoded classes after completing the layout for settings page
 function updateSystemVersionProperties(data) {
   const table = document.querySelector("#sys-version .table");
   if (table) {

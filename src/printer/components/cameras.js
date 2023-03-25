@@ -80,7 +80,7 @@ const update = (context, updateUI = updateCamerasUI) => {
         (cam1) => !list.find((cam2) => cam1.id === cam2.id)
       );
 
-      updateUI(list, removed);
+      updateUI && updateUI(list, removed);
 
       cameras = list;
     })
@@ -100,14 +100,20 @@ const updateSnapshot = (cameraId) => {
   const camera = cameras.find((c) => c.id === cameraId);
   if (!camera) return;
 
+  const now = new Date();
   if (camera.lastSnapshotAt && camera.nextSnapshotAt) {
-    const now = new Date();
     if (now < camera.nextSnapshotAt) {
       return;
     }
   }
 
-  getImage(`/api/v1/cameras/${cameraId}/snap`).then(({ url, headers }) => {
+  getImage(`/api/v1/cameras/${cameraId}/snap`, 0, {
+    headers: camera.lastSnapshotAt
+      ? {
+          "If-Modified-Since": camera.lastSnapshotAt.toUTCString(),
+        }
+      : {},
+  }).then(({ url, headers }) => {
     const camera = cameras.find((c) => c.id === cameraId);
     const cameraNodeId = getCameraNodeId(cameraId);
     const noSnapshotNode = document.querySelector(
@@ -124,13 +130,28 @@ const updateSnapshot = (cameraId) => {
       snapshotNode.src = url;
     }
     if (camera) {
-      const expires = headers["epires"];
-      const date = headers["date"];
-      const autoExpires = () => {
+      const cacheControl = headers.get("cache-control");
+      const maxAgeMatch = `${cacheControl}`.match(/max-age=(\d+)/);
+
+      let maxAge;
+      if (maxAgeMatch) {
+        maxAge = parseInt(maxAgeMatch[1], 10);
+      }
+      if (!maxAge) {
+        maxAge = 11;
+      }
+
+      const expires = headers.get("expires");
+      const date = headers.get("last-modified");
+      const autoExpires = (maxAgeSeconds) => {
         const now = new Date();
-        return new Date(now.getTime() + 10000);
+        return new Date(now.getTime() + maxAgeSeconds * 1000);
       };
-      camera.nextSnapshotAt = expires ? new Date(expires) : autoExpires();
+      camera.nextSnapshotAt = expires ? new Date(expires) : autoExpires(maxAge);
+      // NOTE: workaround for BE issue when `expires` is in the past
+      if (camera.nextSnapshotAt < now) {
+        camera.nextSnapshotAt = autoExpires(maxAge);
+      }
       camera.lastSnapshotAt = date ? new Date(date) : new Date();
       camera.lastSnapshotUrl = url;
       if (!currentCameraId || camera.id === currentCameraId) {
@@ -141,6 +162,9 @@ const updateSnapshot = (cameraId) => {
 };
 
 const updateCurrentCamera = (cameraId) => {
+  if (!cameraId) {
+    cameraId = currentCameraId;
+  }
   const camera = cameraId ? cameras.find((c) => c.id === cameraId) : null;
   const snapshotPicture = document.getElementById("camera-snapshot-picture");
   const snapshotTime = document.getElementById("camera-snapshot-time");
@@ -277,7 +301,11 @@ const removeCamera = (cameraId) => {
 };
 
 const createCameraNode = (camera) => {
-  const template = document.getElementById("camera-list-item").content;
+  const template = document.getElementById("camera-list-item")?.content;
+  if (!template) {
+    return null;
+  }
+
   const node = document.importNode(template, true);
   const listItemNode = node.querySelector("li");
   const cameraId = camera.id;
@@ -289,11 +317,6 @@ const createCameraNode = (camera) => {
       if (camera) {
         if (camera.connected) {
           updateCurrentCamera(camera.id);
-        } else if (camera.detected) {
-          modal((close) => createConfirmCameraConnect(close, cameraId), {
-            timeout: 0,
-            closeOutside: true,
-          });
         }
       }
       e.preventDefault();
@@ -337,32 +360,11 @@ const updateCamerasUI = (list, removed) => {
         updateCameraNode(cameraNode, camera);
       } else {
         const node = createCameraNode(camera);
-        listNode.appendChild(node);
+        if (node) {
+          listNode.appendChild(node);
+        }
       }
     });
-};
-
-const createConfirmCameraConnect = (close, cameraId) => {
-  const template = document.getElementById("modal-question");
-  const node = document.importNode(template.content, true);
-  const yesButton = node.getElementById("yes");
-  const noButton = node.getElementById("no");
-
-  const label = node.getElementById("modal-question-label");
-  label.innerText = translate("camera.try-connect");
-
-  yesButton.addEventListener("click", (event) => {
-    event.preventDefault();
-    tryConnectCamera(cameraId);
-    setDisabled(yesButton, true);
-    setDisabled(noButton, true);
-    close();
-  });
-
-  noButton.addEventListener("click", () => {
-    close();
-  });
-  return node;
 };
 
 const createCameraSettingsModal = (cameraId, resolve) => {

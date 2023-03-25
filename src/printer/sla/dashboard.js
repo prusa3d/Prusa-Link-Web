@@ -7,6 +7,8 @@ import upload from "../components/upload";
 import { translate } from "../../locale_provider";
 import * as job from "../components/job";
 import { LinkState } from "../../state";
+import sla from ".";
+import { getStatusForTitle } from "../common";
 
 const load = (context) => {
   translate("home.link", { query: "#title-status-label" });

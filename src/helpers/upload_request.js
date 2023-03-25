@@ -33,7 +33,11 @@
     request.addEventListener("error", errorHandler, false);
     request.addEventListener("abort", errorHandler, false);
 
-    request.open("POST", url);
+    request.open("PUT", url);
+    if (opt.print) {
+      request.setRequestHeader("Print-After-Upload", "?1");
+    }
+    request.setRequestHeader("Content-Type", "text/x.gcode");
     for (const [key, value] of Object.entries(getHeaders())) {
       request.setRequestHeader(key, value);
     }

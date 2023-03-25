@@ -24,6 +24,8 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Version"
+        401:
+          $ref: "#/components/responses/Unauthorized"
 
   /api/v1/info:
     get:
@@ -38,7 +40,78 @@ paths:
         401:
           $ref: "#/components/responses/Unauthorized"
 
+  /api/v1/status:
+    get:
+      summary: printer, job and transfer telemetry info
+      description: All values except printer are optional
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  job:
+                    $ref: "#/components/schemas/StatusJob"
+                  printer:
+                      $ref: "#/components/schemas/StatusPrinter"
+                  transfer:
+                      $ref: "#/components/schemas/StatusTransfer"
+                  storage:
+                      $ref: "#/components/schemas/StatusStorage"
+                  camera:
+                      $ref: "#/components/schemas/StatusCamera"
+                required:
+                  - printer
+
+  /api/v1/job:
+    get:
+      summary: job info
+      description: Returns info about current job
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Job"
+        204:
+          description: No Content
+        401:
+          $ref: "#/components/responses/Unauthorized"
+
+  /api/v1/job/{id}:
+    parameters:
+      - in: path
+        name: id
+        description: job id
+        required: true
+        schema:
+          type: integer
+          example: 42
+    delete:
+      summary: stop job
+      description: Stop job with given id
+      responses:
+        204:
+          description: No Content
+                       No Error
+        401:
+          $ref: "#/components/responses/Unauthorized"
+        404:
+          $ref: "#/components/responses/NotFound"
+        409:
+          $ref: "#/components/responses/Conflict"
+
   /api/v1/storage:
+    parameters:
+      - in: header
+        name: Accept-Language
+        description: Defines a language of the response
+        schema:
+          type: string
+          example: "cs"
     get:
       summary: storage info
       description: Returns info about each available file storage (e.g. SD Card or local storage)
@@ -56,6 +129,45 @@ paths:
                       $ref: "#/components/schemas/Storage"
         401:
           $ref: "#/components/responses/Unauthorized"
+
+  /api/v1/transfer:
+    get:
+      summary: transfer info
+      description: Returns info about current transfer
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Transfer"
+        204:
+          description: No Content
+        401:
+          $ref: "#/components/responses/Unauthorized"
+
+  /api/v1/transfer/{id}:
+    parameters:
+      - in: path
+        name: id
+        description: transfer id
+        required: true
+        schema:
+          type: integer
+          example: 42
+    delete:
+      summary: stop transfer
+      description: Stop transfer with given id
+      responses:
+        204:
+          description: No Content
+                       No Error
+        401:
+          $ref: "#/components/responses/Unauthorized"
+        404:
+          $ref: "#/components/responses/NotFound"
+        409:
+          $ref: "#/components/responses/Conflict"
 
   /api/v1/files/{storage}/{path}:
     parameters:
@@ -86,14 +198,20 @@ paths:
           type: string
           example: "/examples/Spice_Harvester_0.3mm_PLA_MK3S_12m.gcode"
     get:
-      summary: file metadata
+      summary: File or folder metadata
       responses:
         200:
           description: OK
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/FileInfo"
+                oneOf:
+                  - $ref: "#/components/schemas/FileInfo"
+                  - $ref: "#/components/schemas/PrintFileInfo"
+                  - $ref: "#/components/schemas/FirmwareFileInfo"
+                  - $ref: "#/components/schemas/FolderInfo"
+        401:
+          $ref: "#/components/responses/Unauthorized"
     put:
       summary: upload file or create folder
       parameters:
@@ -113,8 +231,10 @@ paths:
           name: Print-After-Upload
           description: Whether to start printing the file after upload
           schema:
-            type: boolean
-            default: False
+            type: string
+            description: ?0=False, ?1=True, according RFC8941/3.3.6
+            enum: [ "?0", "?1" ]
+            default: "?0"
         - in: header
           name: Overwrite
           description: Whether to overwrite already existing files
@@ -126,6 +246,21 @@ paths:
       responses:
         201:
           description: Created
+        401:
+          $ref: "#/components/responses/Unauthorized"
+        404:
+          $ref: "#/components/responses/NotFound"
+        409:
+          $ref: "#/components/responses/Conflict"
+    post:
+      summary: Start print of file if there's no print job running
+      description: Body is ignored
+      requestBody:
+        required: false
+        content: {}
+      responses:
+        204:
+          description: No Content
         401:
           $ref: "#/components/responses/Unauthorized"
         404:
@@ -157,7 +292,16 @@ paths:
         409:
           $ref: "#/components/responses/Conflict"
     delete:
-      summary: Delete a file or folder.
+      summary: Delete a file or folder
+      parameters:
+        - in: header
+          name: Force
+          description: Whether to force delete non-empty folder
+          schema:
+            type: string
+            description: ?0=False, ?1=True, according RFC8941/3.3.6
+            enum: [ "?0", "?1" ]
+            default: "?0"
       responses:
         204:
           description: No Content
@@ -210,6 +354,14 @@ paths:
           $ref: "#/components/responses/ServiceUnavailable"
 
   /api/v1/cameras/{id}:
+    parameters:
+    - in: path
+      name: id
+      description: ID of the camera
+      required: true
+      schema:
+        type: string
+        example: "Z42D4U2NqEX"
     get:
       summary: Get current settings and properties of specific camera
       responses:
@@ -247,24 +399,6 @@ paths:
           $ref: "#/components/responses/NotFound"
         409:
           $ref: "#/components/responses/Conflict"
-        503:
-          $ref: "#/components/responses/ServiceUnavailable"
-    patch:
-      summary: Edit a camera settings and / or configuration
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/CameraConfigSet"
-      responses:
-        200:
-          description: OK
-        401:
-          $ref: "#/components/responses/Unauthorized"
-        403:
-          $ref: "#/components/responses/Forbidden"
-        404:
-          $ref: "#/components/responses/NotFound"
         503:
           $ref: "#/components/responses/ServiceUnavailable"
     delete:
@@ -309,6 +443,14 @@ paths:
           $ref: "#/components/responses/ServiceUnavailable"
 
   /api/v1/cameras/{id}/snap:
+    parameters:
+      - in: path
+        name: id
+        description: ID of the camera
+        required: true
+        schema:
+          type: string
+          example: "Z42D4U2NqEX"
     get:
       summary: Return a captured image from the camera with a given id
       responses:
@@ -334,7 +476,8 @@ paths:
           $ref: "#/components/responses/ServiceUnavailable"
     post:
       summary: Make a snapshot with the camera
-      description: Can be manually done only during camera initialization
+      description: Can be manually done only during camera initialization or in
+                    manual mode
       requestBody:
         content:
           application/json: {}
@@ -360,6 +503,14 @@ paths:
           $ref: "#/components/responses/ServiceUnavailable"
 
   /api/v1/cameras/{id}/config:
+    parameters:
+      - in: path
+        name: id
+        description: ID of the camera
+        required: true
+        schema:
+          type: string
+          example: "Z42D4U2NqEX"
     patch:
       summary: Set new settings to a working camera
       requestBody:
@@ -393,8 +544,16 @@ paths:
           $ref: "#/components/responses/ServiceUnavailable"
 
   /api/v1/cameras/{id}/connection:
+    parameters:
+      - in: path
+        name: id
+        description: ID of the camera
+        required: true
+        schema:
+          type: string
+          example: "Z42D4U2NqEX"
     post:
-      summary: Registers a camera to Connect
+      summary: Register a camera to Connect
       responses:
         200:
           description: OK
@@ -411,7 +570,7 @@ paths:
         503:
           $ref: "#/components/responses/ServiceUnavailable"
     delete:
-      summary: Un-registers a camera from Connect
+      summary: Un-register a camera from Connect
       responses:
         200:
           description: OK
@@ -425,6 +584,55 @@ paths:
           $ref: "#/components/responses/Conflict"
         503:
           $ref: "#/components/responses/ServiceUnavailable"
+
+  /api/v1/update/{env}:
+    parameters:
+      - in: path
+        name: env
+        description: The target environment (prusalink or system) for update
+        required: true
+        schema:
+          type: string
+          enum: ["prusalink"]
+    get:
+      summary: Retrieve information about available update of given environment
+      responses:
+        200:
+          description: OK
+          headers:
+            Update-Available:
+              schema:
+                type: boolean
+                description: Whether there's a package update available
+                example: true
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: "#/components/schemas/PrusaLinkPackage"
+        204:
+          description: No Content
+          headers:
+            Update-Available:
+              schema:
+                type: boolean
+                description: Whether there's a package update available
+                example: false
+        401:
+          $ref: "#/components/responses/Unauthorized"
+        409:
+          $ref: "#/components/responses/BadRequest"
+    post:
+      summary: Update given environment
+      responses:
+        200:
+          description: OK
+        204:
+          description: No Content
+        401:
+          $ref: "#/components/responses/Unauthorized"
+        409:
+          $ref: "#/components/responses/BadRequest"
 
 components:
   schemas:
@@ -482,6 +690,7 @@ components:
       properties:
         name:
           type: string
+          description: Name of the storage, based on selected language
           example: "PrusaLink gcodes"
         type:
           type: string
@@ -603,7 +812,7 @@ components:
         trigger_scheme:
           type: string
           description: When the snapshot is taken
-          enum: [ EVERY_10_MIN, ON_LAYER_CHANGE ]
+          enum: [ TEN_SEC, THIRTY_SEC, SIXTY_SEC, EACH_LAYER, FIFTH_LAYER, MANUAL ]
         resolution:
           type: object
           properties:
@@ -624,137 +833,224 @@ components:
           type: boolean
           example: true
 
-    FileInfo:
+    GenericFileInfo:
+      description: Basic file info object, common for all files
       type: object
+      required:
+        - name
+        - ro
+        - type
+        - m_timestamp
       properties:
-        type:
+        name:
           type: string
-          description: File could be Print file, firmware or other (e.g. configuration file)
-          enum: ["PRINT_FILE", "FIRMWARE", "FILE", "FOLDER"]
-        refs:
-          type: object
-          properties:
-            download:
-              type: string
-              example: "/api/files/local/examples/Spice_Harvester_0.3mm_PLA_MK3S_42m.gcode/raw"
-            icon:
-              type: string
-              example: "/api/thumbnails/local/examples/Spice_Harvester_0.3mm_PLA_MK3S_42m.gcode.small.png"
-            thumbnail:
-              type: string
-              example: "/api/thumbnails/local/examples/Spice_Harvester_0.3mm_PLA_MK3S_42m.gcode.orig.png"
+          description: Short Filename
+          example: "SPICE~1.gco"
+        ro:
+          type: boolean
+          example: False
         size:
           type: integer
+          description: Available for files only, not for folders
           example: 424242
-        display_path:
+        type:
           type: string
-          example: "/PrusaLink gcodes/examples"
+          description: File could be print file, firmware file, other (e.g. configuration) file, or folder
+          enum: [ PRINT_FILE, FIRMWARE, FILE, FOLDER ]
+        m_timestamp:
+          description: Timestamp in seconds
+          type: integer
+          example: 1648042843
         display_name:
           type: string
           description: Long Filename
           example: "Spice_Harvester_0.3mm_PLA_MK3S_12m.gcode"
-        creation_timestamp:
-          type: integer
-          description: Timestamp in seconds
-          example: 1648038843
-        ro:
-          type: boolean
-          example: False
-        metadata:
-          type: object
-          description: Print file metadata parsed from G-code, all data are optional
+
+    FileInfo:
+      description: Other, not specified files info
+      allOf:
+        - $ref: '#/components/schemas/GenericFileInfo'
+        - type: object
           properties:
-            bed_temperature:
-              type: string
-              description: Degrees Celsius
-              example: "60"
-            nozzle_temperature:
-              type: string
-              description: Degrees Celsius
-              example: "215"
-            brim_width:
-              type: string
-              description: Milimeters
-              example: "0"
-            estimated printing time (normal mode):
-              type: string
-              example: "42m 42s"
-            faded_layers:
-              type: string
-              example: "42"
-            filament cost:
-              type: string
-              example: "0.57"
-            filament used [cm3]:
-              type: string
-              example: "12.44"
-            filament used [g]:
-              type: string
-              example: "15.79"
-            filament used [mm]:
-              type: string
-              example: "5170.06"
-            filament_type:
-              type: string
-              example: "PLA"
-            fill_density:
-              type: string
-              description: Percent
-              example: "20%"
-            initial_exposure_time:
-              type: string
-              description: Seconds
-              example: "5"
-            layer_height:
-              type: string
-              description: Milimeters
-              example: "0.3"
-            material_name:
-              type: string
-              example: "PLA Sandstorm Orange"
-            exposure_time:
-              type: string
-              description: Seconds
-              example: "2"
-            max_exposure_time:
-              type: string
-              description: Seconds
-              example: "3"
-            max_initial_exposure_time:
-              type: string
-              description: Seconds
-              example: "3"
-            min_exposure_time:
-              type: string
-              description: Seconds
-              example: "1"
-            min_initial_exposure_time:
-              type: string
-              description: Seconds
-              example: "1"
-            nozzle_diameter:
-              type: string
-              description: Milimeters
-              example: "0.4"
-            print_time:
-              type: integer
-              description: Seconds
-              example: "2562"
-            printer_model:
-              type: string
-              enum:  ["MK3", "MK3S", "MINI"]
-            support_material:
-              type: string
-              example: "PLA"
-            ironing:
-              type: string
-              example: "0"
-            required_resin_ml:
-              type: string
-              example: "123.4"
-            profile:
-              type: string
-              example: "ultra_fast"
+            refs:
+              type: object
+              properties:
+                download:
+                  type: string
+                  example: "/api/files/local/file.txt/raw"
+
+    PrintFileInfoBasic:
+      description: Simplified print file info within the folder's children
+      allOf:
+        - $ref: '#/components/schemas/GenericFileInfo'
+        - type: object
+          properties:
+            refs:
+              $ref: "#/components/schemas/PrintFileRefs"
+
+    PrintFileRefs:
+      description: Reference links for file thumbnail, icon and download
+      type: object
+      properties:
+        download:
+          type: string
+          example: "/api/files/local/examples/Spice_Harvester_0.3mm_PLA_MK3S_42m.gcode/raw"
+        icon:
+          type: string
+          example: "/api/thumbnails/local/examples/Spice_Harvester_0.3mm_PLA_MK3S_42m.gcode.small.png"
+        thumbnail:
+          type: string
+          example: "/api/thumbnails/local/examples/Spice_Harvester_0.3mm_PLA_MK3S_42m.gcode.orig.png"
+
+    PrintFileMetadata:
+      type: object
+      description: Print file metadata parsed from G-code, all data are optional
+      properties:
+        bed_temperature:
+          type: string
+          description: Degrees Celsius
+          example: "60"
+        nozzle_temperature:
+          type: string
+          description: Degrees Celsius
+          example: "215"
+        brim_width:
+          type: string
+          description: Milimeters
+          example: "0"
+        estimated printing time (normal mode):
+          type: string
+          example: "42m 42s"
+        faded_layers:
+          type: string
+          example: "42"
+        filament cost:
+          type: string
+          example: "0.57"
+        filament used [cm3]:
+          type: string
+          example: "12.44"
+        filament used [g]:
+          type: string
+          example: "15.79"
+        filament used [mm]:
+          type: string
+          example: "5170.06"
+        filament_type:
+          type: string
+          example: "PLA"
+        fill_density:
+          type: string
+          description: Percent
+          example: "20%"
+        initial_exposure_time:
+          type: string
+          description: Seconds
+          example: "5"
+        layer_height:
+          type: string
+          description: Milimeters
+          example: "0.3"
+        material_name:
+          type: string
+          example: "PLA Sandstorm Orange"
+        exposure_time:
+          type: string
+          description: Seconds
+          example: "2"
+        max_exposure_time:
+          type: string
+          description: Seconds
+          example: "3"
+        max_initial_exposure_time:
+          type: string
+          description: Seconds
+          example: "3"
+        min_exposure_time:
+          type: string
+          description: Seconds
+          example: "1"
+        min_initial_exposure_time:
+          type: string
+          description: Seconds
+          example: "1"
+        nozzle_diameter:
+          type: string
+          description: Milimeters
+          example: "0.4"
+        print_time:
+          type: integer
+          description: Seconds
+          example: "2562"
+        printer_model:
+          type: string
+          enum: [ "MK3", "MK3S", "MINI" ]
+        support_material:
+          type: string
+          example: "PLA"
+        ironing:
+          type: string
+          example: "0"
+        required_resin_ml:
+          type: string
+          example: "123.4"
+        profile:
+          type: string
+          example: "ultra_fast"
+
+    PrintFileInfo:
+      description: Full print file info from the file's detail
+      allOf:
+        - $ref: '#/components/schemas/PrintFileInfoBasic'
+        - type: object
+          properties:
+            meta:
+              $ref: '#/components/schemas/PrintFileMetadata'
+
+    FirmwareFileInfoBasic:
+      description: Simplified firmware file info within the folder's children
+      allOf:
+        - $ref: '#/components/schemas/GenericFileInfo'
+        - type: object
+          properties:
+            refs:
+              type: object
+              properties:
+                download:
+                  type: string
+                  example: "/api/files/local/firmware.hex/raw"
+
+    FirmwareFileInfo:
+      description: Full firmware file info from the file's detail
+      allOf:
+        - $ref: '#/components/schemas/FirmwareFileInfoBasic'
+        - type: object
+          properties:
+            meta:
+              type: object
+              properties:
+                version:
+                  type: string
+                  description: Firmware version in text format
+                printer_type:
+                  type: integer
+                printer_version:
+                  type: integer
+
+    FolderInfo:
+      description: Info about the folder and its content, except nested children
+      allOf:
+        - $ref: '#/components/schemas/GenericFileInfo'
+        - type: object
+          properties:
+            children:
+              type: array
+              items:
+                oneOf:
+                  - $ref: "#/components/schemas/FileInfo"
+                  - $ref: "#/components/schemas/PrintFileInfoBasic"
+                  - $ref: "#/components/schemas/FirmwareFileInfoBasic"
+                  - $ref: "#/components/schemas/FolderInfo"
 
     Info:
       type: object
@@ -792,6 +1088,253 @@ components:
         port:
           type: string
           example: "/dev/tty"
+
+    StatusJob:
+      type: object
+      description: Telemetry info about current job, all values are optional
+      properties:
+        id:
+          type: integer
+          example: 420
+        progress:
+          type: number
+          description: Percents
+          example: 42.0
+        time_remaining:
+          type: integer
+          description: Seconds
+          example: 520
+        time_printing:
+          type: integer
+          description: Seconds
+          example: 526
+
+    StatusPrinter:
+      type: object
+      description: Telemetry info about printer, all values except state are optional
+      properties:
+        state:
+          type: string
+          enum: [ IDLE, BUSY, PRINTING, PAUSED, FINISHED, STOPPED, ERROR, ATTTENTION, READY ]
+        temp_nozzle:
+          type: number
+          example: 214.9
+        target_nozzle:
+          type: number
+          example: 215.0
+        temp_bed:
+          type: number
+          example: 59.5
+        target_bed:
+          type: number
+          example: 60.0
+        axis_x:
+          type: number
+          description: Available only when printer is not moving
+          example: 23.2
+        axis_y:
+          type: number
+          description: Available only when printer is not moving
+          example: 24.3
+        axis_z:
+          type: number
+          example: 0.5
+        flow:
+          type: integer
+          example: 95
+        speed:
+          type: integer
+          example: 100
+        fan_hotend:
+          type: integer
+          example: 420
+        fan_print:
+          type: integer
+          example: 420
+        status_printer:
+          type: object
+          properties:
+            ok:
+              type: boolean
+              example: true
+            message:
+              type: string
+              example: "OK"
+        status_connect:
+          type: object
+          properties:
+            ok:
+              type: boolean
+              example: true
+            message:
+              type: string
+              example: "OK"
+      required:
+        - state
+
+    StatusTransfer:
+      type: object
+      description: Telemetry info about current transfer status, all values except id and time_transferring are optional
+      properties:
+        id:
+          type: integer
+          example: 72855542
+        time_transferring:
+          type: integer
+          example: 30
+        progress:
+          type: number
+          description: Percents
+          example: 65.82
+        data_transferred:
+          type: integer
+          example: 123084800
+      required:
+        - id
+        - time_transferring
+
+    StatusStorage:
+      type: object
+      description: Telemetry info about current storage status
+      properties:
+        name:
+          type: string
+          example: "LOCAL"
+        path:
+          type: string
+          example: "/local"
+        read_only:
+          type: boolean
+          example: false
+        free_space:
+          type: integer
+          example: 4202335
+      required:
+        - name
+        - path
+        - read_only
+
+    StatusCamera:
+      type: object
+      description: Telemetry info about default working camera, if available
+      properties:
+        id:
+          type: string
+          example: "Ba1kmCbifTa8X"
+
+    PrusaLinkPackage:
+      type: object
+      description: PrusaLink package version available to update
+      properties:
+        new_version:
+          type: string
+          description: Package version available for update
+          example: "4.2-RC1"
+
+    Transfer:
+      type: object
+      properties:
+        type:
+          type: string
+          enum: [ NO_TRANSFER, FROM_WEB, FROM_CONNECT, FROM_PRINTER, FROM_SLICER, FROM_CLIENT, TO_CONNECT, TO_CLIENT ]
+          example: FROM_WEB
+        display_name:
+          type: string
+          description: Long Filename
+          example: "Spice_Harvester_0.3mm_PLA_MK3S_12m.gcode"
+        path:
+          type: string
+          example: "/local"
+        url:
+          type: string
+          example: "https://files.printables.com/media/prints/42/gcodes/42_b42-242-442-8142c-424242/spice_harvester_0.3mm_pla_mk3s_12m.gcode"
+        size:
+          type: string
+          description: Bytes
+          example: 239314
+        progress:
+          type: number
+          description: Percents
+          example: 42.25
+        transferred:
+          type: integer
+          description: Transfered data in bytes
+          example: 3276800
+        time_remaining:
+          type: integer
+          description: Seconds
+          example: 61
+        time_transferring:
+          type: integer
+          description: Seconds
+          example: 42
+        to_print:
+          type: boolean
+          description: Whether or not print after finishing transfer (upload)
+          example: False
+      required:
+        - type
+        - display_name
+        - path
+        - progress
+        - transferred
+        - time_transferring
+        - to_print
+
+    Job:
+      type: object
+      properties:
+        meta:
+          $ref: '#/components/schemas/PrintFileMetadata'
+        refs:
+          $ref: '#/components/schemas/PrintFileRefs'
+        id:
+          type: integer
+          example: 420
+        name:
+          type: string
+          description: Short Filename
+          example: "SPICE~1.gco"
+        display_name:
+          type: string
+          description: Long Filename
+          example: "Spice_Harvester_0.3mm_PLA_MK3S_12m.gcode"
+        path:
+          type: string
+          example: "/local"
+        display_path:
+          type: string
+          example: "/PrusaLink gcodes"
+        size:
+          type: integer
+          description: Bytes
+          example: 2393142
+        state:
+          type: string
+          enum: [ PRINTING, PAUSED, FINISHED, STOPPED, ERROR ]
+        progress:
+          type: number
+          description: Percents
+          example: 42.0
+        time_remaining:
+          type: integer
+          description: Seconds
+          example: 520
+        time_printing:
+          type: integer
+          description: Seconds
+          example: 526
+        inaccurate_estimates:
+          type: boolean
+          description: Whether the time estimates are accurate or inaccurate
+          example: false
+      required:
+        - id
+        - name
+        - path
+        - state
+        - progress
+        - time_printing
 
     Error:
       type: object

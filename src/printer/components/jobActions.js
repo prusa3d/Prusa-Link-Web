@@ -13,26 +13,14 @@ import { setDisabled } from "../../helpers/element";
  * Start printing.
  */
 
-const confirmJob = process.env.WITH_COMMAND_SELECT ? (fileUrl) =>
-  getJson(fileUrl, {
+const confirmJob = (fileUrl) => {
+  return getJson(fileUrl, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ command: "select" }),
-  }).then(() => getJson("/api/job", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ command: "start" }),
-  })) : (fileUrl) => getJson(fileUrl, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ command: "start" }),
   });
+};
 
 /**
  * Pause printing.

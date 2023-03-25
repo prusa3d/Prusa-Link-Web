@@ -6,11 +6,12 @@ import * as graph from "../components/temperature_graph";
 import dashboard from "./dashboard.js";
 import files from "../components/files";
 import question from "../components/question.js";
-import { getPrinterLabel } from "../common.js";
+import { buildTitle, getPrinterLabel, getStatusForTitle } from "../common.js";
 import { updateProperties } from "../components/updateProperties.js";
 import { translate } from "../../locale_provider";
 import { LinkState, translateState } from "../../state";
 import updateConnectionStatus from "../components/updateConnectionStatus";
+import { currentRoute } from "../../router";
 
 const context = {
   /** Result of `api/version`. */
@@ -42,10 +43,6 @@ const updatePrinterTitle = (obj) => {
 
 const getPrinterName = () => getPrinterLabel(context);
 
-const buildTitle = (title) => getPrinterName() + " - " +
-  (title.trim() || process.env.APP_NAME) +
-  " - " + process.env.APP_NAME;
-
 const updatePrinterStatus = (state) => {
   const linkState = LinkState.fromApi(state);
   const elem = document.getElementById("printer-status");
@@ -54,6 +51,12 @@ const updatePrinterStatus = (state) => {
   }
 };
 
+const buildRouteTitle = (titleItems) => buildTitle([
+  ...titleItems,
+  getPrinterName(),
+  process.env["APP_NAME"]
+]);
+
 let currentModule = dashboard;
 const fdm = {
   routes: [
@@ -61,7 +64,7 @@ const fdm = {
       path: "dashboard",
       html: require("../../views/dashboard.html"),
       module: updatePrinterTitle(dashboard),
-      getTitle: () => buildTitle(translate("home.link")),
+      getTitle: () => translate("home.link"),
     },
     {
       path: "question",
@@ -73,7 +76,7 @@ const fdm = {
         path: "files",
         html: require("../../views/files.html"),
         module: updatePrinterTitle(files),
-        getTitle: () => buildTitle(translate("proj.storage")),
+        getTitle: () => translate("proj.storage"),
       }
       : null,
     process.env.WITH_SETTINGS ?
@@ -81,7 +84,7 @@ const fdm = {
         path: "settings",
         html: require("../../views/settings.html"),
         module: updatePrinterTitle(require("../components/settings.js").default),
-        getTitle: () => buildTitle(translate("settings.title")),
+        getTitle: () => translate("settings.title"),
       }
       : null,
     process.env.WITH_CONTROLS ?
@@ -89,23 +92,29 @@ const fdm = {
         path: "control",
         html: require("../../views/control.html"),
         module: updatePrinterTitle(require("../components/control.js").default),
-        getTitle: () => buildTitle(translate("control.link")),
+        getTitle: () => translate("control.link"),
       } : null,
     process.env.WITH_CAMERAS ?
       {
         path: "cameras",
         html: require("../../views/cameras.html"),
         module: updatePrinterTitle(require("../components/cameras.js").default),
-        getTitle: () => buildTitle(translate("cameras.link")),
+        getTitle: () => translate("cameras.link"),
       } : null,
   ].filter(route => route != null),
   init: (apiResult) => {
     updateContext(apiResult);
     context.fileExtensions = process.env.FILE_EXTENSIONS;
-    document.title = context.version.hostname + " - " + process.env.APP_NAME;
     initTemperatureGraph();
   },
   update: (apiResult) => {
+    const page = currentRoute();
+    const stateText = getStatusForTitle(context);
+    document.title = buildRouteTitle([
+      stateText,
+      fdm.routes.find(route => route.path === page).getTitle()
+    ]);
+
     updateContext(apiResult);
     updateProperties("telemetry", {...context.printer, version: context.version});
     updatePrinterStatus(context.printer.state);

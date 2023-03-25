@@ -21,6 +21,7 @@ module.exports = (env, args) => {
         WITH_DOWNLOAD_BUTTON: true,
         WITH_API_KEY_AUTH: false,
         WITH_NAME_SORTING_ONLY: true,
+        WITH_TELEMETRY_NOZZLE_DIAMETER: true,
         ...env,
     };
     return webpackConfig(config, args);

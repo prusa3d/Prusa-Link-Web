@@ -8,73 +8,42 @@ import cameras from "../components/cameras";
 import { translate } from "../../locale_provider";
 import * as job from "../components/job";
 import { LinkState } from "../../state";
+import { getJson } from "../../auth";
+import fdm from ".";
+import { getStatusForTitle } from "../common";
 
 const load = (context) => {
   translate("home.link", { query: "#title-status-label" });
-  upload.init("local", "", context.fileExtensions);
   graph.render();
   update(context);
   if (process.env['WITH_CAMERAS']) {
-    cameras.update(context, updateSnapshots);
+    cameras.update(context, null);
+    cameras.updateCurrentCamera();
   }
+  getJson("/api/v1/storage")
+    .then(result => {
+      const storage = result.data.storage_list.find(
+        storage => storage.available && !storage.read_only
+      );
+      if (storage) {
+        const origin = storage.path.replace("/", "");
+        upload.init(origin, "", context.fileExtensions);
+      }
+    });
 };
 
 const update = (context) => {
+  
+  if (!context.printer) {
+    return;
+  }
   const linkState = LinkState.fromApi(context.printer.state);
+
   job.update(context);
   upload.update(linkState);
   if (process.env['WITH_CAMERAS']) {
-    cameras.update(context, updateSnapshots);
+    cameras.update(context, null);
   }
 };
-
-const updateSnapshots = (list, removed) => {
-  const listNode = document.getElementById("cameras-snapshots");
-
-  removed.forEach(camera => {
-    const cameraNode = cameras.getCameraNode(camera.id);
-    if (cameraNode) {
-      listNode.removeChild(cameraNode);
-    }
-  });
-
-  list.filter(
-    camera => camera.connected && !!camera.lastSnapshotUrl
-  ).sort(
-    (cam1, cam2) => cam1.lastSnapshotAt?.getTime() || 0 - cam2.lastSnapshotAt?.getTime() || 0
-  ).forEach(camera => {
-    const cameraNode = cameras.getCameraNode(camera.id);
-    if (cameraNode) {
-      updateCameraNode(cameraNode, camera);
-    } else {
-      const node = createCameraNode(camera);
-      listNode.appendChild(node);
-    }
-  });
-};
-
-const createCameraNode = (camera) => {
-  const template = document.getElementById("cameras-snapshots__item").content;
-  const node = document.importNode(template, true);
-  const listItemNode = node.querySelector("li");
-  const nodeId = cameras.getCameraNodeId(camera.id);
-  listItemNode.id = nodeId;
-
-  const cameraId = camera.id;
-
-  listItemNode.addEventListener("click", (e) => {
-    cameras.updateCurrentCamera(cameraId);
-    e.preventDefault();
-  }, false);
-    
-  updateCameraNode(node, camera);
-
-  return node
-};
-
-const updateCameraNode = (node, camera) => {
-  const img = node.querySelector('img');
-  img.src = camera.lastSnapshotUrl;
-}
 
 export default { load, update };

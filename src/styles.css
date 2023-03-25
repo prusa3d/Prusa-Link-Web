@@ -5,6 +5,7 @@
 
 $orange: #FA6831;
 
+$font-family: Helvetica, sans-serif;
 $font-svg: 10.5pt; /* 14pt * 0.75 */
 $font-desktop-root: 14pt;
 $font-mobile-root: 32pt;
@@ -21,8 +22,10 @@ html {
   line-height: 1.15;
   font-size: $font-mobile-root;
   -webkit-text-size-adjust: 100%;
-  font-family: Helvetica, sans-serif;
+  font-family: $font-family;
   color: $text-white;
+  overflow: -moz-scrollbars-vertical; 
+  overflow-y: scroll;
 }
 
 @media only screen and (min-width: 992px) {
@@ -32,7 +35,7 @@ html {
 }
 
 select {
-  font-family: Helvetica, sans-serif;
+  font-family: $font-family;
   font-weight: bold;
   color: $text-white;
 }
@@ -78,7 +81,7 @@ select {
 }
 
 button > p {
-  font-family: Helvetica, sans-serif;
+  font-family: $font-family;
   font-weight: bold;
   font-size: $font-size-default;
 }
@@ -230,6 +233,13 @@ button::-moz-focus-inner {
   border-bottom: 1px solid #bababa;
   border-radius: 0;
 }
+
+.component p.title {
+  padding-bottom: .25rem;
+  line-height: 1.5;
+  margin-bottom: 15px;
+}
+
 .line-y {
   border-top: 1px solid #bababa;
 }
@@ -369,14 +379,11 @@ nav .burger-icon.burger-open {
 /* ===================================== TELEMETRY ======================================= */
 
 .telemetry {
-  display: flex;
-  -webkit-box-flex: 1;
-  flex-shrink: 1;
-  width: 100%;
-  flex-direction: row;
-  justify-content: flex-start;
+  display: block;
   padding: 0;
-  flex-wrap: wrap;
+  position: sticky;
+  position: -webkit-sticky;
+  top: 78px;
 }
 .tel-prop {
   display: flex;
@@ -587,6 +594,35 @@ nav .burger-icon.burger-open {
 }
 #upld-remote[data-state="uploading"] .state-choose {
   display: none;
+}
+
+#drop-zone {
+  position: fixed;
+  top: 0;
+  left: 0;
+  background-color: $text-black;
+  opacity: 0.8;
+  z-index: 9999;
+  width: 100%;
+  height: 100%;
+  padding: 10px;
+}
+
+#drop-zone input[type="file"] {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+}
+
+#drop-zone div {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  align-items: center;
+  justify-content: center;
 }
 
 #graph {
@@ -1193,7 +1229,7 @@ button:disabled {
   outline: none;
   position: relative;
   vertical-align: top;
-  width: 20px;
+  width: 40px;
 }
 
 .close-button:after {
@@ -1772,7 +1808,6 @@ input .autoresize {
   padding-right: 15px;
 }
 #settings .logs {
-  flex: 0 0 auto;
   display: block;
   background: white;
   color: black;
@@ -1781,6 +1816,7 @@ input .autoresize {
   line-height: 1.5;
   list-style: none;
   padding: 10px;
+  position: relative;
 }
 
 #settings .logs li {
@@ -1823,10 +1859,6 @@ input .autoresize {
   width: 300px;
   margin-right: 24px;
   margin-bottom: 24px;
-}
-
-.camera-snapshot {
-  padding-top: 16px;
 }
 
 .camera-snapshot-meta {
@@ -1998,23 +2030,11 @@ input .autoresize {
     display: none;
   }
   #telemetry-wrapper {
-    width: 20%;
-    min-width: 256px;
-  }
-  .telemetry {
-    flex-direction: column;
+    flex: 0 0 auto;
+    width: 256px;
   }
   .tel-prop {
     width: 100%;
-  }
-  .home-row {
-    flex-direction: row;
-  }
-  .home-row > div:not(:first-child) {
-    padding-left: 12px;
-  }
-  .home-row > div:first-child {
-    padding-right: 12px;
   }
   .content-wrapper,
   #title {
@@ -2124,11 +2144,11 @@ input .autoresize {
     font-size: $font-size-default;
   }
   .close-button {
-    height: 20px;
-    max-height: 20px;
-    max-width: 20px;
-    min-height: 20px;
-    min-width: 20px;
+    height: 40px;
+    max-height: 40px;
+    max-width: 40px;
+    min-height: 40px;
+    min-width: 40px;
   }
   #job .progress {
     font-size: $font-size-default;
@@ -2233,5 +2253,17 @@ input .autoresize {
   }
   .camera-snapshot-meta {
     flex-direction: row;
+  }
+}
+
+@media only screen and (min-width: 1200px) {
+  .home-row {
+    flex-direction: row;
+  }
+  .home-row > div:not(:first-child) {
+    padding-left: 12px;
+  }
+  .home-row > div:first-child {
+    padding-right: 12px;
   }
 }

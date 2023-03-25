@@ -9,7 +9,6 @@ if (process.env.PRINTER_TYPE == "sla") {
 if (process.env.PRINTER_CODE == "m1") {
   import("./m1-styles.css");
 }
-import "./layout";
 import { navigate, navigateShallow } from "./router.js";
 import printer from "./printer";
 import { getJson, initAuth } from "./auth.js";
@@ -36,18 +35,21 @@ const requests = {
   printer: {
     get: () => getJson("/api/printer"),
     init: true,
-    update: true
+    update: true,
   },
   profiles: {
     // NOTE: I leave it like this until we change the API
-    get: () => (process.env.PRINTER_TYPE === "sla") ? getJson("/api/printerprofiles") : new Promise(resolve => resolve({})),
+    get: () =>
+      process.env.PRINTER_TYPE === "sla"
+        ? getJson("/api/printerprofiles")
+        : new Promise((resolve) => resolve({})),
     init: true,
-    update: false
+    update: false,
   },
   job: {
     get: () => getJson("/api/job"),
     init: false,
-    update: true
+    update: true,
   },
   connection: {
     get: () => getJson("/api/connection"),
@@ -61,55 +63,56 @@ const requests = {
 async function getRequests(initialized) {
   const timestamp = new Date().getTime();
   const apiRequests = Object.fromEntries(
-    Object.entries(requests).map(([key, values]) => {
-      const shouldGet = () => {
-        if (!initialized)
-          return values.init;
+    Object.entries(requests)
+      .map(([key, values]) => {
+        const shouldGet = () => {
+          if (!initialized) return values.init;
 
-        if (values.update) {
-          if (!values.updateInterval)
-            return true;
-          if (!values.timestamp)
-            values.timestamp = timestamp + values.updateInterval;
-          if (timestamp >= values.timestamp) {
-            values.timestamp = timestamp + values.updateInterval;
-            return true;
+          if (values.update) {
+            if (!values.updateInterval) return true;
+            if (!values.timestamp)
+              values.timestamp = timestamp + values.updateInterval;
+            if (timestamp >= values.timestamp) {
+              values.timestamp = timestamp + values.updateInterval;
+              return true;
+            }
           }
-        }
-      }
-      return [key, shouldGet() ? values.get() : undefined];
-    }).filter(([, values]) => values !== undefined)
+        };
+        return [key, shouldGet() ? values.get() : undefined];
+      })
+      .filter(([, values]) => values !== undefined)
   );
 
   const promises = Object.values(apiRequests);
   const responses = await Promise.all(
-    promises.map(i => i
-      .then(payload => ({ ok: true, payload, }))
-      .catch(error => ({ ok: error.code ? false : null, error, }))
+    promises.map((i) =>
+      i
+        .then((payload) => ({ ok: true, payload }))
+        .catch((error) => ({ ok: error.code ? false : null, error }))
     )
   );
   const result = Object.fromEntries(
-    Object.entries(apiRequests).map(([key,], i) => [key, responses[i]])
+    Object.entries(apiRequests).map(([key], i) => [key, responses[i]])
   );
   return result;
 }
 
 window.onload = () => {
-  console.log(`${process.env.APP_NAME} v.${process.env.APP_VERSION} #${__COMMIT_HASH__}`);
+  console.log(
+    `${process.env.APP_NAME} v.${process.env.APP_VERSION} #${__COMMIT_HASH__}`
+  );
   initMenu();
   langSelect.init("lang-dropdown", "lang-dropdown");
   translateLabels(); // Translate menu and telemetry
 
   document.querySelectorAll("a[href]").forEach((link) => {
     link.addEventListener("click", (e) => {
-      if (navigate(link.href))
-        e.preventDefault();
+      if (navigate(link.href)) e.preventDefault();
     });
   });
 
   initAuth().then((version) => {
-    if (version)
-      appLoop(version);
+    if (version) appLoop(version);
   });
 };
 
@@ -121,9 +124,7 @@ async function appLoop(version) {
 
     try {
       const responses = await getRequests(initialized);
-      if (responses.printer)
-        connectionProblem = responses.printer.ok === null;
-
+      if (responses.printer) connectionProblem = responses.printer.ok === null;
 
       Object.values(responses).forEach(({ ok, error }) => {
         if (!ok) {
@@ -148,14 +149,15 @@ async function appLoop(version) {
     }
 
     printer.setConnected(!connectionProblem);
-    await new Promise(resolve => setTimeout(resolve, UPDATE_INTERVAL));
+    await new Promise((resolve) => setTimeout(resolve, UPDATE_INTERVAL));
   }
 }
 
 function init(responses) {
   try {
     printer.init(responses);
-    window.onpopstate = (e) => e && navigateShallow(e.currentTarget.location.hash || "#dashboard");
+    window.onpopstate = (e) =>
+      e && navigateShallow(e.currentTarget.location.hash || "#dashboard");
     navigateShallow(window.location.hash || "#dashboard");
   } catch (error) {
     handleAppError(error);
