@@ -255,9 +255,9 @@
   "conn.printer.not-connected": "",
   "btn.connect.link": "Spárovat",
   "btn.connect.unlink": "Odpojit",
-  "conn.connect.not-linked": "",
+  "conn.connect.not-linked": null,
   "btn.check-updates": "Kontrola aktualizací",
-  "btn.upgrade": "",
-  "upgrade.success.message": "",
-  "upgrade.success.title": ""
+  "btn.upgrade": "Aktualizovat",
+  "upgrade.success.message": "Stránka bude aktualizovaná za 5 sekund",
+  "upgrade.success.title": "Aktualizovat"
 }

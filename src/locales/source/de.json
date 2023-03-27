@@ -223,7 +223,7 @@
   "version.server": "Server",
   "version.text": "Text",
   "version.title": "Version",
-  "prop.st-attention": "",
+  "prop.st-attention": "Achtung",
   "prop.st-error": "Fehler",
   "prop.st-finished": "Beendet",
   "prop.st-ready": "Bereit",
@@ -269,7 +269,7 @@
   "conn.connect.not-linked": "Nicht verbunden",
   "msg.drop-zone.label": "Datei hier ablegen, um den Upload zu starten",
   "btn.check-updates": "Updates suchen",
-  "btn.upgrade": "",
-  "upgrade.success.message": "",
-  "upgrade.success.title": ""
+  "btn.upgrade": "Aktualisieren",
+  "upgrade.success.message": "Seite wird in 5 Sekunden erneut geladen",
+  "upgrade.success.title": "Aktualisieren erfolgreich"
 }

@@ -251,6 +251,6 @@
   "msg.drop-zone.label": "Upuść plik tutaj, aby rozpocząć przesyłanie.",
   "btn.check-updates": "Sprawdź aktualizacje",
   "btn.upgrade": "",
-  "upgrade.success.message": "",
-  "upgrade.success.title": ""
+  "upgrade.success.message": "Strona zostanie przeładowana za 5 sekund",
+  "upgrade.success.title": null
 }
