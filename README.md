@@ -1,6 +1,6 @@
-# PrusaLink
+# PrusaLink Web
 
-This is a printer connect webservice. It is compatible with other 3D printer services, so many applications can use this service.
+PrusaLink Web is a web interface for Prusa printers. Web interface is specified using the OpenAPI format in this file: [spec/openapi.yaml](https://raw.githubusercontent.com/prusa3d/Prusa-Link-Web/master/spec/openapi.yaml).
 
 ### Install
 
