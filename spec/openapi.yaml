@@ -104,6 +104,51 @@ paths:
         409:
           $ref: "#/components/responses/Conflict"
 
+  /api/v1/job/{id}/pause:
+    put:
+      summary: pause job
+      description: Pause job with given id
+      responses:
+        204:
+          description: No Content
+                       No Error
+        401:
+          $ref: "#/components/responses/Unauthorized"
+        404:
+          $ref: "#/components/responses/NotFound"
+        409:
+          $ref: "#/components/responses/Conflict"
+
+  /api/v1/job/{id}/resume:
+    put:
+      summary: resume job
+      description: Resume job with given id
+      responses:
+        204:
+          description: No Content
+                       No Error
+        401:
+          $ref: "#/components/responses/Unauthorized"
+        404:
+          $ref: "#/components/responses/NotFound"
+        409:
+          $ref: "#/components/responses/Conflict"
+
+  /api/v1/job/{id}/continue:
+    put:
+      summary: continue job
+      description: Continue in job with given id after timelapse capture
+      responses:
+        204:
+          description: No Content
+                       No Error
+        401:
+          $ref: "#/components/responses/Unauthorized"
+        404:
+          $ref: "#/components/responses/NotFound"
+        409:
+          $ref: "#/components/responses/Conflict"
+
   /api/v1/storage:
     parameters:
       - in: header
