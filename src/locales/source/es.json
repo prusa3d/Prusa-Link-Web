@@ -253,5 +253,5 @@
   "btn.upgrade": "Actualización",
   "upgrade.success.message": "La página se recargará en 5 segundos",
   "upgrade.success.title": "Actualización con Éxito",
-  "prop.storage-used-space": ""
+  "prop.storage-used-space": "Usados {{used}} de {{total}} ({{free}} libres)"
 }

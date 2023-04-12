@@ -272,5 +272,5 @@
   "btn.upgrade": "Aktualisieren",
   "upgrade.success.message": "Seite wird in 5 Sekunden erneut geladen",
   "upgrade.success.title": "Aktualisieren erfolgreich",
-  "prop.storage-used-space": ""
+  "prop.storage-used-space": "{{used}} benutzt von {{total}} ({{free}} frei)"
 }
