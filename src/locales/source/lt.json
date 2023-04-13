@@ -261,5 +261,6 @@
   "updates.title": "Sistemos atnaujinimai",
   "upgrade.success.title": "Atnaujinta sėkmingai",
   "upgrade.success.message": "Puslapis bus atnaujintas po 5 sekundžių",
-  "prop.storage-used-space": ""
+  "prop.storage-used-space": "",
+  "msg.del-folder": ""
 }

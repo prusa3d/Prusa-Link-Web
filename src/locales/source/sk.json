@@ -264,5 +264,6 @@
   "btn.upgrade": "",
   "upgrade.success.message": "",
   "upgrade.success.title": "",
-  "prop.storage-used-space": ""
+  "prop.storage-used-space": "",
+  "msg.del-folder": ""
 }
