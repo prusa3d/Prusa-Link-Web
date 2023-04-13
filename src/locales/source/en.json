@@ -83,6 +83,7 @@
   "msg.api-key-3": "You can find it in Settings -> Network -> PrusaLink.",
   "msg.cancel": "Do you really want to cancel print?",
   "msg.del-proj": "Do you really want to delete {{file_name}}?",
+  "msg.del-folder": "Do you really want to delete {{folder_name}} and its contents?",
   "msg.drop-zone.label": "Drop file here to start the uploading",
   "msg.e-401-1": "The printer uses HTTP digest security.",
   "msg.e-401-2": "Please fill in the correct credentials.",

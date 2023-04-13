@@ -253,5 +253,6 @@
   "btn.upgrade": "",
   "upgrade.success.message": "Strona zostanie przeładowana za 5 sekund",
   "upgrade.success.title": null,
-  "prop.storage-used-space": "Zajęte {{used}} z {{total}} ({{free}} wolne)"
+  "prop.storage-used-space": "Zajęte {{used}} z {{total}} ({{free}} wolne)",
+  "msg.del-folder": ""
 }
