@@ -264,5 +264,6 @@
   "btn.upgrade": "Mise à niveau",
   "upgrade.success.message": "La page sera rechargée dans 5 secondes",
   "upgrade.success.title": "Mise à niveau Réussie",
-  "prop.storage-used-space": "{{used}} utilisés sur {{total}} ({{free}} libre)"
+  "prop.storage-used-space": "{{used}} utilisés sur {{total}} ({{free}} libre)",
+  "msg.del-folder": ""
 }

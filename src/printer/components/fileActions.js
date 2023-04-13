@@ -29,11 +29,13 @@ export const downloadFile = (fileUrl, fileDisplayName, onComplete) => {
 };
 
 
-const createDeleteFileModal = (close, url, fileDisplayName, onComplete) => {
+const createDeleteFileModal = (close, url, fileDisplayName, onComplete, isFolder = false) => {
   const template = document.getElementById("modal-question");
   const node = document.importNode(template.content, true);
   const label = node.getElementById("modal-question-label");
-  label.innerText = translate("msg.del-proj", { file_name: fileDisplayName });
+  label.innerText = isFolder
+    ? translate("msg.del-folder", { folder_name: fileDisplayName })
+    : translate("msg.del-proj", { file_name: fileDisplayName });
   const yesButton = node.getElementById("yes");
   const noButton = node.getElementById("no");
   noButton.addEventListener("click", close);
@@ -41,10 +43,15 @@ const createDeleteFileModal = (close, url, fileDisplayName, onComplete) => {
     event.preventDefault();
     setDisabled(yesButton, true);
     setDisabled(noButton, true);
-    getJson(url, { method: "DELETE" })
-        .then(() => onComplete && onComplete())
-        .catch((result) => handleError(result))
-        .finally((result) => close());
+    getJson(url, {
+      method: "DELETE",
+      headers: {
+        "force": "?1"
+      }
+    })
+      .then(() => onComplete && onComplete())
+      .catch((result) => handleError(result))
+      .finally((result) => close());
   });
 
   return node;
@@ -73,8 +80,11 @@ export const copyFile = () => {
 export const createFolder = () => {
   console.log("createFolder");
 }
-export const deleteFolder = () => {
-  console.log("deleteFolder");
+export const deleteFolder = (url, folderDisplayName, onComplete) => {
+  modal((close) => createDeleteFileModal(close, url, folderDisplayName, onComplete, true), {
+    timeout: 0,
+    closeOutside: false,
+  });
 }
 export const renameFolder = () => {
   console.log("renameFolder");

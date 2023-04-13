@@ -7,8 +7,8 @@
 
 {%
   set buttons = {
-    'rename': {text: 'Rename', label: '', icon: 'edit.svg', implemented: false },
-    'delete': {text: 'Delete', label: '', icon: 'delete.svg', implemented: false }
+    'rename': {text: 'Rename', label: '', pc_icon: 'edit.svg', mobile_icon: 'edit_light.svg', implemented: false },
+    'delete': {text: 'Delete', label: '', pc_icon: 'delete.svg', mobile_icon: 'delete_light.svg', implemented: true }
   }
 %}
 
@@ -22,14 +22,21 @@
       <p id="details" class="txt-sm txt-grey">x folders | x files</p>
     </div>
     <div class="separator"></div>
-    <ul class="node-btn-list">
-      {% for key, values in buttons %}
+    <div class="kebab kebab-responsive">
+      <img class="kebab-menu icon" src="{{ pre.countOrRenderAssets('kebab_menu.svg') | safe }}" />
+      <ul class="txt-black txt-md">
+        {% for key, values in buttons %}
         {% if values.implemented %}
-          <li id="{{ key }}" title="{{ values.text }}">
-            <img class="icon icon-small" src="{{ pre.countOrRenderAssets(values.icon) | safe }}"/>
+          <li id="{{ key }}" data-label="{{ values.label }}" data-label-target="title" title="{{ values.text }}">
+            <img class="pc-only icon icon-small" src="{{ pre.countOrRenderAssets(values.pc_icon) | safe }}"/>
+            <img class="mobile-only icon" src="{{ pre.countOrRenderAssets(values.mobile_icon) | safe }}"/>
+            <span class="mobile-only" data-label="{{ values.label }}">
+              {{ values.text }}
+            </span>
           </li>
-        {% endif %}
-      {% endfor %}
-    </ul>
+          {% endif %}
+        {% endfor %}
+      </ul>
+    </div>
   </div>
 </template>

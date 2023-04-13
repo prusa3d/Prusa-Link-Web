@@ -21,7 +21,7 @@ import printer from "../index";
 import scrollIntoViewIfNeeded from "../../helpers/scroll_into_view_if_needed.js";
 import * as job from "./job";
 import { initKebabMenu } from "./kebabMenu.js";
-import { setEnabled, setVisible } from "../../helpers/element.js";
+import { setDisabled, setEnabled, setVisible } from "../../helpers/element.js";
 import storage from "./storage.js";
 import { LinkState } from "../../state.js";
 import { setButtonLoading, unsetButtonLoading } from "../../helpers/button.js";
@@ -242,7 +242,7 @@ const redrawFiles = () => {
     for (let entry of sortFiles(metadata.files)) {
       switch (entry.type.toUpperCase()) {
         case FILE_TYPE.FOLDER:
-          node = createNodeFolder(entry.display_name || entry.name, entry.name, {
+          node = createNodeFolder(entry, {
             // NOTE: currently unsupported because of BE limitations
             files: undefined,
             folders: undefined,
@@ -378,7 +378,10 @@ function createElement(templateName, name, cb) {
  * @param {{files: number, folders: number} | undefined} details (optional)
  * @param {string|undefined} origin (optimal)
  */
-function createNodeFolder(name, path, details, origin) {
+function createNodeFolder(entry, details) {
+  const name = entry.display_name || entry.name;
+  const path = entry.name;
+  const resource = getCurrentApiPath(path);
   const elm = createElement("node-folder", name, () => {
     metadata.current_path.push({
       path: path.replace("/", ""),
@@ -397,10 +400,11 @@ function createNodeFolder(name, path, details, origin) {
   elm.getElementById("details").innerHTML = detailsText;
 
   const deleteBtn = elm.getElementById("delete");
+  setDisabled(deleteBtn, entry.ro)
   if (deleteBtn) {
     deleteBtn.onclick = (e) => {
       e.stopPropagation();
-      deleteFolder();
+      deleteFolder(resource, name, () => {});
     };
   }
   const renameBtn = elm.getElementById("rename");
