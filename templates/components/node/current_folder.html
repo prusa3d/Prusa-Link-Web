@@ -7,7 +7,7 @@
 
 {%
   set buttons = {
-    'create': {text: 'Create new folder', label: '', icon: 'create_folder.svg', implemented: false }
+    'create': {text: 'Create new folder', label: '', icon: 'create_folder.svg', implemented: true }
   }
 %}
 
@@ -31,7 +31,7 @@
 
     <div class="separator"></div>
 
-    <div class="flex-row grow">
+    <div class="flex-row">
       <ul class="node-btn-list">
         {% for key, values in buttons %}
           {% if values.implemented %}
@@ -41,8 +41,6 @@
           {% endif %}
         {% endfor %}
       </ul>
-
-      <div class="separator"></div>
 
       <ul class="sort-bar flex-row">
         {% for field in sort_by %}

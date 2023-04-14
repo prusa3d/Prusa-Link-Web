@@ -419,18 +419,18 @@ function createNodeFolder(entry, details) {
 
 function createCurrent() {
   const storage = getCurrentStorage();
-  const current_path = [
+  const currentPath = [
     storage.name, ...metadata.current_path.map((segment) => segment.name)
   ];
-  const current_folder = current_path.pop() || "Root";
-  const component = createElement("node-current", current_folder);
-  component.getElementById("path").innerHTML = `${current_path.join("/")}/`;
+  const currentFolder = currentPath.pop() || "Root";
+  const component = createElement("node-current", currentFolder);
+  component.getElementById("path").innerHTML = `${currentPath.join("/")}/`;
 
   const createBtn = component.getElementById("create");
   if (createBtn) {
     createBtn.onclick = (e) => {
       e.stopPropagation();
-      createFolder();
+      createFolder(getCurrentApiPath);
     };
   }
 

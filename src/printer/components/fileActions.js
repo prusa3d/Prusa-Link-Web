@@ -57,6 +57,36 @@ const createDeleteFileModal = (close, url, fileDisplayName, onComplete, isFolder
   return node;
 };
 
+const createNewFolderModal = (close, getCurrentApiPath, onComplete) => {
+  const template = document.getElementById("modal-file-name");
+  const node = document.importNode(template.content, true);
+  const input = node.getElementById("modal-file-name__input");
+
+  const yesButton = node.getElementById("yes");
+  const noButton = node.getElementById("no");
+  noButton.addEventListener("click", close);
+  yesButton.addEventListener("click", (event) => {
+    event.preventDefault();
+    const fileName = input.value;
+      if (!!fileName) {
+      const url = getCurrentApiPath(fileName);
+      setDisabled(yesButton, true);
+      setDisabled(noButton, true);
+      getJson(url, {
+        method: "PUT",
+        //headers: {
+        //  "force": "?1"
+        //}
+      })
+        .then(() => onComplete && onComplete())
+        .catch((result) => handleError(result))
+        .finally((result) => close());
+  }
+  });
+
+  return node;
+};
+
 /**
  * delete file
  */
@@ -77,8 +107,11 @@ export const copyFile = () => {
   console.log("copyFile");
 }
 
-export const createFolder = () => {
-  console.log("createFolder");
+export const createFolder = (getCurrentApiPath, onComplete) => {
+  modal((close) => createNewFolderModal(close, getCurrentApiPath, onComplete), {
+    timeout: 0,
+    closeOutside: false,
+  })
 }
 export const deleteFolder = (url, folderDisplayName, onComplete) => {
   modal((close) => createDeleteFileModal(close, url, folderDisplayName, onComplete, true), {

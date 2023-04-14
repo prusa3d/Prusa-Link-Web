@@ -802,10 +802,11 @@ nav .burger-icon.burger-open {
 }
 .node-btn-list > li {
   padding: 5px;
+  display: flex;
+  align-items: center;
   cursor: pointer;
 }
 .node-btn-list > li:last-child {
-  margin-right: -5px;
 }
 .node-btn-list > li:not([disabled]):hover {
   background-color: rgba(255, 255, 255, 0.1);
@@ -815,6 +816,10 @@ nav .burger-icon.burger-open {
   cursor: default;
   pointer-events: none;
   opacity: 0.3;
+}
+
+.node-btn-list > li .icon-small {
+  margin: 0;
 }
 
 #node-storage {
@@ -1862,6 +1867,23 @@ input .autoresize {
 
 .camera-snapshot-meta p {
   line-height: 1.5;
+}
+
+.file-name__form {
+  margin-top: 16px;
+}
+
+.file-name__form flex-row {
+  margin-bottom: 16px;
+}
+
+
+.file-name__form input {
+  display: block;
+}
+
+.file-name__submit {
+  margin-top: 16px;
 }
 
 .camera-settings__form label {
