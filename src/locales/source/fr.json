@@ -265,5 +265,7 @@
   "upgrade.success.message": "La page sera rechargée dans 5 secondes",
   "upgrade.success.title": "Mise à niveau Réussie",
   "prop.storage-used-space": "{{used}} utilisés sur {{total}} ({{free}} libre)",
-  "msg.del-folder": ""
+  "msg.del-folder": "Voulez-vous vraiment supprimer {{folder_name}} et son contenu ?",
+  "msg.create-folder": "",
+  "msg.create-folder-name": ""
 }
