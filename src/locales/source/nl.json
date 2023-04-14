@@ -261,5 +261,7 @@
   "upgrade.success.message": "",
   "upgrade.success.title": "",
   "prop.storage-used-space": "",
-  "msg.del-folder": ""
+  "msg.del-folder": "",
+  "msg.create-folder": "",
+  "msg.create-folder-name": ""
 }

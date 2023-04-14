@@ -262,5 +262,7 @@
   "upgrade.success.title": "Atnaujinta sėkmingai",
   "upgrade.success.message": "Puslapis bus atnaujintas po 5 sekundžių",
   "prop.storage-used-space": "",
-  "msg.del-folder": ""
+  "msg.del-folder": "",
+  "msg.create-folder": "",
+  "msg.create-folder-name": ""
 }

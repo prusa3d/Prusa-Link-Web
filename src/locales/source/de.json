@@ -273,5 +273,7 @@
   "upgrade.success.message": "Seite wird in 5 Sekunden erneut geladen",
   "upgrade.success.title": "Aktualisieren erfolgreich",
   "prop.storage-used-space": "{{used}} benutzt von {{total}} ({{free}} frei)",
-  "msg.del-folder": ""
+  "msg.del-folder": "Möchten Sie wirklich {{folder_name}} und seinen Inhalt löschen?",
+  "msg.create-folder": "",
+  "msg.create-folder-name": ""
 }

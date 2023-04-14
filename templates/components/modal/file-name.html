@@ -1,0 +1,34 @@
+<!-- prettier-ignore -->
+{#
+  # This file is part of the Prusa Link Web
+  # Copyright (C) 2021 Prusa Research a.s. - www.prusa3d.com
+  # SPDX-License-Identifier: GPL-3.0-or-later
+#}
+
+<template id="modal-file-name">
+  <div class="modal-file-name">
+    <div class="txt-bold">
+      <p id="modal-file-name-label" data-label="msg.create-folder"></p>
+    </div>
+    
+    <div class="file-name__form">
+      <div class="flex-row">
+        <div class="flex-col">
+          <label class="grow" for="modal-file-name__input" data-label="msg.create-folder-name"></label>
+          <input id="modal-file-name__input" value="" />
+        </div>
+      </div>
+    <div>
+
+    <div class="file-name__submit flex-row">
+      <button class="yes mr-md" id="yes">
+        <img src="{{ pre.countOrRenderAssets('yes_color.svg') | safe }}" />
+        <p data-label="btn.confirm">Confirm</p>
+      </button>
+      <button class="no" id="no">
+        <img src="{{ pre.countOrRenderAssets('cancel.svg') | safe }}" />
+        <p data-label="btn.cancel">Cancel</p>
+      </button>
+    </div>
+  </div>
+</template>
