@@ -96,6 +96,8 @@
   "msg.del-folder": "",
   "msg.del-proj": "",
   "msg.drop-zone.label": "",
+  "msg.file-exists.overwrite-it": "",
+  "msg.file-exists.title": "",
   "msg.modal-p1": "",
   "msg.modal-p2": "",
   "msg.offline.not-responsing": "",

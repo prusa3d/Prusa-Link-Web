@@ -7,8 +7,13 @@ import { handleError } from "../errors";
 import { setDisabled, setVisible } from "../../../helpers/element";
 import { translate } from "../../../locale_provider";
 import uploadRequest from "../../../helpers/upload_request";
-import { attachConfirmModalToCheckbox } from "./confirm";
+import {
+  attachConfirmModalToCheckbox,
+  createConfirmReplaceFileByUpload,
+} from "./confirm";
 import { LinkState, OperationalStates } from "../../../state";
+import { getJson } from "../../../auth";
+import { modal } from "../modal";
 
 let isUploading = false;
 let progress = 0;
@@ -87,8 +92,13 @@ function initInputByQuery(
 }
 
 function reset() {
-  const input = document.querySelector('#upld-direct input[type="file"]');
-  if (input) input.value = "";
+  [
+    document.querySelector('#upld-direct input[type="file"]'),
+    document.querySelector('#drop-zone input[type="file"]'),
+  ]
+    .filter((node) => !!node)
+    .forEach((node) => (node.value = ""));
+
   setProgress(0);
   setState("choose");
 }
@@ -106,18 +116,51 @@ function setProgress(pct) {
 }
 
 const uploadFile = (file, origin, path, print) => {
-  const url = ["/api/v1/files", origin, path, file.name].filter(e => !!e).join('/');
-  file.arrayBuffer().then((data) => {
-    setState("uploading");
-    setProgress(0);
-    uploadRequest(url, data, {
-      onProgress: (progress) => onProgressChanged(progress.percentage),
-      print,
+  const url = ["/api/v1/files", origin, path, file.name]
+    .filter((e) => !!e)
+    .join("/");
+  const fileDisplayName = file.display_name || file.name;
+
+  const startUpload = () =>
+    file.arrayBuffer().then((data) => {
+      setState("uploading");
+      setProgress(0);
+      uploadRequest(url, data, {
+        onProgress: (progress) => onProgressChanged(progress.percentage),
+        print,
+      })
+        .then(() => onUploadSuccess(fileDisplayName))
+        .catch((result) => onUploadError(fileDisplayName, result))
+        .finally(() => reset());
+    });
+
+  getJson(url, {
+    method: "HEAD",
+  })
+    // file already exists
+    .then(() => {
+      try {
+        modal(
+          (close) =>
+            createConfirmReplaceFileByUpload(
+              () => {
+                close();
+                reset();
+              },
+              fileDisplayName,
+              startUpload
+            ),
+          {
+            timeout: 0,
+            closeOutside: false,
+          }
+        );
+      } catch (err) {
+        console.error("Modal error", err);
+      }
     })
-      .then(() => onUploadSuccess(file.display_name || file.name))
-      .catch((result) => onUploadError(file.display_name || file.name, result))
-      .finally(() => reset());
-  });
+    // not exists, continue upload
+    .catch(() => startUpload());
 };
 
 function onProgressChanged(pct) {
