@@ -76,6 +76,8 @@
   "msg.del-folder": "Opravdu chcete smazat {{folder_name}} a její obsah?",
   "msg.create-folder": "Nová složka",
   "msg.create-folder-name": "Název složky",
+  "msg.file-exists.title": "Soubor již existuje",
+  "msg.file-exists.overwrite-it": "Chcete ho přepsat?",
   "msg.drop-zone.label": "Přetažením souboru zahájíte nahrávání",
   "msg.e-401-1": "Tiskárna používá zabezpečení HTTP Digest",
   "msg.e-401-2": "Vyplňte správné údaje.",

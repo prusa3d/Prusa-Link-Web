@@ -263,5 +263,8 @@
   "msg.sysupgrade.title": "Aggiornare il pacchetto di sistema?",
   "msg.sysupgrade.wait-for-printer": "In attesa della stampante...",
   "camera.focus": "Messa a fuoco",
-  "conn.error_status": ""
+  "conn.error_status": "",
+  "msg.file-exists": "",
+  "msg.file-exists.overwrite-it": "Vuoi sovrascriverlo?",
+  "msg.file-exists.title": "File già esistente"
 }

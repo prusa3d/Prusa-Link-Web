@@ -127,6 +127,11 @@ nav {
   margin-left: 12px;
 }
 
+.my-md {
+  margin-top: 12px;
+  margin-bottom: 12px;
+}
+
 .rounded {
   border-radius: 50%;
 }
@@ -1345,6 +1350,12 @@ button:disabled {
 }
 
 /* ===================================== MODAL CONFIRM ======================================= */
+
+.modal-confirm {
+  max-width: 320px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
 
 .modal-confirm > div > div {
   margin: 15px 15px 15px 0;
