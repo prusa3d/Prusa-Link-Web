@@ -9,7 +9,7 @@
  * @param {{onProgress(progress): void}} opt options
  */
 
- import { getHeaders } from "../auth";
+ import { API_ROOT, getHeaders } from "../auth";
 
  function uploadRequest(url, data, opt) {
   return new Promise((resolve, reject) => {
@@ -33,7 +33,7 @@
     request.addEventListener("error", errorHandler, false);
     request.addEventListener("abort", errorHandler, false);
 
-    request.open("PUT", url);
+    request.open("PUT", `${API_ROOT}${url}`);
     if (opt.print) {
       request.setRequestHeader("Print-After-Upload", "?1");
     }

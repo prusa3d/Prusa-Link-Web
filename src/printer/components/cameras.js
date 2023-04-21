@@ -1,7 +1,7 @@
 // This file is part of the Prusa Link Web
 // Copyright (C) 2021 Prusa Research a.s. - www.prusa3d.com
 // SPDX-License-Identifier: GPL-3.0-or-later
-import { getImage, getJson } from "../../auth";
+import { API_ROOT, getImage, getJson } from "../../auth";
 import { setDisabled, setHidden, setVisible } from "../../helpers/element";
 import { translate } from "../../locale_provider";
 import { success } from "./toast";

@@ -2,6 +2,8 @@
 // Copyright (C) 2021 Prusa Research a.s. - www.prusa3d.com
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+import { API_ROOT } from "../auth";
+
 /**
  * The function displays a save file dialog and then downloads the file from the destination URL.
  * @param {string} url Target url
@@ -9,7 +11,7 @@
  */
 function download(url, name) {
   let a = document.createElement('a');
-  a.href = url;
+  a.href = `${API_ROOT}${url}`;
   a.download = name || "";
   a.click();
   a.remove();

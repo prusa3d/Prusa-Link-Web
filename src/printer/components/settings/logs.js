@@ -18,7 +18,7 @@ const load = () => {
 };
 
 function initLogs() {
-  getJson("api/logs").then(result => {
+  getJson("/api/logs").then(result => {
     const files = result.data.files;
 
     const dropdown = Dropdown.init("settings", "log-list");
@@ -38,13 +38,13 @@ function selectLogFile(filename) {
   selectedFileDate = null;
 
   document.getElementById("download-log").onclick = () => {
-    download(`api/logs/${filename}`, filename)
+    download(`/api/logs/${filename}`, filename)
   }
   update();
 };
 
 function showLogContent(filename) {
-  getPlainText(`api/logs/${filename}`).then(result => {
+  getPlainText(`/api/logs/${filename}`).then(result => {
     const ul = document.querySelector("ul.logs");
     if (ul) {
       if (result.data) {
@@ -71,7 +71,7 @@ function createLi(innerHTML) {
 }
 
 const update = () => {
-  getJson("api/logs").then(result => {
+  getJson("/api/logs").then(result => {
     const files = result.data.files;
     if (selectedFileName) {
       const file = files.find((file) => file.name === selectedFileName)
