@@ -5,6 +5,10 @@
 import { modal } from "./printer/components/modal";
 import { handleError } from "./printer/components/errors";
 
+export const API_ROOT = window.location.pathname.endsWith('/')
+  ? window.location.pathname.slice(0, -1)
+  : window.location.pathname;
+
 const createApiKey = (resolve) => {
   return (close) => {
     const template = document.getElementById(`modal-apiKey`);
@@ -60,8 +64,9 @@ const getHeaders = (accept = "application/json") => {
  */
 const setUpAuth = () =>
   new Promise((resolve, reject) => {
+    const endPoint = process.env.WITH_V1_API ? "/api/v1/info" : "/api/version";
     sessionStorage.setItem("auth", "pending");
-    return fetch(process.env.WITH_V1_API ? "/api/v1/info" : "/api/version", {
+    return fetch(`${API_ROOT}${endPoint}`, {
       headers: getHeaders(),
     })
       .then((response) => {
@@ -120,7 +125,7 @@ async function fetchUrl(url, opts = {}, accept, parse) {
   const auth = sessionStorage.getItem("auth");
   if (auth == "true") {
     opts.headers = { ...opts.headers, ...getHeaders(accept) };
-    const response = await fetch(url, opts);
+    const response = await fetch(`${API_ROOT}${url}`, opts);
     const status = response.status;
     const result = {
       code: status,
@@ -172,7 +177,7 @@ const getFileURL = (url, opts, timestamp) =>
     const auth = sessionStorage.getItem("auth");
     if (auth == "true") {
       opts.headers = { ...getHeaders(), ...opts.headers };
-      fetch(timestamp ? `${url}?ct=${timestamp}` : url, opts)
+      fetch(timestamp ? `${API_ROOT}${url}?ct=${timestamp}` : url, opts)
         .then((response) => {
           if (response.status == 401) {
             sessionStorage.setItem("auth", "false");
@@ -201,7 +206,7 @@ const getFileURL = (url, opts, timestamp) =>
  */
 const getImage = (url, timestamp, opts = {}) =>
   getFileURL(
-    url,
+    `${API_ROOT}${url}`,
     {
       ...opts,
       headers: {

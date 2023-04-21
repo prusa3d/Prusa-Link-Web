@@ -49,7 +49,7 @@ function initApiKey() {
     resetApiKeyButton.addEventListener(
       "click",
       () => {
-        getJson("api/settings/apikey", { method: "POST" })
+        getJson("/api/settings/apikey", { method: "POST" })
           .then((result) => {
             updateApiKey(result.data["api-key"]);
             displaySuccess(result);
@@ -69,7 +69,7 @@ function updateApiKey(apiKey) {
 }
 
 function initBaseSettings() {
-  getJson("api/version?system=1")
+  getJson("/api/version?system=1")
     .then((result) => {
       const data = {
         version: result.data,
@@ -175,7 +175,7 @@ function initConnectionSettings(context) {
   document
     .getElementById("edit-connect-del")
     .addEventListener("click", (event) => {
-      getJson("api/connection", { method: "DELETE" })
+      getJson("/api/connection", { method: "DELETE" })
         .then(displaySuccess)
         .catch((result) => handleError(result))
         .finally(() => context.updateConnection())
@@ -198,7 +198,7 @@ function initConnectionSettings(context) {
       const val = document.getElementById("conn-prusa-connect-url")?.value;
       if (!val) return;
       const url = new URL(val);
-      getJson("api/connection", {
+      getJson("/api/connection", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -233,7 +233,7 @@ function updateConnectionSettings(context, updateInputValue) {
 }
 
 function initSettings() {
-  getJson("api/settings")
+  getJson("/api/settings")
     .then((result) => {
       const settings = result.data;
       initPrinterSettings(settings);
