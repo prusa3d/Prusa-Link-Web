@@ -1133,6 +1133,9 @@ components:
         port:
           type: string
           example: "/dev/tty"
+        network_error_chime:
+          type: boolean
+          example: true
 
     StatusJob:
       type: object

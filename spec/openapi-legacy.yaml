@@ -632,6 +632,8 @@ paths:
                         type: string
                       farm_mode:
                         type: boolean
+                      network_error_chime:
+                        type: boolean
     post:
       summary: Sets new printer and/or user settings and writes it to ini file
       requestBody:
