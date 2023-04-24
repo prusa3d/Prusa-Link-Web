@@ -254,7 +254,7 @@
   "upgrade.success.message": "La pagina verrà ricaricata tra 5 secondi",
   "upgrade.success.title": "Aggiornamento riuscito",
   "prop.storage-used-space": "Usato {{used}} di {{total}} ({{free}} liberi)",
-  "msg.del-folder": "",
-  "msg.create-folder": "",
-  "msg.create-folder-name": ""
+  "msg.del-folder": "Vuoi davvero cancellare la cartella {{folder_name}} e il suo contenuto?",
+  "msg.create-folder": "Nuova Cartella",
+  "msg.create-folder-name": "Nome cartella"
 }

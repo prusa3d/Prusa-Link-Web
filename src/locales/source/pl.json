@@ -254,7 +254,7 @@
   "upgrade.success.message": "Strona zostanie przeładowana za 5 sekund",
   "upgrade.success.title": null,
   "prop.storage-used-space": "Zajęte {{used}} z {{total}} ({{free}} wolne)",
-  "msg.del-folder": "",
-  "msg.create-folder": "",
-  "msg.create-folder-name": ""
+  "msg.del-folder": "Czy naprawdę chcesz usunąć {{folder_name}} i jego zawartość?",
+  "msg.create-folder": "Nowy folder",
+  "msg.create-folder-name": "Nazwa folderu"
 }
