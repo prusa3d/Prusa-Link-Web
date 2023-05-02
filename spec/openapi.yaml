@@ -871,6 +871,10 @@ components:
           type: integer
           description: Current rotation of the output image
           example: 180
+        focus:
+          type: number
+          description: Focus of the camera (0.0 - 1.0)
+          example: 0.5
         exposure:
           type: number
           example: 4.2
