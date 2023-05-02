@@ -257,7 +257,7 @@
   "ntf.camera-config-success": "Konfigurace kamery byla aktualizovaná",
   "conn.connect.linked": "",
   "conn.printer.not-connected": "",
-  "btn.connect.link": "Spárovat",
+  "btn.connect.link": null,
   "btn.connect.unlink": "Odpojit",
   "conn.connect.not-linked": null,
   "btn.check-updates": "Kontrola aktualizací",
