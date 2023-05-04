@@ -263,7 +263,7 @@
   "upgrade.success.message": "페이지가 5초 뒤 다시 시작됩니다.",
   "upgrade.success.title": "업그레이드 성공",
   "prop.storage-used-space": "{{total}} 중 {{used}} 사용중({{free}} 남음)",
-  "msg.del-folder": "",
-  "msg.create-folder": "",
-  "msg.create-folder-name": ""
+  "msg.del-folder": "정말 {{folder_name}} 폴더 및 내용을 지우시겠습니까?",
+  "msg.create-folder": "새 폴더",
+  "msg.create-folder-name": "폴더 이름"
 }
