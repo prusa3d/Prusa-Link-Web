@@ -287,7 +287,7 @@ function setupDeleteButton(state, file, jobId) {
   const btn = document.querySelector("#job #delete");
   if (btn) {
     const fileDisplayName = file.display_name || file.name;
-    setEnabled(btn, !file.ro && file.resource);
+    setEnabled(btn, !file.readOnly && file.resource);
     setVisible(btn, !jobId || state === OperationalStates.includes(state));
     btn.onclick = () => {
       deleteFile(file.resource, fileDisplayName, () => {

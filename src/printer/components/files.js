@@ -400,7 +400,7 @@ function createNodeFolder(entry, details) {
   elm.getElementById("details").innerHTML = detailsText;
 
   const deleteBtn = elm.getElementById("delete");
-  setDisabled(deleteBtn, entry.ro)
+  setDisabled(deleteBtn, entry.read_only || entry.ro)
   if (deleteBtn) {
     deleteBtn.onclick = (e) => {
       e.stopPropagation();
@@ -624,7 +624,7 @@ function setupFileButtons(node, elm) {
 
   const deleteBtn = elm.getElementById("delete");
   if (deleteBtn) {
-    setEnabled(deleteBtn, !node.ro);
+    setEnabled(deleteBtn, !(node.read_only || node.ro));
     deleteBtn.onclick = (e) => {
       deleteFile(fileUrl, fileDisplayName);
       e.stopPropagation();
