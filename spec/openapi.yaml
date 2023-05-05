@@ -891,7 +891,7 @@ components:
       type: object
       required:
         - name
-        - ro
+        - read_only
         - type
         - m_timestamp
       properties:
@@ -899,7 +899,7 @@ components:
           type: string
           description: Short Filename
           example: "SPICE~1.gco"
-        ro:
+        read_only:
           type: boolean
           example: False
         size:
