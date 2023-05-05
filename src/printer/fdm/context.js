@@ -343,4 +343,5 @@ const mapFile = (data) => ({
     layerHeight: data.meta?.layer_height,
     estimatedPrintTime: data.meta?.estimated_print_time,
   },
+  readOnly: data.read_only || data.ro
 });
