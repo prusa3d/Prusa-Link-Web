@@ -2,7 +2,7 @@
 // Copyright (C) 2021 Prusa Research a.s. - www.prusa3d.com
 // SPDX-License-Identifier: GPL-3.0-or-later
 import { getImage, getJson } from "../../auth";
-import { setDisabled, setVisible } from "../../helpers/element";
+import { setDisabled, setHidden, setVisible } from "../../helpers/element";
 import { translate } from "../../locale_provider";
 import { success } from "./toast";
 import { modal } from "./modal";
@@ -195,8 +195,8 @@ const updateCurrentCamera = (cameraId) => {
 
 const updateCameraNode = (cameraNode, camera, firstTime = false) => {
   cameraNode.querySelector(".camera__name").innerText = camera.config.name;
-  cameraNode.querySelector(".camera__path").innerText = camera.config.path;
-  cameraNode.querySelector(".camera__driver").innerText = camera.config.driver;
+  cameraNode.querySelector(".camera__path").innerText = camera.config.path || '-';
+  cameraNode.querySelector(".camera__driver").innerText = camera.config.driver || '-';
   cameraNode.querySelector(".camera__cloud").innerText = camera.registered
     ? translate("camera.cloud.linked")
     : translate("camera.cloud.not-linked");
@@ -377,6 +377,7 @@ const createCameraSettingsModal = (cameraId, resolve) => {
     const node = document.importNode(template.content, true);
 
     const inputName = node.getElementById("camera-settings__name");
+    const inputFocus = node.getElementById("camera-settings__focus");
 
     const inputResolution = Dropdown.init(
       node.getElementById("camera-settings__resolution"),
@@ -401,12 +402,19 @@ const createCameraSettingsModal = (cameraId, resolve) => {
         const triggerSchemesOptions = triggerSchemes.map((s) =>
           translateTriggerScheme(s)
         );
+        const hasFocus = data.capabilities.includes("FOCUS");
 
         inputName.value = data.name;
         inputResolution.setOptions(resolutions);
         inputResolution.value = `${data.resolution.width}x${data.resolution.height}`;
         inputTriggerScheme.setOptions(triggerSchemesOptions);
         inputTriggerScheme.value = translateTriggerScheme(data.trigger_scheme);
+
+        setVisible(inputFocus.parentNode, hasFocus);
+        console.log(`DEBUG: has focus (${hasFocus})`, data)
+        if (hasFocus) {
+          inputFocus.value = Math.round(data.focus * 100);
+        }
 
         btnConfirm.addEventListener("click", () => {
           const [resX, resY] = inputResolution.value
@@ -416,6 +424,7 @@ const createCameraSettingsModal = (cameraId, resolve) => {
             triggerSchemes[
               triggerSchemesOptions.indexOf(inputTriggerScheme.value)
             ];
+          const focus = hasFocus ? {focus: inputFocus.value / 100} : {};
           getJson(`${apiCameraUrl}/config`, {
             method: "PATCH",
             headers: {
@@ -428,6 +437,7 @@ const createCameraSettingsModal = (cameraId, resolve) => {
                 height: resY,
               },
               trigger_scheme,
+              ...focus
             }),
           })
             .then(() =>

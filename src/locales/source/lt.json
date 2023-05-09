@@ -269,5 +269,6 @@
   "msg.sysupgrade.pending": "",
   "msg.sysupgrade.remark": "",
   "msg.sysupgrade.title": "",
-  "msg.sysupgrade.wait-for-printer": ""
+  "msg.sysupgrade.wait-for-printer": "",
+  "camera.focus": ""
 }
