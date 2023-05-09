@@ -278,7 +278,8 @@
   "msg.create-folder-name": "Ordnername",
   "printer.network_error_chime": "Netzwerk-Fehlerton",
   "msg.sysupgrade.pending": "Upgraden... Schalten Sie den Drucker nicht aus.",
-  "msg.sysupgrade.remark": "Das Upgrade kann mehrere Minuten dauern.",
+  "msg.sysupgrade.remark": "Das Upgrade kann einige Sekunden dauern.",
   "msg.sysupgrade.title": "Systempaket aktualisieren?",
-  "msg.sysupgrade.wait-for-printer": "Warten auf den Drucker..."
+  "msg.sysupgrade.wait-for-printer": "Warten auf den Drucker...",
+  "camera.focus": "Fokus"
 }

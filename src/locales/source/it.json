@@ -261,5 +261,6 @@
   "msg.sysupgrade.pending": "Aggiornamento... Non spegnere la stampante.",
   "msg.sysupgrade.remark": "L'aggiornamento può richiedere qualche minuto.",
   "msg.sysupgrade.title": "Aggiornare il pacchetto di sistema?",
-  "msg.sysupgrade.wait-for-printer": "In attesa della stampante..."
+  "msg.sysupgrade.wait-for-printer": "In attesa della stampante...",
+  "camera.focus": ""
 }

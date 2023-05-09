@@ -261,5 +261,6 @@
   "msg.sysupgrade.pending": "Aktualizacja... Nie wyłączaj drukarki.",
   "msg.sysupgrade.remark": "Aktualizacja może trwać kilkadziesiąt sekund.",
   "msg.sysupgrade.title": "Zaktualizować paczkę systemową?",
-  "msg.sysupgrade.wait-for-printer": "Oczekiwanie na drukarkę..."
+  "msg.sysupgrade.wait-for-printer": "Oczekiwanie na drukarkę...",
+  "camera.focus": "Ostrość"
 }

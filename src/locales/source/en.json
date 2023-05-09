@@ -244,6 +244,7 @@
   "sort.by-size": "Size",
   "sort.by-date": "Date",
   "camera.driver": "Driver",
+  "camera.focus": "Focus",
   "camera.path": "Path",
   "camera.send-to-connect": "Send to CONNECT",
   "camera.settings": "Camera Settings",
