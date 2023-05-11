@@ -660,6 +660,10 @@ paths:
                         type: string
                       new_repassword:
                         type: string
+                  farm_mode:
+                    type: boolean
+                  network_error_chime:
+                    type: boolean
       responses:
         200:
           description: OK
