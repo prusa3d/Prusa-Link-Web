@@ -28,7 +28,7 @@ export const editUser = (password, { username, newPassword, rePassword }) => {
 /**
  * Edit printer.
  */
-export const editPrinter = (name, location) => {
+export const editPrinter = ({name, location, network_error_chime}) => {
   return getJson("/api/settings", {
     method: "POST",
     headers: {
@@ -38,7 +38,8 @@ export const editPrinter = (name, location) => {
       printer: {
         name,
         location,
-      }
+      },
+      network_error_chime,
     }),
   });
 }

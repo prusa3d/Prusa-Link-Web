@@ -238,6 +238,7 @@ function initSettings() {
 function initPrinterSettings(settings) {
   const nameInput = document.querySelector("#settings #printer-name");
   const locationInput = document.querySelector("#settings #printer-location");
+  const networkErrorChimeInput = document.querySelector("#settings #printer-network_error_chime");
   const editBtn = document.querySelector("#settings #edit-printer");
   const updateEditBtn = () => {
     setEnabled(
@@ -248,16 +249,22 @@ function initPrinterSettings(settings) {
 
   nameInput.oninput = updateEditBtn;
   locationInput.oninput = updateEditBtn;
+  networkErrorChimeInput.oninput = updateEditBtn;
 
   nameInput.value = settings.printer?.name || "";
   locationInput.value = settings.printer?.location || "";
+  networkErrorChimeInput.checked = !!settings.printer?.network_error_chime;
 
   if ("api-key" in settings) {
     updateApiKey(settings["api-key"]);
   }
 
   editBtn.onclick = () => {
-    editPrinter(nameInput.value, locationInput.value)
+    editPrinter({
+      name: nameInput.value,
+      location: locationInput.value,
+      network_error_chime: networkErrorChimeInput.checked,
+    })
       .then(() => displaySuccess())
       .catch((result) => handleError(result));
   };

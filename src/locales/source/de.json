@@ -275,5 +275,6 @@
   "prop.storage-used-space": "{{used}} benutzt von {{total}} ({{free}} frei)",
   "msg.del-folder": "Möchten Sie wirklich {{folder_name}} und seinen Inhalt löschen?",
   "msg.create-folder": "Neuer Ordner",
-  "msg.create-folder-name": "Ordnername"
+  "msg.create-folder-name": "Ordnername",
+  "printer.network_error_chime": "Netzwerk-Fehlerton"
 }

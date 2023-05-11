@@ -267,5 +267,6 @@
   "prop.storage-used-space": "",
   "msg.del-folder": "",
   "msg.create-folder": "",
-  "msg.create-folder-name": ""
+  "msg.create-folder-name": "",
+  "printer.network_error_chime": ""
 }
