@@ -256,5 +256,6 @@
   "prop.storage-used-space": "Usados {{used}} de {{total}} ({{free}} libres)",
   "msg.del-folder": "¿Realmente deseas borrar {{folder_name}} y su contenido?",
   "msg.create-folder": "Nueva Carpeta",
-  "msg.create-folder-name": "Nombre de la Carpeta"
+  "msg.create-folder-name": "Nombre de la Carpeta",
+  "printer.network_error_chime": "Tono Error Red"
 }

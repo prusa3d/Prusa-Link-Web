@@ -108,6 +108,7 @@
   "printer.location": "Umístění tiskárny",
   "printer.name": "Název tiskárny",
   "printer.title": "Tiskárna",
+  "printer.network_error_chime": "Zvukové upozornění při síťové chybě",
   "proj.add-from.local": "Lokálního úložiště",
   "proj.add-from.remote": "Vzdálené url",
   "proj.add-from.title": "Nahrát soubor z",

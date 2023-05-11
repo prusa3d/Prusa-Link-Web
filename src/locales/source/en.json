@@ -120,6 +120,7 @@
   "printer.location": "Printer location",
   "printer.name": "Printer name",
   "printer.title": "Printer",
+  "printer.network_error_chime": "Network Error Chime",
   "proj.add-from.local": "Local storage",
   "proj.add-from.remote": "Remote url",
   "proj.add-from.title": "Add file from",

@@ -256,5 +256,6 @@
   "prop.storage-used-space": "Usato {{used}} di {{total}} ({{free}} liberi)",
   "msg.del-folder": "Vuoi davvero cancellare la cartella {{folder_name}} e il suo contenuto?",
   "msg.create-folder": "Nuova Cartella",
-  "msg.create-folder-name": "Nome cartella"
+  "msg.create-folder-name": "Nome cartella",
+  "printer.network_error_chime": "Suono di errore di rete"
 }
