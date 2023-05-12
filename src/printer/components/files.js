@@ -115,7 +115,7 @@ const updateStorage = (opts = {}) => {
       list.forEach((entry) => {
         const storageType = entry.type;
         const storageData = {
-          name: entry.name || entry.type,
+          name: entry.name,
           path: entry.path.replaceAll('/', ''),
           available: entry.available,
           readOnly: entry.read_only,
