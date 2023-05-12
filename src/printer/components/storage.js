@@ -35,7 +35,9 @@ const update = (storages, selectedStorage, onSelect, updateDetails = false) => {
       const label = tab.querySelector("p");
 
       isVisible = true;
-      label.innerText = storage.name;
+      if (storage.name) {
+        label.innerText = storage.name;
+      }
 
       tab.setAttribute("selected", storageType === selectedStorage);
 

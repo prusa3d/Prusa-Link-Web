@@ -8,14 +8,17 @@
 {%
   set origins = {
     'LOCAL': {
+      label: 'Local',
       pc_icon: 'prusa-link-favicon.svg',
       mobile_icon: 'prusa-link-favicon.svg'
     },
     'SDCARD': {
+      label: 'SD Card',
       pc_icon: 'sd_card.svg',
       mobile_icon: 'micro_sd_card_light.svg'
     },
     'USB': {
+      label: 'USB',
       pc_icon: 'usb-flash-drive-icon.svg',
       mobile_icon: 'usb-flash-drive-icon-light.svg'
     }
@@ -37,7 +40,7 @@
           <li data-storage="{{ key }}" hidden="true">
             <img class="icon pc-only" src="{{ pre.countOrRenderAssets(values.pc_icon) | safe }}"/>
             <img class="icon mobile-only" src="{{ pre.countOrRenderAssets(values.mobile_icon) | safe }}"/>
-            <p class="txt-md"></p>
+            <p class="txt-md">{{ values.label }}</p>
           </li>
       {% endfor %}
     </ul>
