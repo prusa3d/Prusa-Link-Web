@@ -265,5 +265,9 @@
   "msg.del-folder": "",
   "msg.create-folder": "",
   "msg.create-folder-name": "",
-  "printer.network_error_chime": ""
+  "printer.network_error_chime": "",
+  "msg.sysupgrade.pending": "",
+  "msg.sysupgrade.remark": "",
+  "msg.sysupgrade.title": "",
+  "msg.sysupgrade.wait-for-printer": ""
 }
