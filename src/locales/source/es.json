@@ -257,5 +257,9 @@
   "msg.del-folder": "¿Realmente deseas borrar {{folder_name}} y su contenido?",
   "msg.create-folder": "Nueva Carpeta",
   "msg.create-folder-name": "Nombre de la Carpeta",
-  "printer.network_error_chime": "Tono Error Red"
+  "printer.network_error_chime": "Tono Error Red",
+  "msg.sysupgrade.pending": "Actualizando... No apagues la impresora.",
+  "msg.sysupgrade.remark": "La actualización puede durar varios minutos.",
+  "msg.sysupgrade.title": "¿Actualizar el Paquete del Sistema?",
+  "msg.sysupgrade.wait-for-printer": "Esperando a la impresora..."
 }

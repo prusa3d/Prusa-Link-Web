@@ -80,6 +80,10 @@ select {
   font-size: $font-size-small;
 }
 
+.txt-center {
+  text-align: center;
+}
+
 button > p {
   font-family: $font-family;
   font-weight: bold;
@@ -109,6 +113,10 @@ nav {
 
 .justify-between {
   justify-content: space-between;
+}
+
+.justify-center {
+  justify-content: center;
 }
 
 .mr-md {
@@ -1347,6 +1355,16 @@ button:disabled {
 .modal-exposure #next,
 .modal-exposure #previous {
   display: none;
+}
+
+/* ===================================== MODAL SYSUPGRADE ======================================= */
+
+.modal-sysupgrade__message {
+  padding-top: 16px;
+}
+
+.modal-sysupgrade__message p {
+  margin-bottom: 16px;
 }
 
 /* ===================================== QUESTION ======================================= */

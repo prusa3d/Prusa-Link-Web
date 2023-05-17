@@ -5,7 +5,7 @@
 import { translate } from "../../locale_provider";
 import updateProperties from "./updateProperties";
 import { getJson } from "../../auth";
-import { setEnabled, setHidden, setVisible } from "../../helpers/element";
+import { setDisabled, setEnabled, setHidden, setVisible } from "../../helpers/element";
 import {
   editPrinter,
   editSerialNumber,
@@ -14,8 +14,11 @@ import {
 } from "./settingsActions";
 import { handleError } from "./errors";
 import { success } from "./toast";
+import { modal } from "./modal";
 
 let serialNumber = null;
+let prusaLinkVersion = null;
+
 const logsModule = process.env.WITH_LOGS
   ? require("./settings/logs").default
   : null;
@@ -70,6 +73,7 @@ function initBaseSettings() {
       const data = {
         version: result.data,
       };
+      prusaLinkVersion = data.version.server;
       updateProperties("settings", data);
       updateSystemVersionProperties(data);
     })
@@ -111,7 +115,11 @@ function initSystemUpdates() {
             const value = document.createElement('div');
             const valueText = document.createElement('p');
             const action = document.createElement('div');
+            const currentVersion = document.createElement('span');
+            const arrow = document.createElement('span');
             const availableVersion = document.createElement('span');
+
+            const target = "PrusaLink"
 
             row.className = "row update-pkg";
             label.className = "col";
@@ -119,10 +127,13 @@ function initSystemUpdates() {
             action.className = "col";
             labelText.className = "txt-bold txt-grey txt-sm";
             valueText.className = "txt-md";
+            currentVersion.className = "txt-grey txt-sm"
             availableVersion.className = "txt-grey txt-sm"
-            labelText.innerText = "PrusaLink";
+            labelText.innerText = target;
+            arrow.innerHTML = " &rarr; ";
 
             if (entry.new_version) {
+              currentVersion.innerText = prusaLinkVersion; 
               availableVersion.innerText = entry.new_version; 
               const button = document.createElement('button');
               const buttonLabel = document.createElement('p');
@@ -130,23 +141,18 @@ function initSystemUpdates() {
               button.className = 'action';
               button.appendChild(buttonLabel);
               action.appendChild(button);
-              button.onclick = () => {
-                setInProgress(true);
-                getJson("/api/v1/update/prusalink", {method: "POST"})
-                  .then(() => {
-                    success(
-                      translate("upgrade.success.title"),
-                      translate("upgrade.success.message"),
-                    );
-                    setTimeout(() => window.location.href = "/", 5000);
-                  })
-                  .catch(e => handleError(e))
-                  .finally(() => setInProgress(false));
-              }
+              button.onclick = () => modal(
+                (close) => createSysupgradeModal(close, target, entry.new_version), {
+                  timeout: 0,
+                  closeOutside: false,
+                }
+              );
             } else {
               availableVersion.innerText = "The package is up to date";
             }
 
+            valueText.appendChild(currentVersion);
+            valueText.appendChild(arrow);
             valueText.appendChild(availableVersion);
             label.appendChild(labelText);
             value.appendChild(valueText);
@@ -437,6 +443,68 @@ function translateLabel(key) {
     default:
       return key;
   }
+}
+
+const createSysupgradeModal = (close, target, version) => {
+  const template = document.getElementById("modal-sysupgrade");
+  const node = document.importNode(template.content, true);
+
+  const targetLabel = node.getElementById("modal-sysupgrade__target");
+  const currentLabel = node.getElementById("modal-sysupgrade__current");
+  const versionLabel = node.getElementById("modal-sysupgrade__version");
+  const statusLabel = node.getElementById("modal-sysupgrade__status");
+  const spinner = node.getElementById("modal-sysupgrade__spinner");
+  
+  const yesButton = node.getElementById("yes");
+  const noButton = node.getElementById("no");
+
+  targetLabel.innerText = target;
+  currentLabel.innerText = prusaLinkVersion;
+  versionLabel.innerText = version;
+
+  yesButton.addEventListener("click", (event) => {
+    event.preventDefault();
+    setDisabled(yesButton, true);
+    setDisabled(noButton, true);
+    setVisible(yesButton, false);
+    setVisible(noButton, false);
+    setVisible(spinner, true);
+
+    statusLabel.innerText = translate("msg.sysupgrade.pending")
+
+    getJson("/api/v1/update/prusalink", {method: "POST"})
+      .then(() => {
+        statusLabel.innerText = translate("msg.sysupgrade.wait-for-printer")
+        return waitForSysupgrade(version)
+      })
+      .catch(e => handleError(e))
+      .finally(() => {
+        close();
+        window.location.href = "/";
+      });
+  });
+  
+  noButton.addEventListener("click", () => close());
+  return node;
+}
+
+const waitForSysupgrade = (version) => {
+  return new Promise((resolve, reject) => {
+    const checkVersion = () => {
+      return getJson("/api/version")
+        .then(data => {
+          resolve()
+          // TODO: we can also consider version verification here
+          // if (data.server === version) {
+          //   resolve(true)
+          // } else {
+          //   setTimeout(checkVersion, 1000)
+          // }
+        })
+        .catch(e => setTimeout(checkVersion, 2500))
+    }
+    setTimeout(checkVersion, 5000)
+  });
 }
 
 export default { load, update };

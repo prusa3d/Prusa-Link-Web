@@ -257,5 +257,9 @@
   "msg.del-folder": "Vuoi davvero cancellare la cartella {{folder_name}} e il suo contenuto?",
   "msg.create-folder": "Nuova Cartella",
   "msg.create-folder-name": "Nome cartella",
-  "printer.network_error_chime": "Suono di errore di rete"
+  "printer.network_error_chime": "Suono di errore di rete",
+  "msg.sysupgrade.pending": "Aggiornamento... Non spegnere la stampante.",
+  "msg.sysupgrade.remark": "L'aggiornamento potrebbe durare diversi minuti.",
+  "msg.sysupgrade.title": "Aggiornare il pacchetto di sistema?",
+  "msg.sysupgrade.wait-for-printer": "In attesa della stampante..."
 }

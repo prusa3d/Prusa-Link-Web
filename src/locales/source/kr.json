@@ -266,5 +266,9 @@
   "msg.del-folder": "정말 {{folder_name}} 폴더 및 내용을 지우시겠습니까?",
   "msg.create-folder": "새 폴더",
   "msg.create-folder-name": "폴더 이름",
-  "printer.network_error_chime": "네트워크 에러 차임벨"
+  "printer.network_error_chime": "네트워크 에러 차임벨",
+  "msg.sysupgrade.pending": "",
+  "msg.sysupgrade.remark": "",
+  "msg.sysupgrade.title": "",
+  "msg.sysupgrade.wait-for-printer": ""
 }

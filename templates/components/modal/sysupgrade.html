@@ -1,0 +1,41 @@
+<!-- prettier-ignore -->
+{#
+  # This file is part of the Prusa Link Web
+  # Copyright (C) 2021 Prusa Research a.s. - www.prusa3d.com
+  # SPDX-License-Identifier: GPL-3.0-or-later
+#}
+
+<template id="modal-sysupgrade">
+  <div class="modal-sysupgrade">
+    <div class="txt-bold txt-center">
+      <p id="modal-sysupgrade__title" data-label="msg.sysupgrade.title"></p>
+    </div>
+
+    <div class="modal-sysupgrade__message">
+      <p class="txt-sm txt-center">
+        <span id="modal-sysupgrade__target"></span>
+        <span id="modal-sysupgrade__current"></span> &rarr;
+        <span id="modal-sysupgrade__version"></span>
+      </p>
+      <p class="txt-sm txt-center" data-label="msg.sysupgrade.remark"></p>
+    </div>
+
+    <div class="modal-sysupgrade__submit flex-row txt-center justify-center">
+      <button class="yes mr-md" id="yes">
+        <img src="{{ pre.countOrRenderAssets('yes_color.svg') | safe }}" />
+        <p data-label="btn.confirm">Confirm</p>
+      </button>
+      <button class="no" id="no">
+        <img src="{{ pre.countOrRenderAssets('cancel.svg') | safe }}" />
+        <p data-label="btn.cancel">Cancel</p>
+      </button>
+      <img
+        id="modal-sysupgrade__spinner"
+        class="icon"
+        hidden
+        src="{{ pre.countOrRenderAssets('dual-ring-1s-200px.svg') | safe }}"
+      />
+      <span id="modal-sysupgrade__status"></span>
+    </div>
+  </div>
+</template>
