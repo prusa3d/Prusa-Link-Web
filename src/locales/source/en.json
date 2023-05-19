@@ -267,7 +267,7 @@
   "upgrade.success.title": "Upgrade Successful",
   "upgrade.success.message": "Page will be reloaded in 5 seconds",
   "msg.sysupgrade.pending": "Upgrading... Do not switch the printer off.",
-  "msg.sysupgrade.remark": "The upgrade could last for several minutes.",
+  "msg.sysupgrade.remark": "The upgrade may take several tens of seconds.",
   "msg.sysupgrade.title": "Upgrade System Package?",
   "msg.sysupgrade.wait-for-printer": "Waiting for the printer..."
 }
