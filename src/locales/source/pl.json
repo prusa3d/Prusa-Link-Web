@@ -259,7 +259,7 @@
   "msg.create-folder-name": "Nazwa folderu",
   "printer.network_error_chime": "Dźwięk błędu sieci",
   "msg.sysupgrade.pending": "Aktualizacja... Nie wyłączaj drukarki.",
-  "msg.sysupgrade.remark": "Aktualizacja może trwać kilka minut.",
+  "msg.sysupgrade.remark": "Aktualizacja może trwać kilkadziesiąt sekund.",
   "msg.sysupgrade.title": "Zaktualizować paczkę systemową?",
   "msg.sysupgrade.wait-for-printer": "Oczekiwanie na drukarkę..."
 }

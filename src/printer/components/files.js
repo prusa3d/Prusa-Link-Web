@@ -3,7 +3,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import formatData from "./dataFormat.js";
-import joinPaths from "../../helpers/join_paths";
 import upload from "./upload";
 import { getJson, getImage } from "../../auth.js";
 import { getValue } from "./updateProperties.js";
@@ -23,7 +22,6 @@ import * as job from "./job";
 import { initKebabMenu } from "./kebabMenu.js";
 import { setDisabled, setEnabled, setVisible } from "../../helpers/element.js";
 import storage from "./storage.js";
-import { LinkState } from "../../state.js";
 import { setButtonLoading, unsetButtonLoading } from "../../helpers/button.js";
 
 const FILE_TYPE = {
@@ -193,9 +191,17 @@ const updateFiles = (opts = {}) => {
     initUpload(printer.getContext());
   }
 
+  const setFilesList = (files) => {
+    metadata.files = files;
+    // in case if files on the printer have changed, clearing on response makes more sense
+    clearFiles();
+    redrawFiles();
+  };
+
   getJson(url, {
     headers: { "If-None-Match": lastETag },
-  }).then((result) => {
+  })
+  .then((result) => {
     if (url !== getCurrentApiPath()) {
       // user navigated to other folder
       return;
@@ -214,11 +220,13 @@ const updateFiles = (opts = {}) => {
           return;
         }
       }
-      metadata.files = files;
-      // in case if files on the printer have changed, clearing on response makes more sense
-      clearFiles();
-      redrawFiles();
+      setFilesList(files)
     }
+  })
+  .catch(() => {
+    metadata.eTag = null;
+    setFilesList([]);
+    printer.getContext().selectFile(null);
   });
 };
 
@@ -283,7 +291,7 @@ function initUpload(context) {
   const storage = getCurrentStorage();
   const path = getCurrentPath();
   upload.init(storage.path, path, context?.fileExtensions);
-  upload.hide(!!storage?.readOnly);
+  upload.hide(storage?.readOnly !== false);
 }
 
 /**
@@ -433,6 +441,8 @@ function createCurrent() {
       createFolder(getCurrentApiPath);
     };
   }
+
+  setDisabled(createBtn, storage.readOnly !== false);
 
   component.querySelector("#sort-by-name p").innerText = translate(
     "sort.by-name"
@@ -670,6 +680,7 @@ function selectStorage(origin) {
     if (storage.available) {
       updateFiles({ force: true });
     }
+    upload.hide(storage.readOnly !== false)
   }
 }
 

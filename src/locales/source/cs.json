@@ -88,7 +88,7 @@
   "msg.sla-pour-resin": "Nalijte do vaničky dostatečné množství resinu pro vybraný soubor a zavřete víko. Minimální objem resinu je zobrazen na dotykovém displeji tiskárny.",
   "msg.sla-refill": "Dolijte vaničku do 100 % a zavřete víko.",
   "msg.sysupgrade.title": "Aktualizovat systémový balíček?",
-  "msg.sysupgrade.remark": "Aktualizace může trvat několik minut.",
+  "msg.sysupgrade.remark": "Aktualizace může trvat několik desítek vteřin.",
   "msg.sysupgrade.pending": "Probíhá aktualizace... Nevypínejte tiskárnu.",
   "msg.sysupgrade.wait-for-printer": "Čeká se na tiskárnu...",
   "ntf.actn-pending": "Akce se vykoná po dokončení vytvrzení vrstvy.",
