@@ -267,9 +267,9 @@
   "msg.create-folder": "새 폴더",
   "msg.create-folder-name": "폴더 이름",
   "printer.network_error_chime": "네트워크 에러 차임벨",
-  "msg.sysupgrade.pending": "",
-  "msg.sysupgrade.remark": "",
-  "msg.sysupgrade.title": "",
-  "msg.sysupgrade.wait-for-printer": "",
+  "msg.sysupgrade.pending": "업그레이드중... 프린터를 끄지 마십시오.",
+  "msg.sysupgrade.remark": "업그레이드에는 수십초가 걸릴 수 있습니다.",
+  "msg.sysupgrade.title": "시스템 패키지를 업그레이드하겠습니까?",
+  "msg.sysupgrade.wait-for-printer": "프린터를 기다리는 중...",
   "camera.focus": ""
 }
