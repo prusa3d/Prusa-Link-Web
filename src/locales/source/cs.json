@@ -73,7 +73,7 @@
   "msg.api-key-3": "Otevřete menu Nastavení -> Síť -> PrusaLink.",
   "msg.cancel": "Chcete opravdu zrušit tisk?",
   "msg.del-proj": "Opravdu chcete smazat {{file_name}}?",
-  "msg.del-folder": "Opravdu chcete smazat {{folder_name}} a ho obsah?",
+  "msg.del-folder": "Opravdu chcete smazat {{folder_name}} a její obsah?",
   "msg.create-folder": "Nová složka",
   "msg.create-folder-name": "Název složky",
   "msg.drop-zone.label": "Přetažením souboru zahájíte nahrávání",
