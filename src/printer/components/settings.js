@@ -18,6 +18,7 @@ import { modal } from "./modal";
 
 let serialNumber = null;
 let prusaLinkVersion = null;
+let connectUrl = null;
 
 const logsModule = process.env.WITH_LOGS
   ? require("./settings/logs").default
@@ -382,8 +383,9 @@ function updatePrusaConnectStatus(data, updateInputValue) {
   const urlString = `${protocol}://${hostname}${port || ""}`;
   const customMessage = `(${urlString})`;
 
-  if (updateInputValue) {
+  if (updateInputValue || connectUrl !== urlString) {
     urlIn.value = urlString;
+    connectUrl = urlString;
   }
   setHidden(urlIn.parentNode.parentNode, isFinished);
   if (unlinkButton) {

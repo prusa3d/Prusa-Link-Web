@@ -35,7 +35,7 @@ export class Context {
         ok: true,
         message: "OK",
         settings: {
-          hostname: '',
+          hostname: 'connect.prusa3d.com',
           tls: true,
           port: 0
         }
