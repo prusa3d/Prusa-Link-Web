@@ -262,5 +262,6 @@
   "msg.sysupgrade.remark": "L'aggiornamento può richiedere qualche minuto.",
   "msg.sysupgrade.title": "Aggiornare il pacchetto di sistema?",
   "msg.sysupgrade.wait-for-printer": "In attesa della stampante...",
-  "camera.focus": ""
+  "camera.focus": "Messa a fuoco",
+  "conn.error_status": ""
 }
