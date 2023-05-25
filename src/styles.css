@@ -289,6 +289,37 @@ body > .content {
   margin: 0;
 }
 
+.tooltip-handle {
+  position: relative;
+  cursor: pointer;
+  border: 0;
+  background-color: transparent;
+  margin: 0;
+  padding: 0;
+}
+
+.tooltip-handle span {
+  visibility: hidden;
+  min-width: 120px;
+  max-width: 200px;
+  background-color: #0a0a0a;
+  color: #ffffff;
+  opacity: 0.9;
+  text-align: center;
+  padding: 16px;
+  border-radius: 6px;
+  position: absolute;
+  z-index: 1;
+  right: 8px;
+  top: 8px;
+  border: 1px solid $orange;
+}
+
+.tooltip-handle:hover span,
+.tooltip-handle--active span {
+  visibility: visible;
+}
+
 /* ===================================== HEAD ======================================= */
 
 nav {

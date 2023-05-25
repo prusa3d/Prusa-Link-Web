@@ -1,6 +1,7 @@
 import { setHidden } from "../../helpers/element";
 import { translate } from "../../locale_provider";
 import { modal } from "./modal";
+import { Tooltip } from "./tooltip";
 
 const failuresBeforeOfflineScreen =
   process.env.WITH_FAILURES_BEFORE_OFFLINE_SCREEN;
@@ -10,26 +11,38 @@ let offlineScreen = null;
 /** Updates connection status in telemetry. */
 const updateConnectionStatus = ({ link, isConnected }) => {
 
-
   const alwaysShowStateOf = ["connect"];
 
   for (const name in link) {
     const { ok, message } = link[name];
     const msgElm = document.getElementById(`conn-status-${name}-msg`)
+    const isOkMessage = message.toLowerCase() === "ok"
     if (msgElm) {
-      msgElm.innerHTML =
-        ok && name === "connect"
-          ? message.toLowerCase() === "ok"
-            ? translate("conn.connect.linked")
-            : translate("conn.connect.not-linked")
-          : message;
+      if (name === "connect") {
+        msgElm.innerHTML = (isOkMessage)
+          ? translate("conn.connect.linked")
+          : translate("conn.connect.not-linked");
+      } else {
+        msgElm.innerHTML = translate("conn.error_status");
+      }
     }
     const stateNode = document.getElementById(`conn-status-${name}`);
     const stateSuccessIcon = stateNode.querySelector(".icon-success");
     const stateWarningIcon = stateNode.querySelector(".icon-warning");
+    const tooltipHandle = stateNode.querySelector(".info-message-tooltip")
+    const tooltip = tooltipHandle.querySelector("span")
     const isHidden = ok && !alwaysShowStateOf.includes(name);
 
+    if (tooltipHandle && tooltip) {
+      if (!isOkMessage) {
+        tooltip.innerText = message;
+        Tooltip.init(tooltipHandle)
+      }
+      setHidden(tooltipHandle, isOkMessage);
+    }
+
     setHidden(stateNode, isHidden);
+    
     if (!isHidden) {
       setHidden(stateSuccessIcon, !ok);
       setHidden(stateWarningIcon, ok);

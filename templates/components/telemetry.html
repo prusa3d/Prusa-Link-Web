@@ -49,10 +49,16 @@
             class="txt-sm txt-grey"
             data-label="{{ values.label }}"
           >{{ values.text }}</p>
-          <p
-            class="txt-bold txt-md"
-            id="{{ values.id_msg }}"
-          >NA</p>
+          <div class="flex-row justify-between">
+            <p
+              class="txt-bold txt-md"
+              id="{{ values.id_msg }}"
+            >NA</p>
+            <button class="info-message-tooltip tooltip-handle">
+              <img class="icon icon-warning icon-small" src="{{ pre.countOrRenderAssets('info-icon.svg') | safe }}" />
+              <span id="{{ values.id }}-tooltip" class="txt-sm"></span>
+            </button>
+          </div>
         </div>
       </div>
     {% endfor %}
