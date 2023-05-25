@@ -266,12 +266,13 @@
   "upgrade.success.title": "Mise à niveau Réussie",
   "prop.storage-used-space": "{{used}} utilisés sur {{total}} ({{free}} libre)",
   "msg.del-folder": "Voulez-vous vraiment supprimer {{folder_name}} et son contenu ?",
-  "msg.create-folder": "",
-  "msg.create-folder-name": "",
-  "printer.network_error_chime": "",
-  "msg.sysupgrade.pending": "",
-  "msg.sysupgrade.remark": "",
-  "msg.sysupgrade.title": "",
-  "msg.sysupgrade.wait-for-printer": "",
-  "camera.focus": ""
+  "msg.create-folder": "Nouveau Dossier",
+  "msg.create-folder-name": "Nom de Dossier",
+  "printer.network_error_chime": "Carillon d'erreur réseau",
+  "msg.sysupgrade.pending": "Mise à niveau... N'éteignez pas l'imprimante.",
+  "msg.sysupgrade.remark": "La mise à jour peut prendre plusieurs dizaines de secondes.",
+  "msg.sysupgrade.title": "Mettre à niveau le package système ?",
+  "msg.sysupgrade.wait-for-printer": "Attente de l'imprimante...",
+  "camera.focus": "Focus",
+  "conn.error_status": ""
 }

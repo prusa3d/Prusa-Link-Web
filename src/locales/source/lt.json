@@ -270,5 +270,6 @@
   "msg.sysupgrade.remark": "",
   "msg.sysupgrade.title": "",
   "msg.sysupgrade.wait-for-printer": "",
-  "camera.focus": ""
+  "camera.focus": "",
+  "conn.error_status": ""
 }

@@ -52,6 +52,7 @@
   "cameras.trigger-scheme.thirty-sec": "",
   "conn.connect.linked": "",
   "conn.connect.not-linked": "",
+  "conn.error_status": "",
   "conn.printer-status": "",
   "conn.prusa-connect-status": "",
   "conn.suc": "",
