@@ -283,7 +283,6 @@
   "msg.sysupgrade.wait-for-printer": "Warten auf den Drucker...",
   "camera.focus": "Fokus",
   "conn.error_status": "",
-  "msg.file-exists": "",
   "msg.file-exists.overwrite-it": "Möchten Sie sie überschreiben?",
   "msg.file-exists.title": "Datei existiert bereits"
 }

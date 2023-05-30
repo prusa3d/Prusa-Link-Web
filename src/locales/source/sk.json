@@ -275,7 +275,6 @@
   "msg.sysupgrade.wait-for-printer": "",
   "camera.focus": "",
   "conn.error_status": "",
-  "msg.file-exists": "",
   "msg.file-exists.overwrite-it": "",
   "msg.file-exists.title": ""
 }

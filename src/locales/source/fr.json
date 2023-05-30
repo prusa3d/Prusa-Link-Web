@@ -274,7 +274,6 @@
   "msg.sysupgrade.title": "Mettre à niveau le package système ?",
   "msg.sysupgrade.wait-for-printer": "Attente de l'imprimante...",
   "camera.focus": "Focus",
-  "msg.file-exists": "",
   "msg.file-exists.overwrite-it": "Voulez-vous l'écraser ?",
   "msg.file-exists.title": "Le fichier existe déjà",
   "conn.error_status": ""
