@@ -271,9 +271,9 @@
   "msg.sysupgrade.remark": "업그레이드에는 수십초가 걸릴 수 있습니다.",
   "msg.sysupgrade.title": "시스템 패키지를 업그레이드하겠습니까?",
   "msg.sysupgrade.wait-for-printer": "프린터를 기다리는 중...",
-  "camera.focus": "",
+  "camera.focus": "포커스",
   "conn.error_status": "",
   "msg.file-exists": "",
-  "msg.file-exists.overwrite-it": "",
-  "msg.file-exists.title": ""
+  "msg.file-exists.overwrite-it": "덮어쓰시겠습니까?",
+  "msg.file-exists.title": "파일이 이미 존재합니다."
 }
