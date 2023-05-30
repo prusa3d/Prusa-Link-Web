@@ -264,7 +264,6 @@
   "msg.sysupgrade.wait-for-printer": "Oczekiwanie na drukarkę...",
   "camera.focus": "Ostrość",
   "conn.error_status": "",
-  "msg.file-exists": "",
   "msg.file-exists.overwrite-it": "Czy chcesz go nadpisać?",
   "msg.file-exists.title": "Plik już istnieje"
 }

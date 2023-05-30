@@ -270,5 +270,5 @@
   "conn.connect.not-linked": null,
   "btn.check-updates": "Kontrola aktualizací",
   "btn.upgrade": "Aktualizovat",
-  "conn.error_status": ""
+  "conn.error_status": "Chyba"
 }
