@@ -276,5 +276,6 @@
   "camera.focus": "",
   "conn.error_status": "",
   "msg.file-exists.overwrite-it": "",
-  "msg.file-exists.title": ""
+  "msg.file-exists.title": "",
+  "conn.printer.not-supported": ""
 }

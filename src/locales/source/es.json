@@ -263,7 +263,8 @@
   "msg.sysupgrade.title": "¿Actualizar el Paquete del Sistema?",
   "msg.sysupgrade.wait-for-printer": "Esperando a la impresora...",
   "camera.focus": "Enfocar",
-  "conn.error_status": "",
+  "conn.error_status": "Error",
   "msg.file-exists.overwrite-it": "¿Quieres sobrescribirlo?",
-  "msg.file-exists.title": "El archivo ya existe"
+  "msg.file-exists.title": "El archivo ya existe",
+  "conn.printer.not-supported": ""
 }

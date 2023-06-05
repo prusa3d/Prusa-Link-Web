@@ -263,7 +263,8 @@
   "msg.sysupgrade.title": "Zaktualizować paczkę systemową?",
   "msg.sysupgrade.wait-for-printer": "Oczekiwanie na drukarkę...",
   "camera.focus": "Ostrość",
-  "conn.error_status": "",
+  "conn.error_status": "Błąd",
   "msg.file-exists.overwrite-it": "Czy chcesz go nadpisać?",
-  "msg.file-exists.title": "Plik już istnieje"
+  "msg.file-exists.title": "Plik już istnieje",
+  "conn.printer.not-supported": ""
 }
