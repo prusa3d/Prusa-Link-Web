@@ -276,5 +276,6 @@
   "camera.focus": "Focus",
   "msg.file-exists.overwrite-it": "Voulez-vous l'écraser ?",
   "msg.file-exists.title": "Le fichier existe déjà",
-  "conn.error_status": ""
+  "conn.error_status": "Erreur",
+  "conn.printer.not-supported": ""
 }
