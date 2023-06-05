@@ -132,10 +132,12 @@ export class Context {
         print: printer.fan_print,
       },
     };
-    this.link.connect.message = printer.status_connect.message;
-    this.link.connect.ok = printer.status_connect.ok;
-    this.link.printer.message = printer.status_printer.message;
-    this.link.printer.ok = printer.status_printer.ok;
+    // hide status if connect is not supported
+    this.link.connect.message = printer.status_connect?.message ?? "";
+    this.link.connect.ok = printer.status_connect?.ok;
+    // just suppress the status if unsupported by the printer
+    this.link.printer.message = printer.status_printer?.message ?? 'ok';
+    this.link.printer.ok = printer.status_printer?.ok ?? true;
   }
 
   updateJob(job) {

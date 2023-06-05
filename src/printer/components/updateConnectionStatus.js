@@ -31,7 +31,8 @@ const updateConnectionStatus = ({ link, isConnected }) => {
     const stateWarningIcon = stateNode.querySelector(".icon-warning");
     const tooltipHandle = stateNode.querySelector(".info-message-tooltip")
     const tooltip = tooltipHandle.querySelector("span")
-    const isHidden = ok && !alwaysShowStateOf.includes(name);
+    const isUnsupported = ok === undefined;
+    const isHidden = isUnsupported || (ok && !alwaysShowStateOf.includes(name));
 
     if (tooltipHandle && tooltip) {
       if (!isOkMessage) {
