@@ -2,6 +2,7 @@
 // Copyright (C) 2021 Prusa Research a.s. - www.prusa3d.com
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+import { setHidden } from "../../helpers/element.js";
 import formatData from "./dataFormat.js";
 
 /**
@@ -30,8 +31,10 @@ export const getValue = (location, data) => {
 export const updateProperties = (type, data) => {
   document.querySelectorAll(`[data-type="${type}"]`).forEach((elm) => {
     const where = elm.dataset.where;
+    const zeroes = elm.dataset.zeroes;
     const value = where ? getValue(where, data) : data;
     elm.innerHTML = formatData(elm.dataset.format, value);
+    setHidden(elm, (zeroes === "hide" && !value));
   });
 };
 
