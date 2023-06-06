@@ -16,10 +16,9 @@ const updateConnectionStatus = ({ link, isConnected }) => {
   for (const name in link) {
     const { ok, message } = link[name];
     const msgElm = document.getElementById(`conn-status-${name}-msg`)
-    const isOkMessage = message.toLowerCase() === "ok"
     if (msgElm) {
       if (name === "connect") {
-        msgElm.innerHTML = (isOkMessage)
+        msgElm.innerHTML = (ok)
           ? translate("conn.connect.linked")
           : translate("conn.connect.not-linked");
       } else {
@@ -34,11 +33,11 @@ const updateConnectionStatus = ({ link, isConnected }) => {
     const isHidden = ok && !alwaysShowStateOf.includes(name);
 
     if (tooltipHandle && tooltip) {
-      if (!isOkMessage) {
+      if (!ok) {
         tooltip.innerText = message;
         Tooltip.init(tooltipHandle)
       }
-      setHidden(tooltipHandle, isOkMessage);
+      setHidden(tooltipHandle, ok || !message);
     }
 
     setHidden(stateNode, isHidden);
