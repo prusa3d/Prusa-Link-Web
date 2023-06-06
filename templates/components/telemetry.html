@@ -22,7 +22,7 @@
   {%
       set telemetry_list = [
           {'text': 'Nozzle Temperature', label: 'prop.temp-nozzle', 'icon': 'status_nozzle.svg', 'format': 'temp', "locations": ["telemetry.temperature.nozzle.current", "telemetry.temperature.nozzle.target"], enabled: true },
-          {'text': 'Heatbed', label: 'prop.temp-bed', 'icon': 'status_heatbed.svg', 'format': 'temp', "locations": ["telemetry.temperature.bed.current", "telemetry.temperature.bed.target"], enabled: true },
+          {'text': 'Heatbed', label: 'prop.temp-bed', 'icon': 'status_heatbed.svg', 'format': 'temp', "locations": ["telemetry.temperature.bed.current", "telemetry.temperature.bed.target"], enabled: true},
           {'text': 'Printing Speed', label: 'prop.speed', 'icon': 'status_prnspeed.svg', 'format': 'print', "location": "telemetry.speed", enabled: true },
           {'text': 'Z - Height', label: 'prop.z-height', 'icon': 'status_z_axis.svg', "location": "telemetry.axis.z", 'format': 'pos', enabled: true },
           {'text': 'Nozzle Diameter', label: 'prop.nozzle-diameter', 'icon': 'nozzle.svg', "location": "printer.nozzleDiameter", 'format': 'diameter', enabled: env.WITH_TELEMETRY_NOZZLE_DIAMETER },
@@ -81,16 +81,14 @@
           data-label="{{ values.label }}"
           >{{ values.text }}</p>
         {% if values.locations %}
-          <p class="txt-bold txt-md">
+          <p class="txt-bold txt-md tel-value">
             {% for location in values.locations %}
               <span
                 data-type="telemetry"
                 data-format="{{ values.format }}"
                 data-where="{{ location }}"
+                data-zeroes="hide"
               >NA</span>
-              {% if not loop.last %}
-                <span> / </span>
-              {% endif %}
             {% endfor %}
           </p>
         {% else %}
