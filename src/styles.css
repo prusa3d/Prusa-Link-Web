@@ -429,6 +429,11 @@ nav .burger-icon.burger-open {
   position: -webkit-sticky;
   top: 78px;
 }
+
+.tel-value span:not(:first-child)::before {
+  content: ' / '
+}
+
 .tel-prop {
   display: flex;
   align-items: center;

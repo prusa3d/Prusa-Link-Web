@@ -273,5 +273,6 @@
   "msg.sysupgrade.remark": "The upgrade may take several tens of seconds.",
   "msg.sysupgrade.title": "Upgrade System Package?",
   "msg.sysupgrade.wait-for-printer": "Waiting for the printer...",
-  "conn.error_status": ""
+  "conn.error_status": "Error",
+  "conn.printer.not-supported": ""
 }

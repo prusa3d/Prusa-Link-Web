@@ -282,8 +282,8 @@
   "msg.sysupgrade.title": "Systempaket aktualisieren?",
   "msg.sysupgrade.wait-for-printer": "Warten auf den Drucker...",
   "camera.focus": "Fokus",
-  "conn.error_status": "",
-  "msg.file-exists": "",
+  "conn.error_status": "Fehler",
   "msg.file-exists.overwrite-it": "Möchten Sie sie überschreiben?",
-  "msg.file-exists.title": "Datei existiert bereits"
+  "msg.file-exists.title": "Datei existiert bereits",
+  "conn.printer.not-supported": ""
 }
