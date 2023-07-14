@@ -1600,10 +1600,10 @@ $toast-success-title-color: $text-white;
 
 .dropdown .open {
   visibility: visible;
+  border: 1px solid #707070;
 }
 .dropdown ul {
   background-color: hsl(0, 0%, 4%);
-  border: 1px solid #707070;
   list-style: none;
   padding: 0;
   margin: 0;
@@ -1616,7 +1616,7 @@ $toast-success-title-color: $text-white;
 }
 .dropdown li {
   cursor: pointer;
-  padding: 15px 20px;
+  padding: 2px 16px 2px 4px;
   white-space: nowrap;
 }
 .dropdown li.selected {
@@ -1639,7 +1639,6 @@ $toast-success-title-color: $text-white;
   top: 90%;
   min-width: 100%;
   position: absolute;
-  visibility: collapse;
   z-index: 5;
 }
 
@@ -2128,9 +2127,6 @@ input .autoresize {
     padding: 0;
     align-self: unset !important;
     min-width: fit-content !important;
-  }
-  .dropdown li {
-    padding: 2px 4px;
   }
   #lang-dropdown {
     order: 4;
