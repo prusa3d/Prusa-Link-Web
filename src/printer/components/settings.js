@@ -380,7 +380,7 @@ function updatePrusaConnectStatus(data, updateInputValue) {
     `conn-prusa-connect-status-${ready ? "ok" : "not-ok"}`
   );
   const protocol = tls ? "https" : "http";
-  const urlString = `${protocol}://${hostname}${port || ""}`;
+  const urlString = `${protocol}://${hostname}${port ? `:${port}` : ""}`;
   const customMessage = `(${urlString})`;
 
   if (updateInputValue || connectUrl !== urlString) {
