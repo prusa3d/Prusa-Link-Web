@@ -283,6 +283,12 @@ paths:
           $ref: "#/components/responses/Unauthorized"
     put:
       summary: upload file or create folder
+      requestBody:
+        content:
+          application/octet-stream:
+            schema:
+              type: string
+              format: binary
       parameters:
         - in: header
           name: Content-Length
