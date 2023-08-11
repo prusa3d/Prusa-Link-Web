@@ -408,7 +408,7 @@ function createNodeFolder(entry, details) {
   elm.getElementById("details").innerHTML = detailsText;
 
   const deleteBtn = elm.getElementById("delete");
-  setDisabled(deleteBtn, entry.read_only || entry.ro)
+  setEnabled(deleteBtn, !(entry.read_only || entry.ro))
   if (deleteBtn) {
     deleteBtn.onclick = (e) => {
       e.stopPropagation();
