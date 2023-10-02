@@ -643,7 +643,7 @@ function setupFileButtons(node, elm) {
 
   const downloadBtn = elm.getElementById("download");
   if (downloadBtn) {
-    setEnabled(downloadBtn, node.refs?.download);
+    setEnabled(downloadBtn, !!node.refs?.download);
     downloadBtn.onclick = (e) => {
       setButtonLoading(downloadBtn);
       downloadFile(node.refs?.download, fileDisplayName, () =>
