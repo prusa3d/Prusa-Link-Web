@@ -18,7 +18,9 @@
           {'text': 'cover state', label: 'prop.cover', 'icon': 'cover_color.svg', 'format': 'cover',  "location": "telemetry.coverClosed", enabled: true }
       ]
   %}
-{% else %}
+{% endif %}
+
+{% if env.PRINTER_TYPE == "fdm" %}
   {%
       set telemetry_list = [
           {'text': 'Nozzle Temperature', label: 'prop.temp-nozzle', 'icon': 'status_nozzle.svg', 'format': 'temp', "locations": ["telemetry.temperature.nozzle.current", "telemetry.temperature.nozzle.target"], enabled: true },
@@ -30,6 +32,15 @@
       ]
   %}
 {% endif %}
+
+{% if env.PRINTER_TYPE == "virtual" %}
+  {%
+      set telemetry_list = [
+          {'text': 'Cameras', label: 'prop.cameras', 'icon': 'camera-icon.svg', "location": "telemetry.cameras", enabled: env.WITH_CAMERAS }
+      ]
+  %}
+{% endif %}
+
 
 {%
     set connection_status_list = [

@@ -32,12 +32,12 @@ let connectionProblem = false;
  * Time is only approximate, it is not guaranteed!
  */
 const requests = {
-  status: {
-    get: () => getJson("/api/v1/status"),
-    init: true,
-    update: true,
+  //status: {
+  //  get: () => getJson("/api/v1/status"),
+  //  init: true,
+  //  update: true,
     // updateInterval: process.env.CONNECTION_UPDATE_INTERVAL,
-  },
+  // },
 };
 
 async function getRequests(initialized) {

@@ -5,6 +5,7 @@
 const printer = (() => {
   if (process.env.PRINTER_TYPE === "sla") return require("./sla");
   if (process.env.PRINTER_TYPE === "fdm") return require("./fdm");
+  if (process.env.PRINTER_TYPE === "virtual") return require("./virtual");
 })().default;
 
 export default printer;

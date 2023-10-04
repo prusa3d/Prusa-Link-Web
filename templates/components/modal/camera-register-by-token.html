@@ -1,0 +1,33 @@
+<!-- prettier-ignore -->
+{#
+    # This file is part of the Prusa Link Web
+    # Copyright (C) 2021 Prusa Research a.s. - www.prusa3d.com
+    # SPDX-License-Identifier: GPL-3.0-or-later
+#}
+  
+<template id="modal-camera-register-by-token">
+    <div class="modal-camera-register-by-token">
+      <div class="txt-bold">
+        <p id="modal-camera-register-title" data-label="camera.register-by-token"></p>
+      </div>
+      
+      <div class="camera-settings__form">
+        <div class="flex-row">
+          <label for="camera-register__token" data-label="camera.token"></label>
+          <input class="grow" id="camera-register__token" value="" />
+        </div>
+      </div>
+      <div class="flex-row">
+        <button class="yes" id="yes">
+          <img src="{{ pre.countOrRenderAssets('yes_color.svg') | safe }}" />
+          <p data-label="btn.confirm">Confirm</p>
+        </button>
+        <div class="grow"></div>
+        <button class="no" id="no">
+          <img src="{{ pre.countOrRenderAssets('cancel.svg') | safe }}" />
+          <p data-label="btn.cancel">Cancel</p>
+        </button>
+      </div>
+    </div>
+</template>
+  

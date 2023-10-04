@@ -52,7 +52,7 @@ const load = (context) => {
 
 const update = (context, updateUI = updateCamerasUI) => {
   if (currentCameraId === undefined) {
-    currentCameraId = context.camera.id;
+    currentCameraId = context.camera?.id;
   }
   allowCloud = context.link.connect.ok;
   getJson("/api/v1/cameras")
@@ -195,8 +195,10 @@ const updateCurrentCamera = (cameraId) => {
 
 const updateCameraNode = (cameraNode, camera, firstTime = false) => {
   cameraNode.querySelector(".camera__name").innerText = camera.config.name;
-  cameraNode.querySelector(".camera__path").innerText = camera.config.path || '-';
-  cameraNode.querySelector(".camera__driver").innerText = camera.config.driver || '-';
+  cameraNode.querySelector(".camera__path").innerText =
+    camera.config.path || "-";
+  cameraNode.querySelector(".camera__driver").innerText =
+    camera.config.driver || "-";
   cameraNode.querySelector(".camera__cloud").innerText = camera.registered
     ? translate("camera.cloud.linked")
     : translate("camera.cloud.not-linked");
@@ -251,7 +253,11 @@ const updateCameraNode = (cameraNode, camera, firstTime = false) => {
       "click",
       (e) => {
         e.stopPropagation();
-        controlCloudConnection(camera.id, "POST");
+        if (process.env["PRINTER_TYPE"] === "virtual") {
+          openCameraRegisterByTokenModal(camera.id);
+        } else {
+          controlCloudConnection(camera.id, "POST");
+        }
       },
       false
     );
@@ -411,7 +417,7 @@ const createCameraSettingsModal = (cameraId, resolve) => {
         inputTriggerScheme.value = translateTriggerScheme(data.trigger_scheme);
 
         setVisible(inputFocus.parentNode, hasFocus);
-        console.log(`DEBUG: has focus (${hasFocus})`, data)
+        console.log(`DEBUG: has focus (${hasFocus})`, data);
         if (hasFocus) {
           inputFocus.value = Math.round(data.focus * 100);
         }
@@ -424,7 +430,7 @@ const createCameraSettingsModal = (cameraId, resolve) => {
             triggerSchemes[
               triggerSchemesOptions.indexOf(inputTriggerScheme.value)
             ];
-          const focus = hasFocus ? {focus: inputFocus.value / 100} : {};
+          const focus = hasFocus ? { focus: inputFocus.value / 100 } : {};
           getJson(`${apiCameraUrl}/config`, {
             method: "PATCH",
             headers: {
@@ -437,7 +443,7 @@ const createCameraSettingsModal = (cameraId, resolve) => {
                 height: resY,
               },
               trigger_scheme,
-              ...focus
+              ...focus,
             }),
           })
             .then(() =>
@@ -461,6 +467,53 @@ const createCameraSettingsModal = (cameraId, resolve) => {
 const openCameraSettingsModal = (cameraId) =>
   new Promise((resolve, reject) => {
     modal(createCameraSettingsModal(cameraId, resolve), {
+      timeout: 0,
+      closeOutside: false,
+    });
+  }).then(() => {
+    lastUpdated = null;
+    update();
+  });
+
+const createCameraRegisterByTokenModal = (cameraId, resolve) => {
+  return (close) => {
+    const apiCameraUrl = `/api/v1/cameras/${cameraId}`;
+    const template = document.getElementById(`modal-camera-register-by-token`);
+    const node = document.importNode(template.content, true);
+
+    const inputToken = node.getElementById("camera-register__token");
+
+    const btnConfirm = node.getElementById("yes");
+
+    btnConfirm.addEventListener("click", () => {
+      getJson(`${apiCameraUrl}/token`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          token: inputToken.value,
+        }),
+      })
+        .then(() =>
+          success(
+            translate("ntf.success"),
+            translate("ntf.camera-config-success")
+          )
+        )
+        .catch(handleError)
+        .finally(close);
+    });
+
+    node.getElementById("no").addEventListener("click", () => close());
+
+    return node;
+  };
+};
+
+const openCameraRegisterByTokenModal = (cameraId) =>
+  new Promise((resolve, reject) => {
+    modal(createCameraRegisterByTokenModal(cameraId, resolve), {
       timeout: 0,
       closeOutside: false,
     });

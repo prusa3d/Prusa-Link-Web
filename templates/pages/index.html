@@ -53,6 +53,7 @@
     {% include "components/modal/welcome.html" %}
     {% include "components/modal/apiKey.html" %}
     {% include "components/modal/camera-settings.html" %}
+    {% include "components/modal/camera-register-by-token.html" %}
     {% include "components/toast.html" %}
     {% include "components/offline.html" %}
 
@@ -60,7 +61,9 @@
     {% if env.PRINTER_TYPE == "sla" %}
       {% include "components/temperature_graph_sla.html" %}
       {% include "components/exposure.html" %}
-    {% else %}
+    {% endif %}
+    
+    {% if env.PRINTER_TYPE == "fdm" %}
       {% include "components/temperature_graph_fdm.html" %}
     {% endif %}
   </body>

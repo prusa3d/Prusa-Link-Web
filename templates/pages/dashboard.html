@@ -13,6 +13,7 @@
 {% include "components/job.html" %}
 
 <div class="main-wrapper home-row">
+{% if env.PRINTER_TYPE != "virtual" %}
   <div class="component">
     <p data-label="upld.title" class="txt-grey txt-md title">Upload file</p>
     {% include "components/upload.html" %}
@@ -22,6 +23,7 @@
     <p data-label="temps.title" class="txt-grey txt-md title">Temperatures</p>
     <div id="graph"></div>
   </div>
+{% endif %}
 </div>
 
 {% if env.WITH_CAMERAS %}
