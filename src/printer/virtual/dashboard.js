@@ -14,12 +14,13 @@ import { getStatusForTitle } from "../common";
 
 const load = (context) => {
   translate("home.link", { query: "#title-status-label" });
-  graph.render();
+  // graph.render();
   update(context);
   if (process.env['WITH_CAMERAS']) {
     cameras.update(context, null);
     cameras.updateCurrentCamera();
   }
+  /*
   getJson("/api/v1/storage")
     .then(result => {
       const storage = result.data.storage_list.find(
@@ -30,6 +31,7 @@ const load = (context) => {
         upload.init(origin, "", context.fileExtensions);
       }
     });
+  */
 };
 
 const update = (context) => {
@@ -39,8 +41,8 @@ const update = (context) => {
   }
   const linkState = context.state;
 
-  job.update(context);
-  upload.update(linkState);
+  // job.update(context);
+  // upload.update(linkState);
   if (process.env['WITH_CAMERAS']) {
     cameras.update(context, null);
   }

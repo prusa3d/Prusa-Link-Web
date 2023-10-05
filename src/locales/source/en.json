@@ -274,5 +274,8 @@
   "msg.sysupgrade.title": "Upgrade System Package?",
   "msg.sysupgrade.wait-for-printer": "Waiting for the printer...",
   "conn.error_status": "Error",
-  "conn.printer.not-supported": ""
+  "conn.printer.not-supported": "",
+  "prop.cameras": "Available cameras",
+  "camera.register-by-token": "Register Camera",
+  "camera.token": "CONNECT Token"
 }

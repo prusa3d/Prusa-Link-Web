@@ -87,10 +87,10 @@ export class Context {
   }
 
   updateStatus(status) {
-    this.updateTelemetry(status.printer);
-    this.updateJob(status.job);
-    this.updateStorage(status.storage);
-    this.updateTransfer(status.transfer);
+    this.updateTelemetry(status?.printer);
+    //this.updateJob(status.job);
+    //this.updateStorage(status.storage);
+    //this.updateTransfer(status.transfer);
     this.updateCamera(status.camera);
   }
 
@@ -108,7 +108,12 @@ export class Context {
   }
 
   updateTelemetry(printer) {
-    this.state = LinkState.fromApi(printer.state.toUpperCase());
+    this.state = LinkState.fromApi(printer?.state.toUpperCase() || "IDLE");
+
+    this.telemetry = {
+      cameras: printer?.cameras ?? 0,
+    }
+    /* 
     this.telemetry = {
       temperature: {
         nozzle: {
@@ -132,12 +137,13 @@ export class Context {
         print: printer.fan_print,
       },
     };
+    */
     // hide status if connect is not supported
-    this.link.connect.message = printer.status_connect?.message ?? "";
-    this.link.connect.ok = printer.status_connect?.ok;
+    this.link.connect.message = printer?.status_connect?.message ?? "";
+    this.link.connect.ok = printer?.status_connect?.ok || true;
     // just suppress the status if unsupported by the printer
-    this.link.printer.message = printer.status_printer?.message ?? 'ok';
-    this.link.printer.ok = printer.status_printer?.ok ?? true;
+    this.link.printer.message = printer?.status_printer?.message ?? 'ok';
+    this.link.printer.ok = printer?.status_printer?.ok ?? true;
   }
 
   updateJob(job) {

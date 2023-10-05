@@ -94,7 +94,7 @@ const fdm = {
   ].filter(route => route != null),
   init: (apiResult) => {
     context.update(apiResult);
-    initTemperatureGraph();
+    // initTemperatureGraph();
   },
   update: (apiResult) => {
     context.update(apiResult);
@@ -108,7 +108,7 @@ const fdm = {
 
     updateProperties("telemetry", context);
     updatePrinterStatus(context.state);
-    updateTemperatureGraph(context.telemetry);
+    // updateTemperatureGraph(context.telemetry);
     updateModule();
   },
   setConnected: (isConnected) => {
