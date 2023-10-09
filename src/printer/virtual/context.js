@@ -61,6 +61,7 @@ export class Context {
   }
 
   updateConnection() {
+    /* 
     return getJson("/api/connection", { method: "GET" })
       .then(res => {
         this.link.connect.settings = {
@@ -74,6 +75,7 @@ export class Context {
           baudrate: res.data.current.baudrate,
         };
       });
+    */
   }
 
   update({ status, printer }) {
@@ -108,7 +110,7 @@ export class Context {
   }
 
   updateTelemetry(printer) {
-    this.state = LinkState.fromApi(printer?.state.toUpperCase() || "IDLE");
+    this.state = LinkState.fromApi(printer?.state?.toUpperCase() || "IDLE");
 
     this.telemetry = {
       cameras: printer?.cameras ?? 0,
