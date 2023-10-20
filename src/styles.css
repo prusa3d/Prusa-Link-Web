@@ -1040,6 +1040,7 @@ button:disabled {
   margin-top: 1rem;
 }
 #job .file-name {
+  overflow-wrap: anywhere;
   margin-bottom: 20px;
 }
 #job .progress {
