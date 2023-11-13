@@ -45,7 +45,7 @@ class PrinterFDM extends Printer {
   }
 
   projectExtensions() {
-    return [".gcode"]
+    return [".gcode", ".bgcode"]
   }
 
   uploadFile(options) {

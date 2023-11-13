@@ -4,6 +4,7 @@ module.exports = (env, args) => {
     const config = {
         PRINTER_TYPE: "fdm",
 
+        FILE_EXTENSIONS: [".gcode", ".bgcode"],
         WITH_STORAGES: ["usb"],
         WITH_FILES: true,
         WITH_SETTINGS: false,
