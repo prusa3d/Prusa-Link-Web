@@ -74,6 +74,7 @@
   "home.title": "Printer Status",
   "logs.empty-file": "Log file is empty!",
   "logs.file-too-large": "Log files of size larger than {{size}} are available only for downloading.",
+  "logs.file-size-unknown": "The log file is of an unknown size and therefore is available only for downloading",
   "logs.not-selected": "No log file is selected!",
   "logs.select-file": "Select File",
   "logs.select-file-placeholder": "Select log file",

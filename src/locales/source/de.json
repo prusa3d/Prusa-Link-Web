@@ -285,5 +285,6 @@
   "conn.error_status": "Fehler",
   "msg.file-exists.overwrite-it": "Möchten Sie sie überschreiben?",
   "msg.file-exists.title": "Datei existiert bereits",
-  "conn.printer.not-supported": ""
+  "conn.printer.not-supported": "",
+  "logs.file-size-unknown": ""
 }

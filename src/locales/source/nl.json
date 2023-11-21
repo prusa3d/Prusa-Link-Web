@@ -274,5 +274,6 @@
   "msg.file-exists": "",
   "msg.file-exists.overwrite-it": "",
   "msg.file-exists.title": "",
-  "conn.printer.not-supported": ""
+  "conn.printer.not-supported": "",
+  "logs.file-size-unknown": ""
 }
