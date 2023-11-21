@@ -266,5 +266,6 @@
   "conn.error_status": "Błąd",
   "msg.file-exists.overwrite-it": "Czy chcesz go nadpisać?",
   "msg.file-exists.title": "Plik już istnieje",
-  "conn.printer.not-supported": ""
+  "conn.printer.not-supported": "",
+  "logs.file-size-unknown": ""
 }
