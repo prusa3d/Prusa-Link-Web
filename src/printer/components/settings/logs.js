@@ -58,9 +58,8 @@ function showLogContent(filename) {
   })
 }
 
-function showLogExceedSizeLimit() {
+function showLogLimitMessage(message) {
   const ul = document.querySelector("ul.logs");
-  const message = translate("logs.file-too-large", { size: formatData("size", sizeLimit) });
   if (ul) {
     ul.innerHTML = createLi(message);
   }
@@ -78,8 +77,12 @@ const update = () => {
       if (file) {
         if (!selectedFileDate || file.date > selectedFileDate) {
           selectedFileDate = file.date;
-          if (file.size > sizeLimit) {
-            showLogExceedSizeLimit();
+          if (file.size === null) {
+            showLogLimitMessage(translate("logs.file-size-unknown"));
+          } else if (file.size > sizeLimit) {
+            showLogLimitMessage(
+              translate("logs.file-too-large", { size: formatData("size", sizeLimit) })
+            );
           } else {
             showLogContent(selectedFileName);
           }

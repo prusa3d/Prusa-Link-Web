@@ -266,5 +266,6 @@
   "conn.error_status": "Errore",
   "msg.file-exists.overwrite-it": "Vuoi sovrascriverlo?",
   "msg.file-exists.title": "File già esistente",
-  "conn.printer.not-supported": ""
+  "conn.printer.not-supported": "",
+  "logs.file-size-unknown": ""
 }

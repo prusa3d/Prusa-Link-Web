@@ -277,5 +277,6 @@
   "msg.file-exists.overwrite-it": "Voulez-vous l'écraser ?",
   "msg.file-exists.title": "Le fichier existe déjà",
   "conn.error_status": "Erreur",
-  "conn.printer.not-supported": ""
+  "conn.printer.not-supported": "",
+  "logs.file-size-unknown": ""
 }

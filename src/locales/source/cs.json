@@ -271,5 +271,6 @@
   "btn.check-updates": "Kontrola aktualizací",
   "btn.upgrade": "Aktualizovat",
   "conn.error_status": "Chyba",
-  "conn.printer.not-supported": ""
+  "conn.printer.not-supported": "",
+  "logs.file-size-unknown": ""
 }

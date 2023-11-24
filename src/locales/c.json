@@ -84,6 +84,7 @@
   "home.link": "",
   "home.title": "",
   "logs.empty-file": "",
+  "logs.file-size-unknown": "",
   "logs.file-too-large": "",
   "logs.not-selected": "",
   "logs.select-file-placeholder": "",
