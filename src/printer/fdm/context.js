@@ -77,8 +77,8 @@ export class Context {
   }
 
   update({ status, printer }) {
-    if (status?.ok && status.payload) {
-      this.updateStatus(status.payload.data);
+    if (status?.data) {
+      this.updateStatus(status.data);
     }
 
     if (printer) {

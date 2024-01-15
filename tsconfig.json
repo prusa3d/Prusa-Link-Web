@@ -1,0 +1,11 @@
+{
+  "compilerOptions": {
+    "outDir": "./build",
+    "allowJs": true,
+    "target": "es2017",
+    "module": "esnext",
+    "moduleResolution": "node",
+    "plugins": [{ "name": "typescript-plugin-css-modules" }]
+  },
+  "include": ["./src/**/*"],
+}
