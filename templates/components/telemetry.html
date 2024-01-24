@@ -9,12 +9,12 @@
 {% if env.PRINTER_TYPE == "sla" %}
   {%
       set telemetry_list = [
-          {'text': 'CPU temperature', label: 'prop.temp-cpu', 'icon': 'temperature_color.svg', 'format': 'temp',  "locations": ["temperature.bed.actual"], enabled: true },
-          {'text': 'UV LED temperature', label: 'prop.temp-led', 'icon': 'temperature_color.svg', 'format': 'temp',  "locations": ["temperature.tool0.actual"], enabled: true },
-          {'text': 'ambient temperature', label: 'prop.temp-amb', 'icon': 'temperature_color.svg', 'format': 'temp',  "locations": ["temperature.chamber.actual"], enabled: true },
-          {'text': 'UV LED fan', label: 'prop.fan-led', 'icon': 'fan_color.svg', 'format': 'fan',  "location": "telemetry.fanUvLed", enabled: true },
-          {'text': 'blower fan', label: 'prop.fan-blower', 'icon': 'fan_color.svg', 'format': 'fan',  "location": "telemetry.fanBlower", enabled: true },
-          {'text': 'rear fan', label: 'prop.fan-rear', 'icon': 'fan_color.svg', 'format': 'fan',  "location": "telemetry.fanRear", enabled: true },
+          {'text': 'CPU temperature', label: 'prop.temp-cpu', 'icon': 'temperature_color.svg', 'format': 'temp',  "locations": ["telemetry.temperature.cpu.current"], enabled: true },
+          {'text': 'UV LED temperature', label: 'prop.temp-led', 'icon': 'temperature_color.svg', 'format': 'temp',  "locations": ["telemetry.temperature.uvLED.current"], enabled: true },
+          {'text': 'ambient temperature', label: 'prop.temp-amb', 'icon': 'temperature_color.svg', 'format': 'temp',  "locations": ["telemetry.temperature.ambient.current"], enabled: true },
+          {'text': 'UV LED fan', label: 'prop.fan-led', 'icon': 'fan_color.svg', 'format': 'fan',  "location": "telemetry.fan.uvLED", enabled: true },
+          {'text': 'blower fan', label: 'prop.fan-blower', 'icon': 'fan_color.svg', 'format': 'fan',  "location": "telemetry.fan.blower", enabled: true },
+          {'text': 'rear fan', label: 'prop.fan-rear', 'icon': 'fan_color.svg', 'format': 'fan',  "location": "telemetry.fan.rear", enabled: true },
           {'text': 'cover state', label: 'prop.cover', 'icon': 'cover_color.svg', 'format': 'cover',  "location": "telemetry.coverClosed", enabled: true }
       ]
   %}

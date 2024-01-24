@@ -267,5 +267,8 @@
   "msg.file-exists.overwrite-it": "Czy chcesz go nadpisać?",
   "msg.file-exists.title": "Plik już istnieje",
   "conn.printer.not-supported": "",
-  "logs.file-size-unknown": ""
+  "logs.file-size-unknown": "Plik logu ma nieznany rozmiar i dlatego jest dostępny tylko do pobrania",
+  "ntf.calibration-error": "Błąd kalibracji",
+  "ntf.low-resin.message": "Zmierzona ilość żywicy jest zbyt niska. Drukowanie można kontynuować, jednak konieczne może być uzupełnienie w trakcie.",
+  "ntf.low-resin.title": "Niski poziom żywicy"
 }

@@ -80,7 +80,7 @@
   "ntf.actn-pending": "L'action sera exécutée une fois la couche terminée.",
   "ntf.e-307": "La mesure de la résine a échoué",
   "ntf.error": "Erreur",
-  "ntf.n-calibrated": "L'imprimante n'est pas calibrée !",
+  "ntf.n-calibrated": "L'imprimante n'est pas calibrée !",
   "ntf.not-idle": "L'imprimante n'est pas au repos !",
   "ntf.settings-suc": "Paramètres modifiés avec succès.",
   "ntf.start-print": "Préparation de l'imprimante.",
@@ -278,5 +278,8 @@
   "msg.file-exists.title": "Le fichier existe déjà",
   "conn.error_status": "Erreur",
   "conn.printer.not-supported": "",
-  "logs.file-size-unknown": ""
+  "logs.file-size-unknown": "Le fichier de journal est d'une taille inconnue et n'est donc disponible que pour le téléchargement",
+  "ntf.calibration-error": "Erreur de Calibration",
+  "ntf.low-resin.message": "Le volume de résine mesuré est trop bas. L'impression peut continuer, mais un remplissage pourra être nécessaire.",
+  "ntf.low-resin.title": "Niveau de résine bas"
 }

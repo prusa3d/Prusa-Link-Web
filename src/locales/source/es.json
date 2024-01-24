@@ -41,7 +41,7 @@
   "ntf.actn-pending": "La acción se realizará al terminar la capa.",
   "ntf.e-307": "Falló la medición de resina.",
   "ntf.error": "Error",
-  "ntf.n-calibrated": "¡La impresora no está calibrada!",
+  "ntf.n-calibrated": "¡Impresora no calibrada!",
   "ntf.not-idle": "¡La impresora no está inactiva!",
   "ntf.start-print": "La impresora se está preparando.",
   "ntf.success": "Éxito",
@@ -249,7 +249,7 @@
   "btn.connect.unlink": "Desenlazar",
   "conn.connect.not-linked": "No enlazado",
   "msg.drop-zone.label": "Arrastra archivo aquí para subirlo",
-  "btn.check-updates": "Comprobar actualizaciones",
+  "btn.check-updates": "Comprobar Actualizaciones",
   "btn.upgrade": "Actualización",
   "upgrade.success.message": "La página se recargará en 5 segundos",
   "upgrade.success.title": "Actualización con Éxito",
@@ -267,5 +267,8 @@
   "msg.file-exists.overwrite-it": "¿Quieres sobrescribirlo?",
   "msg.file-exists.title": "El archivo ya existe",
   "conn.printer.not-supported": "",
-  "logs.file-size-unknown": ""
+  "logs.file-size-unknown": "El archivo de registro es de tamaño desconocido y, por lo tanto, solo está disponible para su descarga.",
+  "ntf.calibration-error": "Error de calibración",
+  "ntf.low-resin.message": "El volumen de resina medido es demasiado bajo. La impresión puede continuar, sin embargo, es posible que se requiera una recarga.",
+  "ntf.low-resin.title": "Poca resina"
 }

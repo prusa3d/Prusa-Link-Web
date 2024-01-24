@@ -21,19 +21,6 @@ const str_true = translate("prop.true");
 const str_false = translate("prop.false");
 
 /**
- * Format the value data with format specificated.
- * @param {string} format - one of ["int", "number", "layer", "temp", "fan", "resin", "cover", "date", "progress", "timeEst", "time", "expo", "boolean"]
- * @param {any} value
- */
-const formatData = (format, value) => {
-  if (process.env.PRINTER_TYPE === "sla") {
-    return slaFormatData(format, value);
-  } else {
-    return fdmFormatData(format, value);
-  }
-};
-
-/**
  * It formats a number using fixed-point notation with one digit after the decimal point.
  * ex: 123.456 => 123.4
  * @param {number} value
@@ -193,14 +180,15 @@ function formatBoolean(value) {
 }
 
 /**
- * Format the value data with format specificated for sla type.
- * @param {string} format - one of ["int", "number", "layer", "temp", "fan", "resin", "cover", "date", "progress", "timeEst", "time", "expo", "boolean"]
+ * Format the value data with format specificated.
+ * @param {string} format - one of ["number", "temp", "fan", "pos", "date", "progress", "timeEst", "time"]
  * @param {any} value
  */
-const slaFormatData = (format, value) => {
+const formatData = (format, value) => {
   if (value === undefined || (value === null && format !== "progress")) {
     return translate("prop.na");
   }
+
   switch (format) {
     case "int":
       return parseInt(value);
@@ -208,8 +196,14 @@ const slaFormatData = (format, value) => {
       return numberFormat(value);
     case "layer":
       return numberFormat(value, false) + " mm";
+    case "totalLayer":
+      return totalLayers(value);
+    case "material":
+      return value || translate("prop.na");
     case "temp":
       return numberFormat(value) + " °C";
+    case "temp_int":
+        return numberFormat(value, 0) + "°C";
     case "fan":
       return numberFormat(value) + ` ${str_rpm}`;
     case "resin":
@@ -218,50 +212,6 @@ const slaFormatData = (format, value) => {
       return value
         ? translate("prop.cover-closed")
         : translate("prop.cover-opened");
-    case "date":
-      return dateFormat(value);
-    case "progress":
-      return numberFormat((value || 0) * 100, true, 0) + "%";
-    case "timeEst":
-      return formatEstimatedTime(value);
-    case "time":
-      return formatTime(value);
-    case "est-time":
-      return "~ " + formatTime(value);
-    case "expo":
-      return formatExposure(value);
-    case "totalLayer":
-      return totalLayers(value);
-    case "material":
-      return value || translate("prop.na");
-    case "size":
-      return formatSize(value);
-    case "boolean":
-      return formatBoolean(value);
-    default:
-      return value;
-  }
-};
-
-/**
- * Format the value data with format specificated for fdm type.
- * @param {string} format - one of ["number", "temp", "fan", "pos", "date", "progress", "timeEst", "time"]
- * @param {any} value
- */
-const fdmFormatData = (format, value) => {
-  if (value === undefined || (value === null && format !== "progress")) {
-    return translate("prop.na");
-  }
-
-  switch (format) {
-    case "number":
-      return numberFormat(value);
-    case "temp":
-      return numberFormat(value) + " °C";
-    case "temp_int":
-        return numberFormat(value, 0) + "°C";
-    case "fan":
-      return numberFormat(value) + ` ${str_rpm}`;
     case "print":
       return numberFormat(value || 0, true, 0) + "%";
     case "pos":
