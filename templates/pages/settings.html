@@ -23,7 +23,7 @@
     set section_version = [
       {'text': 'api ', 'label': 'version.api', "location": "version.api", 'type': 'settings' },
       {'text': 'hostname', 'label': 'version.hostname', "location": "version.hostname", 'type': 'settings' },
-      {'text': 'server', 'label': 'version.server', "location": "version.server", 'type': 'settings' },
+      {'text': 'firmware', 'label': 'version.firmware', "location": "version.firmware", 'type': 'settings' },
       {'text': 'text', 'label': 'version.text', "location": "version.text", 'type': 'settings' },
       {'text': 'sdk', 'label': 'version.sdk', "location": "version.sdk", 'type': 'settings' },
       {'text': 'frontend', 'label': 'version.fe', 'value': env.APP_VERSION }
@@ -109,14 +109,14 @@
 {%
   set settings = [
     {'text': 'version', 'label': 'version.title', 'settings': section_version },
-    {'text': 'system version', 'label': 'sys-version.title', 'settings': [], 'id': 'sys-version' },
+    {'text': 'system version', 'label': 'sys-version.title', 'settings': [], 'id': 'sys-version', 'condition': env.WITH_SYSTEM_VERSION },
     {'text': 'updates', 'label': 'updates.title', 'settings': section_updates, 'condition': env.WITH_SYSTEM_UPDATES },
     {'text': 'connection', 'label': 'conn.title', 'settings': section_connection, 'condition': env.WITH_CONNECTION },
-    {'text': 'printer', 'label': 'printer.title', 'settings': section_printer },
-    {'text': 'user', 'label': 'user.title', 'settings': section_user },
+    {'text': 'printer', 'label': 'printer.title', 'settings': section_printer, 'condition': env.WITH_PRINTER_SETTINGS },
+    {'text': 'user', 'label': 'user.title', 'settings': section_user, 'condition': env.WITH_USER_SETTINGS },
     {'text': 'serial number', 'label': 'serial.label', 'settings': section_serial, 'condition': env.WITH_SERIAL },
     {'text': 'api key', 'label': 'api_key.label', 'settings': section_api_key, 'condition': env.WITH_API_KEY_SETTING },
-    {'text': 'logs', 'label': 'logs.title', 'settings': section_logs, 'condition': env.WITH_LOGS }
+    {'text': 'logs', 'label': 'logs.title', 'settings': section_logs, 'condition': env.WITH_LOGS, 'condition': env.WITH_LOGS }
   ]
 %}
 

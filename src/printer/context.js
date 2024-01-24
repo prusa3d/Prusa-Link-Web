@@ -1,7 +1,8 @@
-import { getImage, getJson } from "../../auth";
-import { handleError } from "../components/errors";
-import { LinkState } from "../../state";
-import { getEstimatedEnd } from "../common";
+import { getImage, getJson } from "../auth";
+import { handleError } from "./components/errors";
+import { LinkState } from "../state";
+import { getEstimatedEnd } from "./common";
+import { translate } from "../locale_provider";
 
 export class Context {
   constructor() {
@@ -35,18 +36,18 @@ export class Context {
         ok: true,
         message: "OK",
         settings: {
-          hostname: 'connect.prusa3d.com',
+          hostname: "connect.prusa3d.com",
           tls: true,
-          port: 0
-        }
+          port: 0,
+        },
       },
       printer: {
         ok: true,
         message: "OK",
         settings: {
-          port: '',
+          port: "",
           baudrate: 115200,
-        }
+        },
       },
     };
     this.files = {
@@ -61,19 +62,18 @@ export class Context {
   }
 
   updateConnection() {
-    return getJson("/api/connection", { method: "GET" })
-      .then(res => {
-        this.link.connect.settings = {
-          hostname: res.data.connect.hostname,
-          port: res.data.connect.port,
-          tls: res.data.connect.tls,
-        };
-        this.link.connect.registration = res.data.connect.registration;
-        this.link.printer.settings = {
-          port: res.data.current.port,
-          baudrate: res.data.current.baudrate,
-        };
-      });
+    return getJson("/api/connection", { method: "GET" }).then((res) => {
+      this.link.connect.settings = {
+        hostname: res.data.connect?.hostname,
+        port: res.data.connect?.port,
+        tls: res.data.connect?.tls,
+      };
+      this.link.connect.registration = res.data.connect?.registration;
+      this.link.printer.settings = {
+        port: res.data.current?.port,
+        baudrate: res.data.current?.baudrate,
+      };
+    });
   }
 
   update({ status, printer }) {
@@ -105,12 +105,28 @@ export class Context {
       hostname: printer.hostname,
       port: printer.port,
     };
+    this.fileExtensions =
+      printer.project_extensions ?? process.env["FILE_EXTENSIONS"];
   }
 
   updateTelemetry(printer) {
     this.state = LinkState.fromApi(printer.state.toUpperCase());
+    if (process.env["PRINTER_TYPE"] === "sla") {
+      const isCalibrated = this.telemetry.isCalibrated ?? true;
+      if (!printer.is_calibrated && isCalibrated) {
+        handleError({
+          data: {
+            code: 10113,
+            title: translate("ntf.calibration-error"),
+            message: translate("ntf.n-calibrated"),
+            url: "https://help.prusa3d.com/en/10113",
+          }
+        });
+      }
+    }
     this.telemetry = {
       temperature: {
+        // fdm
         nozzle: {
           current: printer.temp_nozzle,
           target: printer.target_nozzle,
@@ -118,6 +134,16 @@ export class Context {
         bed: {
           current: printer.temp_bed,
           target: printer.target_bed,
+        },
+        // sla
+        ambient: {
+          current: printer.temp_ambient,
+        },
+        cpu: {
+          current: printer.temp_cpu,
+        },
+        uvLED: {
+          current: printer.temp_uv_led,
         },
       },
       axis: {
@@ -128,15 +154,22 @@ export class Context {
       flow: printer.flow,
       speed: printer.speed,
       fan: {
+        // fdm
         hotend: printer.fan_hotend,
         print: printer.fan_print,
+        // sla
+        blower: printer.fan_blower,
+        rear: printer.fan_rear,
+        uvLED: printer.fan_uv_led,
       },
+      coverClosed: printer.cover_closed,
+      isCalibrated: printer.is_calibrated,
     };
     // hide status if connect is not supported
     this.link.connect.message = printer.status_connect?.message ?? "";
     this.link.connect.ok = printer.status_connect?.ok;
     // just suppress the status if unsupported by the printer
-    this.link.printer.message = printer.status_printer?.message ?? 'ok';
+    this.link.printer.message = printer.status_printer?.message ?? "ok";
     this.link.printer.ok = printer.status_printer?.ok ?? true;
   }
 
@@ -144,50 +177,37 @@ export class Context {
     const oldJobId = this.job?.id || null;
     const newJobId = job?.id || null;
 
-    if (oldJobId !== newJobId) {
+    if (oldJobId !== newJobId || this.job?.dirty) {
       if (!newJobId) {
         this.job = undefined;
         return;
       }
-      getJson("/api/v1/job")
-        .then((response) => {
-          const data = response.data;
-          if (data.id !== this.job.id) {
-            return;
-          }
-
-          this.job = {
-            ...this.job,
-            file: mapFile(data.file),
-            thumbnail: {
-              source: !data.file.refs?.thumbnail,
-              ready: !data.file.refs?.thumbnail,
-              url: undefined,
-            },
-          };
-
-          if (!this.job.thumbnail.ready) {
-            getImage(this.job.file.refs.thumbnail)
-              .then(({ url }) => {
-                if (this.job.id === newJobId) {
-                  this.job.thumbnail.url = url;
-                }
-              })
-              .catch((e) => console.error("Failed to fetch thumbnail", e))
-              .finally(() => (this.job.thumbnail.ready = true));
-          }
-        })
-        .catch((err) => handleError(err));
+      this.updateJobDetails();
     }
-    if (newJobId) {
+    if (job && newJobId) {
       const lastTimeRemaining = this.job?.timeRemaining;
-      const thisTimeRemaning = job.time_remaining;
+      const thisTimeRemaining = job.time_remaining;
       const estimatedEnd =
-        lastTimeRemaining != thisTimeRemaning
-          ? getEstimatedEnd(thisTimeRemaning)
+        lastTimeRemaining != thisTimeRemaining
+          ? getEstimatedEnd(thisTimeRemaining)
           : this.job?.estimatedEnd;
 
+      if (process.env.PRINTER_TYPE === "sla") {
+        const isResinLow = !!this.job?.resinLow;
+        if (!isResinLow && job.resin_low) {
+          handleError({
+            data: {
+              code: 10712,
+              title: translate("ntf.low-resin.title"),
+              message: translate("ntf.low-resin.message"),
+              url: "https://help.prusa3d.com/en/10712",
+            }
+          }, {isWarning: true});
+        }
+      }
+
       this.job = {
+        dirty: false,
         file: undefined,
         ...this.job,
         timePrinting: job.time_printing,
@@ -195,8 +215,57 @@ export class Context {
         progress: job.progress,
         timeRemaining: job.time_remaining,
         estimatedEnd,
+        ...(process.env.PRINTER_TYPE === "sla"
+          ? {
+              exposureTime: job.exposure_time,
+              exposureTimeCalibration: job.exposure_time_calibration,
+              exposureTimeFirst: job.exposure_time_first,
+              exposureUserProfile: job.exposure_user_profile,
+              currentLayer: job.current_layer,
+              resinRemaining: job.resin_remaining,
+              resinConsumed: job.resin_consumed,
+              resinLow: job.resin_low,
+            }
+          : {}),
       };
     }
+  }
+
+  updateJobDetails() {
+    return getJson("/api/v1/job")
+      .then((response) => {
+        const data = response.data;
+        if (data.id !== this.job.id) {
+          return;
+        }
+
+        this.job = {
+          ...this.job,
+          dirty: false,
+          file: mapFile(data.file),
+          thumbnail: {
+            source: !data.file.refs?.thumbnail,
+            ready: !data.file.refs?.thumbnail,
+            url: undefined,
+          },
+        };
+
+        if (!this.job.thumbnail.ready) {
+          const jobId = this.job.id;
+          getImage(this.job.file.refs.thumbnail)
+            .then(({ url }) => {
+              if (this.job.id === jobId) {
+                this.job.thumbnail.url = url;
+              }
+            })
+            .catch((e) => console.error("Failed to fetch thumbnail", e))
+            .finally(() => (this.job.thumbnail.ready = true));
+        }
+      })
+      .catch((err) => {
+        this.job.dirty = true;
+        handleError(err);
+      });
   }
 
   updateStorage(storage) {
@@ -250,14 +319,14 @@ export class Context {
       const now = Math.round(Date.now() / 1000);
       const fileSize = this.transfer?.file?.size || 0;
       const timeTransferring = transfer.time_transferring;
-      const timeStarted = timeTransferring !== undefined 
-        ? now - timeTransferring
-        : undefined;
+      const timeStarted =
+        timeTransferring !== undefined ? now - timeTransferring : undefined;
       const dataTransferred = transfer.data_transferred;
       const dataRemaining = fileSize - dataTransferred;
-      const timeRemaining = (timeTransferring > 0 && dataRemaining >= 0)
-        ? (dataRemaining / (dataTransferred / timeTransferring))
-        : undefined;
+      const timeRemaining =
+        timeTransferring > 0 && dataRemaining >= 0
+          ? dataRemaining / (dataTransferred / timeTransferring)
+          : undefined;
 
       this.transfer = {
         ...this.transfer,
@@ -266,7 +335,7 @@ export class Context {
         timeRemaining,
         id: newId,
         progress: transfer.progress,
-        dataTransferred
+        dataTransferred,
       };
     }
   }
@@ -282,7 +351,7 @@ export class Context {
       this.files.selected = null;
       return;
     }
-    
+
     const thumbnailSource = file.refs?.thumbnail;
 
     this.files.selected = {
@@ -297,16 +366,16 @@ export class Context {
 
     if (!file.meta) {
       const resource = this.files.selected.file.resource;
-      getJson(resource)
-        .then(response => {
-          const fullFileInfo = mapFile({...response.data, resource});
-          if (this.files.selected.file.resource === resource) {
-            this.files.selected.file.meta = fullFileInfo.meta;
-            this.files.selected.timeRemaining = fullFileInfo.meta?.estimatedPrintTime;
-          }
-        });
+      getJson(resource).then((response) => {
+        const fullFileInfo = mapFile({ ...response.data, resource });
+        if (this.files.selected.file.resource === resource) {
+          this.files.selected.file.meta = fullFileInfo.meta;
+          this.files.selected.timeRemaining =
+            fullFileInfo.meta?.estimatedPrintTime;
+        }
+      });
     }
-    
+
     if (thumbnailSource) {
       getImage(thumbnailSource)
         .then(({ url }) => {
@@ -324,8 +393,8 @@ export class Context {
   }
 }
 
-const getFileResource = (path, name) =>
-  `${path}${path.endsWith("/") ? "" : "/"}${name}`;
+export const getFileResource = (path, name) =>
+  `/api/v1/files${path}${path.endsWith("/") ? "" : "/"}${name}`;
 
 const mapFile = (data) => ({
   resource: data.resource ?? getFileResource(data.path, data.name),
@@ -344,6 +413,10 @@ const mapFile = (data) => ({
     filamentType: data.meta?.filament_type,
     layerHeight: data.meta?.layer_height,
     estimatedPrintTime: data.meta?.estimated_print_time,
+    exposureTime: data.meta?.exposure_time,
+    exposureTimeCalibration: data.meta?.exposure_time_calibration,
+    exposureTimeFirst: data.meta?.exposure_time_first,
+    exposureUserProfile: data.meta?.exposure_user_profile,
   },
-  readOnly: data.read_only || data.ro
+  readOnly: data.read_only || data.ro,
 });

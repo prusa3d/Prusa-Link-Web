@@ -31,7 +31,7 @@ export const doQuestion = (data) => {
       no: (cb) => cb(),
       yesText: translate("btn.yes"),
       noText: translate("btn.no"),
-      next: "#files",
+      next: "#dashboard",
     },
     data
   );

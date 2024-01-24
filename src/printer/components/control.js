@@ -8,7 +8,6 @@ import updateProperties from "./updateProperties";
 import { disableSteppers, extrude, homePrinthead, movePrinthead, retract, setBedTemperature, setFlowRate, setNozzleTemperature, setSpeed } from "./controlActions";
 import { handleError } from "./errors";
 import { LinkState } from "../../state";
-import { context } from "../fdm";
 
 let moveStep = 1;
 let extrudeRetractStep = 1;
