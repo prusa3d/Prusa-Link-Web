@@ -9,12 +9,13 @@ module.exports = (env, args) => {
 
         WITH_STORAGES: ["local", "usb"],
         WITH_FILES: true,
-        WITH_SETTINGS: false,
+        WITH_SETTINGS: true,
         WITH_CONTROLS: false,
         WITH_REMOTE_UPLOAD: true,
         WITH_START_PRINT_AFTER_UPLOAD: true,
         WITH_LOGS: false,
         WITH_FONT: false,
+        WITH_V1_API: true,
         ...env,
     };
     return webpackConfig(config, args);

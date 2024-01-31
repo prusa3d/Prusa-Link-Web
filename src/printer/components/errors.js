@@ -22,12 +22,12 @@ export function handleError(result, options) {
   let message = result?.data?.message
     || options?.fallbackMessage?.message
     || "Action can not be performed";
-  let isWarning = false;
+  let isWarning = options?.isWarning ?? false;
 
   if (result?.data) {
     const data = result.data;
     if (data.code) {
-      title += `- ${data.code}`;
+      title += ` - ${data.code}`;
       if (`${data.code}`[3] == "7")
         isWarning = true;
     }

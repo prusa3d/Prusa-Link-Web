@@ -6,14 +6,14 @@ import { getJson } from "../../auth";
 import { handleError } from "../components/errors";
 import { resumeJob } from "../components/jobActions";
 
-export const resinRefill = () => {
+export const resinRefill = (jobId) => {
   getJson("/api/system/commands/custom/resinrefill", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     }
   }).then(() => {
-    resumeJob();
+    resumeJob(jobId);
   }).catch((result) => handleError(result));
 };
 

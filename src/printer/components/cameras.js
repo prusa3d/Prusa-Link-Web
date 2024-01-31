@@ -411,7 +411,6 @@ const createCameraSettingsModal = (cameraId, resolve) => {
         inputTriggerScheme.value = translateTriggerScheme(data.trigger_scheme);
 
         setVisible(inputFocus.parentNode, hasFocus);
-        console.log(`DEBUG: has focus (${hasFocus})`, data)
         if (hasFocus) {
           inputFocus.value = Math.round(data.focus * 100);
         }

@@ -69,7 +69,7 @@ function getCurrentApiPath(fileName) {
   return getApiPath(storage.path, path, fileName);
 }
 
-function getApiPath(origin, path, file) {
+export function getApiPath(origin, path, file) {
   const apiPath = ["/api/v1/files", origin, path, file].filter((e) => !!e)
     .join("/");
 
@@ -202,6 +202,9 @@ const updateFiles = (opts = {}) => {
     headers: { "If-None-Match": lastETag },
   })
   .then((result) => {
+    if (result.code === 304) {
+      return
+    }
     if (url !== getCurrentApiPath()) {
       // user navigated to other folder
       return;

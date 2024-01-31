@@ -64,6 +64,11 @@ module.exports = (env, args) => {
     WITH_API_KEY_SETTING: withDefault(env["WITH_API_KEY_SETTING"], false),
     WITH_NAME_SORTING_ONLY: withDefault(env["WITH_NAME_SORTING_ONLY"], false),
     WITH_SYSTEM_UPDATES: withDefault(env["WITH_SYSTEM_UPDATES"], false),
+
+    WITH_SYSTEM_VERSION: withDefault(env["WITH_SYSTEM_VERSION"], false),
+    WITH_PRINTER_SETTINGS: withDefault(env["WITH_PRINTER_SETTINGS"], false),
+    WITH_USER_SETTINGS: withDefault(env["WITH_USER_SETTINGS"], false),
+    WITH_SERIAL: withDefault(env["WITH_SERIAL"], false),
   };
   config["TPL_ASSETS_PATH"] = config["PRINTER_CODE"] == "m1" ? "../assets/m1" : "../assets";
 

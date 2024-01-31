@@ -38,7 +38,9 @@ export const createToast = (title, message, type) => {
 function show({ title, message, type, onClose }) {
   const article = createToast(title, message, type);
   const close = () => {
-    toast_context.removeChild(article);
+    if (toast_context.contains(article)) {
+      toast_context.removeChild(article);
+    }
     onClose?.();
   };
 

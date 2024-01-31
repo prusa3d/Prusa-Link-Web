@@ -6,6 +6,7 @@ import { getJson } from "../../auth";
 import { handleError } from "../components/errors";
 import { doQuestion } from "../components/question";
 import { translate } from "../../locale_provider";
+import printer from "..";
 // import { setBusy } from "../components/busy";
 
 const repeatInterval = 250; // milliseconds, how often should the value be updated when holding the button
@@ -78,19 +79,20 @@ const setValue = (item_name, value, min, max, step) => {
  * @param {object} elements - {id: HTMLElement}
  * @param {HTMLDivElement} div html element to insert in modal
  */
-const setUpElements = (file, elements, div) => {
+const setUpElements = (job, elements, div) => {
   const template = document.getElementById("exposure-item").content;
+  const file = job.file;
   div.className = "modal-exposure";
   for (let expo in config) {
-    if (expo in file) {
+    if (expo in job && job[expo] !== undefined) {
       const elm = document.importNode(template, true);
       var minus = elm.getElementById("minus");
       var plus = elm.getElementById("plus");
       elm.getElementById("desc").innerHTML = config[expo].text;
       const value = elm.getElementById("value");
-      value.dataset.value = file[expo].toFixed(0);
+      value.dataset.value = job[expo].toFixed(0);
       if (expo == "exposureUserProfile") {
-        switch(parseInt(file[expo])) {
+        switch(parseInt(job[expo])) {
             case 0:
                 value.innerHTML = translate("exp-times.faster");
                 break;
@@ -109,7 +111,7 @@ const setUpElements = (file, elements, div) => {
         plus = elm.getElementById("next");
         minus.style.display = "block";
         plus.style.display = "block";
-      } else value.innerHTML = (file[expo] / 1000).toFixed(1);
+      } else value.innerHTML = (job[expo] / 1000).toFixed(1);
       const [min, max] = config[expo].limit;
       const setMinus = setValue(expo, value, min, max, -config[expo].step);
       minus.onclick = setMinus;
@@ -141,12 +143,13 @@ const setUpElements = (file, elements, div) => {
  * Create a question for set up the exposure times
  * @param {object} file - job file information
  */
-const changeExposureTimesQuestion = (jobFile) => {
+const changeExposureTimesQuestion = (job) => {
+  const context = printer.getContext();
   const page = window.location.hash;
   history.pushState(null, document.title, page);
   const elements = {};
   const div = document.createElement("div");
-  setUpElements(jobFile, elements, div);
+  setUpElements(job, elements, div);
   doQuestion({
     title: translate("btn.chg-print-set"),
     questionChildren: [div],
@@ -164,8 +167,9 @@ const changeExposureTimesQuestion = (jobFile) => {
         },
         body: JSON.stringify(result),
       })
+        .then(() => context.updateJobDetails())
         .catch((result) => handleError(result))
-        .finally((result) => close());
+        .finally(() => close());
     },
     yesText: translate("btn.save-chgs"),
     noText: translate("btn.cancel"),

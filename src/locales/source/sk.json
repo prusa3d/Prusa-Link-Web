@@ -278,5 +278,8 @@
   "msg.file-exists.overwrite-it": "",
   "msg.file-exists.title": "",
   "conn.printer.not-supported": "",
-  "logs.file-size-unknown": ""
+  "logs.file-size-unknown": "",
+  "ntf.calibration-error": "",
+  "ntf.low-resin.message": "",
+  "ntf.low-resin.title": ""
 }

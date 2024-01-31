@@ -41,7 +41,7 @@
   "ntf.actn-pending": "L'azione verrà eseguita dopo il completamento del layer.",
   "ntf.e-307": "Misurazione resina non riuscita!",
   "ntf.error": "Errore",
-  "ntf.n-calibrated": "La stampante adesso è calibrata!",
+  "ntf.n-calibrated": "La stampante non è calibrata!",
   "ntf.not-idle": "La stampante non è inattiva!",
   "ntf.start-print": "Preparazione della stampante.",
   "ntf.success": "Successo",
@@ -267,5 +267,8 @@
   "msg.file-exists.overwrite-it": "Vuoi sovrascriverlo?",
   "msg.file-exists.title": "File già esistente",
   "conn.printer.not-supported": "",
-  "logs.file-size-unknown": ""
+  "logs.file-size-unknown": "Il file di log è di dimensioni sconosciute e quindi è disponibile solo per il download.",
+  "ntf.calibration-error": "Errore di calibrazione",
+  "ntf.low-resin.message": "Il volume di resina misurato è troppo basso. La stampa può continuare, ma potrebbe essere necessaria una ricarica.",
+  "ntf.low-resin.title": "Resina bassa"
 }

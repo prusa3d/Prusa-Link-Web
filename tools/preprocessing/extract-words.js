@@ -111,7 +111,8 @@ const main = async (ci = false) => {
         if (!PRUSALATOR_UNSUPPORTED.includes(localeName)) {
             if (!ci && missingRemoteWords.length > 0) {
                 try {
-                    await apiClient.push(localeName, { data: JSON.stringify(missingRemoteWords) });
+                    const res = await apiClient.push(localeName, { data: JSON.stringify(missingRemoteWords) });
+                    console.log(`Push (${localeName}):`, res)
                 } catch(e) {
                     isSync = false;
                     console.error(`Failed to push ${localeName} words:`, e?.response?.data?.message);

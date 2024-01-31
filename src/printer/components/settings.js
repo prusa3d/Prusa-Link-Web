@@ -236,8 +236,12 @@ function initSettings() {
   getJson("/api/settings")
     .then((result) => {
       const settings = result.data;
-      initPrinterSettings(settings);
-      initUserSettings(settings);
+      if (process.env["WITH_PRINTER_SETTINGS"]) {
+        initPrinterSettings(settings);
+      }
+      if (process.env["WITH_USER_SETTINGS"]) {
+        initUserSettings(settings);
+      }
     })
     .catch((result) => handleError(result));
 }
