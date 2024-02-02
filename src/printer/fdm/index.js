@@ -35,9 +35,20 @@ const getPrinterName = () => getPrinterLabel(context);
 
 const updatePrinterStatus = (state) => {
   const linkState = state;
+  const translatedState = translateState(linkState)
+
   const elem = document.getElementById("printer-status");
   if (elem) {
-    elem.innerHTML = translateState(linkState);
+    if (elem.innerHTML != translatedState) {
+      if (elem.innerHTML != "NA" && "Notification" in window) {
+        if (Notification.permission === "granted") {
+          const notification = new Notification(translatedState);
+        } else if (Notification.permission !== "denied") {
+          Notification.requestPermission();
+        }
+      }
+      elem.innerHTML = translatedState;
+    }
   }
 };
 
