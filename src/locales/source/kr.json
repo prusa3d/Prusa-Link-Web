@@ -275,6 +275,6 @@
   "conn.error_status": "에러",
   "msg.file-exists.overwrite-it": "덮어쓰시겠습니까?",
   "msg.file-exists.title": "파일이 이미 존재합니다.",
-  "conn.printer.not-supported": "",
-  "logs.file-size-unknown": ""
+  "conn.printer.not-supported": "지원하지 않는 프린터입니다.",
+  "logs.file-size-unknown": "로그파일의 크기를 알 수 없으므로 다운로드만 가능합니다."
 }

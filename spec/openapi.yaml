@@ -1266,7 +1266,7 @@ components:
       properties:
         state:
           type: string
-          enum: [ IDLE, BUSY, PRINTING, PAUSED, FINISHED, STOPPED, ERROR, ATTTENTION, READY ]
+          enum: [ IDLE, BUSY, PRINTING, PAUSED, FINISHED, STOPPED, ERROR, ATTENTION, READY ]
         temp_nozzle:
           type: number
           example: 214.9
