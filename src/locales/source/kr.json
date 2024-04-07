@@ -277,7 +277,7 @@
   "msg.file-exists.title": "파일이 이미 존재합니다.",
   "conn.printer.not-supported": "지원하지 않는 프린터입니다.",
   "logs.file-size-unknown": "로그파일의 크기를 알 수 없으므로 다운로드만 가능합니다.",
-  "ntf.calibration-error": "",
-  "ntf.low-resin.message": "",
-  "ntf.low-resin.title": ""
+  "ntf.calibration-error": "캘리브레이션 에러",
+  "ntf.low-resin.message": "측정된 레진양이 적습니다. 인쇄는 계속할 수 있지만 리필이 필요할 수는 있습니다.",
+  "ntf.low-resin.title": "레진 부족함"
 }
