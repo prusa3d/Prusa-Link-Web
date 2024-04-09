@@ -2,9 +2,10 @@ import { LinkState, translateState } from "../state";
 
 const SEPARATOR = " - ";
 
-export const getPrinterLabel = (context) => {
-  return buildTitle([context.printer?.location, context.printer?.name]);
-};
+export const getPrinterLabel = (context) => buildTitle([
+  context.printer?.location || context.printer?.hostname,
+  context.printer?.name
+]);
 
 export const buildTitle = (titleItems) => {
   return [...titleItems]
