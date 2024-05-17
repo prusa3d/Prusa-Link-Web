@@ -15,6 +15,7 @@ module.exports = (env, args) => {
         WITH_START_PRINT_AFTER_UPLOAD: true,
         WITH_LOGS: false,
         WITH_FONT: false,
+        WITH_V1_API: true,
         ...env,
     };
     return webpackConfig(config, args);
