@@ -270,5 +270,7 @@
   "logs.file-size-unknown": "Il file di log è di dimensioni sconosciute e quindi è disponibile solo per il download.",
   "ntf.calibration-error": "Errore di calibrazione",
   "ntf.low-resin.message": "Il volume di resina misurato è troppo basso. La stampa può continuare, ma potrebbe essere necessaria una ricarica.",
-  "ntf.low-resin.title": "Resina bassa"
+  "ntf.low-resin.title": "Resina bassa",
+  "msg.outdated-os.message": "Il sistema PrusaLink è in esecuzione su un sistema operativo Raspberry Pi non aggiornato. Seguire <a href='https://help.prusa3d.com/it/guide/impostazione-prusalink-e-prusa-connect-mk3-s-_221744#222176'>questa guida per flashare l'ultima versione</a>. Questo ripristinerà PrusaLink",
+  "msg.outdated-os.title": "Il sistema operativo di Raspberry Pi è obsoleto"
 }

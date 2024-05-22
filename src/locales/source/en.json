@@ -278,5 +278,7 @@
   "msg.sysupgrade.title": "Upgrade System Package?",
   "msg.sysupgrade.wait-for-printer": "Waiting for the printer...",
   "conn.error_status": "Error",
-  "conn.printer.not-supported": ""
+  "conn.printer.not-supported": "",
+  "msg.outdated-os.message": "Your PrusaLink is running on an outdated Raspberry Pi OS. Follow <a href='https://help.prusa3d.com/guide/_221744#222170'>this guide to flash the latest version</a>. This will reset PrusaLink",
+  "msg.outdated-os.title": "Raspberry Pi OS is out-of-date"
 }
