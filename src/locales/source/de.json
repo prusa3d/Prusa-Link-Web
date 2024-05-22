@@ -289,5 +289,7 @@
   "logs.file-size-unknown": "Die Protokolldatei hat eine unbekannte Größe und ist daher nur zum Herunterladen verfügbar",
   "ntf.calibration-error": "Kalibrierungsfehler",
   "ntf.low-resin.message": "Die gemessene Harzmenge ist zu gering. Der Druck kann fortgesetzt werden, es kann jedoch ein Nachfüllen erforderlich sein.",
-  "ntf.low-resin.title": "Harz niedrig"
+  "ntf.low-resin.title": "Harz niedrig",
+  "msg.outdated-os.message": "Ihr PrusaLink läuft mit einem veralteten Raspberry Pi Betriebssystem. Folgen Sie <a href='https://help.prusa3d.com/guide/_221744#222170'>dieser Anleitung, um die neueste Version zu flashen</a>. Dies wird PrusaLink zurücksetzen",
+  "msg.outdated-os.title": "Raspberry Pi OS ist veraltet"
 }

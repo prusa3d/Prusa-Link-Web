@@ -13,12 +13,13 @@ import {
   getSerialNumber,
 } from "./settingsActions";
 import { handleError } from "./errors";
-import { success } from "./toast";
+import { success, warning } from "./toast";
 import { modal } from "./modal";
 
 let serialNumber = null;
 let prusaLinkVersion = null;
 let connectUrl = null;
+let shownOutdatedOs = false;
 
 const logsModule = process.env.WITH_LOGS
   ? require("./settings/logs").default
@@ -68,6 +69,19 @@ function updateApiKey(apiKey) {
   }
 }
 
+function checkOldLink(data) {
+  if (shownOutdatedOs ||
+      typeof data.version.system === "undefined" ||
+      typeof data.version.system.DESCRIPTION === "undefined" ||
+      data.version.system.DESCRIPTION !== "Raspbian GNU/Linux 11 (bullseye)") {
+    return;
+  }
+  const message = translate("msg.outdated-os.message");
+  const title = translate("msg.outdated-os.title");
+  warning(title, message, ()=> {}, false);
+  shownOutdatedOs = true;
+}
+
 function initBaseSettings() {
   getJson("/api/version?system=1")
     .then((result) => {
@@ -75,6 +89,7 @@ function initBaseSettings() {
         version: result.data,
       };
       prusaLinkVersion = data.version.server;
+      checkOldLink(data);
       updateProperties("settings", data);
       updateSystemVersionProperties(data);
     })
