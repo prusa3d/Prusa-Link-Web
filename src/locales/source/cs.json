@@ -275,5 +275,7 @@
   "logs.file-size-unknown": "",
   "ntf.calibration-error": "",
   "ntf.low-resin.message": "",
-  "ntf.low-resin.title": ""
+  "ntf.low-resin.title": "",
+  "msg.outdated-os.message": "PrusaLink běží na zastaralém obrazu systému. Nahrajte ho prosím znovu podle <a href='https://help.prusa3d.com/guide/_221744#222170'>tohoto návodu</a>. Bohužel bude nutné PrusaLink znovu nastavit",
+  "msg.outdated-os.title": "Raspberry Pi OS je zastaralý"
 }

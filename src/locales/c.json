@@ -103,6 +103,8 @@
   "msg.modal-p2": "",
   "msg.offline.not-responsing": "",
   "msg.offline.please-wait": "",
+  "msg.outdated-os.message": "",
+  "msg.outdated-os.title": "",
   "msg.sla-pour-resin": "",
   "msg.sla-refill": "",
   "msg.sysupgrade.pending": "",

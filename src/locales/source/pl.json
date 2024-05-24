@@ -270,5 +270,7 @@
   "logs.file-size-unknown": "Plik logu ma nieznany rozmiar i dlatego jest dostępny tylko do pobrania",
   "ntf.calibration-error": "Błąd kalibracji",
   "ntf.low-resin.message": "Zmierzona ilość żywicy jest zbyt niska. Drukowanie można kontynuować, jednak konieczne może być uzupełnienie w trakcie.",
-  "ntf.low-resin.title": "Niski poziom żywicy"
+  "ntf.low-resin.title": "Niski poziom żywicy",
+  "msg.outdated-os.message": "Twój PrusaLink działa na nieaktualnej wersji systemu operacyjnego Raspberry Pi. Postępuj zgodnie z <a href='https://help.prusa3d.com/pl/guide/konfiguracja-prusalink-i-prusa-connect-mk3-s-_221744'>tym przewodnikiem, aby wgrać najnowszą wersję</a>. Spowoduje to zresetowanie PrusaLink",
+  "msg.outdated-os.title": "System operacyjny Raspberry Pi jest nieaktualny"
 }

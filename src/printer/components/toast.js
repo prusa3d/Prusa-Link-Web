@@ -35,7 +35,7 @@ export const createToast = (title, message, type) => {
  *  onClose: () => void,
  * }}
  */
-function show({ title, message, type, onClose }) {
+function show({ title, message, type, onClose, autoClose = true }) {
   const article = createToast(title, message, type);
   const close = () => {
     if (toast_context.contains(article)) {
@@ -50,7 +50,7 @@ function show({ title, message, type, onClose }) {
   });
 
   const timeout = timeouts[type];
-  if (timeout)
+  if (timeout && autoClose)
     setTimeout(close, timeout);
 
   toast_context.appendChild(article);
@@ -62,8 +62,8 @@ function show({ title, message, type, onClose }) {
  * @param {string} message
  * @param {() => void | undefined} onClose
  */
-export function info(title, message, onClose) {
-  show({ type: "info", title, message, onClose });
+export function info(title, message, onClose , autoClose = true ) {
+  show({ type: "info", title, message, onClose, autoClose });
 }
 
 /**
@@ -72,8 +72,8 @@ export function info(title, message, onClose) {
  * @param {string} message
  * @param {() => void | undefined} onClose
  */
-export function warning(title, message, onClose) {
-  show({ type: "warning", title, message, onClose });
+export function warning(title, message, onClose , autoClose = true ) {
+  show({ type: "warning", title, message, onClose, autoClose });
 }
 
 /**
@@ -82,8 +82,8 @@ export function warning(title, message, onClose) {
  * @param {string} message
  * @param {() => void | undefined} onClose
  */
-export function success(title, message, onClose) {
-  show({ type: "success", title, message, onClose });
+export function success(title, message, onClose , autoClose = true ) {
+  show({ type: "success", title, message, onClose, autoClose });
 }
 
 /**
@@ -92,8 +92,8 @@ export function success(title, message, onClose) {
  * @param {string} message
  * @param {() => void | undefined} onClose
  */
-export function error(title, message, onClose) {
-  show({ type: "error", title, message, onClose });
+export function error(title, message, onClose , autoClose = true ) {
+  show({ type: "error", title, message, onClose, autoClose });
 }
 
 export default { info, warning, success, error };
