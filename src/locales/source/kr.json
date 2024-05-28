@@ -280,6 +280,6 @@
   "ntf.calibration-error": "캘리브레이션 에러",
   "ntf.low-resin.message": "측정된 레진양이 적습니다. 인쇄는 계속할 수 있지만 리필이 필요할 수는 있습니다.",
   "ntf.low-resin.title": "레진 부족함",
-  "msg.outdated-os.message": "",
-  "msg.outdated-os.title": ""
+  "msg.outdated-os.message": "PrusaLink가 오래된 Raspberry Pi OS에서 실행되고 있습니다.<a href='https://help.prusa3d.com/guide/_221744#222170'>이 가이드를 따라 최신 버전을 업데이트하세요</a>. PrusaLink가 재설정됩니다.",
+  "msg.outdated-os.title": "Raspberry Pi OS가 최신 버전이 아닙니다."
 }
