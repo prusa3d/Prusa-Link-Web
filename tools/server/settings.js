@@ -86,7 +86,7 @@ router.post("/sn", async (req, res, next) => {
     return;
   }
 
-  res.status(400).json({ message: "Serial number is not corret" });
+  res.status(400).json({ message: "Serial number is not correct" });
 });
 
 module.exports = router;
