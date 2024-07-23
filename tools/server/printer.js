@@ -6,7 +6,7 @@ const express = require("express");
 const router = new express.Router();
 
 /**
- * Retrive the current printer state
+ * Retrieve the current printer state
  */
 router.get("/", async (req, res, next) => {
   let include = {
