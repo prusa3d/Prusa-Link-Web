@@ -18,7 +18,7 @@ let pressed = false;
 const config = {
   exposureTime: {
     text: translate("exp-times.exp-time"),
-    limit: [1000, 60000],
+    limit: [100, 60000],
     step: 100,
   },
   exposureTimeCalibration: {
@@ -28,8 +28,8 @@ const config = {
   },
   exposureTimeFirst: {
     text: translate("exp-times.layer-1st"),
-    limit: [10000, 120000],
-    step: 1000,
+    limit: [100, 120000],
+    step: 100,
   },
   exposureUserProfile: {
     text: translate("exp-times.profile"),
