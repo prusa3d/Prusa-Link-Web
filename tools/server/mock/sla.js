@@ -13,9 +13,9 @@ class PrinterSLA extends Printer {
     this.exposureTimeCalibration = 3000;
     this.exposureUserProfile = 0;
     this.limits = {
-      exposureTime: { min: 1000, max: 60000 },
-      exposureTimeFirst: { min: 10000, max: 120000 },
-      exposureTimeCalibration: { min: 500, max: 5000 },
+      exposureTime: { min: 100, max: 60000 },
+      exposureTimeFirst: { min: 100, max: 120000 },
+      exposureTimeCalibration: { min: 100, max: 5000 },
       exposureUserProfile: { min: 0, max: 2 },
     };
   }
