@@ -7,7 +7,7 @@ const { ApiError } = require("./mock/errors");
 const router = new express.Router();
 
 /**
- * version informations
+ * version information
  */
 router.get("/version", async (req, res, next) => {
   res.json(req.app.get("printer").version(req.query["system"]));
@@ -60,7 +60,7 @@ router.post("/connection", async (req, res, next) => {
 });
 
 /**
- * Retrive a mock of octoprinter printer profile
+ * Retrieve a mock of octoprinter printer profile
  */
 router.get("/printerprofiles", async (req, res, next) => {
   res.json(req.app.get("printer").printerProfiles(req));

@@ -123,8 +123,8 @@ function getWordsFromHTML(source) {
 
   let regex = /data-label=\"(.*?)\"/g
   let result = source.match(regex);
-  let extended = false; // also parse template macroses
-  
+  let extended = false; // also parse template macros
+
   if (result) {
     for (let match of result) { // data-label="prop.time-est"
       let word = match.replace("data-label=", "").trim(); // remove data-label=

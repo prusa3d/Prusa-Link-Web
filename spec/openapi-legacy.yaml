@@ -12,13 +12,13 @@ info:
   version: 2.0.0
 externalDocs:
   description: Find out more about API
-  url: http://connect.prusa3d.cz
+  url: https://connect.prusa3d.com
 security:
   - ApiKeyAuth: [developer]
 paths:
   /api/version:
     get:
-      summary: version informations
+      summary: version information
       parameters:
         - in: query
           name: system
@@ -53,7 +53,7 @@ paths:
                     example: "prusa-sl1"
                   firmware:
                     type: string
-                    description: "Firmaware version"
+                    description: "Firmware version"
                     example: "3.10.0"
                   sdk:
                     type: string
@@ -168,7 +168,7 @@ paths:
   # platform dependent
   /api/printerprofiles:
     get:
-      summary: Retrive a mock of octoprinter printer profile
+      summary: Retrieve a mock of octoprinter printer profile
       responses:
         200:
           description: OK
@@ -184,7 +184,7 @@ paths:
 
   /api/printer:
     get:
-      summary: Retrive the current printer state
+      summary: Retrieve the current printer state
       parameters:
         - in: query
           name: exclude
@@ -419,7 +419,7 @@ paths:
   #    sends Content-Location header with URL to <PCL IP>/error (in the future it may send URL to hlep.prusa3d.com)
   /api/printer/error:
     get:
-      summary: Retrive the error number and text. Not compatible with OctoPrint.
+      summary: Retrieve the error number and text. Not compatible with OctoPrint.
       responses:
         200:
           description: Custom endpoint to get error details. Client can see if printer is in error state by polling /api/printer
@@ -1643,7 +1643,7 @@ components:
         offset:
           type: number
           nullable: true
-          description: Currenntly configured temperature offset to apply.
+          description: Currently configured temperature offset to apply.
       example:
         actual: 22.5
         target: 50.0
@@ -2268,11 +2268,11 @@ components:
           example: "10108"
         title:
           type: string
-          description: Prusa error text string with prefiled variable macros.
+          description: Prusa error text string with prefilled variable macros.
           example: "RESIN TOO LOW"
         text:
           type: string
-          description: Prusa error text string with prefiled variable macros.
+          description: Prusa error text string with prefilled variable macros.
           example: "Measured resin volume 22.4 ml is lower than required for this print. Refill the tank and restart the print."
         url:
           type: string

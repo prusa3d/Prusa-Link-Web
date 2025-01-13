@@ -10,13 +10,13 @@ info:
   version: 1.0.0-draft
 externalDocs:
   description: Find out more about API
-  url: http://connect.prusa3d.cz
+  url: https://connect.prusa3d.com
 security:
   - digestAuth: []
 paths:
   /api/version:
     get:
-      summary: api version informations
+      summary: api version information
       responses:
         200:
           description: OK
@@ -29,7 +29,7 @@ paths:
 
   /api/v1/info:
     get:
-      summary: printer informations
+      summary: printer information
       responses:
         200:
           description: OK
@@ -1011,7 +1011,7 @@ components:
               example: 215
         brim_width:
           type: integer
-          description: Milimeters
+          description: Millimeters
           example: 0
         estimated printing time (normal mode):
           type: string
@@ -1073,7 +1073,7 @@ components:
           example: 5
         layer_height:
           type: number
-          description: Milimeters
+          description: Millimeters
           example: 0.3
         material_name:
           type: string
@@ -1100,13 +1100,13 @@ components:
           example: 1
         nozzle_diameter:
           type: number
-          description: Milimeters
+          description: Millimeters
           example: 0.4
         nozzle_diameter per tool:
           type: array
           items:
               type: number
-              description: Milimeters
+              description: Millimeters
               example: 0.4
         normal_percent_present:
           type: boolean
@@ -1409,7 +1409,7 @@ components:
           example: 42.25
         transferred:
           type: integer
-          description: Transfered data in bytes
+          description: Transferred data in bytes
           example: 3276800
         time_remaining:
           type: integer
@@ -1521,11 +1521,11 @@ components:
           example: "10108"
         title:
           type: string
-          description: Prusa error text string with prefiled variable macros.
+          description: Prusa error text string with prefilled variable macros.
           example: "RESIN TOO LOW"
         text:
           type: string
-          description: Prusa error text string with prefiled variable macros.
+          description: Prusa error text string with prefilled variable macros.
           example: "Measured resin volume 22.4 ml is lower than required for this print. Refill the tank and restart the print."
         url:
           type: string
