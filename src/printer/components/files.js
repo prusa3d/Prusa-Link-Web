@@ -31,9 +31,7 @@ const FILE_TYPE = {
   "FILE": "FILE"
 };
 
-const SORT_FIELDS = process.env["WITH_NAME_SORTING_ONLY"]
-  ? ["name"]
-  : ["name", "date", "size"];
+const SORT_FIELDS = ["name", "date", "size"];
 
 let intersectionObserver = null;
 let previewLazyQueue = [];
@@ -49,8 +47,8 @@ const metadata = {
   files: [],
   eTag: null,
   sort: {
-    field: process.env["WITH_NAME_SORTING_ONLY"] ? "name" : "date",
-    order: process.env["WITH_NAME_SORTING_ONLY"] ? "asc" : "desc",
+    field: process.env["WITH_NAME_SORTING_DEFAULT"] ? "name" : "date",
+    order: process.env["WITH_NAME_SORTING_DEFAULT"] ? "asc" : "desc",
   },
 };
 
@@ -450,14 +448,12 @@ function createCurrent() {
   component.querySelector("#sort-by-name p").innerText = translate(
     "sort.by-name"
   );
-  if (!process.env["WITH_NAME_SORTING_ONLY"]) {
-    component.querySelector("#sort-by-date p").innerText = translate(
-      "sort.by-date"
-    );
-    component.querySelector("#sort-by-size p").innerText = translate(
-      "sort.by-size"
-    );
-  }
+  component.querySelector("#sort-by-date p").innerText = translate(
+    "sort.by-date"
+  );
+  component.querySelector("#sort-by-size p").innerText = translate(
+    "sort.by-size"
+  );
 
   component
     .querySelector(`#sort-by-${metadata.sort.field}`)
