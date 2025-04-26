@@ -81,11 +81,12 @@ function formatEstimatedTime(time) {
       plus_days = `${final_date} ${str_at} `;
     }
 
-    estimated_end =
-      plus_days +
-      ("0" + end.getHours()).substr(-2) +
-      ":" +
-      ("0" + end.getMinutes()).substr(-2);
+    const end_time = end.toLocaleTimeString(
+      window.navigator.language,
+      { hour: "numeric", minute: "numeric" }
+    );
+
+    estimated_end = plus_days + end_time;
   }
   return estimated_end;
 }
