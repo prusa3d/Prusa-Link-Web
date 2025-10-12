@@ -5,9 +5,9 @@
 import { modal } from "./printer/components/modal";
 import { handleError } from "./printer/components/errors";
 
-export const API_ROOT = window.location.pathname.endsWith('/')
-  ? window.location.pathname.slice(0, -1)
-  : window.location.pathname;
+export const API_ROOT = window.location.href.endsWith('/')
+  ? window.location.href.slice(0, -1)
+  : window.location.href;
 
 const createApiKey = (resolve) => {
   return (close) => {
