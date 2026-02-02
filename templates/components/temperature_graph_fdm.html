@@ -16,17 +16,26 @@
       fill="none"
       d="M355 280h170.855v20.75H355z"
     />
-    <path d="M404 290a6 6 0 1012 0 6 6 0 10-12 0" class="temp-legend-orange" />
+    <path d="M380 290a6 6 0 1012 0 6 6 0 10-12 0" class="temp-legend-orange" />
     <path
-      d="M477.903 290a6 6 0 1012 0 6 6 0 10-12 0"
+      d="M430 290a6 6 0 1012 0 6 6 0 10-12 0"
       class="temp-legend-blue"
     />
-    <text direction="inherit" dx="0" dy="5.325" x="434.952" y="290">
-      <tspan x="418" dx="0" class="temp-text">nozzle</tspan>
+    <g id="temp-legend-chamber">
+      <path
+        d="M480 290a6 6 0 1012 0 6 6 0 10-12 0"
+        class="temp-legend-yellow"
+      />
+    <text direction="inherit" dx="0" dy="5.325" x="410" y="290">
+      <tspan x="394" dx="0" class="temp-text">nozzle</tspan>
     </text>
-    <text direction="inherit" dx="0" dy="5.325" x="486.903" y="290">
-      <tspan x="496.903" dx="0" class="temp-text">bed</tspan>
+    <text direction="inherit" dx="0" dy="5.325" x="460" y="290">
+      <tspan x="444" dx="0" class="temp-text">bed</tspan>
     </text>
+      <text direction="inherit" dx="0" dy="5.325" x="510" y="290">
+        <tspan x="494" dx="0" class="temp-text">chamber</tspan>
+      </text>
+    </g>
     <g clip-path="url(#a)" class="temp-g-label">
       <defs>
         <clipPath id="a">
@@ -42,6 +51,14 @@
         </clipPath>
       </defs>
       <path id="temp-line-blue" />
+    </g>
+    <g clip-path="url(#c)" class="temp-g-label">
+      <defs>
+        <clipPath id="c">
+          <path vector-effect="non-scaling-stroke" d="M50 50h470v200H50z" />
+        </clipPath>
+      </defs>
+      <path id="temp-line-yellow" />
     </g>
     <g>
       <path

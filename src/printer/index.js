@@ -9,6 +9,7 @@ import question from "./components/question.js";
 import refill from "./views/refill.js";
 import { buildTitle, getPrinterLabel, getStatusForTitle } from "./common.js";
 import { updateProperties } from "./components/updateProperties.js";
+import { setHidden } from "../helpers/element.js";
 import { translate } from "../locale_provider";
 import { translateState } from "../state";
 import updateConnectionStatus from "./components/updateConnectionStatus";
@@ -120,6 +121,7 @@ const printer = {
     ]);
 
     updateProperties("telemetry", context);
+    updateChamberTelemetryVisibility(context.telemetry);
     updatePrinterStatus(context.state);
     updateTemperatureGraph(context.telemetry);
     updateModule();
@@ -145,9 +147,9 @@ const initTemperatureGraph = () => {
     ["temp-line-blue", []],
     ["temp-line-orange", []],
   ]);
-  
-  if (process.env.PRINTER_TYPE === "sla") {
-    map.set("temp-line-yellow", [])
+
+  if (process.env.PRINTER_TYPE === "sla" || process.env.PRINTER_TYPE === "fdm") {
+    map.set("temp-line-yellow", []);
   }
 
   graph.init(map, maxTemp);
@@ -159,6 +161,15 @@ const updateTemperatureGraph = (telemetry) => {
   if (process.env.PRINTER_TYPE === "fdm") {
     graph.update("temp-line-blue", [now, telemetry.temperature.bed.current]);
     graph.update("temp-line-orange", [now, telemetry.temperature.nozzle.current]);
+    const chamber = telemetry.temperature?.chamber;
+    const hasChamber =
+      chamber &&
+      (chamber.current !== undefined || chamber.target !== undefined);
+    setHidden(document.getElementById("temp-legend-chamber"), !hasChamber);
+    setHidden(document.getElementById("temp-line-yellow"), !hasChamber);
+    if (hasChamber && chamber.current !== undefined) {
+      graph.update("temp-line-yellow", [now, chamber.current]);
+    }
   }
   if (process.env.PRINTER_TYPE === "sla") {
     graph.update("temp-line-blue", [now, telemetry.temperature.ambient.current]);
@@ -166,6 +177,16 @@ const updateTemperatureGraph = (telemetry) => {
     graph.update("temp-line-yellow", [now, telemetry.temperature.cpu.current]);
   }
   graph.render();
+};
+
+const updateChamberTelemetryVisibility = (telemetry) => {
+  if (process.env.PRINTER_TYPE !== "fdm") return;
+
+  const chamber = telemetry.temperature?.chamber;
+  const hasChamber =
+    chamber &&
+    (chamber.current !== undefined || chamber.target !== undefined);
+  setHidden(document.getElementById("telemetry-temp-chamber"), !hasChamber);
 };
 
 const updateModule = () => {

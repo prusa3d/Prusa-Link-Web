@@ -181,6 +181,7 @@
   "prop.storage-used-space": "Used {{used}} of {{total}} ({{free}} free)",
   "prop.temp-amb": "Ambient temperature",
   "prop.temp-bed": "Heatbed",
+  "prop.temp-chamber": "Chamber temperature",
   "prop.temp-cpu": "CPU temperature",
   "prop.temp-led": "UV LED temperature",
   "prop.temp-nozzle": "Nozzle Temperature",

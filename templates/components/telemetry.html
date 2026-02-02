@@ -23,6 +23,7 @@
       set telemetry_list = [
           {'text': 'Nozzle Temperature', label: 'prop.temp-nozzle', 'icon': 'status_nozzle.svg', 'format': 'temp', "locations": ["telemetry.temperature.nozzle.current", "telemetry.temperature.nozzle.target"], enabled: true },
           {'text': 'Heatbed', label: 'prop.temp-bed', 'icon': 'status_heatbed.svg', 'format': 'temp', "locations": ["telemetry.temperature.bed.current", "telemetry.temperature.bed.target"], enabled: true},
+          {'text': 'Chamber Temperature', label: 'prop.temp-chamber', 'icon': 'temperature_color.svg', 'format': 'temp', "locations": ["telemetry.temperature.chamber.current", "telemetry.temperature.chamber.target"], enabled: true, id: 'telemetry-temp-chamber'},
           {'text': 'Printing Speed', label: 'prop.speed', 'icon': 'status_prnspeed.svg', 'format': 'print', "location": "telemetry.speed", enabled: true },
           {'text': 'Z - Height', label: 'prop.z-height', 'icon': 'status_z_axis.svg', "location": "telemetry.axis.z", 'format': 'pos', enabled: true },
           {'text': 'Nozzle Diameter', label: 'prop.nozzle-diameter', 'icon': 'nozzle.svg', "location": "printer.nozzleDiameter", 'format': 'diameter', enabled: env.WITH_TELEMETRY_NOZZLE_DIAMETER },
@@ -63,7 +64,7 @@
       </div>
     {% endfor %}
 
-    <div class="tel-prop">
+    <div class="tel-prop" {% if values.id %}id="{{ values.id }}"{% endif %}>
       <img class="icon" src="{{ pre.countOrRenderAssets('prusa-link-favicon.svg') | safe }}">
       <div class="value">
         <p class="txt-sm txt-grey" data-label="home.title">Printer status</p>
