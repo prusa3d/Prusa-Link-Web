@@ -23,6 +23,10 @@ export class Context {
           current: 0.0,
           target: 0.0,
         },
+        chamber: {
+          current: 0.0,
+          target: 0.0,
+        },
       },
     };
     this.flow = 0;
@@ -134,6 +138,10 @@ export class Context {
         bed: {
           current: printer.temp_bed,
           target: printer.target_bed,
+        },
+        chamber: {
+          current: printer.temp_chamber,
+          target: printer.target_chamber,
         },
         // sla
         ambient: {

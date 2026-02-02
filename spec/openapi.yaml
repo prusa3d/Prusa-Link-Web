@@ -1279,6 +1279,12 @@ components:
         target_bed:
           type: number
           example: 60.0
+        temp_chamber:
+          type: number
+          example: 35.0
+        target_chamber:
+          type: number
+          example: 40.0
         axis_x:
           type: number
           description: Available only when printer is not moving

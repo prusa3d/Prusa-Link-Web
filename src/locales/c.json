@@ -183,6 +183,7 @@
   "prop.storage-used-space": "",
   "prop.temp-amb": "",
   "prop.temp-bed": "",
+  "prop.temp-chamber": "",
   "prop.temp-cpu": "",
   "prop.temp-led": "",
   "prop.temp-nozzle": "",
