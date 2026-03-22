@@ -116,7 +116,7 @@ function setProgress(pct) {
 }
 
 const uploadFile = (file, origin, path, print) => {
-  const url = ["/api/v1/files", origin, path, file.name]
+  const url = ["/api/v1/files", origin, path, encodeURIComponent(file.name)]
     .filter((e) => !!e)
     .join("/");
   const fileDisplayName = file.display_name || file.name;
