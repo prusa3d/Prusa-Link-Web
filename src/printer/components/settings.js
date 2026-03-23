@@ -12,6 +12,7 @@ import {
   editUser,
   getSerialNumber,
 } from "./settingsActions";
+import { getReadyState, setReady, unsetReady } from "./readyActions";
 import { handleError } from "./errors";
 import { success, warning } from "./toast";
 import { modal } from "./modal";
@@ -35,6 +36,7 @@ const load = (context) => {
   initSettings();
   if (process.env.WITH_SERIAL) initSerialSettings();
   if (process.env.WITH_API_KEY_SETTING) initApiKey();
+  if (process.env.WITH_READY_STATE) initReadyState();
   logsModule?.load();
   context.updateConnection();
 };
@@ -529,3 +531,36 @@ const waitForSysupgrade = (version) => {
 }
 
 export default { load, update };
+
+function initReadyState() {
+  const toggleBtn = document.getElementById("ready-toggle");
+  const stateText = document.getElementById("ready-state");
+
+  if (!toggleBtn || !stateText) {
+    return;
+  }
+
+  const updateReadyState = () => {
+    getReadyState().then((data) => {
+      const isReady = data.ready;
+      stateText.innerText = isReady ? translate("ready.set") : translate("ready.not-set");
+      toggleBtn.querySelector("p").innerText = translate(isReady ? "btn.ready.unset" : "btn.ready.set");
+    });
+  };
+
+  toggleBtn.addEventListener("click", () => {
+    getReadyState().then((data) => {
+      const isReady = data.ready;
+      const action = isReady ? unsetReady() : setReady();
+      action
+        .then(() => {
+          updateReadyState();
+          displaySuccess();
+        })
+        .catch((result) => handleError(result));
+    });
+  });
+
+  // Initial state
+  updateReadyState();
+}
