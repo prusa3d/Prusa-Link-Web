@@ -280,5 +280,11 @@
   "conn.error_status": "Error",
   "conn.printer.not-supported": "",
   "msg.outdated-os.message": "Your PrusaLink is running on an outdated Raspberry Pi OS. Follow <a href='https://help.prusa3d.com/guide/_221744#222170'>this guide to flash the latest version</a>. This will reset PrusaLink",
-  "msg.outdated-os.title": "Raspberry Pi OS is out-of-date"
+  "msg.outdated-os.title": "Raspberry Pi OS is out-of-date",
+  "ready.title": "Ready State",
+  "ready.state": "Ready for remote printing",
+  "ready.set": "Ready",
+  "ready.not-set": "Not Ready",
+  "btn.ready.set": "Set Ready",
+  "btn.ready.unset": "Unset Ready"
 }

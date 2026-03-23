@@ -199,6 +199,45 @@ paths:
         401:
           $ref: "#/components/responses/Unauthorized"
 
+  /api/v1/ready:
+    get:
+      summary: Get printer ready state
+      description: Returns whether the printer is marked as ready for remote printing
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ready:
+                    type: boolean
+                    description: Whether the printer is ready for remote printing
+                    example: true
+                required:
+                  - ready
+        401:
+          $ref: "#/components/responses/Unauthorized"
+    put:
+      summary: Set printer as ready
+      description: Marks the printer as ready for remote printing (e.g., for Prusa Connect jobs)
+      responses:
+        204:
+          description: No Content - Printer is now ready
+        401:
+          $ref: "#/components/responses/Unauthorized"
+        409:
+          $ref: "#/components/responses/Conflict"
+    delete:
+      summary: Unset printer ready state
+      description: Unmarks the printer as ready for remote printing
+      responses:
+        204:
+          description: No Content - Printer is no longer ready
+        401:
+          $ref: "#/components/responses/Unauthorized"
+
   /api/v1/transfer:
     get:
       summary: transfer info
