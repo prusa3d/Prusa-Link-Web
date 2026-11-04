@@ -1416,7 +1416,8 @@ components:
         extruded:
           type: integer
           description: Millimeters of filament extruded by this tool since boot, net
-            of retractions. Counted when moves are planned, so moves discarded by an
+            of retractions. This is the length actually fed, which typically
+            differs from the commanded length. Counted when moves are planned, so moves discarded by an
             aborted print are included. Not persisted; see boot_id. Absent on
             printers without filament tracking.
           example: 15234
