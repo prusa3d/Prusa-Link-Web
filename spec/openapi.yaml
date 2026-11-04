@@ -1420,6 +1420,22 @@ components:
             aborted print are included. Not persisted; see boot_id. Absent on
             printers without filament tracking.
           example: 15234
+        unload_count:
+          type: integer
+          description: Number of times the tool went from loaded to empty since
+            boot, which is usually an unload. When it changes between two
+            responses, the spool may have changed, even if the same material is
+            loaded again. Not persisted; see boot_id. Absent on printers without
+            filament tracking.
+          example: 2
+        extruded_at_unload:
+          type: integer
+          description: Value of extruded when unload_count last changed, or 0 if
+            it hasn't changed since boot. The length up to this value belongs to
+            the filament that was unloaded, the rest to the filament loaded
+            after it, including its load and purge. Never greater than extruded.
+            Absent on printers without filament tracking.
+          example: 14890
         material:
           $ref: "#/components/schemas/FilamentMaterial"
         tag:
