@@ -65,6 +65,21 @@ paths:
                 required:
                   - printer
 
+  /api/v1/filament:
+    get:
+      summary: loaded filament and usage per tool
+      description: Filament loaded in each enabled tool and the length extruded
+        by that tool. Intended for external filament and spool tracking.
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Filament"
+        401:
+          $ref: "#/components/responses/Unauthorized"
+
   /api/v1/job:
     get:
       summary: job info
@@ -1372,6 +1387,127 @@ components:
         id:
           type: string
           example: "Ba1kmCbifTa8X"
+
+    Filament:
+      type: object
+      description: Loaded filament and usage per tool, all values except tools are optional
+      properties:
+        boot_id:
+          type: integer
+          description: Unsigned 32-bit random value chosen at printer boot. When it
+            changes, the extruded counters of all tools have restarted from zero.
+            Absent on printers without filament tracking.
+          example: 2819045321
+        tools:
+          type: array
+          items:
+            $ref: "#/components/schemas/FilamentTool"
+      required:
+        - tools
+
+    FilamentTool:
+      type: object
+      description: Filament state of one tool (or MMU slot), all values except index are optional
+      properties:
+        index:
+          type: integer
+          description: Tool index, starting from 0
+          example: 0
+        extruded:
+          type: integer
+          description: Millimeters of filament extruded by this tool since boot, net
+            of retractions. This is the length actually fed, which typically
+            differs from the commanded length. Counted when moves are planned, so moves discarded by an
+            aborted print are included. Not persisted; see boot_id. Absent on
+            printers without filament tracking.
+          example: 15234
+        unload_count:
+          type: integer
+          description: Number of times the tool went from loaded to empty since
+            boot, which is usually an unload. When it changes between two
+            responses, the spool may have changed, even if the same material is
+            loaded again. Not persisted; see boot_id. Absent on printers without
+            filament tracking.
+          example: 2
+        extruded_at_unload:
+          type: integer
+          description: Value of extruded when unload_count last changed, or 0 if
+            it hasn't changed since boot. The length up to this value belongs to
+            the filament that was unloaded, the rest to the filament loaded
+            after it, including its load and purge. Never greater than extruded.
+            Absent on printers without filament tracking.
+          example: 14890
+        material:
+          $ref: "#/components/schemas/FilamentMaterial"
+        tag:
+          $ref: "#/components/schemas/FilamentTag"
+      required:
+        - index
+
+    FilamentMaterial:
+      type: object
+      description: Filament loaded in the tool, absent when no filament is loaded
+      properties:
+        name:
+          type: string
+          example: "PETG"
+        nozzle_temperature:
+          type: integer
+          description: Nozzle temperature for printing, in °C
+          example: 230
+        preheat_temperature:
+          type: integer
+          description: Nozzle temperature for preheating, in °C
+          example: 170
+        bed_temperature:
+          type: integer
+          description: Bed temperature for printing, in °C
+          example: 85
+        color:
+          type: string
+          description: RGB color as #rrggbb, lowercase hex digits
+          example: "#ff8000"
+        material_uuid:
+          type: string
+          description: Identifies the material, as defined by OpenPrintTag. Only on printers with an OpenPrintTag reader.
+          example: "1d1a3b6e-5c2f-5d1e-9a4c-0b6f2f7e8a11"
+        package_uuid:
+          type: string
+          description: Identifies the package (e.g. 1 kg spool of a material), as defined by OpenPrintTag. Only on printers with an OpenPrintTag reader.
+          example: "8b0e2c94-3f7a-5e61-b2d4-6c9a1e0f3d27"
+        instance_uuid:
+          type: string
+          description: Identifies the individual spool, as defined by OpenPrintTag. Only on printers with an OpenPrintTag reader.
+          example: "c5f3a7d2-9e14-5b8c-a0f6-2d7e4b1c9a83"
+      required:
+        - name
+        - nozzle_temperature
+        - preheat_temperature
+        - bed_temperature
+
+    FilamentTag:
+      type: object
+      description: Spool amounts from the OpenPrintTag bound to the tool, absent when
+        no tag is bound, its data hasn't been read yet, or the printer can't track it
+        (missing weight or length data, or an unrecoverable tag error)
+      properties:
+        full_weight:
+          type: number
+          description: Grams of filament on a full spool
+          example: 1000.0
+        full_weight_is_nominal:
+          type: boolean
+          description: True when full_weight is the nominal package weight rather than
+            the measured weight of this spool
+          example: true
+        remaining_weight:
+          type: number
+          description: Grams of filament remaining, including usage not yet written to the tag
+          example: 812.5
+      required:
+        - full_weight
+        - full_weight_is_nominal
+        - remaining_weight
 
     PrusaLinkPackage:
       type: object
