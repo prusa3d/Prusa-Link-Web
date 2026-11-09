@@ -1446,12 +1446,23 @@ components:
 
     FilamentMaterial:
       type: object
-      description: Filament loaded in the tool, absent when no filament is loaded,
-        all values except name are optional
+      description: Filament loaded in the tool, absent when no filament is loaded
       properties:
         name:
           type: string
           example: "PETG"
+        nozzle_temperature:
+          type: integer
+          description: Nozzle temperature for printing, in °C
+          example: 230
+        preheat_temperature:
+          type: integer
+          description: Nozzle temperature for preheating, in °C
+          example: 170
+        bed_temperature:
+          type: integer
+          description: Bed temperature for printing, in °C
+          example: 85
         color:
           type: string
           description: RGB color as #rrggbb, lowercase hex digits
@@ -1470,6 +1481,9 @@ components:
           example: "c5f3a7d2-9e14-5b8c-a0f6-2d7e4b1c9a83"
       required:
         - name
+        - nozzle_temperature
+        - preheat_temperature
+        - bed_temperature
 
     FilamentTag:
       type: object
