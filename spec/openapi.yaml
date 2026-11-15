@@ -1398,6 +1398,13 @@ components:
             changes, the extruded counters of all tools have restarted from zero.
             Absent on printers without filament tracking.
           example: 2819045321
+        sensors_enabled:
+          type: boolean
+          description: Whether the filament sensors are turned on in the printer
+            settings. While they are off, the printer doesn't notice filament
+            removed by hand, so unload_count misses it. A single sensor can
+            still be off while this is true; see filament_present.
+          example: true
         tools:
           type: array
           items:
@@ -1437,6 +1444,15 @@ components:
             after it, including its load and purge. Never greater than extruded.
             Absent on printers without filament tracking.
           example: 14890
+        filament_present:
+          type: boolean
+          description: Whether the filament sensor closest to the nozzle of this
+            tool sees filament. On tools with only a side sensor, filament can
+            be at the sensor without being loaded to the nozzle. Changes during
+            a load or unload before material does. Absent when the sensor
+            cannot tell, such as when it is turned off, not calibrated or not
+            connected, and for MMU slots other than the selected one.
+          example: true
         material:
           $ref: "#/components/schemas/FilamentMaterial"
         tag:
