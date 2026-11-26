@@ -51,13 +51,21 @@ const fetchJobFile: FetchJobFile = async () => {
   );
 };
 
-type FetchStatus = () => Promise<{
+type FetchStatus = (expanded: boolean) => Promise<{
   printer?: Status | undefined;
   job?: StatusJob | undefined;
 }>;
 
-const fetchStatus: FetchStatus = async () => {
-  const { data, response } = await api.GET('/api/v1/status');
+/// Firmware before PrusaLink 2 answers a query with 404: then the plain
+/// status, from then on.
+export class Refused extends Error {}
+
+const fetchStatus: FetchStatus = async (expanded) => {
+  const { data, response } = await api.GET(
+    '/api/v1/status',
+    expanded ? { params: { query: { expanded: true } } } : {},
+  );
+  if (expanded && response.status === 404) throw new Refused();
   if (!response.ok) throw new Error(`status ${String(response.status)}`);
   return data ?? {};
 };
@@ -99,6 +107,9 @@ export class PrinterStore {
   #sampledAt = 0;
   #fetch: FetchStatus;
   #fetchJobFile: FetchJobFile;
+  #refused = false;
+  /// Ask for every tool, the chamber and the change counters (PrusaLink 2).
+  expanded = false;
 
   constructor(
     fetch: FetchStatus = fetchStatus,
@@ -139,7 +150,12 @@ export class PrinterStore {
 
   async refresh() {
     try {
-      const data = await this.#fetch();
+      const expanded = this.expanded && !this.#refused;
+      const data = await this.#fetch(expanded).catch((e: unknown) => {
+        if (!(e instanceof Refused)) throw e;
+        this.#refused = true;
+        return this.#fetch(false);
+      });
       this.#status = data.printer;
       this.#job = data.job;
       this.#error = false;
@@ -203,23 +219,34 @@ export class PrinterStore {
     };
   }
 
-  /// Polls until the returned function is called.
-  /// Asks again every `intervalMs`, but never while the last answer is still
-  /// on its way: with one request at a time a slow printer would otherwise
-  /// collect a queue of polls.
-  poll(intervalMs = 1000): () => void {
+  /// Polls until the returned function is called: every `visibleMs` while
+  /// the page is on screen, every `hiddenMs` in a background tab, and at
+  /// once when it comes back. The next poll is timed from the last answer,
+  /// so a slow printer never collects a queue of them.
+  poll(visibleMs = 1000, hiddenMs = 5000): () => void {
+    let timer: ReturnType<typeof setTimeout> | undefined;
     let waiting = false;
+    let stopped = false;
+    const doc = globalThis.document as Document | undefined;
     const tick = () => {
-      if (waiting) return;
+      clearTimeout(timer);
+      if (waiting || stopped) return;
       waiting = true;
       void this.refresh().finally(() => {
         waiting = false;
+        if (!stopped)
+          timer = setTimeout(tick, doc?.hidden ? hiddenMs : visibleMs);
       });
     };
+    const shown = () => {
+      if (!doc?.hidden) tick();
+    };
+    doc?.addEventListener('visibilitychange', shown);
     tick();
-    const id = setInterval(tick, intervalMs);
     return () => {
-      clearInterval(id);
+      stopped = true;
+      clearTimeout(timer);
+      doc?.removeEventListener('visibilitychange', shown);
     };
   }
 }
