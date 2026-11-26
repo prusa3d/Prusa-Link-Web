@@ -216,5 +216,6 @@
   "heating.bedWaiting": "Waiting for the bed to heat up",
   "heating.bedReady": "The bed is at the right temperature",
   "heating.bedLabel": "Bed temperature",
-  "upload.dropInto": "G-code, folders and ZIP files go to {folder}."
+  "upload.dropInto": "G-code, folders and ZIP files go to {folder}.",
+  "printer.mmu": "MMU3"
 }

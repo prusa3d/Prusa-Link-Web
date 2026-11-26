@@ -4,6 +4,8 @@ declare module 'virtual:printer-images' {
   const printerImages: {
     /// SVG markup per build.
     images: Readonly<Partial<Record<Variant, string>>>;
+    /// The same printers with an MMU3, where the build has one.
+    mmu: Readonly<Partial<Record<Variant, string>>>;
   };
   export default printerImages;
 }

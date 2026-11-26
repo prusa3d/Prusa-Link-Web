@@ -216,5 +216,6 @@
   "heating.bedWaiting": "ベッドの加熱を待っています",
   "heating.bedReady": "ベッドは適切な温度です",
   "heating.bedLabel": "ベッド温度",
-  "upload.dropInto": "G-code、フォルダー、ZIPは{folder}に保存されます。"
+  "upload.dropInto": "G-code、フォルダー、ZIPは{folder}に保存されます。",
+  "printer.mmu": "MMU3"
 }

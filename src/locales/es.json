@@ -216,5 +216,6 @@
   "heating.bedWaiting": "Esperando a que la cama se caliente",
   "heating.bedReady": "La cama está a la temperatura correcta",
   "heating.bedLabel": "Temperatura de la cama",
-  "upload.dropInto": "El G-code, las carpetas y los ZIP van a {folder}."
+  "upload.dropInto": "El G-code, las carpetas y los ZIP van a {folder}.",
+  "printer.mmu": "MMU3"
 }

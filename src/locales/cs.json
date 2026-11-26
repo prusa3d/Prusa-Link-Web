@@ -219,5 +219,6 @@
   "heating.bedWaiting": "Čeká se na nahřátí podložky",
   "heating.bedReady": "Podložka má správnou teplotu",
   "heating.bedLabel": "Teplota podložky",
-  "upload.dropInto": "G-code, složky a ZIP se uloží do {folder}."
+  "upload.dropInto": "G-code, složky a ZIP se uloží do {folder}.",
+  "printer.mmu": "MMU3"
 }

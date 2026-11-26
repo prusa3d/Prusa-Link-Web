@@ -8,10 +8,18 @@ const REMEMBERED = 'prusalink.printer';
 /// the generic build the CORE One's, which stands for every printer; either
 /// shows even before the model is known (on the sign-in page). The dev
 /// server carries all of them and picks by model.
-export function pictureFor(variant: Variant | undefined): string | undefined {
-  const all = Object.values(printerImages.images);
-  if (all.length === 1) return url(all[0]);
-  return variant ? url(printerImages.images[variant]) : undefined;
+export function pictureFor(
+  variant: Variant | undefined,
+  mmu = false,
+): string | undefined {
+  const all = Object.entries(printerImages.images);
+  const [only] = all;
+  const key = all.length === 1 && only ? only[0] : variant;
+  if (!key) return undefined;
+  return url(
+    (mmu ? printerImages.mmu[key as Variant] : undefined) ??
+      printerImages.images[key as Variant],
+  );
 }
 
 // The build carries the SVG markup as text (a data URL would percent-encode

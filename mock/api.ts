@@ -54,7 +54,7 @@ export function handleApi(
       hostname: printer.hostname,
       serial: 'MOCK-0000000000000000',
       nozzle_diameter: 0.4,
-      mmu: false,
+      mmu: printer.mmu,
       min_extrusion_temp: 170,
     };
     return json(body);

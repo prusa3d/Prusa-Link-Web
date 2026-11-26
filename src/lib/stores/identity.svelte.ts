@@ -7,6 +7,7 @@ type FetchIdentity = () => Promise<{
   hostname?: string | undefined;
   firmware?: string | undefined;
   nozzle?: number | undefined;
+  mmu?: boolean | undefined;
 }>;
 
 const fetchIdentity: FetchIdentity = async () => {
@@ -19,6 +20,7 @@ const fetchIdentity: FetchIdentity = async () => {
     hostname: info.data?.hostname,
     firmware: version.data?.firmware,
     nozzle: info.data?.nozzle_diameter,
+    mmu: info.data?.mmu,
   };
 };
 
@@ -29,6 +31,7 @@ export class IdentityStore {
   #hostname = $state<string | undefined>();
   #firmware = $state<string | undefined>();
   #nozzle = $state<number | undefined>();
+  #mmu = $state(false);
   #fetch: FetchIdentity;
 
   constructor(fetch: FetchIdentity = fetchIdentity) {
@@ -53,13 +56,19 @@ export class IdentityStore {
     return this.#nozzle;
   }
 
+  /// An MMU is attached and turned on.
+  get mmu() {
+    return this.#mmu;
+  }
+
   get title() {
     return printerTitle(this.#hostname, this.#model);
   }
 
   async refresh() {
     try {
-      const { code, hostname, firmware, nozzle } = await this.#fetch();
+      const { code, hostname, firmware, nozzle, mmu } = await this.#fetch();
+      this.#mmu = mmu ?? false;
       this.#firmware = firmware;
       this.#nozzle = nozzle;
       this.#model = modelOf(code);

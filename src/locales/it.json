@@ -216,5 +216,6 @@
   "heating.bedWaiting": "In attesa che il piano si scaldi",
   "heating.bedReady": "Il piano è alla temperatura giusta",
   "heating.bedLabel": "Temperatura del piano",
-  "upload.dropInto": "G-code, cartelle e file ZIP vanno in {folder}."
+  "upload.dropInto": "G-code, cartelle e file ZIP vanno in {folder}.",
+  "printer.mmu": "MMU3"
 }
