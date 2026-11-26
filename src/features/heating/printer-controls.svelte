@@ -4,9 +4,12 @@
 <script lang="ts">
   import { controls } from './controls.svelte';
   import { t } from '../../lib/i18n.svelte';
-  import { filamentLabel } from '../../lib/printer/filaments';
+  import { filamentLabel, firmwareFilament } from '../../lib/printer/filaments';
   import { notices } from '../../lib/stores/notices.svelte';
   import { Button } from '../../lib/ui/button';
+  import { Icon } from '../../lib/ui/icon';
+  import { Snowflake } from '../../lib/ui/icon/icons';
+  import { TelemetryIcon } from '../../lib/ui/telemetry-icon';
   import { Select } from '../../lib/ui/select';
 
   interface Props {
@@ -15,9 +18,14 @@
     /// The printer's own Z offset; 0 where it does not keep babysteps
     /// (printers with a loadcell), and the page shows what it sent.
     zOffset?: number | undefined;
+    /// The loaded filament: preheat heats for it. Without one, a picker.
+    loaded?: string | undefined;
+    /// A printer with several tools preheats each from its card: only
+    /// Cool down here.
+    multi?: boolean;
   }
 
-  let { mode, zOffset }: Props = $props();
+  let { mode, zOffset, loaded, multi = false }: Props = $props();
   const shown = $derived(
     zOffset !== undefined && zOffset !== 0 ? zOffset : controls.zOffset,
   );
@@ -25,7 +33,7 @@
   let chosen = $state('PLA');
 
   $effect(() => {
-    if (mode === 'idle') void controls.loadFilaments();
+    if (mode === 'idle' && !multi && !loaded) void controls.loadFilaments();
   });
 
   async function send(ok: Promise<boolean>) {
@@ -35,28 +43,37 @@
 
 {#if mode === 'idle'}
   <div class="flex flex-wrap items-center gap-2" data-testid="preheat">
-    <Select
-      bind:value={chosen}
-      aria-label={t('controls.filament')}
-      class="min-w-24 flex-1"
-    >
-      {#each controls.filaments as name (name)}
-        <option value={name}>{filamentLabel(name)}</option>
-      {/each}
-    </Select>
-    <Button
-      variant="secondary"
-      class="max-sm:h-11"
-      disabled={controls.busy}
-      onclick={() => void send(controls.preheat(chosen))}
-      >{t('controls.preheat')}</Button
-    >
+    {#if !multi && !loaded}
+      <Select
+        bind:value={chosen}
+        aria-label={t('controls.filament')}
+        class="min-w-24 flex-1"
+      >
+        {#each controls.filaments as name (name)}
+          <option value={name}>{filamentLabel(name)}</option>
+        {/each}
+      </Select>
+    {/if}
+    {#if !multi}
+      <Button
+        variant="secondary"
+        class={['max-sm:h-11', loaded && 'flex-1']}
+        disabled={controls.busy}
+        onclick={() =>
+          void send(
+            controls.preheat(loaded ? firmwareFilament(loaded) : chosen),
+          )}
+        ><TelemetryIcon kind="bed" />{loaded
+          ? t('controls.preheatFor', { material: filamentLabel(loaded) })
+          : t('controls.preheat')}</Button
+      >
+    {/if}
     <Button
       variant="ghost"
       class="max-sm:h-11"
       disabled={controls.busy}
       onclick={() => void send(controls.preheat(null))}
-      >{t('controls.cooldown')}</Button
+      ><Icon node={Snowflake} />{t('controls.cooldown')}</Button
     >
   </div>
 {:else}

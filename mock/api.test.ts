@@ -115,6 +115,7 @@ describe('seeded printer', () => {
     'XL',
     'XL_2',
     'XL_SINGLE',
+    'XL_GAP',
     'COREONE',
     'COREONE_INDX',
   ] as const)(
@@ -263,9 +264,12 @@ describe('PrusaLink 2 API', () => {
       'expanded=true',
     );
     const tools = (
-      res.body as { printer: { tools: Record<string, { active: boolean }> } }
+      res.body as {
+        printer: { tools: Record<string, { active: boolean } | null> };
+      }
     ).printer.tools;
-    expect(Object.keys(tools)).toEqual(['0', '1']);
+    // Five docks, three of them empty.
+    expect(tools).toMatchObject({ '2': null, '3': null, '4': null });
     expect(tools['1']?.active).toBe(true);
     printer.apiV2 = false;
     expect(

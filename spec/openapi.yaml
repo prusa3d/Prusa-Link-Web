@@ -1565,7 +1565,7 @@ components:
           description: What this firmware's API can do
           items:
             type: string
-            enum: [ status_expanded, cancel_object, chamber, dialogs, firmware_update, crash_dump, preheat, tune, filament, pairing, tool_mapping, change_all, filament_change_all ]
+            enum: [ status_expanded, cancel_object, chamber, dialogs, firmware_update, crash_dump, preheat, tune, filament, pairing, tool_mapping, change_all, filament_change_all, per_tool_heating ]
         hw_checks:
           type: object
           description: The printer's severity of each check before a print (HWCheckSeverity); read-only

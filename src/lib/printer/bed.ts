@@ -46,3 +46,18 @@ export function bedAround(points: readonly (readonly [number, number])[]): Bed {
   }
   return { width: Math.ceil(width + 10), depth: Math.ceil(depth + 10) };
 }
+
+/// Whether `[x, y]` lies inside `polygon` (even-odd rule).
+export function inside(
+  [x, y]: readonly [number, number],
+  polygon: readonly (readonly [number, number])[],
+): boolean {
+  let hit = false;
+  for (let i = 0, j = polygon.length - 1; i < polygon.length; j = i++) {
+    const [xi, yi] = polygon[i] ?? [0, 0];
+    const [xj, yj] = polygon[j] ?? [0, 0];
+    if (yi > y !== yj > y && x < ((xj - xi) * (y - yi)) / (yj - yi) + xi)
+      hit = !hit;
+  }
+  return hit;
+}

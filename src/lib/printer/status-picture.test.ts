@@ -116,6 +116,22 @@ describe('heaterReadings', () => {
   });
 });
 
+describe('heaterReadings without a heater per tool', () => {
+  it('puts the picked tool’s reading on the first tool’s label', () => {
+    expect(
+      heaterReadings(
+        {
+          tools: {
+            '0': { active: false },
+            '2': { active: true, nozzle_temp: 210, nozzle_target_temp: 215 },
+          },
+        },
+        { offline: false, toolPicked: true, perTool: false },
+      ),
+    ).toEqual({ T1: { current: 210, target: 215, active: true } });
+  });
+});
+
 describe('shownLabels', () => {
   const reading = { current: 20, target: 0 };
   const all = {

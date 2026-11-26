@@ -22,6 +22,8 @@ export interface MockResponse {
   status: number;
   body?: unknown;
   headers?: Record<string, string>;
+  /// How long the printer takes to answer, beyond the network.
+  delayMs?: number;
 }
 
 export interface MockRequest {
@@ -130,7 +132,7 @@ function materialOf(tool: MockTool) {
 
 function toolInfo(printer: MockPrinter, i: number) {
   const tool = printer.tools[i];
-  if (!tool) return null;
+  if (!tool || tool.absent) return null;
   return {
     type: 'FFF_PRINT_HEAD',
     features: {
@@ -152,7 +154,8 @@ function info(printer: MockPrinter): Ok<'/api/v1/info', 'get'> {
     mmu: printer.mmu,
     min_extrusion_temp: 170,
     ...(printer.apiV2 && {
-      tool_count: printer.toolCount,
+      // The model's docks, not the tools in them.
+      tool_count: printer.tools.length,
       tools: {
         ...Object.fromEntries(
           printer.tools.map((_, i) => [String(i), toolInfo(printer, i)]),
@@ -171,6 +174,8 @@ function info(printer: MockPrinter): Ok<'/api/v1/info', 'get'> {
       features: [
         ...FEATURES,
         ...(printer.chamber ? ['chamber' as const] : []),
+        // A heater per tool (the XL); the INDX heats the picked tool only.
+        ...(printer.perToolHeating ? ['per_tool_heating' as const] : []),
         ...(printer.toolCount > 1 || printer.takesMmu
           ? (['tool_mapping', 'change_all'] as const)
           : []),
@@ -255,15 +260,23 @@ export function handleApi(
             ...Object.fromEntries(
               printer.tools.map((t, i) => [
                 String(i),
-                {
-                  type: 'FFF_PRINT_HEAD',
-                  active:
-                    !printer.parked && !printer.mmu && i === printer.activeTool,
-                  nozzle_temp: t.temp,
-                  nozzle_target_temp: t.target || null,
-                  heatbreak_fan_rpm: t.temp > 50 ? 5200 : 0,
-                  print_fan_rpm: 0,
-                },
+                t.absent
+                  ? null
+                  : {
+                      type: 'FFF_PRINT_HEAD',
+                      active:
+                        !printer.parked &&
+                        !printer.mmu &&
+                        i === printer.activeTool,
+                      // Like the firmware: without a heater per tool, the one
+                      // toolhead's values belong to the picked tool only.
+                      ...(printer.heats(i) && {
+                        nozzle_temp: t.temp,
+                        nozzle_target_temp: t.target || null,
+                        heatbreak_fan_rpm: t.temp > 50 ? 5200 : 0,
+                        print_fan_rpm: 0,
+                      }),
+                    },
               ]),
             ),
             // The MMU's slots, the one feeding marked (Connect telemetry).
@@ -557,6 +570,7 @@ function validMapping(
       if (
         typeof tool !== 'number' ||
         !target ||
+        target.tool.absent ||
         target.tool.material === '---' ||
         used.has(tool)
       )
@@ -637,8 +651,9 @@ function handleV2(
     if (method === 'PUT' && objects[2]) {
       if (printer.state !== 'PRINTING' && printer.state !== 'PAUSED')
         return conflict('Not printing');
+      // Like the firmware, the answer waits until Marlin takes the request.
       return printer.setCanceled(Number(objects[2]), objects[3] === 'cancel')
-        ? empty(204)
+        ? { status: 204, delayMs: 300 + Math.round(Math.random() * 1200) }
         : empty(404);
     }
   }
@@ -652,6 +667,8 @@ function handleV2(
       if (typeof value !== 'number') return empty(422);
       const tool = /^tools\.(\d+)\.nozzle_target_temp$/.exec(key);
       const t = tool ? printer.tools[Number(tool[1])] : undefined;
+      if (t && !printer.heats(Number(tool?.[1])))
+        return conflict('Only the picked tool is heated');
       if (t) apply.push(() => (t.target = value));
       else if (key === 'speed') apply.push(() => (printer.speed = value));
       else if (key === 'flow') apply.push(() => (printer.flow = value));
@@ -683,6 +700,8 @@ function handleV2(
     const { filament, tool } = body;
     if (filament !== null && !FILAMENTS.some((f) => f.name === filament))
       return empty(422);
+    if (typeof tool === 'number' && !printer.heats(tool))
+      return conflict('Only the picked tool is heated');
     printer.preheat(
       typeof filament === 'string' ? filament : undefined,
       typeof tool === 'number' ? tool : undefined,
@@ -738,7 +757,7 @@ function handleV2(
     const tool = Number(toolFilament[1]);
     const t = printer.tools[tool];
     const body = readJson(req);
-    if (!t || !body) return empty(t ? 400 : 404);
+    if (!t || t.absent || !body) return empty(t && !t.absent ? 400 : 404);
     const material = body.material as
       { material_type?: unknown; primary_color?: unknown } | undefined;
     const type = material?.material_type;

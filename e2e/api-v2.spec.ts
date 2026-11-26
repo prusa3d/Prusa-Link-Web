@@ -42,6 +42,21 @@ test.describe('tools', () => {
     await expect(page.getByText('Per tool, on the printer')).toHaveCount(0);
   });
 
+  test('an XL with an empty dock keeps its tools’ numbers', async ({
+    page,
+    request,
+  }) => {
+    await printer(request, { model: 'XL_GAP', reset: true });
+    await openApp(page);
+    const cards = page.getByTestId('tool-row');
+    await expect(cards).toHaveCount(4);
+    await expect(cards.nth(2)).toContainText('Tool 4');
+    await page.getByRole('button', { name: 'Print four colours' }).click();
+    const dialog = page.getByRole('dialog');
+    await expect(dialog.getByTestId('mapping-slot')).toHaveCount(4);
+    await expect(dialog.locator('[data-slot="3"]')).toHaveCount(0);
+  });
+
   test('a two-tool XL has two rows', async ({ page, request }) => {
     await printer(request, { model: 'XL_2', reset: true });
     await openApp(page);
@@ -91,7 +106,7 @@ test.describe('dialogs', () => {
 });
 
 test.describe('cancel object', () => {
-  test('the plate on the bed; an outline cancels its object after a yes', async ({
+  test('the plate on the bed; an outline cancels its object once the printer confirms', async ({
     page,
     request,
   }) => {
@@ -102,18 +117,43 @@ test.describe('cancel object', () => {
     });
     await openApp(page);
     await printer(request, { startPrint: 'THREES~1.BGC' });
-    const bed = page.getByTestId('bed-view');
+    const card = page.getByTestId('objects');
+    // One row until opened: the object being printed, and its place.
+    await expect(card.getByTestId('current-object')).toContainText('of 3');
+    await expect(card.getByTestId('bed-view')).toHaveCount(0);
+    await card.getByRole('button', { name: 'Cancel objects' }).click();
+    const bed = card.getByTestId('bed-view');
     await expect(bed.locator('polygon')).toHaveCount(3);
-    await expect(page.getByTestId('nozzle')).toBeVisible();
+    await expect(card.getByTestId('nozzle')).toBeVisible();
+    // Closing the dialog leaves no outline looking picked.
     await bed.getByRole('button', { name: 'Shape-Box' }).click();
-    await page
-      .getByRole('dialog', { name: 'Cancel Shape-Box?' })
-      .getByRole('button', { name: 'Cancel object' })
-      .click();
+    const dialog = page.getByRole('dialog', { name: 'Cancel Shape-Box?' });
+    await expect(dialog.locator('polygon[data-highlight="true"]')).toHaveCount(
+      1,
+    );
+    await page.keyboard.press('Escape');
+    await expect(
+      bed.getByRole('button', { name: 'Shape-Box' }),
+    ).not.toBeFocused();
+    await bed.getByRole('button', { name: 'Shape-Box' }).click();
+    await dialog.getByRole('button', { name: 'Cancel object' }).click();
+    await expect(dialog).toHaveCount(0, { timeout: 10_000 });
     await expect(
       bed.getByRole('button', { name: 'Shape-Box' }),
     ).toHaveAttribute('data-state', 'canceled');
     expect((await mock(request)).objects?.[2]?.canceled).toBe(true);
+    // And back.
+    await card
+      .getByTestId('object')
+      .filter({ hasText: 'Shape-Box' })
+      .getByRole('button', { name: 'Undo' })
+      .click();
+    await expect
+      .poll(async () => (await mock(request)).objects?.[2]?.canceled)
+      .toBe(false);
+    // The card stays open on the next visit.
+    await page.reload();
+    await expect(page.getByTestId('bed-view')).toBeVisible();
   });
 
   test('a plain G-code file has its outlines in the header', async ({
@@ -127,6 +167,7 @@ test.describe('cancel object', () => {
     });
     await openApp(page);
     await printer(request, { startPrint: 'THREES~1.GCO' });
+    await page.getByRole('button', { name: 'Cancel objects' }).click();
     await expect(page.getByTestId('bed-view').locator('polygon')).toHaveCount(
       3,
     );
@@ -161,6 +202,7 @@ test.describe('cancel object', () => {
       .getByRole('dialog')
       .getByRole('button', { name: 'Print now' })
       .click();
+    await page.getByRole('button', { name: 'Cancel objects' }).click();
     await expect(page.getByTestId('bed-view').locator('polygon')).toHaveCount(
       3,
     );
@@ -169,17 +211,39 @@ test.describe('cancel object', () => {
 });
 
 test.describe('controls', () => {
-  test('preheat for a filament when idle, then cool down', async ({
+  test('preheat heats for the loaded filament; with none, for the one picked', async ({
     page,
     request,
   }) => {
     await openApp(page);
     const preheat = page.getByTestId('preheat');
+    await expect(preheat.getByRole('combobox')).toHaveCount(0);
+    await preheat.getByRole('button', { name: 'Preheat for PLA' }).click();
+    await expect.poll(async () => (await mock(request)).bed.target).toBe(60);
+    await preheat.getByRole('button', { name: 'Cool down' }).click();
+    await expect.poll(async () => (await mock(request)).bed.target).toBe(0);
+    await printer(request, { tool: { index: 0, material: '---' } });
+    await page.reload();
     await preheat.getByRole('combobox').selectOption('PETG');
     await preheat.getByRole('button', { name: 'Preheat' }).click();
     await expect.poll(async () => (await mock(request)).bed.target).toBe(85);
-    await preheat.getByRole('button', { name: 'Cool down' }).click();
-    await expect.poll(async () => (await mock(request)).bed.target).toBe(0);
+  });
+
+  test('an INDX heats the picked tool only, from its card', async ({
+    page,
+    request,
+  }) => {
+    await printer(request, { model: 'COREONE_INDX', reset: true });
+    await printer(request, { pick: 2 });
+    await openApp(page);
+    const cards = page.getByTestId('tool-row');
+    await expect(cards.nth(2).getByTestId('tool-temp')).toBeVisible();
+    await expect(cards.nth(0).getByTestId('tool-temp')).toHaveCount(0);
+    await cards.nth(2).getByRole('button', { name: 'Preheat T3' }).click();
+    await expect
+      .poll(async () => (await mock(request)).tools[2]?.target)
+      .toBeGreaterThan(0);
+    expect((await mock(request)).tools[0]?.target).toBe(0);
   });
 
   test('babysteps while printing, and no preheat then', async ({

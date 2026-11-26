@@ -5,7 +5,7 @@
   import HeaterRow from './heater-row.svelte';
   import HeatingProgress from '../heating/heating-progress.svelte';
   import ToolCard from './tool-card.svelte';
-  import ToolList from './tool-list.svelte';
+  import ToolCards from './tool-cards.svelte';
   import type { ToolRow } from '../../lib/printer/tools';
 
   import { smallThumbnail } from '../../lib/api/thumbnail';
@@ -54,6 +54,8 @@
     /// Every tool, on a printer with several that reports them (PrusaLink 2).
     tools?: ToolRow[] | undefined;
     ontoolfilament?: ((tool: number) => void) | undefined;
+    ontoolunload?: ((tool: number) => void) | undefined;
+    ontoolpreheat?: ((tool: ToolRow) => void) | undefined;
     /// The chamber's reading, where the printer reports one.
     chamber?: { temp?: number; target_temp?: number | null } | undefined;
     /// Under the readings: preheat, babysteps.
@@ -78,6 +80,8 @@
     activity,
     tools,
     ontoolfilament,
+    ontoolunload,
+    ontoolpreheat,
     chamber,
     controls,
   }: Props = $props();
@@ -335,7 +339,13 @@
         {/if}
       {/if}
       {#if __MULTI_TOOL__ && multi && tools}
-        <ToolList {tools} onfilament={ontoolfilament} />
+        <ToolCards
+          {tools}
+          printing={status.state === 'PRINTING'}
+          onfilament={ontoolfilament}
+          onunload={ontoolunload}
+          onpreheat={ontoolpreheat}
+        />
       {:else}
         <ToolCard
           label={t('status.tool')}

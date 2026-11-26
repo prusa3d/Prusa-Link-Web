@@ -90,17 +90,16 @@ export function installMockTransport(printer: MockPrinter) {
     const body = await bytesOf(
       request.body ? await request.arrayBuffer() : undefined,
     );
-    await delay(LATENCY_MS, request.signal);
-    return toResponse(
-      answer(
-        printer,
-        request.method,
-        url.pathname,
-        lowerCase(request.headers),
-        body,
-        url.search.slice(1),
-      ),
+    const out = answer(
+      printer,
+      request.method,
+      url.pathname,
+      lowerCase(request.headers),
+      body,
+      url.search.slice(1),
     );
+    await delay(LATENCY_MS + (out.delayMs ?? 0), request.signal);
+    return toResponse(out);
   };
 
   globalThis.XMLHttpRequest = mockXhr(printer);

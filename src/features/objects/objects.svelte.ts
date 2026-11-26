@@ -20,26 +20,34 @@ interface Listing {
   objects: { id: number; canceled: boolean; name?: string | undefined }[];
 }
 
-type FetchList = (job: number) => Promise<Listing | undefined>;
+type FetchList = (job: number, fresh?: boolean) => Promise<Listing | undefined>;
 type FetchShapes = (
   path: string,
   key: string,
 ) => Promise<PlateObject[] | undefined>;
-type Cancel = (job: number, id: number) => Promise<boolean>;
+type Cancel = (job: number, id: number, cancel: boolean) => Promise<boolean>;
 
-const fetchList: FetchList = async (job) => {
+const fetchList: FetchList = async (job, fresh) => {
   const { data, response } = await api.GET('/api/v1/job/{id}/objects', {
     params: { path: { id: job } },
+    ...(fresh && { cache: 'no-store' as const }),
   });
   return response.ok ? data : undefined;
 };
 
-const cancelObject: Cancel = async (job, id) =>
-  (
-    await api.PUT('/api/v1/job/{id}/objects/{object_id}/cancel', {
-      params: { path: { id: job, object_id: id } },
-    })
+const cancelObject: Cancel = async (job, id, cancel) => {
+  const params = { params: { path: { id: job, object_id: id } } };
+  return (
+    cancel
+      ? await api.PUT('/api/v1/job/{id}/objects/{object_id}/cancel', params)
+      : await api.PUT('/api/v1/job/{id}/objects/{object_id}/uncancel', params)
   ).response.ok;
+};
+
+/// How long the printer has to report a cancel it took, and how often the
+/// page asks meanwhile.
+const CONFIRM_MS = 5000;
+const CONFIRM_EVERY_MS = 400;
 
 const download: FetchShapes = async (path, key) =>
   objectsOf(await fileHeader(path, key));
@@ -51,6 +59,7 @@ export class PlateObjects {
   #list = $state<Listing | undefined>();
   #shapes = $state<PlateObject[] | undefined>();
   #cancelling = $state<number | undefined>();
+  #failed = $state<number | undefined>();
   #listFor: string | undefined;
   #shapesFor: string | undefined;
   #job: number | undefined;
@@ -118,17 +127,32 @@ export class PlateObjects {
     if (this.#shapesFor === key) this.#shapes = shapes;
   }
 
-  async cancel(id: number): Promise<boolean> {
+  /// The object whose last cancel or undo the printer refused or never
+  /// confirmed.
+  get failed() {
+    return this.#failed;
+  }
+
+  /// Cancels an object (or undoes it), and waits until the printer's list
+  /// says so: its 204 only means it took the request.
+  async cancel(id: number, cancel = true): Promise<boolean> {
     const job = this.#job;
     if (job === undefined || this.#cancelling !== undefined) return false;
     this.#cancelling = id;
+    this.#failed = undefined;
     try {
-      const ok = await this.#cancel(job, id);
-      if (ok) {
-        this.#listFor = undefined;
-        this.#list = await this.#fetchList(job);
+      if (await this.#cancel(job, id, cancel)) {
+        for (let waited = 0; waited <= CONFIRM_MS; waited += CONFIRM_EVERY_MS) {
+          const list = await this.#fetchList(job, true);
+          if (list?.objects.find((o) => o.id === id)?.canceled === cancel) {
+            this.#list = list;
+            return true;
+          }
+          await new Promise((r) => setTimeout(r, CONFIRM_EVERY_MS));
+        }
       }
-      return ok;
+      this.#failed = id;
+      return false;
     } finally {
       this.#cancelling = undefined;
     }

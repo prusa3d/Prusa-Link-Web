@@ -142,15 +142,18 @@ const SLICER_NAME: Record<PrinterModel, string> = {
   XL: 'XL5IS',
   XL_2: 'XL2IS',
   XL_SINGLE: 'XLIS',
+  XL_GAP: 'XL5IS',
   COREONE: 'COREONE',
   COREONE_INDX: 'COREONEINDX',
 };
 
-const TOOL_MATERIALS: Record<PrinterModel, string[]> = {
+/// By dock; null is an empty one.
+const TOOL_MATERIALS: Record<PrinterModel, (string | null)[]> = {
   MK4S: ['PLA'],
   XL: ['PLA', 'PETG', 'PLA', 'ASA', 'TPU'],
-  XL_2: ['PLA', 'PETG'],
-  XL_SINGLE: ['PLA'],
+  XL_2: ['PLA', 'PETG', null, null, null],
+  XL_SINGLE: ['PLA', null, null, null, null],
+  XL_GAP: ['PLA', 'PETG', null, 'ASA', 'TPU'],
   COREONE: ['PETG'],
   COREONE_INDX: ['PLA', 'PLA', 'PETG', 'PETG', 'ASA', 'TPU', 'PLA', 'PVA'],
 };
@@ -161,8 +164,8 @@ export function seedTools(model: PrinterModel): MockTool[] {
   return TOOL_MATERIALS[model].map((material, i) => ({
     temp: ambient(i),
     target: 0,
-    material,
-    color: COLORS[i % COLORS.length],
+    material: material ?? '---',
+    ...(material ? { color: COLORS[i % COLORS.length] } : { absent: true }),
   }));
 }
 
@@ -204,6 +207,7 @@ const FIRMWARE_PREFIX: Record<PrinterModel, string> = {
   XL: 'XL_XL+',
   XL_2: 'XL_XL+',
   XL_SINGLE: 'XL_XL+',
+  XL_GAP: 'XL_XL+',
   COREONE: 'COREONE_COREONE+GEN2',
   COREONE_INDX: 'COREONE_COREONE+GEN2_INDX',
 };
@@ -264,7 +268,7 @@ export function seedFiles(
   model: PrinterModel,
   now = Date.now(),
 ): { files: MockFile[]; folders: string[] } {
-  const multi = TOOL_MATERIALS[model].length > 1;
+  const multi = TOOL_MATERIALS[model].filter(Boolean).length > 1;
   const list = [
     ...(multi ? [...MULTI_MATERIAL, ...COMMON] : COMMON),
     ...EXTREMES,

@@ -10,6 +10,8 @@ export interface ToolInfo {
   material?: string | undefined;
   /// `#rrggbb`.
   color?: string | undefined;
+  /// mm.
+  nozzle?: number | undefined;
 }
 
 type Info = components['schemas']['Info'];
@@ -62,6 +64,7 @@ export function toolsOf(info: Info | undefined): (ToolInfo | undefined)[] {
       ? {
           material: material?.abbreviation,
           color: material?.primary_color?.color_rgba,
+          nozzle: tool.features?.nozzle_diameter,
         }
       : undefined;
   }

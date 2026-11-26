@@ -119,6 +119,7 @@ const serveApi: Handler = async (printer, req, res, next) => {
     headers: req.headers,
     body: await readBody(req),
   });
+  if (out.delayMs) await new Promise((r) => setTimeout(r, out.delayMs));
   send(res, out.status, out.body, out.headers);
 };
 

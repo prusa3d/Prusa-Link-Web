@@ -27,10 +27,13 @@ export class Controls {
     this.#filaments = data?.filaments.map((f) => f.name) ?? [];
   }
 
-  /// Heats for `filament`, or cools down with null.
-  preheat(filament: string | null) {
+  /// Heats for `filament` (the bed and every tool that heats, or just
+  /// `tool`), or cools down with null.
+  preheat(filament: string | null, tool?: number) {
     return this.#send(() =>
-      api.POST('/api/v1/printer/preheat', { body: { filament } }),
+      api.POST('/api/v1/printer/preheat', {
+        body: { filament, ...(tool !== undefined && { tool }) },
+      }),
     );
   }
 

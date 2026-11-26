@@ -10,6 +10,9 @@ interface Init {
     query?: Record<string, string | number | boolean>;
   };
   body?: unknown;
+  /// `no-store` asks the printer even where the browser holds an answer
+  /// it may reuse (ETag).
+  cache?: RequestCache;
 }
 
 /// openapi-fetch's typed surface on a few lines of fetch: the page uses
@@ -35,7 +38,12 @@ function method(name: string) {
     // The body is read inside the turn: the printer is busy until it is sent.
     const { response, text } = await queued(
       async () => {
-        const response = await fetch(url, { method: name, headers, body });
+        const response = await fetch(url, {
+          method: name,
+          headers,
+          body,
+          ...(init.cache && { cache: init.cache }),
+        });
         return {
           response,
           text: response.status === 204 ? '' : await response.text(),
