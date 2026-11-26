@@ -45,6 +45,7 @@
   import { dialog } from './lib/stores/dialog.svelte';
   import BedView from './features/objects/bed-view.svelte';
   import PrinterControls from './features/heating/printer-controls.svelte';
+  import UsbFirmware from './features/firmware/usb-firmware.svelte';
   import { controls as tuning } from './features/heating/controls.svelte';
   import { plateObjects } from './features/objects/objects.svelte';
   import { bedOf } from './lib/printer/bed';
@@ -399,6 +400,9 @@
           />
         {/if}
         <UpdateNotice as="card" />
+        {#if __FIRMWARE_FLASH__ && identity.can('firmware_update')}
+          <UsbFirmware {canStart} />
+        {/if}
       </div>
       <FileList
         {canStart}

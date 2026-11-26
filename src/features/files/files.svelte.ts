@@ -86,9 +86,10 @@ export class FilesStore {
       .sort((a, b) => label(a).localeCompare(label(b)));
   }
 
+  /// Firmware (.bbf) in the root, which PrusaLink 2 lists, is not a print.
   get files() {
     return this.#entries
-      .filter((e) => e.type !== 'FOLDER')
+      .filter((e) => e.type !== 'FOLDER' && e.type !== 'FIRMWARE')
       .sort((a, b) => (b.m_timestamp ?? 0) - (a.m_timestamp ?? 0));
   }
 

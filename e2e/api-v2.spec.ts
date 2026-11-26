@@ -224,3 +224,33 @@ test.describe('controls', () => {
     await expect(page.getByTestId('tool-row').nth(2)).toContainText('PETG');
   });
 });
+
+test.describe('firmware on the USB drive', () => {
+  test('lists every .bbf with its version and installs only a newer one', async ({
+    page,
+    request,
+  }) => {
+    await printer(request, { firmwareFiles: true });
+    await openApp(page);
+    const card = page.getByTestId('usb-firmware');
+    const rows = card.getByTestId('usb-bbf');
+    await expect(rows).toHaveCount(3);
+    await expect(rows.nth(1)).toContainText('Older');
+    await expect(rows.nth(2)).toContainText('For another printer');
+    await expect(card.getByRole('button', { name: 'Install' })).toHaveCount(1);
+    await expect(
+      page
+        .getByRole('list', { name: 'Files on the printer' })
+        .getByText('_firmware_'),
+    ).toHaveCount(0);
+    await card.getByRole('button', { name: 'Install' }).click();
+    await page
+      .getByRole('dialog', { name: 'Install firmware 8.0.2?' })
+      .getByRole('button', { name: 'Install' })
+      .click();
+    await expect(card).toContainText('restarting');
+    await expect
+      .poll(async () => (await mock(request)).firmware)
+      .toBe('8.0.2');
+  });
+});
