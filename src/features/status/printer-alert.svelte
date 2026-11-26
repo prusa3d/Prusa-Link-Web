@@ -24,7 +24,7 @@
   <section
     aria-labelledby="printer-alert-title"
     class={[
-      'rounded-lg flex items-start gap-4 border-2 p-5',
+      'rounded-lg flex items-start gap-4 border p-5',
       fault
         ? 'border-state-fault-edge bg-state-fault text-state-fault-text'
         : 'border-state-attention-edge bg-state-attention text-state-attention-text',

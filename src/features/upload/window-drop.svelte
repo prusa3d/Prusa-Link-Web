@@ -80,7 +80,7 @@
     data-testid="window-drop"
   >
     <div
-      class="rounded-2xl flex w-full max-w-md flex-col items-center gap-4 border-2 border-dashed border-primary bg-card p-8 text-center shadow-xl"
+      class="rounded-2xl flex w-full max-w-md flex-col items-center gap-4 border border-dashed border-primary bg-card p-8 text-center shadow-xl"
     >
       {#if picture}
         <img

@@ -20,7 +20,7 @@
   bind:value
   bind:this={element}
   class={[
-    'h-11 w-full rounded-sm border border-input bg-background px-3 text-base outline-none focus-visible:ring-2 focus-visible:ring-ring aria-invalid:border-destructive md:h-9 md:text-sm',
+    'h-11 w-full rounded-sm border border-border bg-background px-3 text-base outline-none focus-visible:ring-2 focus-visible:ring-ring aria-invalid:border-destructive md:h-9 md:text-sm',
     extra,
   ]}
   {...rest}
