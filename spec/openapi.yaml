@@ -1,0 +1,1703 @@
+openapi: 3.0.1
+info:
+  title: PrusaLink Web
+  description:
+    This is a printer webservice.
+  contact:
+    email: link@prusa3d.cz
+  license:
+    name: AGPLv3
+  version: 1.0.0-draft
+externalDocs:
+  description: Find out more about API
+  url: https://connect.prusa3d.com
+security:
+  - digestAuth: []
+paths:
+  /api/version:
+    get:
+      summary: api version information
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Version"
+        401:
+          $ref: "#/components/responses/Unauthorized"
+
+  /api/v1/info:
+    get:
+      summary: printer information
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Info"
+        401:
+          $ref: "#/components/responses/Unauthorized"
+
+  /api/v1/status:
+    get:
+      summary: printer, job and transfer telemetry info
+      description: All values except printer are optional
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  job:
+                    $ref: "#/components/schemas/StatusJob"
+                  printer:
+                      $ref: "#/components/schemas/StatusPrinter"
+                  transfer:
+                      $ref: "#/components/schemas/StatusTransfer"
+                  storage:
+                      $ref: "#/components/schemas/StatusStorage"
+                  camera:
+                      $ref: "#/components/schemas/StatusCamera"
+                required:
+                  - printer
+
+  /api/v1/job:
+    get:
+      summary: job info
+      description: Returns info about current job
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Job"
+        204:
+          description: No Content
+        401:
+          $ref: "#/components/responses/Unauthorized"
+
+  /api/v1/job/{id}:
+    parameters:
+      - in: path
+        name: id
+        description: job id
+        required: true
+        schema:
+          type: integer
+          example: 42
+    delete:
+      summary: stop job
+      description: Stop job with given id
+      responses:
+        204:
+          description: No Content
+                       No Error
+        401:
+          $ref: "#/components/responses/Unauthorized"
+        404:
+          $ref: "#/components/responses/NotFound"
+        409:
+          $ref: "#/components/responses/Conflict"
+
+  /api/v1/job/{id}/pause:
+    parameters:
+      - in: path
+        name: id
+        description: job id
+        required: true
+        schema:
+          type: integer
+          example: 42
+    put:
+      summary: pause job
+      description: Pause job with given id
+      responses:
+        204:
+          description: No Content
+                       No Error
+        401:
+          $ref: "#/components/responses/Unauthorized"
+        404:
+          $ref: "#/components/responses/NotFound"
+        409:
+          $ref: "#/components/responses/Conflict"
+
+  /api/v1/job/{id}/resume:
+    parameters:
+      - in: path
+        name: id
+        description: job id
+        required: true
+        schema:
+          type: integer
+          example: 42
+    put:
+      summary: resume job
+      description: Resume job with given id
+      responses:
+        204:
+          description: No Content
+                       No Error
+        401:
+          $ref: "#/components/responses/Unauthorized"
+        404:
+          $ref: "#/components/responses/NotFound"
+        409:
+          $ref: "#/components/responses/Conflict"
+
+  /api/v1/job/{id}/continue:
+    parameters:
+      - in: path
+        name: id
+        description: job id
+        required: true
+        schema:
+          type: integer
+          example: 42
+    put:
+      summary: continue job
+      description: Continue in job with given id after timelapse capture
+      responses:
+        204:
+          description: No Content
+                       No Error
+        401:
+          $ref: "#/components/responses/Unauthorized"
+        404:
+          $ref: "#/components/responses/NotFound"
+        409:
+          $ref: "#/components/responses/Conflict"
+
+  /api/v1/storage:
+    parameters:
+      - in: header
+        name: Accept-Language
+        description: Defines a language of the response
+        schema:
+          type: string
+          example: "cs"
+    get:
+      summary: storage info
+      description: Returns info about each available file storage (e.g. SD Card or local storage)
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  storage_list:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Storage"
+        401:
+          $ref: "#/components/responses/Unauthorized"
+
+  /api/v1/transfer:
+    get:
+      summary: transfer info
+      description: Returns info about current transfer
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Transfer"
+        204:
+          description: No Content
+        401:
+          $ref: "#/components/responses/Unauthorized"
+
+  /api/v1/transfer/{id}:
+    parameters:
+      - in: path
+        name: id
+        description: transfer id
+        required: true
+        schema:
+          type: integer
+          example: 42
+    delete:
+      summary: stop transfer
+      description: Stop transfer with given id
+      responses:
+        204:
+          description: No Content
+                       No Error
+        401:
+          $ref: "#/components/responses/Unauthorized"
+        404:
+          $ref: "#/components/responses/NotFound"
+        409:
+          $ref: "#/components/responses/Conflict"
+
+  /api/v1/files/{storage}/{path}:
+    parameters:
+      - in: header
+        name: Accept-Language
+        description: Defines a language of the response
+        schema:
+          type: string
+          example: "cs"
+      - in: header
+        name: Accept
+        description: Preferred content-type of response - application/json or text/html, all other are returned as text/plain
+        schema:
+          type: string
+          default: text/plain
+      - in: path
+        name: storage
+        description: The target storage
+        required: true
+        schema:
+          type: string
+          example: "/local"
+      - in: path
+        name: path
+        description: Path to the file
+        required: true
+        schema:
+          type: string
+          example: "/examples/Spice_Harvester_0.3mm_PLA_MK3S_12m.gcode"
+    get:
+      summary: File or folder metadata
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: "#/components/schemas/FileInfo"
+                  - $ref: "#/components/schemas/PrintFileInfo"
+                  - $ref: "#/components/schemas/FirmwareFileInfo"
+                  - $ref: "#/components/schemas/FolderInfo"
+        401:
+          $ref: "#/components/responses/Unauthorized"
+    put:
+      summary: upload file or create folder
+      requestBody:
+        content:
+          application/octet-stream:
+            schema:
+              type: string
+              format: binary
+      parameters:
+        - in: header
+          name: Content-Length
+          description: Length of file to upload
+          schema:
+            type: integer
+            example: 101342
+        - in: header
+          name: Content-Type
+          description: Type of uploaded media
+          schema:
+            type: string
+            default: application/octet-stream
+        - in: header
+          name: Print-After-Upload
+          description: Whether to start printing the file after upload
+          schema:
+            type: string
+            description: ?0=False, ?1=True, according RFC8941/3.3.6
+            enum: [ "?0", "?1" ]
+            default: "?0"
+        - in: header
+          name: Overwrite
+          description: Whether to overwrite already existing files
+          schema:
+            type: string
+            description: ?0=False, ?1=True, according RFC8941/3.3.6
+            enum: ["?0", "?1"]
+            default: "?0"
+      responses:
+        201:
+          description: Created
+        401:
+          $ref: "#/components/responses/Unauthorized"
+        404:
+          $ref: "#/components/responses/NotFound"
+        409:
+          $ref: "#/components/responses/Conflict"
+    post:
+      summary: Start print of file if there's no print job running
+      description: Body is ignored
+      requestBody:
+        required: false
+        content: {}
+      responses:
+        204:
+          description: No Content
+        401:
+          $ref: "#/components/responses/Unauthorized"
+        404:
+          $ref: "#/components/responses/NotFound"
+        409:
+          $ref: "#/components/responses/Conflict"
+    head:
+      summary: file presence and state check
+      responses:
+        200:
+          description: OK
+          headers:
+            Read-Only:
+              description: Whether the file or storage is read-only
+              required: true
+              schema:
+                type: boolean
+                example: true
+            Currently-Printed:
+              description: Whether this file is currently being printed
+              required: true
+              schema:
+                type: boolean
+                example: true
+        401:
+          $ref: "#/components/responses/Unauthorized"
+        404:
+          $ref: "#/components/responses/NotFound"
+        409:
+          $ref: "#/components/responses/Conflict"
+    delete:
+      summary: Delete a file or folder
+      parameters:
+        - in: header
+          name: Force
+          description: Whether to force delete non-empty folder
+          schema:
+            type: string
+            description: ?0=False, ?1=True, according RFC8941/3.3.6
+            enum: [ "?0", "?1" ]
+            default: "?0"
+      responses:
+        204:
+          description: No Content
+                       No Error
+        401:
+          $ref: "#/components/responses/Unauthorized"
+        404:
+          $ref: "#/components/responses/NotFound"
+        409:
+          # If the file to be deleted is currently being printed
+          $ref: "#/components/responses/Conflict"
+
+  /api/v1/cameras:
+    get:
+      summary: Get a list of active cameras and its properties
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Camera"
+        401:
+          $ref: "#/components/responses/Unauthorized"
+        403:
+          $ref: "#/components/responses/Forbidden"
+        503:
+          $ref: "#/components/responses/ServiceUnavailable"
+    put:
+      summary: List of cameras in intended order
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: string
+                description: Printer ID
+                example: "sh42arta"
+      responses:
+        200:
+          description: OK
+        401:
+          $ref: "#/components/responses/Unauthorized"
+        403:
+          $ref: "#/components/responses/Forbidden"
+        503:
+          $ref: "#/components/responses/ServiceUnavailable"
+
+  /api/v1/cameras/{id}:
+    parameters:
+    - in: path
+      name: id
+      description: ID of the camera
+      required: true
+      schema:
+        type: string
+        example: "Z42D4U2NqEX"
+    get:
+      summary: Get current settings and properties of specific camera
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CameraConfig"
+        401:
+          $ref: "#/components/responses/Unauthorized"
+        403:
+          $ref: "#/components/responses/Forbidden"
+        404:
+          $ref: "#/components/responses/NotFound"
+        503:
+          $ref: "#/components/responses/ServiceUnavailable"
+    post:
+      summary: Setup a new camera or fix a broken one
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CameraConfigSet"
+      responses:
+        200:
+          description: OK
+        400:
+          $ref: "#/components/responses/BadRequest"
+        401:
+          $ref: "#/components/responses/Unauthorized"
+        403:
+          $ref: "#/components/responses/Forbidden"
+        404:
+          $ref: "#/components/responses/NotFound"
+        409:
+          $ref: "#/components/responses/Conflict"
+        503:
+          $ref: "#/components/responses/ServiceUnavailable"
+    delete:
+      summary: Delete a camera
+      responses:
+        200:
+          description: OK
+        401:
+          $ref: "#/components/responses/Unauthorized"
+        403:
+          $ref: "#/components/responses/Forbidden"
+        404:
+          $ref: "#/components/responses/NotFound"
+        409:
+          $ref: "#/components/responses/Conflict"
+        503:
+          $ref: "#/components/responses/ServiceUnavailable"
+
+  /api/v1/cameras/snap:
+    get:
+      summary: Return a captured image from the default camera
+      responses:
+        200:
+          description: OK
+          content:
+            image/png:
+              schema:
+                type: string
+                format: binary
+        204:
+          description: No Content
+            No Error
+        304:
+          $ref: "#/components/responses/NotModified"
+        401:
+          $ref: "#/components/responses/Unauthorized"
+        403:
+          $ref: "#/components/responses/Forbidden"
+        404:
+          $ref: "#/components/responses/NotFound"
+        503:
+          $ref: "#/components/responses/ServiceUnavailable"
+
+  /api/v1/cameras/{id}/snap:
+    parameters:
+      - in: path
+        name: id
+        description: ID of the camera
+        required: true
+        schema:
+          type: string
+          example: "Z42D4U2NqEX"
+    get:
+      summary: Return a captured image from the camera with a given id
+      responses:
+        200:
+          description: OK
+          content:
+            image/png:
+              schema:
+                type: string
+                format: binary
+        204:
+          description: No Content
+            No Error
+        304:
+          $ref: "#/components/responses/NotModified"
+        401:
+          $ref: "#/components/responses/Unauthorized"
+        403:
+          $ref: "#/components/responses/Forbidden"
+        404:
+          $ref: "#/components/responses/NotFound"
+        503:
+          $ref: "#/components/responses/ServiceUnavailable"
+    post:
+      summary: Make a snapshot with the camera
+      description: Can be manually done only during camera initialization or in
+                    manual mode
+      requestBody:
+        content:
+          application/json: {}
+      responses:
+        200:
+          description: OK
+          content:
+            image/png:
+              schema:
+                type: string
+                format: binary
+        401:
+          $ref: "#/components/responses/Unauthorized"
+        403:
+          $ref: "#/components/responses/Forbidden"
+        404:
+          $ref: "#/components/responses/NotFound"
+        408:
+          $ref: "#/components/responses/RequestTimeout"
+        409:
+          $ref: "#/components/responses/Conflict"
+        503:
+          $ref: "#/components/responses/ServiceUnavailable"
+
+  /api/v1/cameras/{id}/config:
+    parameters:
+      - in: path
+        name: id
+        description: ID of the camera
+        required: true
+        schema:
+          type: string
+          example: "Z42D4U2NqEX"
+    patch:
+      summary: Set new settings to a working camera
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CameraConfigSet"
+      responses:
+        200:
+          description: OK
+        401:
+          $ref: "#/components/responses/Unauthorized"
+        403:
+          $ref: "#/components/responses/Forbidden"
+        404:
+          $ref: "#/components/responses/NotFound"
+        503:
+          $ref: "#/components/responses/ServiceUnavailable"
+    delete:
+      summary: Reset settings of a camera
+      responses:
+        200:
+          description: OK
+        401:
+          $ref: "#/components/responses/Unauthorized"
+        403:
+          $ref: "#/components/responses/Forbidden"
+        404:
+          $ref: "#/components/responses/NotFound"
+        503:
+          $ref: "#/components/responses/ServiceUnavailable"
+
+  /api/v1/cameras/{id}/connection:
+    parameters:
+      - in: path
+        name: id
+        description: ID of the camera
+        required: true
+        schema:
+          type: string
+          example: "Z42D4U2NqEX"
+    post:
+      summary: Register a camera to Connect
+      responses:
+        200:
+          description: OK
+        401:
+          $ref: "#/components/responses/Unauthorized"
+        403:
+          $ref: "#/components/responses/Forbidden"
+        404:
+          $ref: "#/components/responses/NotFound"
+        408:
+          $ref: "#/components/responses/RequestTimeout"
+        409:
+          $ref: "#/components/responses/Conflict"
+        503:
+          $ref: "#/components/responses/ServiceUnavailable"
+    delete:
+      summary: Un-register a camera from Connect
+      responses:
+        200:
+          description: OK
+        401:
+          $ref: "#/components/responses/Unauthorized"
+        403:
+          $ref: "#/components/responses/Forbidden"
+        404:
+          $ref: "#/components/responses/NotFound"
+        409:
+          $ref: "#/components/responses/Conflict"
+        503:
+          $ref: "#/components/responses/ServiceUnavailable"
+
+  /api/v1/update/{env}:
+    parameters:
+      - in: path
+        name: env
+        description: The target environment (prusalink or system) for update
+        required: true
+        schema:
+          type: string
+          enum: ["prusalink"]
+    get:
+      summary: Retrieve information about available update of given environment
+      responses:
+        200:
+          description: OK
+          headers:
+            Update-Available:
+              schema:
+                type: boolean
+                description: Whether there's a package update available
+                example: true
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: "#/components/schemas/PrusaLinkPackage"
+        204:
+          description: No Content
+          headers:
+            Update-Available:
+              schema:
+                type: boolean
+                description: Whether there's a package update available
+                example: false
+        401:
+          $ref: "#/components/responses/Unauthorized"
+        409:
+          $ref: "#/components/responses/BadRequest"
+    post:
+      summary: Update given environment
+      responses:
+        200:
+          description: OK
+        204:
+          description: No Content
+        401:
+          $ref: "#/components/responses/Unauthorized"
+        409:
+          $ref: "#/components/responses/BadRequest"
+
+components:
+  schemas:
+    Version:
+      type: object
+      properties:
+        api:
+          type: string
+          example: "1.0.0"
+        version:
+          type: string
+          example: "0.7.0"
+        printer:
+          type: string
+          example: "1.3.1"
+        text:
+          type: string
+          example: "PrusaLink 0.7.0"
+        firmware:
+          type: string
+          example: "3.10.1-4697"
+        sdk:
+          type: string
+          example: "0.7.0"
+        capabilities:
+          description: |
+            Additional capabilities the printer has. The object is expected to
+            be extended in the future with more capabilities. The absence of a
+            capability in the object, or the complete absence of the object
+            means the printer doesn't support such capability (probably doesn't
+            even know such capability might exist).
+          type: object
+          default: {}
+          properties:
+            upload-by-put:
+              description: |
+                The printer supports uploading GCodes by the PUT method (as
+                described in this document). It is capable of doing the PUT and
+                HEAD to /api/v1/files/{storage}/{path} and it is capable of
+                answering the /api/v1/storage endpoint.
+
+                In absence of this capability, client MAY opt to try the legacy
+                "octoprint" POST to /api/files/{storage}.
+              type: boolean
+              default: false
+      required:
+        - api
+        - version
+        - printer
+        - text
+        - firmware
+
+    Storage:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Name of the storage, based on selected language
+          example: "PrusaLink gcodes"
+        type:
+          type: string
+          description: Storage source
+          enum: ["LOCAL", "SDCARD", "USB"]
+        path:
+          type: string
+          description: Path to storage (not display path)
+          example: "/local"
+        print_files:
+          type: integer
+          description: Size of all print files in bytes
+          example: 19216842
+        system_files:
+          type: integer
+          description: Size of all system files in bytes
+          example: 4242
+        free_space:
+          type: integer
+          description: System free space in bytes
+          example: 1921681142
+        total_space:
+          type: integer
+          description: System total space in bytes
+          example: 8589934592
+        available:
+          type: boolean
+          description: Whether the storage is available or not
+          example: true
+        read_only:
+          type: boolean
+          description: Whether the storage is read only
+          example: false
+      required:
+        - available
+        - path
+        - type
+
+    Camera:
+      type: object
+      properties:
+        camera_id:
+          type: string
+          example: "sh42arta"
+        config:
+          type: object
+          properties:
+            path:
+              type: string
+              example: "/dev/video0"
+            name:
+              type: string
+              example: "Camera L4D"
+            driver:
+              type: string
+              example: "V4L2"
+            resolution:
+              type: string
+              example: "1280x720"
+        connected:
+          type: boolean
+          description: Camera is successfully connected to PrusaLink
+        detected:
+          type: boolean
+          description: Camera is detected by PrusaLink, but not saved yet
+        stored:
+          type: boolean
+          description: Camera configuration is saved in PrusaLink
+        linked:
+          type: boolean
+          description: Camera is linked to PrusaConnect
+
+    CameraConfig:
+      type: object
+      description: Camera configuration
+      properties:
+        name:
+          type: string
+          description: Name of the camera
+          example: "MuadDib_Camera_1"
+        trigger_scheme:
+          type: string
+          description: When the snapshot is taken
+          enum: [ TEN_SEC, THIRTY_SEC, SIXTY_SEC, EACH_LAYER, FIFTH_LAYER, MANUAL ]
+        available_resolutions:
+          type: array
+          items:
+            type: object
+            properties:
+              width:
+                type: integer
+                example: 640
+              height:
+                type: integer
+                example: 480
+        resolution:
+          type: object
+          properties:
+            width:
+              type: integer
+              example: 640
+            height:
+              type: integer
+              example: 480
+        focus:
+          type: number
+          description: Focus of the camera (0.0 - 1.0)
+          example: 0.5
+        capabilities:
+          type: array
+          items:
+            type: string
+            enum: [TRIGGER_SCHEME, IMAGING, RESOLUTION, ROTATION, EXPOSURE, FOCUS]
+
+    CameraConfigSet:
+      type: object
+      description: Camera configuration to set
+      properties:
+        name:
+          type: string
+          description: Name of the camera
+          example: "MuadDib_Camera_1"
+        trigger_scheme:
+          type: string
+          description: When the snapshot is taken
+          enum: [ TEN_SEC, THIRTY_SEC, SIXTY_SEC, EACH_LAYER, FIFTH_LAYER, MANUAL ]
+        resolution:
+          type: object
+          properties:
+            width:
+              type: integer
+              example: 640
+            height:
+              type: integer
+              example: 640
+        rotation:
+          type: integer
+          description: Current rotation of the output image
+          example: 180
+        focus:
+          type: number
+          description: Focus of the camera (0.0 - 1.0)
+          example: 0.5
+        exposure:
+          type: number
+          example: 4.2
+        send_to_connect:
+          type: boolean
+          example: true
+
+    GenericFileInfo:
+      description: Basic file info object, common for all files
+      type: object
+      required:
+        - name
+        - read_only
+        - type
+        - m_timestamp
+      properties:
+        name:
+          type: string
+          description: Short Filename
+          example: "SPICE~1.gco"
+        read_only:
+          type: boolean
+          example: False
+        size:
+          type: integer
+          description: Available for files only, not for folders
+          example: 424242
+        type:
+          type: string
+          description: File could be print file, firmware file, other (e.g. configuration) file, or folder
+          enum: [ PRINT_FILE, FIRMWARE, FILE, FOLDER ]
+        m_timestamp:
+          description: Timestamp in seconds
+          type: integer
+          example: 1648042843
+        display_name:
+          type: string
+          description: Long Filename
+          example: "Spice_Harvester_0.3mm_PLA_MK3S_12m.gcode"
+
+    FileInfo:
+      description: Other, not specified files info
+      allOf:
+        - $ref: '#/components/schemas/GenericFileInfo'
+        - type: object
+          properties:
+            refs:
+              type: object
+              properties:
+                download:
+                  type: string
+                  example: "/api/files/local/file.txt/raw"
+
+    PrintFileInfoBasic:
+      description: Simplified print file info within the folder's children
+      allOf:
+        - $ref: '#/components/schemas/GenericFileInfo'
+        - type: object
+          properties:
+            refs:
+              $ref: "#/components/schemas/PrintFileRefs"
+
+    PrintFileRefs:
+      description: Reference links for file thumbnail, icon and download
+      type: object
+      properties:
+        download:
+          type: string
+          example: "/api/files/local/examples/Spice_Harvester_0.3mm_PLA_MK3S_42m.gcode/raw"
+        icon:
+          type: string
+          example: "/api/thumbnails/local/examples/Spice_Harvester_0.3mm_PLA_MK3S_42m.gcode.small.png"
+        thumbnail:
+          type: string
+          example: "/api/thumbnails/local/examples/Spice_Harvester_0.3mm_PLA_MK3S_42m.gcode.orig.png"
+
+    PrintFileMetadata:
+      type: object
+      description: Print file metadata parsed from G-code or SL1, all data are optional
+      properties:
+        bed_temperature:
+          type: integer
+          description: Degrees Celsius
+          example: 60
+        bed_temperature per tool:
+          type: array
+          items:
+            type: integer
+            description: Degrees Celsius
+            example: 60
+        temperature:
+          type: integer
+          description: Nozzle temperature, Degrees Celsius
+          example: 215
+        temperature per tool:
+          type: array
+          items:
+              type: integer
+              description: Degrees Celsius
+              example: 215
+        brim_width:
+          type: integer
+          description: Millimeters
+          example: 0
+        estimated printing time (normal mode):
+          type: string
+          example: "42m 42s"
+        estimated_print_time:
+          type: integer
+          description: Seconds
+          example: 25421
+        faded_layers:
+          type: integer
+          example: 42
+        filament cost:
+          type: number
+          example: 0.57
+        filament cost per tool:
+          type: array
+          items:
+            type: number
+            example: 0.57
+        filament used [cm3]:
+          type: number
+          example: 12.42
+        filament used [cm3] per tool:
+          type: array
+          items:
+            type: number
+            example: 11.42
+        filament used [g]:
+          type: number
+          example: 15.42
+        filament used [g] per tool:
+          type: array
+          items:
+            type: number
+            example: 14.42
+        filament used [mm]:
+          type: number
+          example: 5142.06
+        filament used [mm] per tool:
+          type: array
+          items:
+            type: number
+            example: 4292.7
+        filament_type:
+          type: string
+          example: "PLA"
+        filament_type per tool:
+          type: array
+          items:
+              type: string
+              example: "PLA"
+        fill_density:
+          type: string
+          description: Percents
+          example: "20%"
+        initial_exposure_time:
+          type: integer
+          description: Seconds
+          example: 5
+        layer_height:
+          type: number
+          description: Millimeters
+          example: 0.3
+        material_name:
+          type: string
+          example: "PLA Sandstorm Orange"
+        exposure_time:
+          type: integer
+          description: Seconds
+          example: 2
+        max_exposure_time:
+          type: integer
+          description: Seconds
+          example: 3
+        max_initial_exposure_time:
+          type: integer
+          description: Seconds
+          example: 3
+        min_exposure_time:
+          type: integer
+          description: Seconds
+          example: 3
+        min_initial_exposure_time:
+          type: integer
+          description: Seconds
+          example: 1
+        nozzle_diameter:
+          type: number
+          description: Millimeters
+          example: 0.4
+        nozzle_diameter per tool:
+          type: array
+          items:
+              type: number
+              description: Millimeters
+              example: 0.4
+        normal_percent_present:
+          type: boolean
+          example: true
+        normal_left_present:
+          type: boolean
+          example: true
+        quiet_percent_present:
+          type: boolean
+          example: true
+        quiet_left_present:
+            type: boolean
+            example: true
+        layer_info_present:
+          type: boolean
+          example: true
+        max_layer_z:
+          type: number
+          example: 4.2
+        print_time:
+          type: integer
+          description: Seconds
+          example: 2542
+        printer_model:
+          type: string
+          enum: [ "MK3", "MK3S", "MINI" ]
+        support_material:
+          type: string
+          example: "PLA"
+        ironing:
+          type: integer
+          example: 0
+        required_resin_ml:
+          type: number
+          example: 124.2
+        profile:
+          type: string
+          example: "ultra_fast"
+
+    PrintFileInfo:
+      description: Full print file info from the file's detail
+      allOf:
+        - $ref: '#/components/schemas/PrintFileInfoBasic'
+        - type: object
+          properties:
+            meta:
+              $ref: '#/components/schemas/PrintFileMetadata'
+
+    FirmwareFileInfoBasic:
+      description: Simplified firmware file info within the folder's children
+      allOf:
+        - $ref: '#/components/schemas/GenericFileInfo'
+        - type: object
+          properties:
+            refs:
+              type: object
+              properties:
+                download:
+                  type: string
+                  example: "/api/files/local/firmware.hex/raw"
+
+    FirmwareFileInfo:
+      description: Full firmware file info from the file's detail
+      allOf:
+        - $ref: '#/components/schemas/FirmwareFileInfoBasic'
+        - type: object
+          properties:
+            meta:
+              type: object
+              properties:
+                version:
+                  type: string
+                  description: Firmware version in text format
+                printer_type:
+                  type: integer
+                printer_version:
+                  type: integer
+
+    FolderInfo:
+      description: Info about the folder and its content, except nested children
+      allOf:
+        - $ref: '#/components/schemas/GenericFileInfo'
+        - type: object
+          properties:
+            children:
+              type: array
+              items:
+                oneOf:
+                  - $ref: "#/components/schemas/FileInfo"
+                  - $ref: "#/components/schemas/PrintFileInfoBasic"
+                  - $ref: "#/components/schemas/FirmwareFileInfoBasic"
+                  - $ref: "#/components/schemas/FolderInfo"
+
+    Info:
+      type: object
+      properties:
+        mmu:
+          type: boolean
+          example: false
+        name:
+          type: string
+          example: "MuadDib"
+        location:
+          type: string
+          example: "Arrakis"
+        farm_mode:
+          type: boolean
+          example: false
+        nozzle_diameter:
+          type: number
+          example: 0.4
+        min_extrusion_temp:
+          type: integer
+          example: 170
+        serial:
+          type: string
+          example: "CZPX4720X004XC34242"
+        sd_ready:
+          type: boolean
+          example: true
+        active_camera:
+          type: boolean
+          example: true
+        hostname:
+          type: string
+          example: "prusa-mk3.lan"
+        port:
+          type: string
+          example: "/dev/tty"
+        network_error_chime:
+          type: boolean
+          example: true
+
+    StatusJob:
+      type: object
+      description: Telemetry info about current job, all values are optional
+      properties:
+        id:
+          type: integer
+          example: 420
+        progress:
+          type: number
+          description: Percents
+          example: 42.0
+        time_remaining:
+          type: integer
+          description: Seconds
+          example: 520
+        time_printing:
+          type: integer
+          description: Seconds
+          example: 526
+
+    StatusPrinter:
+      type: object
+      description: Telemetry info about printer, all values except state are optional
+      properties:
+        state:
+          type: string
+          enum: [ IDLE, BUSY, PRINTING, PAUSED, FINISHED, STOPPED, ERROR, ATTENTION, READY ]
+        temp_nozzle:
+          type: number
+          example: 214.9
+        target_nozzle:
+          type: number
+          example: 215.0
+        temp_bed:
+          type: number
+          example: 59.5
+        target_bed:
+          type: number
+          example: 60.0
+        axis_x:
+          type: number
+          description: Available only when printer is not moving
+          example: 23.2
+        axis_y:
+          type: number
+          description: Available only when printer is not moving
+          example: 24.3
+        axis_z:
+          type: number
+          example: 0.5
+        flow:
+          type: integer
+          example: 95
+        speed:
+          type: integer
+          example: 100
+        fan_hotend:
+          type: integer
+          example: 420
+        fan_print:
+          type: integer
+          example: 420
+        status_printer:
+          type: object
+          properties:
+            ok:
+              type: boolean
+              example: true
+            message:
+              type: string
+              example: "OK"
+        status_connect:
+          type: object
+          properties:
+            ok:
+              type: boolean
+              example: true
+            message:
+              type: string
+              example: "OK"
+      required:
+        - state
+
+    StatusTransfer:
+      type: object
+      description: Telemetry info about current transfer status, all values except id and time_transferring are optional
+      properties:
+        id:
+          type: integer
+          example: 72855542
+        time_transferring:
+          type: integer
+          example: 30
+        progress:
+          type: number
+          description: Percents
+          example: 65.82
+        data_transferred:
+          type: integer
+          example: 123084800
+      required:
+        - id
+        - time_transferring
+
+    StatusStorage:
+      type: object
+      description: Telemetry info about current storage status
+      properties:
+        name:
+          type: string
+          example: "LOCAL"
+        path:
+          type: string
+          example: "/local"
+        read_only:
+          type: boolean
+          example: false
+        free_space:
+          type: integer
+          example: 4202335
+      required:
+        - name
+        - path
+        - read_only
+
+    StatusCamera:
+      type: object
+      description: Telemetry info about default working camera, if available
+      properties:
+        id:
+          type: string
+          example: "Ba1kmCbifTa8X"
+
+    PrusaLinkPackage:
+      type: object
+      description: PrusaLink package version available to update
+      properties:
+        new_version:
+          type: string
+          description: Package version available for update
+          example: "4.2-RC1"
+
+    Transfer:
+      type: object
+      properties:
+        type:
+          type: string
+          enum: [ NO_TRANSFER, FROM_WEB, FROM_CONNECT, FROM_PRINTER, FROM_SLICER, FROM_CLIENT, TO_CONNECT, TO_CLIENT ]
+          example: FROM_WEB
+        display_name:
+          type: string
+          description: Long Filename
+          example: "Spice_Harvester_0.3mm_PLA_MK3S_12m.gcode"
+        path:
+          type: string
+          example: "/local"
+        url:
+          type: string
+          example: "https://files.printables.com/media/prints/42/gcodes/42_b42-242-442-8142c-424242/spice_harvester_0.3mm_pla_mk3s_12m.gcode"
+        size:
+          type: string
+          description: Bytes
+          example: 239314
+        progress:
+          type: number
+          description: Percents
+          example: 42.25
+        transferred:
+          type: integer
+          description: Transferred data in bytes
+          example: 3276800
+        time_remaining:
+          type: integer
+          description: Seconds
+          example: 61
+        time_transferring:
+          type: integer
+          description: Seconds
+          example: 42
+        to_print:
+          type: boolean
+          description: Whether or not print after finishing transfer (upload)
+          example: False
+      required:
+        - type
+        - display_name
+        - path
+        - progress
+        - transferred
+        - time_transferring
+        - to_print
+
+    JobSerialPrint:
+      type: object
+      properties:
+        serial_print:
+          type: boolean
+          description: Whether the printer is printing from the serial line
+          default: false
+
+    JobFilePrint:
+      type: object
+      properties:
+        file:
+          type: object
+          properties:
+            name:
+              type: string
+              description: Short Filename
+              example: "SPICE~1.gco"
+            display_name:
+              type: string
+              description: Long Filename
+              example: "Spice_Harvester_0.3mm_PLA_MK3S_12m.gcode"
+            path:
+              type: string
+              example: "/local"
+            display_path:
+              type: string
+              example: "/PrusaLink gcodes"
+            size:
+              type: integer
+              description: Bytes
+              example: 2393142
+            m_timestamp:
+              description: Timestamp in seconds
+              type: integer
+              example: 1648042843
+            meta:
+              $ref: '#/components/schemas/PrintFileMetadata'
+            refs:
+              $ref: '#/components/schemas/PrintFileRefs'
+          required:
+            - name
+            - path
+            - m_timestamp
+
+    Job:
+      allOf:
+        - oneOf:
+            - $ref: '#/components/schemas/JobSerialPrint'
+            - $ref: '#/components/schemas/JobFilePrint'
+        - type: object
+          properties:
+            id:
+              type: integer
+              example: 420
+            state:
+              type: string
+              enum: [ PRINTING, PAUSED, FINISHED, STOPPED, ERROR ]
+            progress:
+              type: number
+              description: Percents
+              example: 42.0
+            time_remaining:
+              type: integer
+              description: Seconds
+              example: 520
+            time_printing:
+              type: integer
+              description: Seconds
+              example: 526
+            inaccurate_estimates:
+              type: boolean
+              description: Whether the time estimates are accurate or inaccurate
+              example: false
+          required:
+            - id
+            - state
+            - progress
+            - time_printing
+
+    Error:
+      type: object
+      properties:
+        code:
+          type: string
+          description: Prusa error code. Must be string if we will have printer with code for example 04
+          example: "10108"
+        title:
+          type: string
+          description: Prusa error text string with prefilled variable macros.
+          example: "RESIN TOO LOW"
+        text:
+          type: string
+          description: Prusa error text string with prefilled variable macros.
+          example: "Measured resin volume 22.4 ml is lower than required for this print. Refill the tank and restart the print."
+        url:
+          type: string
+          description: Link to the Prusa help page
+          example: "https://help.prusa3d.com/en/10108/LHE3Q0I1"
+      required:
+        - title
+        - text
+
+    ResponsePlaintext:
+      type: string
+      default: "Project with same name has been already uploaded."
+      description: Prusa error message (raw_message)
+
+  responses:
+    NotModified: # 304
+      description: Not Modified
+      headers:
+        Content-Location:
+          $ref: "#/components/headers/Content-Location"
+      content:
+        text/plain:
+          schema:
+            $ref: "#/components/schemas/ResponsePlaintext"
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+
+    BadRequest: # 400
+      description: Bad Request
+      headers:
+        Content-Location:
+          $ref: "#/components/headers/Content-Location"
+      content:
+        text/plain:
+          schema:
+            $ref: "#/components/schemas/ResponsePlaintext"
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+
+    Unauthorized: # 401
+      description: Unauthorized
+      headers:
+        Content-Location:
+          $ref: "#/components/headers/Content-Location"
+      content:
+        text/plain:
+          schema:
+            $ref: "#/components/schemas/ResponsePlaintext"
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+
+    Forbidden: # 403
+      description: Forbidden
+      headers:
+        Content-Location:
+          $ref: "#/components/headers/Content-Location"
+      content:
+        text/plain:
+          schema:
+            $ref: "#/components/schemas/ResponsePlaintext"
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+
+    NotFound: # 404
+      description: Not Found
+      headers:
+        Content-Location:
+          $ref: "#/components/headers/Content-Location"
+      content:
+        text/plain:
+          schema:
+            $ref: "#/components/schemas/ResponsePlaintext"
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+
+    RequestTimeout: # 408
+      description: Request Timeout
+      headers:
+        Content-Location:
+          $ref: "#/components/headers/Content-Location"
+      content:
+        text/plain:
+          schema:
+            $ref: "#/components/schemas/ResponsePlaintext"
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+
+    Conflict: # 409
+      description: Conflict
+      headers:
+        Content-Location:
+          $ref: "#/components/headers/Content-Location"
+      content:
+        text/plain:
+          schema:
+            $ref: "#/components/schemas/ResponsePlaintext"
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+
+    UnsupportedMediaType: # 415
+      description: Unsupported Media Type
+      headers:
+        Content-Location:
+          $ref: "#/components/headers/Content-Location"
+      content:
+        text/plain:
+          schema:
+            $ref: "#/components/schemas/ResponsePlaintext"
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+
+    InternalServerError: # 500
+      description: Internal Server Error
+      headers:
+        Content-Location:
+          $ref: "#/components/headers/Content-Location"
+      content:
+        text/plain:
+          schema:
+            $ref: "#/components/schemas/ResponsePlaintext"
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+
+    NotImplemented: # 501
+      description: Not Implemented
+      headers:
+        Content-Location:
+          $ref: "#/components/headers/Content-Location"
+      content:
+        text/plain:
+          schema:
+            $ref: "#/components/schemas/ResponsePlaintext"
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+
+    ServiceUnavailable: # 503
+      description: Service Unavailable
+      headers:
+        Content-Location:
+          $ref: "#/components/headers/Content-Location"
+      content:
+        text/plain:
+          schema:
+            $ref: "#/components/schemas/ResponsePlaintext"
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+
+  headers:
+    Accept:
+      required: false
+      schema:
+        type: string
+        default: text/plain
+      description: Parameter specifying supported data format from client. PCL has to support it. Slicer doesn't have to use this. If the header is not present, it defaults to text/plain
+    Content-Location:
+      schema:
+        type: string
+        default: "http://<PCL IP>/error"
+      description: URI path to nice error page. We can send URI to help.prusa3d.com in the future.
+
+  securitySchemes:
+    digestAuth:
+      type: http
+      scheme: digest

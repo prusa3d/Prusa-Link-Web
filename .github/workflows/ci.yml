@@ -1,0 +1,40 @@
+name: CI
+
+on:
+  push:
+    branches: [version-2.x]
+  pull_request:
+    branches: [version-2.x]
+  schedule:
+    # Daily: is the pinned PrusaLink spec behind upstream?
+    - cron: '17 5 * * *'
+
+jobs:
+  check:
+    if: github.event_name != 'schedule'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm exec playwright install --with-deps chromium
+      - run: make ci
+      - uses: actions/upload-artifact@v4
+        with:
+          name: prusalink-index-html
+          path: dist/index.html
+
+  spec-drift:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+      - run: node scripts/spec.ts check
+        env:
+          GITHUB_TOKEN: ${{ github.token }}

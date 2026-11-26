@@ -1,0 +1,7 @@
+{
+  "repo": "prusa3d/Prusa-Link-Web",
+  "branch": "master",
+  "path": "spec/openapi.yaml",
+  "commit": "337fabbd581de28dce85f1bfb773c150128c6437",
+  "sha256": "e0a5f7abc4df5d4043fb1115cdca6b6ca45bbc549060f27896c6290b05aff976"
+}

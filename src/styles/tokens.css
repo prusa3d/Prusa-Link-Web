@@ -1,0 +1,912 @@
+/* The theme of @prusa/connect-ui: the colour scales, the semantic tokens
+   for light and dark, the three skins, motion, and their registration with
+   Tailwind.
+
+   Copied value for value from the React design system at
+   `frontend/src/next/styles/tokens.css` on the `legacy/main` branch. That
+   Storybook is the specification; a value here that differs from it is a bug.
+   `tokens.test.ts` beside this file pins every value.
+
+   This file is the theme alone, which is what a module imports. An application
+   imports `app.css` beside it, which adds the scan of this package's
+   components. src/styles/index.css shows the lines a consumer writes.
+
+   A component never reads a colour step from block 1: it reads a semantic name
+   from block 2, and the step behind the name is what a theme or a skin swaps. */
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* A floating surface reports whether it is open as a `data-state` attribute
+   and never as a prop (svelte-5.md). Each value it can carry is a named
+   variant here, once, so a component writes `state-open:` and no file has to
+   spell the attribute out. Tailwind already reads a bare `data-disabled:` and
+   `data-inset:`, so those two need no line.
+
+   A tooltip has two ways of opening and neither is the plain `open` the other
+   surfaces report: `instant-open` when it opened with no delay,
+   `delayed-open` when it waited. */
+@custom-variant state-open (&[data-state='open']);
+@custom-variant state-closed (&[data-state='closed']);
+@custom-variant state-delayed-open (&[data-state='delayed-open']);
+@custom-variant state-instant-open (&[data-state='instant-open']);
+
+/* ── Block 1: raw Prusa Design System scales, copied verbatim from the React tree's src/styles/global.css. Static; do not edit. ── */
+:root {
+  --color-orange-light-1: oklch(99.2% 0.003 37.8);
+  --color-orange-light-2: oklch(97.9% 0.016 37.8);
+  --color-orange-light-3: oklch(95.7% 0.0387 37.8);
+  --color-orange-light-4: oklch(92.1% 0.0857 37.8);
+  --color-orange-light-5: oklch(89.1% 0.1133 37.8);
+  --color-orange-light-6: oklch(85.7% 0.1187 37.8);
+  --color-orange-light-7: oklch(80.5% 0.1237 37.8);
+  --color-orange-light-8: oklch(74.5% 0.1466 37.8);
+  --color-orange-light-9: oklch(66.7% 0.2194 37.8);
+  --color-orange-light-10: oklch(62.8% 0.2194 37.8);
+  --color-orange-light-11: oklch(58.9% 0.2112 37.8);
+  --color-orange-light-12: oklch(35% 0.0789 37.8);
+  --color-orange-dark-1: oklch(17.8% 0.0129 37.8);
+  --color-orange-dark-2: oklch(20.7% 0.0194 37.8);
+  --color-orange-dark-3: oklch(25.5% 0.0552 37.8);
+  --color-orange-dark-4: oklch(29.2% 0.0923 37.8);
+  --color-orange-dark-5: oklch(33.3% 0.1023 37.8);
+  --color-orange-dark-6: oklch(38.3% 0.1052 37.8);
+  --color-orange-dark-7: oklch(45% 0.1143 37.8);
+  --color-orange-dark-8: oklch(53.9% 0.1404 37.8);
+  --color-orange-dark-9: oklch(66.7% 0.2194 37.8);
+  --color-orange-dark-10: oklch(62.8% 0.2194 37.8);
+  --color-orange-dark-11: oklch(79.1% 0.1858 37.8);
+  --color-orange-dark-12: oklch(91% 0.0538 37.8);
+
+  --color-orange-alpha-light-8: #f73900ad;
+  --color-orange-alpha-dark-8: #fe6737fc;
+
+  --color-gray-light-1: oklch(99.1% 0.0015 277.7);
+  --color-gray-light-2: oklch(98.2% 0.003 277.7);
+  --color-gray-light-3: oklch(95.6% 0.0045 277.7);
+  --color-gray-light-4: oklch(93.1% 0.0061 277.7);
+  --color-gray-light-5: oklch(91% 0.0077 277.7);
+  --color-gray-light-6: oklch(88.8% 0.0093 277.7);
+  --color-gray-light-7: oklch(85.3% 0.0117 277.7);
+  --color-gray-light-8: oklch(79.4% 0.016 277.7);
+  --color-gray-light-9: oklch(64.5% 0.0165 277.7);
+  --color-gray-light-10: oklch(60.5% 0.0161 277.7);
+  --color-gray-light-11: oklch(50.3% 0.0139 277.7);
+  --color-gray-light-12: oklch(24.1% 0.0099 277.7);
+  --color-gray-dark-1: oklch(17.8% 0.0042 277.7);
+  --color-gray-dark-2: oklch(21.5% 0.004 277.7);
+  --color-gray-dark-3: oklch(25.5% 0.0055 277.7);
+  --color-gray-dark-4: oklch(28.4% 0.0075 277.7);
+  --color-gray-dark-5: oklch(31.4% 0.0089 277.7);
+  --color-gray-dark-6: oklch(35% 0.01 277.7);
+  --color-gray-dark-7: oklch(40.2% 0.0121 277.7);
+  --color-gray-dark-8: oklch(49.2% 0.0157 277.7);
+  --color-gray-dark-9: oklch(54% 0.0167 277.7);
+  --color-gray-dark-10: oklch(58.6% 0.0165 277.7);
+  --color-gray-dark-11: oklch(77% 0.0138 277.7);
+  --color-gray-dark-12: oklch(94.9% 0.0026 277.7);
+
+  --color-red-light-1: oklch(99.4% 0.0031 23.03);
+  --color-red-light-2: oklch(98.3% 0.0083 23.03);
+  --color-red-light-3: oklch(95.6% 0.021 23.03);
+  --color-red-light-5: oklch(89.6% 0.0619 23.03);
+  --color-red-light-8: oklch(74.5% 0.1132 23.03);
+  --color-red-light-9: oklch(62.6% 0.1933 23.03);
+  --color-red-light-10: oklch(58.4% 0.1951 23.03);
+  --color-red-light-11: oklch(55.7% 0.1933 23.03);
+  --color-red-light-12: oklch(33.9% 0.109 23.03);
+  --color-red-dark-1: #170f0e;
+  --color-red-dark-2: #201312;
+  --color-red-dark-3: #3b1212;
+  --color-red-dark-5: #61171a;
+  --color-red-dark-8: #b54546;
+  --color-red-dark-9: #e5484d;
+  --color-red-dark-10: #d63941;
+  --color-red-dark-11: #ff8f8b;
+  --color-red-dark-12: #ffd2ce;
+
+  --color-red-alpha-light-8: rgba(212, 9, 0, 0.45);
+  --color-red-alpha-dark-8: rgba(255, 93, 94, 0.69);
+
+  --color-blue-light-1: oklch(99.4% 0.0024 267.1);
+  --color-blue-light-2: oklch(98.2% 0.0082 267.1);
+  --color-blue-light-3: oklch(96% 0.017 267.1);
+  --color-blue-light-8: oklch(73.3% 0.1066 267.1);
+  --color-blue-light-9: oklch(61% 0.1754 267.1);
+  --color-blue-light-11: oklch(54.3% 0.1681 267.1);
+  --color-blue-light-12: oklch(32.1% 0.0854 267.1);
+  --color-blue-dark-1: oklch(17.8% 0.0247 267.1);
+  --color-blue-dark-2: oklch(20.7% 0.0301 267.1);
+  --color-blue-dark-3: oklch(27.1% 0.0692 267.1);
+  --color-blue-dark-8: oklch(50.3% 0.137 267.1);
+  --color-blue-dark-9: oklch(61% 0.1754 267.1);
+  --color-blue-dark-11: oklch(77.7% 0.1231 267.1);
+  --color-blue-dark-12: oklch(91.1% 0.0427 267.1);
+
+  --color-grass-light-1: oklch(99.4% 0.0053 147.4);
+  --color-grass-light-2: oklch(98.2% 0.0092 147.4);
+  --color-grass-light-3: oklch(96.1% 0.0231 147.4);
+  --color-grass-light-9: oklch(65.1% 0.1468 147.4);
+  --color-grass-light-11: oklch(52.7% 0.1296 147.4);
+  --color-grass-light-12: oklch(32.7% 0.0534 147.4);
+  --color-grass-dark-1: oklch(17.8% 0.0141 147.4);
+  --color-grass-dark-2: oklch(20.9% 0.0141 147.4);
+  --color-grass-dark-3: oklch(26.6% 0.03 147.4);
+  --color-grass-dark-9: oklch(65.1% 0.1468 147.4);
+  --color-grass-dark-11: oklch(78% 0.1421 147.4);
+  --color-grass-dark-12: oklch(91.1% 0.078 147.4);
+
+  --color-yellow-light-1: oklch(99.3% 0.0045 93.87);
+  --color-yellow-light-2: oklch(98.8% 0.0242 93.87);
+  --color-yellow-light-3: oklch(97.3% 0.079 93.87);
+  --color-yellow-light-8: oklch(76.5% 0.1333 93.87);
+  --color-yellow-light-9: oklch(91.2% 0.195 93.87);
+  --color-yellow-light-11: oklch(57.3% 0.1334 93.87);
+  --color-yellow-light-12: oklch(35.7% 0.044 93.87);
+  --color-yellow-dark-1: #14120c;
+  --color-yellow-dark-2: #1b1810;
+  --color-yellow-dark-3: #2a230a;
+  --color-yellow-dark-8: #806c28;
+  --color-yellow-dark-9: #f3ca31;
+  --color-yellow-dark-11: #fbd23c;
+  --color-yellow-dark-12: #f9e9b7;
+
+  --color-green-light-1: #fbfefc;
+  --color-green-light-2: #f3fbf7;
+  --color-green-light-3: #e4f7ed;
+  --color-green-light-5: #c0e9d5;
+  /* Source global.css repeats #a9dec5 at steps 6 and 7; step 7 is the one this
+     tree spends, as the prusapro skin's pressed fill. */
+  --color-green-light-7: #a9dec5;
+  --color-green-light-8: #88cfaf;
+  --color-green-light-9: #00a072;
+  --color-green-light-10: #009267;
+  --color-green-light-11: #008257;
+  --color-green-light-12: #193b2d;
+  --color-green-dark-1: #0c130f;
+  --color-green-dark-2: #111b17;
+  --color-green-dark-3: #102d21;
+  --color-green-dark-5: #114934;
+  --color-green-dark-7: #21694e;
+  --color-green-dark-8: #267d5d;
+  --color-green-dark-9: #00a072;
+  --color-green-dark-10: #009366;
+  /* Source global.css's #f9e9b7 here duplicates --color-yellow-dark-12 (copy-paste error, no place in a green ramp). Replaced with #71c7a2 — oklch(76.5% 0.1 164.2), this ramp's own hue, 10.40:1 against #000. */
+  --color-green-dark-11: #71c7a2;
+  --color-green-dark-12: #aaf2d1;
+}
+
+/* ── Block 2: shadcn's canonical contract, Prusa DS values. Dark background is pure black; raised surfaces sit one step up at gray-dark-2, superseding the old tree's gray-dark-1/-3. ── */
+
+/* @tokens prusa light */
+:root {
+  --background: #fff;
+  --foreground: var(--color-gray-light-12);
+  --card: #fff;
+  --card-foreground: var(--color-gray-light-12);
+  --popover: #fff;
+  --popover-foreground: var(--color-gray-light-12);
+  --primary: var(--color-orange-light-9);
+  /* The fill of the one thing to press. It names --primary and no skin
+     redeclares it, so a skin that moves --primary moves this with it. Having
+     the name at all is what lets a check ask the theme what a primary button
+     is painted, instead of writing a colour of its own down beside it. */
+  --primary-fill: var(--primary);
+  /* The Prusa Design System's --color-semantic-primary-*, step for step:
+     white on the brand orange, hover a step darker. Press goes one step
+     darker again, where the design system lightens to orange-light-8 and
+     its white fades to 2.34:1. Every brand-orange fill carries this white. It
+     sits under WCAG AA's 4.5:1; contrast.test.ts holds each pair to the
+     ratio it measures. */
+  --primary-foreground: var(--color-orange-light-1);
+  --primary-hovered: var(--color-orange-light-10);
+  --primary-pressed: var(--color-orange-light-11);
+  /* Where the person currently is: the nav item, the tab, the selected row.
+     Kept apart from --primary because "this is the brand" and "you are here"
+     are two different claims that share a colour in this skin only by
+     accident. The slicer skin's reference paints its current destination a
+     navy that owes its orange brand nothing, so a skin that keeps them the
+     same says so by repeating the value instead of the component reaching
+     for --primary. */
+  --selected: var(--color-orange-light-9);
+  --selected-foreground: var(--color-orange-light-1);
+  --selected-hovered: var(--color-orange-light-10);
+  /* What a checkbox, a radio or a switch shows once it is on. A third claim
+     again, distinct from the brand and the current destination: the slicer
+     skin's reference paints its switch knob and radio dot a blue that has
+     nothing to do with its orange or its navy. */
+  --control-on: var(--color-orange-light-9);
+  --control-on-foreground: var(--color-orange-light-1);
+  /* Work advancing on its own, a fourth claim. Tracks --primary here because
+     nothing in this skin says otherwise; the slicer skin spends its own blue
+     on it, which having the token at all is what lets it do. */
+  --progress: var(--color-orange-light-9);
+  /* Link text, a fifth claim. The brand orange reads 3.32:1 as text on white
+     and the palette's darkest orange, orange-light-11, 4.43:1; this is that
+     hue a notch darker, which clears 4.5:1 on white and on the slicer skin's
+     gray page. */
+  --link: #cf3c00;
+  --secondary: var(--color-orange-light-3);
+  --secondary-foreground: var(--color-orange-light-12);
+  --secondary-hovered: var(--color-orange-light-5);
+  --muted: var(--color-gray-light-2);
+  --muted-foreground: var(--color-gray-light-11);
+  --accent: var(--color-gray-light-3);
+  /* A filled, quieter panel for a container that groups other things, so the hairline border can mean "interactive or alarming" elsewhere. No --surface-foreground: this fill is the page's own surface, one step quieter, so text on it stays --foreground (14.44:1 light, 13.59:1 dark) / --muted-foreground (5.22:1 light, 7.60:1 dark). Shares --accent's value; nothing that groups is also hoverable. */
+  --surface: var(--color-gray-light-3);
+  /* red-light-9 measured 3.91:1 (text vs --background) and 3.84:1 (hover fill vs --destructive-foreground), both under 4.5:1. red-light-11 clears both: 5.21:1, 5.11:1. */
+  --destructive: var(--color-red-light-11);
+  /* A tinted plane for a toned notice, one per tone, rather than laying every
+     tone on --card and colouring only the edge and the text. Step 3 of each
+     scale, the step --secondary already spends on a quiet fill. */
+  --destructive-surface: var(--color-red-light-3);
+  --destructive-foreground: var(--color-red-light-1);
+  --destructive-hovered: var(--color-red-light-10);
+  /* The press step. --destructive fills at rest now, so it needs a third fill
+     the way --primary does, for a tablet with no hover: a Stop that
+     acknowledges a tap with nothing gets tapped twice. */
+  --destructive-pressed: var(--color-red-light-12);
+  /* Reuses --destructive's step: clears --background/--card/--popover (all #fff here) at 5.21:1. */
+  --destructive-text: var(--color-red-light-11);
+  --border: var(--color-gray-light-5);
+  --input: var(--color-gray-light-9);
+  /* orange-alpha-light-8 over #fff measures rgb(250,121,82), 2.66:1 — under WCAG 1.4.11's 3:1. orange-light-9 (opaque) clears all three surfaces at 3.33:1. Dark's translucent ring stays: 5.93:1/7.09:1. */
+  --ring: var(--color-orange-light-9);
+  /* Keyboard focus lifts a control off the page instead of ringing it: a cast
+     shadow that puts air under it, a lit top edge that turns its face toward
+     the light, and a hairline that keeps the silhouette crisp once it has
+     left the surface. Theme-specific because the two halves swap roles: on a
+     white page the cast shadow does the work and a white top edge is
+     invisible, so this pair is a literal per theme rather than a shared
+     alpha. */
+  --focus-lift:
+    0 3px 6px rgb(0 0 0 / 0.2), inset 0 1px 0 rgb(255 255 255 / 0.55),
+    0 0 0 1px rgb(0 0 0 / 0.14);
+  --disabled: var(--color-gray-light-1);
+  --disabled-foreground: var(--color-gray-light-8);
+
+  /* Replaces the ds-* bridge. Named -text, not -foreground: these are step-11 text tones for the page background, not the fill itself (1.08-3.27:1 there). */
+  --success: var(--color-green-light-9);
+  --success-surface: var(--color-green-light-3);
+  /* #fff (upstream default) measures 3.35:1 against --success — under 4.5:1. #000 clears it at 6.27:1; identical in both themes. */
+  --success-foreground: #000;
+  --success-text: var(--color-green-light-11);
+  --warning: var(--color-yellow-light-9);
+  --warning-surface: var(--color-yellow-light-3);
+  /* #fff measures 1.35:1 — under 4.5:1. #000 clears it at 15.59:1. */
+  --warning-foreground: #000;
+  /* yellow-light-11 measures 4.39:1 against #fff — under 4.5:1. yellow-light-12 clears it at 10.98:1. */
+  --warning-text: var(--color-yellow-light-12);
+  --info: var(--color-blue-light-9);
+  --info-surface: var(--color-blue-light-3);
+  /* #fff measures 3.92:1 — under 4.5:1. #000 clears it at 5.36:1; identical in both themes. */
+  --info-foreground: #000;
+  --info-text: var(--color-blue-light-11);
+
+  /* Printer-state tints: a step-3 fill under its own hue's step-11 text, and a
+     step-8 `-edge` that badge.tsx paints as a 4px left rule. Light theme takes
+     step 12, not 11: Radix guarantees step 11 against steps 1-2 only, and green's
+     11-on-3 measures 4.34:1 in light — under AA. printer-state.ts maps the twelve
+     states onto these six families. */
+  --state-active: var(--color-blue-light-3);
+  --state-active-text: var(--color-blue-light-12);
+  --state-active-edge: var(--color-blue-light-8);
+  --state-done: var(--color-green-light-3);
+  --state-done-text: var(--color-green-light-12);
+  --state-done-edge: var(--color-green-light-8);
+  --state-idle: var(--color-yellow-light-3);
+  --state-idle-text: var(--color-yellow-light-12);
+  --state-idle-edge: var(--color-yellow-light-8);
+  --state-attention: var(--color-orange-light-3);
+  --state-attention-text: var(--color-orange-light-12);
+  --state-attention-edge: var(--color-orange-light-8);
+  --state-fault: var(--color-red-light-3);
+  --state-fault-text: var(--color-red-light-12);
+  --state-fault-edge: var(--color-red-light-8);
+  --state-quiet: var(--color-gray-light-3);
+  --state-quiet-text: var(--color-gray-light-12);
+  --state-quiet-edge: var(--color-gray-light-8);
+
+  /* Connect's own printer-lifecycle palette (connect-colors), one family per
+     literal state rather than the six families above folded onto twelve
+     states. The folding lost real distinctions: a paused job and a stopped
+     one both read this tree's grey before these names existed, and BUSY
+     shared PRINTING's blue. Each family is a fill and an edge; the edge is
+     Connect's own base colour verbatim, the text is --foreground. No -text
+     token: unlike the six families above, the fill here never carries text of
+     its own hue. MOVING has no colour in Connect's table, which stops at
+     eleven states, so it takes BUSY's, being the same kind of claim. */
+  --state-unknown: #d3d7de;
+  --state-unknown-edge: #9daabd;
+  --state-offline: #d8d8d8;
+  --state-offline-edge: #adadad;
+  --state-ready: #cbdfc9;
+  --state-ready-edge: #92c78c;
+  --state-busy: #e6d5ca;
+  --state-busy-edge: #d5a585;
+  --state-printing: #c5d4e7;
+  --state-printing-edge: #7da7d9;
+  --state-paused: #e0d0e0;
+  --state-paused-edge: #c396c4;
+  --state-stopped: #f2c4ba;
+  --state-stopped-edge: #f8795f;
+  --state-finished: #d4eec3;
+  --state-finished-edge: #a1ea70;
+  --state-error: #e9c5c6;
+  --state-error-edge: #dd7b7d;
+  --state-moving: #e6d5ca;
+  --state-moving-edge: #d5a585;
+}
+
+/* @tokens prusa dark */
+.dark {
+  --background: #000;
+  --foreground: var(--color-gray-dark-12);
+  --card: var(--color-gray-dark-2);
+  --card-foreground: var(--color-gray-dark-12);
+  --popover: var(--color-gray-dark-2);
+  --popover-foreground: var(--color-gray-dark-12);
+  --primary: var(--color-orange-dark-9);
+  /* The design system's dark primary: its inverse foreground, gray-dark-12,
+     on the brand orange. */
+  --primary-foreground: var(--color-gray-dark-12);
+  --primary-hovered: var(--color-orange-dark-10);
+  --primary-pressed: var(--color-orange-dark-8);
+  --selected: var(--color-orange-dark-9);
+  --selected-foreground: var(--color-gray-dark-12);
+  --selected-hovered: var(--color-orange-dark-10);
+  --control-on: var(--color-orange-dark-9);
+  --control-on-foreground: var(--color-gray-dark-12);
+  --progress: var(--color-orange-dark-9);
+  /* Every skin's dark brand colour clears 4.5:1 as text on its dark ground. */
+  --link: var(--primary);
+  --secondary: var(--color-orange-dark-3);
+  --secondary-foreground: var(--color-orange-dark-12);
+  --secondary-hovered: var(--color-orange-dark-5);
+  --muted: var(--color-gray-dark-2);
+  --muted-foreground: var(--color-gray-dark-11);
+  --accent: var(--color-gray-dark-3);
+  /* One step above --card (gray-dark-2): a grouping panel sits inside a card, and --background is already pure black. */
+  --surface: var(--color-gray-dark-3);
+  --destructive: var(--color-red-dark-9);
+  --destructive-surface: var(--color-red-dark-3);
+  /* #fff measured 3.91:1 as a hover fill — under 4.5:1. red-dark-1 clears it at 4.83:1. */
+  --destructive-foreground: var(--color-red-dark-1);
+  /* Rejected red-dark-10: 4.07:1, under 4.5:1. red-dark-11 clears it at 8.60:1. */
+  --destructive-hovered: var(--color-red-dark-11);
+  /* Continues this theme's ramp away from the near-black foreground rather
+     than toward it: red-dark-10 measures 4.07:1, under AA, where 12 clears it
+     at 13.83:1. */
+  --destructive-pressed: var(--color-red-dark-12);
+  /* red-dark-9 measures 5.37:1 against --background but only 4.48:1 against --card/--popover — under 4.5:1. red-dark-10 fixes --background (4.52:1) but drops further against --card/--popover (3.77:1). red-dark-11 clears all three: 9.55:1 / 7.97:1. */
+  --destructive-text: var(--color-red-dark-11);
+  --border: var(--color-gray-dark-5);
+  --input: var(--color-gray-dark-9);
+  --ring: var(--color-orange-alpha-dark-8);
+  /* The dark half of the pair above: a deeper cast shadow that still barely
+     registers on this ground, with a lit edge and hairline doing most of the
+     work. */
+  --focus-lift:
+    0 3px 7px rgb(0 0 0 / 0.75), inset 0 1px 0 rgb(255 255 255 / 0.28),
+    0 0 0 1px rgb(255 255 255 / 0.14);
+  --disabled: var(--color-gray-dark-1);
+  --disabled-foreground: var(--color-gray-dark-8);
+
+  --success: var(--color-green-dark-9);
+  --success-surface: var(--color-green-dark-3);
+  /* Same fill as light, so #000 clears it at the same 6.27:1. */
+  --success-foreground: #000;
+  --success-text: var(--color-green-dark-11);
+  --warning: var(--color-yellow-dark-9);
+  --warning-surface: var(--color-yellow-dark-3);
+  /* #fff measures 1.58:1 — under 4.5:1. #000 clears it at 13.30:1 (yellow-dark-9 is a darker step than yellow-light-9). */
+  --warning-foreground: #000;
+  --warning-text: var(--color-yellow-dark-11);
+  --info: var(--color-blue-dark-9);
+  --info-surface: var(--color-blue-dark-3);
+  /* Same fill as light, so #000 clears it at the same 5.36:1. */
+  --info-foreground: #000;
+  --info-text: var(--color-blue-dark-11);
+
+  --state-active: var(--color-blue-dark-3);
+  --state-active-text: var(--color-blue-dark-11);
+  --state-active-edge: var(--color-blue-dark-8);
+  --state-done: var(--color-green-dark-3);
+  --state-done-text: var(--color-green-dark-11);
+  --state-done-edge: var(--color-green-dark-8);
+  --state-idle: var(--color-yellow-dark-3);
+  --state-idle-text: var(--color-yellow-dark-11);
+  --state-idle-edge: var(--color-yellow-dark-8);
+  --state-attention: var(--color-orange-dark-3);
+  --state-attention-text: var(--color-orange-dark-11);
+  --state-attention-edge: var(--color-orange-dark-8);
+  --state-fault: var(--color-red-dark-3);
+  --state-fault-text: var(--color-red-dark-11);
+  --state-fault-edge: var(--color-red-dark-8);
+  --state-quiet: var(--color-gray-dark-3);
+  --state-quiet-text: var(--color-gray-dark-11);
+  --state-quiet-edge: var(--color-gray-dark-8);
+
+  /* Connect's own printer-lifecycle palette, the dark half of the family
+     above. Each fill is darkened and desaturated off the edge's own hue
+     rather than swapped for a different scale step, so the pairing with its
+     edge holds in both themes. */
+  --state-unknown: #424549;
+  --state-unknown-edge: #9daabd;
+  --state-offline: #454545;
+  --state-offline-edge: #adadad;
+  --state-ready: #3f4a3e;
+  --state-ready-edge: #92c78c;
+  --state-busy: #4e443d;
+  --state-busy-edge: #d5a585;
+  --state-printing: #3b444e;
+  --state-printing-edge: #7da7d9;
+  --state-paused: #4a404a;
+  --state-paused-edge: #c396c4;
+  --state-stopped: #543a35;
+  --state-stopped-edge: #f8795f;
+  --state-finished: #435238;
+  --state-finished-edge: #a1ea70;
+  --state-error: #4f3b3b;
+  --state-error-edge: #dd7b7d;
+  --state-moving: #4e443d;
+  --state-moving-edge: #d5a585;
+}
+
+/* ── Block 2b: skins. A skin swaps token *values*; every name above keeps its
+   meaning, so no component knows one is in play. The default skin carries no
+   attribute — a second one is selected with `data-skin` on the root element.
+
+   `:root[data-skin='slicer']` scores 0-2-0 against `.dark`'s 0-1-0, so a token
+   this skin sets for light would win in dark too. Every token a skin declares
+   below in light is therefore declared again in its dark block, and
+   `tokens.test.ts` holds that rule mechanically. A token neither block names
+   inherits the value above: the block is the difference and nothing else. ── */
+
+/* Shape and rhythm belong to the skin, not the theme — nothing under `.dark`
+   rebinds them, so they are declared once per skin rather than twice. */
+
+/* @shape prusa */
+:root {
+  /* Nothing above 4px in this skin — the largest visual difference from the
+     old tree's 14px scale. */
+  --corner-xs: 0px;
+  --corner-sm: 2px;
+  --corner-md: 4px;
+
+  /* One multiplier over the type scale and the spacing unit rather than a size
+     per step, so the ratios between the steps cannot drift between skins.
+     Deliberately not `html { font-size }`: this tree's layout tiers are
+     rem-valued container queries, and a rem that moves changes which tier a
+     pixel width lands in — a 640px listing would stop clearing `@[40rem]` and
+     silently swap its table for the dense-row tier. */
+  --density: 1;
+
+  /* The app shell's header height, measured by `app-shell.tsx` and written
+     back onto the shell's own element. Declared here so the rail that sticks
+     under it has a sane value on the very first frame, before the measure
+     lands: 52px is what this skin's header actually is. */
+  --app-header-height: 52px;
+
+  /* Phone bar height, measured by `app-shell.tsx`. Sheets and their overlays
+     that must sit flush on the bar's inward edge read this — and it is also
+     written onto `documentElement` so portalled sheets can see it. Named for
+     the bar, not for an edge: `phoneBarPlacement` docks it to the top as
+     readily as the bottom, and the height is the same measurement either way.
+     64px is a pre-measure floor: the bar's own `min-h-16`, which is what a
+     44px control between 8px of padding a side comes to anyway. */
+  --app-phone-bar-height: 64px;
+
+  /* Type only, on top of --density. The two are separate because they answer
+     to different limits: --density also drives --spacing, and a spacing unit
+     below 1 takes a 44px control under the touch floor, which is why the boxes
+     stay at density 1 however small the type gets.
+
+     The raw steps below are 1.2x Tailwind's stock rem values, so 5/6 cancels
+     that factor exactly and every step lands on the scale the rest of the
+     product uses — 12 / 14 / 16 / 18 / 24px, the design system's own numbers
+     (`globals_prusa.css`) and the unmodified Tailwind scale Connect runs on.
+     Line heights are unitless ratios, so the vertical rhythm tightens with
+     them. */
+  --text-scale: 0.8333;
+}
+
+/* (The slicer and prusapro skins are left out of this copy: PrusaLink uses the
+   default skin, and the firmware budget pays for every byte.) */
+
+/* ── Motion, theme-independent. Plain `@theme`, not `inline`: Radix's Presence defers unmounting only while it detects a CSS `animation-name`, so reduced-motion below must redefine the property, not shorten it — `inline` bakes the literal value in at build time, leaving nothing to redefine. ── */
+@theme {
+  /* Exit runs a touch faster than enter, to acknowledge dismissal quickly. Both stay inside a 120-150ms register. */
+  --animate-fade-in: fade-in 150ms ease-out;
+  --animate-fade-out: fade-out 120ms ease-in;
+  --animate-scale-in: scale-in 150ms ease-out;
+  --animate-scale-out: scale-out 120ms ease-in;
+  --animate-slide-in-from-top: slide-in-from-top 150ms ease-out;
+  --animate-slide-out-to-top: slide-out-to-top 120ms ease-in;
+  --animate-slide-in-from-right: slide-in-from-right 150ms ease-out;
+  --animate-slide-out-to-right: slide-out-to-right 120ms ease-in;
+  --animate-slide-in-from-bottom: slide-in-from-bottom 150ms ease-out;
+  --animate-slide-out-to-bottom: slide-out-to-bottom 120ms ease-in;
+  --animate-slide-in-from-left: slide-in-from-left 150ms ease-out;
+  --animate-slide-out-to-left: slide-out-to-left 120ms ease-in;
+
+  /* The only continuous motion: a heater below target breathes while climbing. 2s, well outside the 120-150ms surface register — a slow pulse reads as pilot light, a fast one as alarm. */
+  --animate-heating-pulse: heating-pulse 2s ease-in-out infinite;
+
+  /* Progress arc slides between values rather than jumping between telemetry frames. Not --animate-*: a transition, not a keyframe animation. Reduced-motion below sets it to 0s. */
+  --duration-progress: 400ms;
+
+  /* How far a keyboard-focused control rises off its surface. Split from
+     --focus-lift's shadow on purpose: the travel is motion and reduced-motion
+     below takes it to 0, while the shadow and lit edge below are not motion
+     and stay, so the indicator still shows at full strength for someone who
+     asked the UI to hold still. */
+  --focus-lift-travel: -1px;
+
+  /* Plain opacity fade, for scrims (e.g. bg-black/50). */
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+  @keyframes fade-out {
+    from {
+      opacity: 1;
+    }
+    to {
+      opacity: 0;
+    }
+  }
+
+  /* For floating surfaces anchored to a trigger (popover, tooltip, menu, select, dialogs). Only opacity/scale animate: DialogContent and AlertDialogContent centre via their own translate-x/y, and a CSS animation only overrides properties its keyframes name. */
+  @keyframes scale-in {
+    from {
+      opacity: 0;
+      scale: 95%;
+    }
+    to {
+      opacity: 1;
+      scale: 100%;
+    }
+  }
+  @keyframes scale-out {
+    from {
+      opacity: 1;
+      scale: 100%;
+    }
+    to {
+      opacity: 0;
+      scale: 95%;
+    }
+  }
+
+  /* Never below 45% opacity: the temperature reading under it must stay legible at the dimmest frame. Slower/shallower than animate-pulse's 50%/1s loading tell. */
+  /* A sign of life, not a hierarchy. The floor stays high because the state is
+     now carried by a word beside the reading (`heater-row.tsx`): a deeper dip
+     made the one value someone is waiting on the faintest thing in the card,
+     and any glance or screenshot could catch it mid-fade. */
+  @keyframes heating-pulse {
+    0%,
+    100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.45;
+    }
+  }
+
+  /* Directional, for `sheet`: slides from the edge it opens against, each keyframe pair travelling the panel's own size. */
+  @keyframes slide-in-from-top {
+    from {
+      translate: 0 -100%;
+    }
+    to {
+      translate: 0 0;
+    }
+  }
+  @keyframes slide-out-to-top {
+    from {
+      translate: 0 0;
+    }
+    to {
+      translate: 0 -100%;
+    }
+  }
+  @keyframes slide-in-from-right {
+    from {
+      translate: 100% 0;
+    }
+    to {
+      translate: 0 0;
+    }
+  }
+  @keyframes slide-out-to-right {
+    from {
+      translate: 0 0;
+    }
+    to {
+      translate: 100% 0;
+    }
+  }
+  @keyframes slide-in-from-bottom {
+    from {
+      translate: 0 100%;
+    }
+    to {
+      translate: 0 0;
+    }
+  }
+  @keyframes slide-out-to-bottom {
+    from {
+      translate: 0 0;
+    }
+    to {
+      translate: 0 100%;
+    }
+  }
+  @keyframes slide-in-from-left {
+    from {
+      translate: -100% 0;
+    }
+    to {
+      translate: 0 0;
+    }
+  }
+  @keyframes slide-out-to-left {
+    from {
+      translate: 0 0;
+    }
+    to {
+      translate: -100% 0;
+    }
+  }
+}
+
+/* Unlayered so it outranks @theme's --animate-* values regardless of source order (@theme's output lives in @layer theme). Redefines to `none` rather than shortening duration — also what makes Presence unmount a closing node immediately instead of deferring. */
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --animate-fade-in: none;
+    --animate-fade-out: none;
+    --animate-scale-in: none;
+    --animate-scale-out: none;
+    --animate-slide-in-from-top: none;
+    --animate-slide-out-to-top: none;
+    --animate-slide-in-from-right: none;
+    --animate-slide-out-to-right: none;
+    --animate-slide-in-from-bottom: none;
+    --animate-slide-out-to-bottom: none;
+    --animate-slide-in-from-left: none;
+    --animate-slide-out-to-left: none;
+    --animate-heating-pulse: none;
+    --animate-spin: none;
+    /* 0s: the arc lands on its new value in the same frame, not a shorter travel. */
+    --duration-progress: 0s;
+    /* The control stops rising; --focus-lift's shadow and lit edge still draw it. */
+    --focus-lift-travel: 0px;
+  }
+}
+
+/* ── Utilities whose value is a sum. Each one is here rather than in a class
+   string because the answer is a length CSS works out, and the script only
+   hands it the input (frontend-css.md). ── */
+
+/* ── Block 3: Tailwind registration. `inline` resolves each token at the use site, so utilities follow the .dark rebinding without a dark: counterpart; missing here emits no utility and no error. ── */
+@theme inline {
+  /* Tailwind's built-in scales ship regardless of what a project declares; reset then redeclare, since Tailwind keeps a name written again after its namespace's `initial`. */
+  --color-*: initial;
+  --radius-*: initial;
+
+  /* `transparent`/`current`/`inherit` are static Tailwind v4 values and survive the reset above; `white`/`black` don't, so bg-white and the whole keyword-coloured utility family would silently compile to nothing. Literal, not theme-aware, on purpose — a themed surface uses bg-background/bg-card/text-foreground instead. */
+  --color-white: #fff;
+  --color-black: #000;
+
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-fill: var(--primary-fill);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary-hovered: var(--primary-hovered);
+  --color-primary-pressed: var(--primary-pressed);
+  --color-selected: var(--selected);
+  --color-selected-foreground: var(--selected-foreground);
+  --color-selected-hovered: var(--selected-hovered);
+  --color-control-on: var(--control-on);
+  --color-control-on-foreground: var(--control-on-foreground);
+  --color-progress: var(--progress);
+  --color-link: var(--link);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary-hovered: var(--secondary-hovered);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-surface: var(--surface);
+  --color-destructive: var(--destructive);
+  --color-destructive-surface: var(--destructive-surface);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-destructive-hovered: var(--destructive-hovered);
+  --color-destructive-pressed: var(--destructive-pressed);
+  --color-destructive-text: var(--destructive-text);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-disabled: var(--disabled);
+  --color-disabled-foreground: var(--disabled-foreground);
+  --color-state-active-edge: var(--state-active-edge);
+  --color-state-done-edge: var(--state-done-edge);
+  --color-state-idle-edge: var(--state-idle-edge);
+  --color-state-attention-edge: var(--state-attention-edge);
+  --color-state-fault-edge: var(--state-fault-edge);
+  --color-state-quiet-edge: var(--state-quiet-edge);
+  --color-state-active: var(--state-active);
+  --color-state-active-text: var(--state-active-text);
+  --color-state-done: var(--state-done);
+  --color-state-done-text: var(--state-done-text);
+  --color-state-idle: var(--state-idle);
+  --color-state-idle-text: var(--state-idle-text);
+  --color-state-attention: var(--state-attention);
+  --color-state-attention-text: var(--state-attention-text);
+  --color-state-fault: var(--state-fault);
+  --color-state-fault-text: var(--state-fault-text);
+  --color-state-quiet: var(--state-quiet);
+  --color-state-quiet-text: var(--state-quiet-text);
+  /* Connect's own printer-lifecycle palette, one family per literal state. No
+     -text counterpart: text on these fills is plain --foreground, not a tone
+     of the fill's own hue. */
+  --color-state-unknown: var(--state-unknown);
+  --color-state-unknown-edge: var(--state-unknown-edge);
+  --color-state-offline: var(--state-offline);
+  --color-state-offline-edge: var(--state-offline-edge);
+  --color-state-ready: var(--state-ready);
+  --color-state-ready-edge: var(--state-ready-edge);
+  --color-state-busy: var(--state-busy);
+  --color-state-busy-edge: var(--state-busy-edge);
+  --color-state-printing: var(--state-printing);
+  --color-state-printing-edge: var(--state-printing-edge);
+  --color-state-paused: var(--state-paused);
+  --color-state-paused-edge: var(--state-paused-edge);
+  --color-state-stopped: var(--state-stopped);
+  --color-state-stopped-edge: var(--state-stopped-edge);
+  --color-state-finished: var(--state-finished);
+  --color-state-finished-edge: var(--state-finished-edge);
+  --color-state-error: var(--state-error);
+  --color-state-error-edge: var(--state-error-edge);
+  --color-state-moving: var(--state-moving);
+  --color-state-moving-edge: var(--state-moving-edge);
+  --color-success: var(--success);
+  --color-success-surface: var(--success-surface);
+  --color-success-foreground: var(--success-foreground);
+  --color-success-text: var(--success-text);
+  --color-warning: var(--warning);
+  --color-warning-surface: var(--warning-surface);
+  --color-warning-foreground: var(--warning-foreground);
+  --color-warning-text: var(--warning-text);
+  --color-info: var(--info);
+  --color-info-surface: var(--info-surface);
+  --color-info-foreground: var(--info-foreground);
+  --color-info-text: var(--info-text);
+
+  /* Values live per skin in Block 2b; `inline` resolves each at the use site,
+     so `rounded-sm` follows the skin the way a colour utility follows .dark. */
+  --radius-xs: var(--corner-xs);
+  --radius-sm: var(--corner-sm);
+  --radius-md: var(--corner-md);
+
+  /* This package names the three families and ships no font file. A licensed
+     face reaches a page from a private package downstream of this one, which
+     redefines --font-sans and brings its own @font-face rules. See ADR-20260915-4an
+     rule 11, and fonts.test.ts beside this file. */
+  --font-sans:
+    'Atlas Grotesk', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+    'Helvetica Neue', Arial, 'Noto Sans', sans-serif;
+  --font-mono:
+    'JetBrains Mono Variable', ui-monospace, 'SF Mono', Menlo, Consolas,
+    monospace;
+  /* No licensed heading face exists for this product yet, so headings read in
+     the body face until one does. Declared as its own token rather than left
+     unnamed, so a component can write `font-heading` today and a downstream
+     package can redefine only this name once a display face is licensed,
+     the same way it already redefines --font-sans. */
+  --font-heading: var(--font-sans);
+
+  /* Tailwind's own unit for every p-*, gap-* and size-*. Declared so the skin's
+     --density reaches the spacing rhythm as well as the type scale. */
+  --spacing: calc(0.25rem * var(--density));
+
+  /* The strip a phone keeps for its own home indicator, as a spacing step, so
+     a bar docked to the bottom edge stays above it. It is zero on a device
+     that reserves nothing, and on every desktop browser. */
+  --spacing-safe-bottom: env(safe-area-inset-bottom);
+
+  /* `--spacing-safe-bottom` alone sits a bar's last row against the screen
+     edge on a device that reserves nothing. A bar docked to the bottom wants
+     its own floor as well as the inset, so this adds two spacing steps to it. */
+  --spacing-safe-bottom-2: calc(
+    var(--spacing) * 2 + var(--spacing-safe-bottom)
+  );
+
+  /* The smallest a control may be when a finger has to hit it: 44px, WCAG
+     2.5.5's and the platforms' own floor. Fixed rem: a finger is not subject
+     to a skin's --density, so a `min-h-11` written against the spacing scale
+     reads as 44px in one skin and less in another. */
+  --spacing-touch-target: 2.75rem;
+
+  /* The phone bar's three cells: brand, menu, bell. The outer two share `1fr`
+     so the menu sits in the bar's true centre rather than in whatever the
+     brand leaves over, and the middle cell is `auto` so the menu button never
+     stretches. */
+  --grid-template-columns-bar: 1fr auto 1fr;
+
+  /* A wall of printer cards: as many 24rem columns as the room takes, and one
+     column filling the width where 24rem does not. */
+  --grid-template-columns-printers: repeat(
+    auto-fill,
+    minmax(min(24rem, 100%), 1fr)
+  );
+
+  /* The camera wall's own floor, 2rem under the cards'. A farm being watched
+     wants tiles on screen rather than detail in each, and at a typical window
+     22rem is a whole extra tile per row. */
+  --grid-template-columns-frames: repeat(
+    auto-fill,
+    minmax(min(22rem, 100%), 1fr)
+  );
+
+  /* Tailwind's stock z-index scale stops at 50, which is what every popover,
+     tooltip and sheet in this library already sits on. The phone bar is
+     `sticky` chrome that has to stay above a sheet's own scrim (also 50) so
+     its controls stay reachable while the sheet is open. */
+  --z-index-60: 60;
+
+  /* 1.2x Tailwind's stock rem values at density 1 and text-scale 1, line
+     heights scaled to match. Only the steps in use are declared. The line
+     heights stay unitless ratios, so a skin's two multipliers move every step
+     together and leave the scale's own proportions alone. */
+  --text-xs: calc(0.9rem * var(--density) * var(--text-scale));
+  --text-xs--line-height: calc(1.2 / 0.9);
+  --text-sm: calc(1.05rem * var(--density) * var(--text-scale));
+  --text-sm--line-height: calc(1.5 / 1.05);
+  --text-base: calc(1.2rem * var(--density) * var(--text-scale));
+  --text-base--line-height: calc(1.8 / 1.2);
+  --text-lg: calc(1.35rem * var(--density) * var(--text-scale));
+  --text-lg--line-height: calc(2.1 / 1.35);
+  --text-xl: calc(1.5rem * var(--density) * var(--text-scale));
+  --text-xl--line-height: calc(2.1 / 1.5);
+  --text-2xl: calc(1.8rem * var(--density) * var(--text-scale));
+  --text-2xl--line-height: calc(2.4 / 1.8);
+  --text-3xl: calc(2.25rem * var(--density) * var(--text-scale));
+  --text-3xl--line-height: calc(2.7 / 2.25);
+  /* The secondary line under a value: a row's hint, a card's footnote. The
+     small step, not xs: a hint is read, and 12px is where reading strains. */
+  --text-caption: calc(1.05rem * var(--density) * var(--text-scale));
+  --text-caption--line-height: calc(1.5 / 1.05);
+}
+
+@layer base {
+  html,
+  body {
+    background-color: var(--background);
+    color: var(--foreground);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  /* Tailwind v4's Preflight leaves a button with the default cursor. A badge or
+     a tab trigger rendered as a button then reads as static text. */
+  button:not(:disabled, [aria-disabled='true']),
+  [role='button']:not([aria-disabled='true']) {
+    cursor: pointer;
+  }
+
+  ::selection {
+    background-color: var(--primary);
+    color: var(--primary-foreground);
+  }
+}
