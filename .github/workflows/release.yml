@@ -1,0 +1,72 @@
+name: Release
+
+# A published release gets the firmware's zip (every printer's page, see
+# README "Releases and firmware") and the GitHub Pages demo. Run by hand with
+# a tag to redo both for that release, or without one to deploy the demo of
+# the branch it runs on.
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Release tag to build and attach the zip to (empty = demo only, from the selected branch)
+        required: false
+        type: string
+
+concurrency:
+  group: release-${{ github.event.release.tag_name || inputs.tag || github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    env:
+      TAG: ${{ github.event.release.tag_name || inputs.tag }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ env.TAG || github.ref }}
+      - name: Version
+        run: |
+          if [ -n "$TAG" ]; then
+            echo "PRUSALINK_VERSION=${TAG#v}" >> "$GITHUB_ENV"
+          fi
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      # Never regenerate the lockfile here (see CLAUDE.md).
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm exec playwright install --with-deps chromium
+      - run: make ci
+      - run: make package
+      - name: Attach the zip to the release
+        if: env.TAG != ''
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release upload "$TAG" "share/prusalink-web-${PRUSALINK_VERSION}.zip" --clobber
+      - uses: actions/upload-artifact@v4
+        with:
+          name: prusalink-web
+          path: share/prusalink-web-*.zip
+      - run: make demo
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist-demo
+
+  pages:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      - id: deploy
+        uses: actions/deploy-pages@v4
