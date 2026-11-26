@@ -32,6 +32,7 @@ export default mergeConfig(
               'src/**/*.test.ts',
               'mock/**/*.test.ts',
               'scripts/**/*.test.ts',
+              'demo/**/*.test.ts',
             ],
             exclude: ['src/**/*.svelte.test.ts'],
             environment: 'node',

@@ -16,7 +16,7 @@ DEV_PORT ?= 5957
 
 .DEFAULT_GOAL := start
 .PHONY: start help node deps setup spec-sync spec-update spec-check dev dev-sim storybook \
-        check test e2e package serve build fw-web fw-build sim ci all
+        check test e2e demo demo-e2e package serve build fw-web fw-build sim ci all
 
 start: ## Default: install what is missing, open the app on the mock printer
 	@DEV_PORT=$(DEV_PORT) PORT=$(DEV_PORT) MOCK_KEY=$(MOCK_KEY) scripts/start.sh
@@ -80,6 +80,12 @@ package: ## Every printer's page, zipped for releases: share/prusalink-web-<vers
 	$(PNPM) build
 	node scripts/package.ts
 
+demo: deps ## Browser-only demo on the mock printer, for GitHub Pages (dist-demo/)
+	$(PNPM) build:demo
+
+demo-e2e: deps ## Playwright against the demo build, served under /Prusa-Link-Web/
+	$(PNPM) test:e2e:demo
+
 serve: ## Built page against a real printer: make serve PRINTER_URL=http://192.168.1.20 [VARIANT=xl]
 	node scripts/serve.mjs $(PRINTER_URL) $(or $(VARIANT),generic) $(or $(SERVE_PORT),5970)
 
@@ -87,6 +93,6 @@ sim: ## Run PRINTER's firmware from BUDDY in the simulator on PORT
 	BUDDY_REPO=$(abspath $(BUDDY)) $(BUDDY)/.venv/bin/python $(DEVENV)/sim.py $(PRINTER) \
 		--port $(PORT) --build-dir $(FW_BUILD_DIR)
 
-ci: spec-sync check build e2e ## What CI runs
+ci: spec-sync check build e2e demo-e2e ## What CI runs
 
 all: ci fw-build ## Everything, ending with a firmware image
