@@ -8,7 +8,7 @@
   import { collectDropped } from '../../lib/files/collect';
   import { t } from '../../lib/i18n.svelte';
   import type { Model } from '../../lib/printer/models';
-  import { pictureFor } from '../../lib/printer/picture';
+  import { pictureFor, rememberedVariant } from '../../lib/printer/picture';
 
   // Dragging files anywhere over the page turns the whole window into a drop
   // target, with the printer they are going to.
@@ -19,7 +19,7 @@
 
   let { model, name }: Props = $props();
   let depth = $state(0);
-  const picture = $derived(pictureFor(model?.variant));
+  const picture = $derived(pictureFor(model?.variant ?? rememberedVariant()));
 
   const hasFiles = (e: DragEvent) =>
     e.dataTransfer?.types.includes('Files') ?? false;
