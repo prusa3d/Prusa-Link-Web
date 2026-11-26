@@ -6,9 +6,12 @@
   import { t } from '../../lib/i18n.svelte';
   import type { PrinterDialog } from '../../lib/stores/dialog.svelte';
   import type { Status } from '../../lib/stores/printer.svelte';
-  import { Button } from '../../lib/ui/button';
   import { Icon } from '../../lib/ui/icon';
   import { TriangleAlert } from '../../lib/ui/icon/icons';
+  import DialogActions from './dialog-actions.svelte';
+
+  // A constant the bundler folds: builds without PrusaLink 2 drop it.
+  const Actions = __API_V2__ ? DialogActions : undefined;
 
   interface Props {
     status: Status | undefined;
@@ -27,12 +30,6 @@
       ? status.status_printer.message
       : t('status.checkPrinter'),
   );
-  // The help page the printer's QR code opens; a crash without a code gets
-  // the general help.
-  const help = $derived.by(() => {
-    if (dialog?.code) return `https://prusa.io/${dialog.code}`;
-    return dialog && fault ? 'https://help.prusa3d.com' : undefined;
-  });
 </script>
 
 {#if dialog !== undefined || status?.state === 'ERROR' || status?.state === 'ATTENTION'}
@@ -52,29 +49,8 @@
         {dialog?.title ?? t(fault ? 'alert.error' : 'alert.attention')}
       </h2>
       <p class="break-words">{dialog?.text ?? message}</p>
-      {#if help}
-        <a
-          href={help}
-          target="_blank"
-          rel="noreferrer"
-          class="text-sm underline"
-          data-testid="dialog-help"
-          >{t('dialog.help')}{dialog?.code ? ` · ${dialog.code}` : ''}</a
-        >
-      {/if}
-      {#if dialog?.buttons.length && onbutton}
-        <div class="mt-2 flex flex-wrap gap-2">
-          {#each dialog.buttons as button, i (button)}
-            <!-- The printer's own default button first, as on its screen. -->
-            <Button
-              variant={i ? 'secondary' : 'default'}
-              class={i ? 'bg-card' : ''}
-              disabled={pressing !== undefined}
-              loading={pressing === button}
-              onclick={() => onbutton(button)}>{button}</Button
-            >
-          {/each}
-        </div>
+      {#if Actions && dialog}
+        <Actions {dialog} {fault} {pressing} {onbutton} />
       {/if}
     </div>
   </section>

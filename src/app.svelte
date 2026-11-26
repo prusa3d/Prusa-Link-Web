@@ -81,7 +81,7 @@
     __MULTI_TOOL__ ? toolRows(printer.status, identity.tools) : [],
   );
   $effect(() => {
-    printer.expanded = identity.v2;
+    printer.expanded = __API_V2__ && identity.v2;
   });
   // Why the printer takes no job now, said on every print button.
   const blocked = $derived(
@@ -150,7 +150,8 @@
   });
 
   $effect(() => {
-    void dialog.follow(printer.status?.dialog_id, printer.status?.state);
+    if (__API_V2__)
+      void dialog.follow(printer.status?.dialog_id, printer.status?.state);
   });
 
   $effect(() => {
@@ -179,6 +180,7 @@
   }
 
   async function pressDialog(button: string) {
+    if (!__API_V2__) return;
     if (!(await dialog.press(button))) notices.add(t('dialog.refused'));
     await printer.refresh();
   }
@@ -330,7 +332,7 @@
                   filamentOpen = true;
                 }
               : undefined}
-            chamber={printer.status?.chamber}
+            chamber={__API_V2__ ? printer.status?.chamber : undefined}
             material={multiTool
               ? undefined
               : filament.loaded && filamentLabel(filament.loaded)}
@@ -375,7 +377,7 @@
                    question hides it here. -->
               <PrinterAlert
                 status={alertStatus}
-                dialog={alertStatus && dialog.current}
+                dialog={__API_V2__ ? alertStatus && dialog.current : undefined}
                 pressing={dialog.pressing}
                 onbutton={(button: string) => void pressDialog(button)}
               />

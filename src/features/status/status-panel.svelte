@@ -380,7 +380,7 @@
             current={status.temp_bed}
             target={status.target_bed}
           />
-          {#if chamber?.temp !== undefined}
+          {#if __API_V2__ && chamber?.temp !== undefined}
             <HeaterRow
               kind="chamber"
               label={t('status.chamber')}

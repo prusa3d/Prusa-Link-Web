@@ -55,7 +55,7 @@
     l.textX - (valueWidth + (chevron ? chevronSize + gap : 0)) / 2,
   );
   // The chamber shows the bed's heat waves, without the plate.
-  const chamber = $derived(label.heater === 'chamber');
+  const chamber = $derived(__API_V2__ && label.heater === 'chamber');
   const bed = $derived(label.heater === 'bed' || chamber);
   // A single-tool printer calls its one tool just "Tool".
   const name = $derived.by(() => {
