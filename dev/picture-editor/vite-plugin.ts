@@ -2,6 +2,7 @@ import { existsSync } from 'node:fs';
 import { mkdir, readdir, readFile, writeFile } from 'node:fs/promises';
 import type { IncomingMessage, ServerResponse } from 'node:http';
 import { fileURLToPath } from 'node:url';
+import { format, resolveConfig } from 'prettier';
 import type { Plugin } from 'vite';
 
 import { PRINTER_IMAGES } from '../../mock/printer-images.ts';
@@ -20,6 +21,10 @@ export function pictureEditor(): Plugin {
   return {
     name: 'prusalink-picture-editor',
     apply: 'serve',
+    // Saving a status picture must not reload the editor that saved it.
+    config: () => ({
+      server: { watch: { ignored: ['**/assets/printers/status/**'] } },
+    }),
     configureServer(server) {
       server.middlewares.use('/__picture-editor', (req, res, next) => {
         route(req, res).catch(next);
@@ -73,7 +78,7 @@ async function route(req: IncomingMessage, res: ServerResponse) {
     JSON.parse(body.status);
     await mkdir(STATUS, { recursive: true });
     await writeFile(`${STATUS}${name}.svg`, body.svg);
-    await writeFile(`${STATUS}${name}.json`, body.status);
+    await writeFile(`${STATUS}${name}.json`, await formatJson(body.status));
     const updated = await updateVariants(
       name,
       pictures.filter((p) => p.base === name).map((p) => p.name),
@@ -120,11 +125,18 @@ async function updateVariants(
     const resolved = resolveVariant(fresh, variant.overrides ?? { labels: {} });
     await writeFile(
       `${STATUS}${name}.json`,
-      serializeStatus({ ...variant, ...resolved }),
+      await formatJson(serializeStatus({ ...variant, ...resolved })),
     );
     done.push(name);
   }
   return done;
+}
+
+/// The repository's Prettier style, so `pnpm format:check` passes on saved
+/// status files.
+async function formatJson(text: string): Promise<string> {
+  const filepath = `${STATUS}status.json`;
+  return format(text, { ...(await resolveConfig(filepath)), filepath });
 }
 
 function readBody(req: IncomingMessage): Promise<Buffer> {
