@@ -20,6 +20,12 @@ every other printer, enforced by `pnpm build`.
 | ![Change the filament, the person at the printer swaps it, print](docs/media/change-filament-then-print.gif)     | ![Pausing a print waits until the printer has paused](docs/media/pause-print.gif)            |
 | Printing a file sliced for another material, on the mock printer                                                 | Pause asks first, then waits for the printer                                                 |
 
+## Try it
+
+A demo on a mock printer that runs in the browser:
+https://prusa3d.github.io/Prusa-Link-Web/ (the mock printer's panel is on the
+right, or behind the button at the bottom).
+
 ## Try a build against any printer
 
 `make package` zips every build with `serve.mjs`. Anyone with Node.js runs
@@ -27,6 +33,42 @@ every other printer, enforced by `pnpm build`.
 it serves the page and forwards the API to that printer, without flashing it.
 Opening `index.html` from disk does not work: the firmware answers no
 cross-origin requests. From the repo: `make serve PRINTER_URL=http://<printer-ip>`.
+
+## Releases and firmware
+
+Publishing a GitHub release (tag `v<version>`, e.g. `v2.0.0`) runs
+`.github/workflows/release.yml`: the whole of `make ci`, then `make package`
+with `PRUSALINK_VERSION` set from the tag, and attaches
+`prusalink-web-<version>.zip` to the release (`<version>` is the tag without
+its `v`). The Buddy firmware takes its pages from that zip, so its layout is a
+contract:
+
+```
+prusalink-web/
+  manifest.json
+  README.md            (scripts/share/README.md)
+  serve.mjs
+  <variant>/           generic, mk35, mk4, xl, ix, coreone, coreonel,
+    index.html           coreone_indx, coreonel_indx, mini-<lang> (cs, de, en,
+    index.html.gz        es, fr, it, ja, pl, uk)
+    favicon.ico
+    favicon.ico.gz
+```
+
+`manifest.json` is
+`{ "version", "commit", "variants": { "<variant>": { "files": { "<file>": { "size", "sha256" } } } } }`.
+Every CI run (pull requests and pushes) also uploads the zip of its commit
+as the workflow artifact `prusalink-web`, to try an unreleased build in the
+firmware. Each page also says its version in `<meta name="prusalink-version">`. A local
+`make package` is `<package.json version>-dev`.
+
+The same workflow deploys the demo to GitHub Pages (`make demo`, into
+`dist-demo/`): the app with the mock printer and its panel bundled into the
+page, answering the app's requests in the browser (`demo/`). It is never part
+of `dist/` or the firmware, and has no size budget. `make demo-e2e` checks it
+served under `/Prusa-Link-Web/`, as Pages serves it. Run the workflow by hand
+(Actions > Release > Run workflow) with a tag to redo that release, or without
+one to deploy only the demo of the chosen branch.
 
 ## API
 
@@ -62,6 +104,7 @@ comes from the public `prusa3d/prusa-connect` repository, pinned by commit.
 | `make dev`                     | App + mock printer. Dev panel: `/dev/panel.html` (model, state, tools, start print) |
 | `make sim` then `make dev-sim` | Firmware in the simulator, app proxied to it (the dev server adds the API key)      |
 | `make check` / `make e2e`      | Lint, format, types, unit and component tests / Playwright                          |
+| `make demo` / `make demo-e2e`  | Browser-only demo for GitHub Pages (`dist-demo/`) / Playwright against it           |
 | `make build`                   | `dist/<printer>/index.html` for every printer + size budget check                   |
 | `make fw-build PRINTER=mk4`    | Build, copy into the firmware checkout (`BUDDY`), build that firmware               |
 | `make sim PRINTER=mk4`         | Run that firmware; the printer itself then serves this app on `PORT`                |
@@ -90,6 +133,7 @@ Generated types (`src/lib/api/schema.d.ts`) type both the app's client and the m
 - `src/locales/en.json` every user-facing string (`t()`); the other printer languages beside it,
   built into the page as compact lists (`mock/locales.ts`)
 - `mock/`, `dev/` dev-server only, never in the build
+- `demo/` the GitHub Pages demo (`make demo`), never in the firmware build
 
 ## License
 

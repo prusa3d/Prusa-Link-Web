@@ -11,13 +11,20 @@ and serves it from the printer's own web server. Every decision follows from tha
 - Skills in `.claude/skills/` cover the common jobs: running and checking the app
   (`run-app`), changing the printer API (`api-change`), building firmware and running
   it in the simulator (`firmware`), recording a demo video (`record-demo`).
-- Before handing work back: `make check && make build && make e2e`.
+- Before handing work back: `make check && make build && make e2e` (`make ci` adds `demo-e2e`).
 
 ## Hard rules
 
 - **Budget**: each `dist/<variant>/index.html` stays under 80 KB gzip for the MINI builds and 100 KB gzip for every other printer (`scripts/check-size.ts`)
   (`scripts/check-size.ts`, run by `make build`). Check it after adding a dependency.
-- **Nothing dev-only ships**: `mock/`, `dev/`, `scripts/`, `e2e/` are never imported from `src/`.
+- **Nothing dev-only ships**: `mock/`, `dev/`, `demo/`, `scripts/`, `e2e/`, `e2e-demo/` are never imported from `src/`.
+  The Pages demo (`demo/`, `make demo`) bundles `mock/` and `dev/` into a browser
+  page, so those stay free of Node-only imports at runtime (`mock/vite-plugin.ts` is
+  the Node side).
+- **Release zip is a contract**: `make package` makes `share/prusalink-web-<version>.zip`
+  (`scripts/package.ts`), which the Buddy firmware downloads from GitHub releases.
+  Do not rename its folders or files or change `manifest.json`'s shape (README,
+  "Releases and firmware").
 - **Every API call goes through `src/lib/api`** and carries `X-Api-Key`. A request without
   it makes the firmware answer with a Digest challenge, and the browser shows its own
   login dialog. Never call the API before `session.signedIn`.
@@ -26,7 +33,7 @@ and serves it from the printer's own web server. Every decision follows from tha
 - **Mobile pickers ignore `accept`**: on touch devices the file input has no type filter
   and the app filters by extension (`src/lib/files/filter.ts`). Hidden files (`.` prefix,
   `._` twins, `System Volume Information`, ...) are never shown or uploaded.
-- **Ports**: dev 5957, e2e 5958. Never 5173 (other projects use it) and never kill a
+- **Ports**: dev 5957, e2e 5958, demo preview 5959. Never 5173 (other projects use it) and never kill a
   process you did not start.
 - Follow `@prusa/frontend-standards` (`node_modules/@prusa/frontend-standards/rules/*.md`):
   runes only, class stores in `.svelte.ts`, Tailwind utilities on the Prusa tokens, every
