@@ -217,5 +217,7 @@
   "heating.bedReady": "Le plateau est à la bonne température",
   "heating.bedLabel": "Température du plateau",
   "upload.dropInto": "Les G-codes, dossiers et ZIP vont dans {folder}.",
-  "printer.mmu": "MMU3"
+  "printer.mmu": "MMU3",
+  "status.chamber": "Chambre",
+  "status.active": "En cours"
 }

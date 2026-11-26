@@ -9,7 +9,7 @@
   import { TelemetryIcon } from '../../lib/ui/telemetry-icon';
 
   interface Props {
-    kind: 'nozzle' | 'bed';
+    kind: 'nozzle' | 'bed' | 'chamber';
     label: string;
     current: number | undefined;
     target: number | undefined;

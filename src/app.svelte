@@ -40,6 +40,7 @@
   import { identity } from './lib/stores/identity.svelte';
   import { isMultiTool } from './lib/printer/models';
   import { heaterReadings } from './lib/printer/status-picture';
+  import { toolRows } from './lib/printer/tools';
   import { badgeTabIcon } from './features/printer/tab-icon';
   import { printer, type JobFile } from './lib/stores/printer.svelte';
   import { Button } from './lib/ui/button';
@@ -56,7 +57,19 @@
     if (canStart) candidate = file;
   };
 
-  const multiTool = $derived(isMultiTool(identity.model?.variant));
+  // PrusaLink 2 counts the tools; before it, the model says whether there
+  // can be several.
+  const multiTool = $derived(
+    identity.v2
+      ? identity.tools.length > 1
+      : isMultiTool(identity.model?.variant),
+  );
+  const tools = $derived(
+    __MULTI_TOOL__ ? toolRows(printer.status, identity.tools) : [],
+  );
+  $effect(() => {
+    printer.expanded = identity.v2;
+  });
   // Why the printer takes no job now, said on every print button.
   const blocked = $derived(
     printer.status?.state === 'PRINTING' || printer.status?.state === 'PAUSED'
@@ -250,6 +263,8 @@
             oncontrol={(action: 'pause' | 'resume' | 'stop') =>
               printer.control(action)}
             {activity}
+            tools={printer.offline ? undefined : tools}
+            chamber={printer.status?.chamber}
             material={multiTool
               ? undefined
               : filament.loaded && filamentLabel(filament.loaded)}
@@ -269,6 +284,11 @@
               <PrinterIdentity
                 model={identity.model}
                 mmu={identity.mmu}
+                equipment={{
+                  tools: identity.tools.length || 1,
+                  chamber: printer.status?.chamber !== undefined,
+                  enclosure: identity.enclosure,
+                }}
                 readings={heaterReadings(printer.status, {
                   offline: printer.offline,
                   toolPicked: !multiTool || filament.loaded !== undefined,

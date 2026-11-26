@@ -10,10 +10,13 @@ import {
 
 const REMEMBERED = 'prusalink.printer';
 
-/// What the page knows the printer has. PrusaLink reports the MMU only:
-/// one tool, no enclosure and no chamber until it reports more.
-export function equipmentOf(mmu: boolean): Equipment {
-  return { mmu, enclosure: false, chamber: false, tools: 1 };
+/// What the page knows the printer has. Firmware before PrusaLink 2
+/// reports the MMU only: one tool, no enclosure and no chamber.
+export function equipmentOf(
+  mmu: boolean,
+  more: Partial<Omit<Equipment, 'mmu'>> = {},
+): Equipment {
+  return { mmu, enclosure: false, chamber: false, tools: 1, ...more };
 }
 
 export interface Picture {
@@ -30,6 +33,7 @@ export interface Picture {
 export function pictureFor(
   variant: Variant | undefined,
   mmu = false,
+  equipment = equipmentOf(mmu),
 ): Picture | undefined {
   const all = Object.entries(printerImages.images);
   const [only] = all;
@@ -41,7 +45,6 @@ export function pictureFor(
   const picture =
     (mmu ? printerImages.mmu[key] : undefined) ?? printerImages.images[key];
   if (!picture) return undefined;
-  const equipment = equipmentOf(mmu);
   const hidden = (picture.status?.conditional ?? [])
     .filter((c) => !met(c.when, equipment))
     .map((c) => c.id);

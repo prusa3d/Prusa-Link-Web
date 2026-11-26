@@ -1,6 +1,17 @@
 import { api } from '../api/client';
 import { modelOf, printerTitle, type Model } from '../printer/models';
 import { rememberVariant } from '../printer/picture';
+import type { components } from '../api/schema';
+
+/// A tool as /api/v1/info describes it (PrusaLink 2); undefined for a
+/// disabled one.
+export interface ToolInfo {
+  material?: string | undefined;
+  /// `#rrggbb`.
+  color?: string | undefined;
+}
+
+type Info = components['schemas']['Info'];
 
 type FetchIdentity = () => Promise<{
   code?: string | undefined;
@@ -8,7 +19,30 @@ type FetchIdentity = () => Promise<{
   firmware?: string | undefined;
   nozzle?: number | undefined;
   mmu?: boolean | undefined;
+  features?: string[] | undefined;
+  tools?: (ToolInfo | undefined)[] | undefined;
+  enclosure?: boolean | undefined;
 }>;
+
+/// Tools by index from the `"0"`, `"1"`… keys; MMU slots (`"0.N"`) are left
+/// out.
+export function toolsOf(info: Info | undefined): (ToolInfo | undefined)[] {
+  const out: (ToolInfo | undefined)[] = [];
+  for (const [key, tool] of Object.entries(info?.tools ?? {})) {
+    if (!/^\d+$/.test(key)) continue;
+    const material = tool?.material_package_instance?.package?.material;
+    out[Number(key)] = tool
+      ? {
+          material: material?.abbreviation,
+          color: material?.primary_color?.color_rgba,
+        }
+      : undefined;
+  }
+  return Array.from(
+    { length: info?.tool_count ?? out.length },
+    (_, i) => out[i],
+  );
+}
 
 const fetchIdentity: FetchIdentity = async () => {
   const [version, info] = await Promise.all([
@@ -21,6 +55,9 @@ const fetchIdentity: FetchIdentity = async () => {
     firmware: version.data?.firmware,
     nozzle: info.data?.nozzle_diameter,
     mmu: info.data?.mmu,
+    features: info.data?.features,
+    tools: toolsOf(info.data),
+    enclosure: info.data?.enclosure?.enabled,
   };
 };
 
@@ -32,6 +69,9 @@ export class IdentityStore {
   #firmware = $state<string | undefined>();
   #nozzle = $state<number | undefined>();
   #mmu = $state(false);
+  #features = $state<readonly string[] | undefined>();
+  #tools = $state<(ToolInfo | undefined)[]>([]);
+  #enclosure = $state(false);
   #fetch: FetchIdentity;
 
   constructor(fetch: FetchIdentity = fetchIdentity) {
@@ -61,14 +101,46 @@ export class IdentityStore {
     return this.#mmu;
   }
 
+  /// The firmware has the PrusaLink 2 API: /api/v1/info lists its features.
+  /// Detected by the answer, never by the version string.
+  get v2() {
+    return this.#features !== undefined;
+  }
+
+  /// One of /api/v1/info's `features`, such as `cancel_object`.
+  can(feature: string) {
+    return this.#features?.includes(feature) ?? false;
+  }
+
+  /// Every tool, as PrusaLink 2 reports them; empty before it.
+  get tools(): readonly (ToolInfo | undefined)[] {
+    return this.#tools;
+  }
+
+  get enclosure() {
+    return this.#enclosure;
+  }
+
   get title() {
     return printerTitle(this.#hostname, this.#model);
   }
 
   async refresh() {
     try {
-      const { code, hostname, firmware, nozzle, mmu } = await this.#fetch();
+      const {
+        code,
+        hostname,
+        firmware,
+        nozzle,
+        mmu,
+        features,
+        tools,
+        enclosure,
+      } = await this.#fetch();
       this.#mmu = mmu ?? false;
+      this.#features = features;
+      this.#tools = tools ?? [];
+      this.#enclosure = enclosure ?? false;
       this.#firmware = firmware;
       this.#nozzle = nozzle;
       this.#model = modelOf(code);

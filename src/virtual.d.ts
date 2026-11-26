@@ -39,5 +39,6 @@ declare module 'virtual:locales' {
   export default locales;
 }
 
-/// A build for a printer with little room (the MINI): no picture, no graph,
-/// one language. Set by scripts/build-all.ts.
+/// The build can run on a printer with several tools (vite.config.ts). The
+/// builds of single-tool printers leave the per-tool views out.
+declare const __MULTI_TOOL__: boolean;

@@ -19,12 +19,18 @@ import { pictureEditor } from './dev/picture-editor/vite-plugin.ts';
 // the app, the mock printer and its panel, for a static host such as GitHub
 // Pages. Never embedded in firmware, so neither one file nor budgeted.
 const VARIANT = process.env.PRUSALINK_VARIANT;
+// Builds that may run on a printer with several tools; the others drop the
+// per-tool views, which the firmware budget has no room for.
+const MULTI_TOOL = ['generic', 'xl', 'ix', 'coreone_indx', 'coreonel_indx'];
 const VERSION = process.env.PRUSALINK_VERSION;
 
 export default defineConfig(({ command, mode }) => ({
   ...(mode === 'demo' && {
     base: process.env.DEMO_BASE ?? '/Prusa-Link-Web/',
   }),
+  define: {
+    __MULTI_TOOL__: JSON.stringify(!VARIANT || MULTI_TOOL.includes(VARIANT)),
+  },
   plugins: [
     mode === 'demo' && demoPage(),
     VERSION !== undefined && version(VERSION),

@@ -54,9 +54,12 @@
   const valueStart = $derived(
     l.textX - (valueWidth + (chevron ? chevronSize + gap : 0)) / 2,
   );
-  const bed = $derived(label.heater === 'bed');
+  // The chamber shows the bed's heat waves, without the plate.
+  const chamber = $derived(label.heater === 'chamber');
+  const bed = $derived(label.heater === 'bed' || chamber);
   // A single-tool printer calls its one tool just "Tool".
   const name = $derived.by(() => {
+    if (chamber) return t('status.chamber');
     if (bed) return t('status.bed');
     return single && label.heater === 'T1' ? t('status.tool') : label.heater;
   });
@@ -116,7 +119,9 @@
     transform="translate({captionStart} {iconY}) scale({style.caption /
       (bed ? 24 : 512)})"
   >
-    {#if bed}
+    {#if chamber}
+      <path d={BED_HEAT} />
+    {:else if bed}
       <path d={BED_HEAT} opacity="0.6" /><path d={BED_PLATE} />
     {:else}
       <path d={NOZZLE} />
@@ -126,7 +131,9 @@
     x={captionStart + iconWidth + style.caption * 0.25}
     y={l.captionY}
     font-size={style.caption}
-    font-weight="500"
+    font-weight={reading.active ? 700 : 500}
+    text-decoration={reading.active ? 'underline' : undefined}
+    data-active={reading.active}
     fill="currentColor">{name}</text
   >
 </g>

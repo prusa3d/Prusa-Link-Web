@@ -217,5 +217,7 @@
   "heating.bedReady": "Il piano è alla temperatura giusta",
   "heating.bedLabel": "Temperatura del piano",
   "upload.dropInto": "G-code, cartelle e file ZIP vanno in {folder}.",
-  "printer.mmu": "MMU3"
+  "printer.mmu": "MMU3",
+  "status.chamber": "Camera",
+  "status.active": "In uso"
 }
