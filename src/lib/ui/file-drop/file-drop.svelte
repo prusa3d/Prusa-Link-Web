@@ -49,8 +49,8 @@
 <!-- eslint-disable svelte/no-restricted-html-elements -- this is the file-drop primitive -->
 <label
   class={[
-    'rounded-lg flex min-h-14 cursor-pointer flex-row items-center justify-center gap-3 border-2 border-dashed bg-card p-3 text-center transition-colors hover:border-primary has-focus-visible:ring-2 has-focus-visible:ring-ring md:min-h-40 md:flex-col md:gap-1 md:p-6',
-    dragging || active ? 'border-primary bg-accent' : 'border-input',
+    'rounded-lg flex min-h-14 cursor-pointer flex-row items-center justify-center gap-3 border border-dashed bg-card p-3 text-center transition-colors hover:border-primary has-focus-visible:ring-2 has-focus-visible:ring-ring md:min-h-40 md:flex-col md:gap-1 md:p-6',
+    dragging || active ? 'border-primary bg-accent' : 'border-border',
   ]}
   ondragover={(e) => {
     e.preventDefault();

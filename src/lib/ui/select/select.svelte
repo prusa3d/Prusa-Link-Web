@@ -20,7 +20,7 @@
 <select
   bind:value
   class={[
-    'h-11 cursor-pointer rounded-sm border border-input bg-background px-2 text-base outline-none focus-visible:ring-2 focus-visible:ring-ring md:h-9 md:text-sm',
+    'h-11 cursor-pointer rounded-sm border border-border bg-background px-2 text-base outline-none focus-visible:ring-2 focus-visible:ring-ring md:h-9 md:text-sm',
     extra,
   ]}
   {...rest}

@@ -10,7 +10,7 @@
   import { localThumbnail } from '../../lib/files/local-thumbnails';
   import { formatDuration, parseFileName } from '../../lib/files/name';
   import { t, type MessageKey } from '../../lib/i18n.svelte';
-  import { STATE_EDGE, STATE_FILL, STATE_TONE } from '../../lib/printer/state';
+  import { STATE_FILL, STATE_TONE } from '../../lib/printer/state';
   import type {
     ControlAnswer,
     JobFile,
@@ -97,10 +97,6 @@
   const ended = $derived(
     status?.state === 'STOPPED' || status?.state === 'ERROR' || settled,
   );
-  const edge = $derived.by(() => {
-    if (activity) return 'active';
-    return ended ? 'quiet' : tone;
-  });
   const far = (current: number | undefined, target: number | undefined) =>
     (target ?? 0) > 0 && Math.abs((current ?? 0) - (target ?? 0)) > 2;
   // A print's first minutes: the printer heats before the first layer.
@@ -184,8 +180,7 @@
   {@render alerts?.()}
   <div
     class={[
-      'rounded-lg flex flex-col gap-4 border border-l-4 bg-card p-4 text-card-foreground',
-      STATE_EDGE[edge],
+      'rounded-lg flex flex-col gap-4 border bg-card p-4 text-card-foreground',
       offline && 'opacity-60',
     ]}
   >
@@ -263,7 +258,7 @@
           aria-valuetext={showTime
             ? `${String(progress)} %, ${t('status.remaining', { time: remaining })}`
             : `${String(progress)} %`}
-          class="h-3 w-full overflow-hidden rounded-full border border-input bg-muted"
+          class="h-3 w-full overflow-hidden rounded-full border border-border bg-muted"
         >
           <div
             class={[

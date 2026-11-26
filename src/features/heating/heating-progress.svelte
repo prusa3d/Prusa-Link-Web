@@ -3,6 +3,7 @@
 <script lang="ts">
   import { heatingEta, type Reading } from '../../lib/heating-eta';
   import { language, t } from '../../lib/i18n.svelte';
+  import { TelemetryIcon } from '../../lib/ui/telemetry-icon';
   import { degrees } from '../../lib/units.svelte';
 
   interface Props {
@@ -58,7 +59,16 @@
   data-ready={ready}
 >
   <div class="flex items-baseline justify-between gap-3 text-sm">
-    <span class={ready ? 'font-medium text-state-done-text' : ''}>
+    <span
+      class={[
+        'flex items-center gap-1.5',
+        ready && 'font-medium text-state-done-text',
+      ]}
+    >
+      <TelemetryIcon
+        kind={bed ? 'bed' : 'nozzle'}
+        class={ready ? '' : 'text-muted-foreground'}
+      />
       {#if ready}
         {t(bed ? 'heating.bedReady' : 'heating.ready')}
       {:else if heating}
@@ -79,7 +89,7 @@
     aria-valuemin={0}
     aria-valuemax={100}
     aria-valuenow={Math.round(fraction * 100)}
-    class="h-3 w-full overflow-hidden rounded-full border border-input bg-muted"
+    class="h-3 w-full overflow-hidden rounded-full border border-border bg-muted"
   >
     <div
       class={[
