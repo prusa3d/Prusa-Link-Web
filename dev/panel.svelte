@@ -201,6 +201,21 @@
               >
             </tr>
           {/each}
+          <tr>
+            <td>Bed</td>
+            <td class="text-center tabular-nums">{snap.bed.temp.toFixed(0)}</td>
+            <td
+              ><input
+                class="rounded w-16 border px-1"
+                type="number"
+                aria-label="Bed target"
+                value={snap.bed.target}
+                onchange={(e) =>
+                  patch({ bed: { target: Number(e.currentTarget.value) } })}
+              /></td
+            >
+            <td></td>
+          </tr>
         </tbody>
       </table>
       {#if snap.tools.length > 1}
