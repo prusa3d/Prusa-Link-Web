@@ -19,7 +19,18 @@
       {t('firmware.current', { version: firmwareUpdate.current ?? '' })}
       {t(update.file ? 'firmware.howTo' : 'firmware.howToPick')}
     </p>
-    <div class="flex flex-wrap items-center gap-2">
+    <a
+      href={update.notes}
+      target="_blank"
+      rel="noopener"
+      class="inline-flex items-center gap-1.5 self-start text-sm font-medium text-link underline-offset-4 hover:underline focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
+    >
+      {t('firmware.notes')}<Icon node={ExternalLink} class="size-4" />
+    </a>
+    <div class="flex flex-wrap items-center justify-end gap-2">
+      <Button variant="ghost" onclick={() => firmwareUpdate.dismiss()}>
+        {t('firmware.dismiss')}
+      </Button>
       {#if update.file}
         <a
           href={update.file.url}
@@ -28,19 +39,6 @@
           <Icon node={Download} class="size-4" />{t('firmware.download')}
         </a>
       {/if}
-      <a
-        href={update.notes}
-        target="_blank"
-        rel="noopener"
-        class="inline-flex h-11 items-center gap-2 rounded-sm px-3 text-sm font-medium text-link underline-offset-4 hover:underline focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none md:h-9"
-      >
-        {t('firmware.notes')}<Icon node={ExternalLink} class="size-4" />
-      </a>
-    </div>
-    <div class="flex justify-end">
-      <Button variant="ghost" onclick={() => firmwareUpdate.dismiss()}>
-        {t('firmware.dismiss')}
-      </Button>
     </div>
   </Dialog>
 {/if}
