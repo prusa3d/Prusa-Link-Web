@@ -18,7 +18,7 @@
 >
   <Icon node={Languages} />
   <Select
-    class="absolute inset-0 size-full opacity-0"
+    class="absolute inset-0 size-full bg-background text-foreground opacity-0"
     aria-label={t('language.label')}
     value={language()}
     onchange={(e: Event & { currentTarget: HTMLSelectElement }) =>
