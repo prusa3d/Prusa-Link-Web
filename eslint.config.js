@@ -11,6 +11,7 @@ export default [
       'test-results/',
       '.video/',
       'share/',
+      'dist-demo/',
       'src/lib/api/schema.d.ts',
     ],
   },
@@ -42,7 +43,14 @@ export default [
   // Development and test tooling never ships in index.html: no translations,
   // no primitives, and it may talk to the dev server directly.
   {
-    files: ['dev/**', 'mock/**', 'e2e/**', 'scripts/**', '**/*.test.ts'],
+    files: [
+      'dev/**',
+      'demo/**',
+      'mock/**',
+      'e2e/**',
+      'scripts/**',
+      '**/*.test.ts',
+    ],
     rules: {
       'frontend-standards/no-literal-text': 'off',
       'svelte/no-restricted-html-elements': 'off',
