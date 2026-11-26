@@ -9,7 +9,7 @@
 
 <!-- Stays in place during an upload, so the storage column does not jump; a
      drop then waits for the batch in progress (see the upload panel). -->
-<FileDrop class="edge" onfiles={(p: Picked) => void uploads.upload(p)}>
+<FileDrop onfiles={(p: Picked) => void uploads.upload(p)}>
   <Icon node={CloudUpload} class="size-6 shrink-0 text-primary md:size-8" />
   <span class="font-medium md:hidden">{t('upload.phone')}</span>
   <span class="text-lg font-medium max-md:hidden"

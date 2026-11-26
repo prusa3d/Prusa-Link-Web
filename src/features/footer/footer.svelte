@@ -37,7 +37,7 @@
 
 <!-- Always at the bottom of the window. On phones one slim row: the
      wordmark and the links as icons (their names stay as labels). -->
-<footer class="sticky bottom-0 z-10 border-t bg-background">
+<footer class="sticky bottom-0 z-10 border-t bg-background safe-inset">
   <div
     class="mx-auto flex max-w-5xl items-center justify-between gap-x-6 gap-y-3 px-4 py-1 text-sm text-muted-foreground md:flex-wrap md:px-6 md:py-6"
   >

@@ -44,7 +44,7 @@
   </aside>
 {:else}
   <button
-    class="fixed end-4 bottom-4 z-40 flex items-center gap-2 rounded-full border border-white/25 bg-black p-3 text-sm font-medium text-white opacity-80 shadow-lg hover:opacity-100 sm:px-4 sm:py-2"
+    class="mock-printer-button fixed end-4 bottom-4 z-40 flex items-center gap-2 rounded-full border border-white/25 bg-black p-3 text-sm font-medium text-white opacity-80 shadow-lg hover:opacity-100 sm:px-4 sm:py-2"
     onclick={() => (open = true)}
   >
     <FlaskConical class="size-4" /><span class="max-sm:sr-only"
@@ -52,3 +52,10 @@
     >
   </button>
 {/if}
+
+<style>
+  /* Never over a dialog's buttons. */
+  :global(body:has(dialog[open])) .mock-printer-button {
+    display: none;
+  }
+</style>
