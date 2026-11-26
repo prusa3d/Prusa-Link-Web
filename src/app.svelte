@@ -54,6 +54,12 @@
   };
 
   const multiTool = $derived(isMultiTool(identity.model?.variant));
+  // Why the printer takes no job now, said on every print button.
+  const blocked = $derived(
+    printer.status?.state === 'PRINTING' || printer.status?.state === 'PAUSED'
+      ? t('files.alreadyPrinting')
+      : t('status.state.BUSY'),
+  );
   const canStart = $derived(
     !printer.offline &&
       !filament.busy &&
@@ -260,10 +266,7 @@
       </div>
       <FileList
         {canStart}
-        blocked={printer.status?.state === 'PRINTING' ||
-        printer.status?.state === 'PAUSED'
-          ? t('files.alreadyPrinting')
-          : t('status.state.BUSY')}
+        {blocked}
         printing={printer.job ? printer.jobFile?.path : undefined}
         onprint={(entry: PrinterEntry, dir?: string, where?: string) =>
           (candidate = { ...fromList(entry), dir, where })}
@@ -285,6 +288,7 @@
     file={candidate}
     onprint={print}
     {canStart}
+    {blocked}
     onclose={() => (candidate = undefined)}
   />
 {:else}
