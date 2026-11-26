@@ -314,8 +314,7 @@ test('walks the deepest folder and back by its path', async ({ page }) => {
   await path.getByRole('button', { name: 'extruder' }).click();
   await expect(path).toHaveText(/MK4S\s*\/\s*extruder$/);
   await path.getByRole('button', { name: 'USB' }).click();
-  // Back at the drive's root: only the Storage heading, no path row.
-  await expect(path).toHaveCount(0);
+  await expect(path).toHaveText('USB');
   await expect(page.getByRole('heading', { name: 'Storage' })).toBeVisible();
 });
 
