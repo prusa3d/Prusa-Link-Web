@@ -78,7 +78,7 @@
       {/if}
     </span>
     {#if current !== undefined}
-      <span class="shrink-0 font-mono text-muted-foreground tabular-nums">
+      <span class="shrink-0 text-muted-foreground tabular-nums">
         {degrees(current)}{#if heating}&nbsp;/ {degrees(target ?? 0)}{/if}
       </span>
     {/if}

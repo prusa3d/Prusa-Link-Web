@@ -6,7 +6,7 @@
   import { Printer } from '../../lib/ui/icon/icons';
 
   import HeaterLabel from './heater-label.svelte';
-  import type { Model } from '../../lib/printer/models';
+  import { isMultiTool, type Model } from '../../lib/printer/models';
   import {
     equipmentOf,
     pictureFor,
@@ -59,7 +59,12 @@
           {#each labels as label (label.heater)}
             {@const reading = readings[label.heater]}
             {#if reading}
-              <HeaterLabel {label} style={picture.status.style} {reading} />
+              <HeaterLabel
+                {label}
+                style={picture.status.style}
+                {reading}
+                single={!isMultiTool(model?.variant)}
+              />
             {/if}
           {/each}
         </svg>
