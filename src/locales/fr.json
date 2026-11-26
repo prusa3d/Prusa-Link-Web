@@ -97,7 +97,6 @@
   "status.idleHint": "Prête pour la prochaine impression.",
   "login.subtitle": "Pilotez et surveillez votre imprimante.",
   "upload.dropAnywhere": "Déposez n'importe où pour envoyer",
-  "upload.dropAnywhereHint": "Le G-code, les dossiers et les ZIP vont sur la clé USB.",
   "files.mismatchTitle": "Découpé pour {file}, mais {loaded} est chargé",
   "files.mismatchBody": "L'imprimante s'arrêtera et demandera sur son écran.",
   "files.printAnyway": "Imprimer quand même",
@@ -212,5 +211,10 @@
   "heating.waiting": "En attente de la chauffe de l'outil",
   "heating.ready": "L'outil est à la bonne température",
   "heating.idle": "En attente du début de la chauffe",
-  "heating.label": "Température de l'outil"
+  "heating.label": "Température de l'outil",
+  "heating.eta": "encore environ {time}",
+  "heating.bedWaiting": "En attente de la chauffe du plateau",
+  "heating.bedReady": "Le plateau est à la bonne température",
+  "heating.bedLabel": "Température du plateau",
+  "upload.dropInto": "Les G-codes, dossiers et ZIP vont dans {folder}."
 }

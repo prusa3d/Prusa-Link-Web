@@ -101,7 +101,6 @@
   "status.idleHint": "Готовий до наступного друку.",
   "login.subtitle": "Керуйте принтером і стежте за ним.",
   "upload.dropAnywhere": "Перетягніть будь-куди для завантаження",
-  "upload.dropAnywhereHint": "G-code, папки та ZIP потрапляють на USB-накопичувач.",
   "files.mismatchTitle": "Нарізано для {file}, але завантажено {loaded}",
   "files.mismatchBody": "Принтер зупиниться і запитає на екрані.",
   "files.printAnyway": "Все одно друкувати",
@@ -218,5 +217,10 @@
   "heating.waiting": "Очікування нагрівання інструмента",
   "heating.ready": "Інструмент має правильну температуру",
   "heating.idle": "Очікування, поки принтер почне нагрівання",
-  "heating.label": "Температура інструмента"
+  "heating.label": "Температура інструмента",
+  "heating.eta": "залишилося близько {time}",
+  "heating.bedWaiting": "Очікування нагрівання столу",
+  "heating.bedReady": "Стіл має правильну температуру",
+  "heating.bedLabel": "Температура столу",
+  "upload.dropInto": "G-code, папки та ZIP потраплять до {folder}."
 }

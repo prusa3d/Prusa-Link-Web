@@ -99,7 +99,6 @@
   "status.idleHint": "Připravena na další tisk.",
   "login.subtitle": "Ovládejte a sledujte svou tiskárnu.",
   "upload.dropAnywhere": "Pusťte kamkoli a nahrajte",
-  "upload.dropAnywhereHint": "G-code, složky a ZIP soubory se nahrají na USB disk.",
   "files.mismatchTitle": "Slicováno pro {file}, ale zaveden je {loaded}",
   "files.mismatchBody": "Tiskárna se zastaví a zeptá se na displeji.",
   "files.printAnyway": "Přesto tisknout",
@@ -215,5 +214,10 @@
   "heating.waiting": "Čeká se na nahřátí nástroje",
   "heating.ready": "Nástroj má správnou teplotu",
   "heating.idle": "Čeká se, až tiskárna začne nahřívat",
-  "heating.label": "Teplota nástroje"
+  "heating.label": "Teplota nástroje",
+  "heating.eta": "zbývá asi {time}",
+  "heating.bedWaiting": "Čeká se na nahřátí podložky",
+  "heating.bedReady": "Podložka má správnou teplotu",
+  "heating.bedLabel": "Teplota podložky",
+  "upload.dropInto": "G-code, složky a ZIP se uloží do {folder}."
 }

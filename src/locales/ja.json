@@ -97,7 +97,6 @@
   "status.idleHint": "次の印刷の準備ができています。",
   "login.subtitle": "プリンターを操作し、見守ります。",
   "upload.dropAnywhere": "どこにでもドロップしてアップロード",
-  "upload.dropAnywhereHint": "G-code、フォルダー、ZIP は USB ドライブに保存されます。",
   "files.mismatchTitle": "{file} 用にスライスされていますが、{loaded} がロードされています",
   "files.mismatchBody": "プリンターは停止し、画面で確認を求めます。",
   "files.printAnyway": "このまま印刷",
@@ -212,5 +211,10 @@
   "heating.waiting": "ツールの加熱を待っています",
   "heating.ready": "ツールは適切な温度です",
   "heating.idle": "プリンターの加熱開始を待っています",
-  "heating.label": "ツール温度"
+  "heating.label": "ツール温度",
+  "heating.eta": "残り約{time}",
+  "heating.bedWaiting": "ベッドの加熱を待っています",
+  "heating.bedReady": "ベッドは適切な温度です",
+  "heating.bedLabel": "ベッド温度",
+  "upload.dropInto": "G-code、フォルダー、ZIPは{folder}に保存されます。"
 }

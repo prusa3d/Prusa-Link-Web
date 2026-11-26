@@ -101,7 +101,6 @@
   "status.idleHint": "Gotowa na następny wydruk.",
   "login.subtitle": "Steruj drukarką i obserwuj ją.",
   "upload.dropAnywhere": "Upuść w dowolnym miejscu, aby wysłać",
-  "upload.dropAnywhereHint": "G-code, foldery i pliki ZIP trafiają na dysk USB.",
   "files.mismatchTitle": "Pocięte dla {file}, ale załadowano {loaded}",
   "files.mismatchBody": "Drukarka zatrzyma się i zapyta na ekranie.",
   "files.printAnyway": "Drukuj mimo to",
@@ -218,5 +217,10 @@
   "heating.waiting": "Czekanie na nagrzanie narzędzia",
   "heating.ready": "Narzędzie ma właściwą temperaturę",
   "heating.idle": "Czekanie, aż drukarka zacznie grzać",
-  "heating.label": "Temperatura narzędzia"
+  "heating.label": "Temperatura narzędzia",
+  "heating.eta": "zostało ok. {time}",
+  "heating.bedWaiting": "Czekanie na nagrzanie stołu",
+  "heating.bedReady": "Stół ma właściwą temperaturę",
+  "heating.bedLabel": "Temperatura stołu",
+  "upload.dropInto": "G-code, foldery i pliki ZIP trafią do {folder}."
 }

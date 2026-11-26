@@ -314,7 +314,8 @@ test('walks the deepest folder and back by its path', async ({ page }) => {
   await path.getByRole('button', { name: 'extruder' }).click();
   await expect(path).toHaveText(/MK4S\s*\/\s*extruder$/);
   await path.getByRole('button', { name: 'USB' }).click();
-  await expect(path).toHaveText('USB');
+  // Back at the root: the heading names the storage, no path.
+  await expect(path).toHaveCount(0);
   await expect(page.getByRole('heading', { name: 'Storage' })).toBeVisible();
 });
 
@@ -448,6 +449,41 @@ test('dragging files over the page shows where they go', async ({ page }) => {
   const overlay = page.getByTestId('window-drop');
   await expect(overlay).toContainText('prusa-mk4s');
   await expect(overlay).toContainText('Drop anywhere to upload');
+  await expect(overlay).toContainText('go to USB.');
+});
+
+test('inside a folder, uploads go to that folder and the overlay says so', async ({
+  page,
+  request,
+}) => {
+  await page.goto(`/#key=${await mockKey(page)}`);
+  await page.getByRole('button', { name: 'toys', exact: true }).click();
+  await expect(page.getByTestId('files-path')).toContainText('toys');
+  await page.evaluate(() => {
+    const data = new DataTransfer();
+    data.items.add(new File(['G28'], 'part.gcode'));
+    window.dispatchEvent(new DragEvent('dragenter', { dataTransfer: data }));
+  });
+  await expect(page.getByTestId('window-drop')).toContainText(
+    'go to USB / toys.',
+  );
+  await page.evaluate(() =>
+    window.dispatchEvent(new DragEvent('dragleave', { relatedTarget: null })),
+  );
+  await page.getByTestId('file-input').setInputFiles({
+    name: 'lid.gcode',
+    mimeType: 'application/octet-stream',
+    buffer: Buffer.from('G28'),
+  });
+  await expect(page.getByTestId('upload-items')).toContainText('lid.gcode');
+  await expect
+    .poll(async () => {
+      const s = (await (await request.get('/__mock/state')).json()) as {
+        files: { dir: string; display_name: string }[];
+      };
+      return s.files.find((f) => f.display_name === 'lid.gcode')?.dir;
+    })
+    .toBe('toys');
 });
 
 test('changes the filament through a helper job and cleans up', async ({

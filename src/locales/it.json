@@ -97,7 +97,6 @@
   "status.idleHint": "Pronta per la prossima stampa.",
   "login.subtitle": "Controlla e osserva la tua stampante.",
   "upload.dropAnywhere": "Rilascia ovunque per caricare",
-  "upload.dropAnywhereHint": "G-code, cartelle e ZIP vanno sull'unità USB.",
   "files.mismatchTitle": "Elaborato per {file}, ma è caricato {loaded}",
   "files.mismatchBody": "La stampante si fermerà e chiederà sul display.",
   "files.printAnyway": "Stampa comunque",
@@ -212,5 +211,10 @@
   "heating.waiting": "In attesa che l'utensile si scaldi",
   "heating.ready": "L'utensile è alla temperatura giusta",
   "heating.idle": "In attesa che la stampante inizi a scaldare",
-  "heating.label": "Temperatura dell'utensile"
+  "heating.label": "Temperatura dell'utensile",
+  "heating.eta": "circa {time} rimanenti",
+  "heating.bedWaiting": "In attesa che il piano si scaldi",
+  "heating.bedReady": "Il piano è alla temperatura giusta",
+  "heating.bedLabel": "Temperatura del piano",
+  "upload.dropInto": "G-code, cartelle e file ZIP vanno in {folder}."
 }
