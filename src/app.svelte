@@ -41,6 +41,8 @@
   import { isMultiTool } from './lib/printer/models';
   import { heaterReadings } from './lib/printer/status-picture';
   import { toolRows } from './lib/printer/tools';
+  import { dialog } from './lib/stores/dialog.svelte';
+  import { notices } from './lib/stores/notices.svelte';
   import { badgeTabIcon } from './features/printer/tab-icon';
   import { printer, type JobFile } from './lib/stores/printer.svelte';
   import { Button } from './lib/ui/button';
@@ -130,6 +132,15 @@
       void firmwareUpdate.check(identity.firmware, identity.model?.variant);
   });
 
+  $effect(() => {
+    void dialog.follow(printer.status?.dialog_id, printer.status?.state);
+  });
+
+  async function pressDialog(button: string) {
+    if (!(await dialog.press(button))) notices.add(t('dialog.refused'));
+    await printer.refresh();
+  }
+
   // Lets the filament helper job clean up after itself.
   $effect(() => {
     void filament.follow(printer.status?.state);
@@ -171,6 +182,13 @@
       version: file.version,
     };
   };
+
+  const alertStatus = $derived(
+    printer.offline ||
+      (filament.busy && (filamentOpen || candidate !== undefined))
+      ? undefined
+      : printer.status,
+  );
 
   let printerColumn = $state<HTMLElement>();
 
@@ -299,10 +317,10 @@
               <!-- A dialog in front that already shows the printer's
                    question hides it here. -->
               <PrinterAlert
-                status={printer.offline ||
-                (filament.busy && (filamentOpen || candidate !== undefined))
-                  ? undefined
-                  : printer.status}
+                status={alertStatus}
+                dialog={alertStatus && dialog.current}
+                pressing={dialog.pressing}
+                onbutton={(button: string) => void pressDialog(button)}
               />
               <Notices />
             {/snippet}

@@ -225,5 +225,7 @@
   "upload.dropInto": "G-code, папки та ZIP потраплять до {folder}.",
   "printer.mmu": "MMU3",
   "status.chamber": "Камера",
-  "status.active": "Використовується"
+  "status.active": "Використовується",
+  "dialog.help": "Довідка",
+  "dialog.refused": "Принтер не прийняв відповідь"
 }

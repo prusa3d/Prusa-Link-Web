@@ -219,5 +219,7 @@
   "upload.dropInto": "Les G-codes, dossiers et ZIP vont dans {folder}.",
   "printer.mmu": "MMU3",
   "status.chamber": "Chambre",
-  "status.active": "En cours"
+  "status.active": "En cours",
+  "dialog.help": "Aide",
+  "dialog.refused": "L’imprimante n’a pas accepté la réponse"
 }

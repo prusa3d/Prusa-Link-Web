@@ -219,5 +219,7 @@
   "upload.dropInto": "G-code、フォルダー、ZIPは{folder}に保存されます。",
   "printer.mmu": "MMU3",
   "status.chamber": "チャンバー",
-  "status.active": "使用中"
+  "status.active": "使用中",
+  "dialog.help": "ヘルプ",
+  "dialog.refused": "プリンターが応答を受け付けませんでした"
 }
