@@ -34,22 +34,27 @@ const FEATURES = [
   'firmwareFlash',
 ] as const;
 type Feature = (typeof FEATURES)[number];
-// Wanted per printer: every feature; toolMapping where the firmware has
-// HAS_TOOL_MAPPING (a tool changer or an MMU: not the MINI and the iX);
-// multiTool on the tool changers.
-// What fits each build's budget today, added in that order while the build
-// stays within scripts/check-size.ts: the rest waits for room. MK4 carries
-// two full pictures (with and without the MMU3) and has none left.
+// toolMapping where the firmware has HAS_TOOL_MAPPING (a tool changer or an
+// MMU: not the MINI and the iX); multiTool on the tool changers. The MINI's
+// one-language builds take what fits their 80 KB (scripts/check-size.ts).
+const SINGLE: Feature[] = [
+  'apiV2',
+  'cancelObject',
+  'controls',
+  'firmwareFlash',
+];
+const MMU: Feature[] = [...SINGLE, 'toolMapping'];
+const MULTI: Feature[] = [...MMU, 'multiTool'];
 const BUILD_FEATURES: Record<string, readonly Feature[]> = {
-  generic: ['apiV2', 'multiTool'],
-  xl: ['apiV2', 'multiTool'],
-  coreone_indx: ['apiV2', 'multiTool'],
-  coreonel_indx: ['apiV2', 'multiTool'],
-  mk35: ['apiV2', 'controls'],
-  mk4: [],
-  coreone: ['apiV2', 'controls'],
-  coreonel: ['apiV2', 'controls'],
-  ix: ['apiV2', 'cancelObject', 'controls'],
+  generic: MULTI,
+  xl: MULTI,
+  coreone_indx: MULTI,
+  coreonel_indx: MULTI,
+  mk35: MMU,
+  mk4: MMU,
+  coreone: MMU,
+  coreonel: MMU,
+  ix: SINGLE,
   mini: ['apiV2', 'controls', 'firmwareFlash'],
 };
 /// The messages only a feature uses, by key prefix.
