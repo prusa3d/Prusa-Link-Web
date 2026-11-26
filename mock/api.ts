@@ -1,5 +1,11 @@
 import type { paths } from '../src/lib/api/schema';
-import { filePath, PRINTER_CODE, type MockPrinter } from './printer.ts';
+import {
+  filePath,
+  IDLE_STATES,
+  PRINTER_CODE,
+  type MockPrinter,
+} from './printer.ts';
+import { FILAMENTS, firmwarePrefix } from './seed.ts';
 import { mockThumbnail } from './thumbnail.ts';
 
 /// The body a spec operation answers with on 200. Every handler below returns
@@ -19,6 +25,8 @@ export interface MockResponse {
 export interface MockRequest {
   method: string;
   path: string;
+  /// The query string without `?`.
+  query?: string;
   /// A Node Buffer in the dev server, plain bytes in the browser demo.
   body?: Uint8Array;
   headers: Record<string, string | string[] | undefined>;
@@ -27,6 +35,100 @@ export interface MockRequest {
 const json = (body: unknown, status = 200): MockResponse => ({ status, body });
 const empty = (status: number): MockResponse => ({ status });
 
+function readJson(req: MockRequest): Record<string, unknown> | undefined {
+  try {
+    const value: unknown = JSON.parse(
+      new TextDecoder().decode(req.body ?? new Uint8Array()),
+    );
+    return value && typeof value === 'object'
+      ? (value as Record<string, unknown>)
+      : undefined;
+  } catch {
+    return undefined;
+  }
+}
+
+/// A weak ETag of a body, for If-None-Match.
+function etag(body: unknown): string {
+  let h = 0;
+  for (const c of JSON.stringify(body)) h = (h * 31 + c.charCodeAt(0)) | 0;
+  return `W/"${(h >>> 0).toString(16)}"`;
+}
+
+function cached(req: MockRequest, body: unknown, tag = etag(body)) {
+  if (req.headers['if-none-match'] === tag)
+    return { status: 304, headers: { etag: tag } };
+  return { status: 200, body, headers: { etag: tag } };
+}
+
+const FEATURES = [
+  'cancel_object',
+  'dialogs',
+  'firmware_update',
+  'preheat',
+  'tune',
+  'filament',
+] as const;
+
+/// `8.0.2`, `6.4.0-rc1` from a release file name.
+const firmwareVersion = (name: string) =>
+  /_firmware_(\d+\.\d+\.\d+[^.]*)\.bbf$/i.exec(name)?.[1];
+
+function compareVersions(a: string, b: string): number {
+  const parts = (v: string) =>
+    v
+      .replace(/\+.*$/, '')
+      .split(/[.-]/)
+      .map((p) => (/^\d+$/.test(p) ? Number(p) : p));
+  const [x, y] = [parts(a), parts(b)];
+  for (let i = 0; i < Math.max(x.length, y.length); i++) {
+    const [p, q] = [x[i], y[i]];
+    if (p === q) continue;
+    // A prerelease (`-rc1`) is older than its release.
+    if (p === undefined) return typeof q === 'string' ? 1 : -1;
+    if (q === undefined) return typeof p === 'string' ? -1 : 1;
+    if (typeof p === 'number' && typeof q === 'number') return p - q;
+    return String(p) < String(q) ? -1 : 1;
+  }
+  return 0;
+}
+
+const RELATION = ['older', 'same', 'newer'] as const;
+
+function firmwareMeta(printer: MockPrinter, name: string) {
+  const version = firmwareVersion(name) ?? '0.0.0';
+  const order = compareVersions(version, printer.firmware);
+  return {
+    version,
+    printer_type: 0,
+    printer_version: 0,
+    compatible: name.startsWith(`${firmwarePrefix(printer.model)}_firmware_`),
+    relation: RELATION[Math.sign(order) + 1] ?? 'same',
+  };
+}
+
+function toolInfo(printer: MockPrinter, i: number) {
+  const tool = printer.tools[i];
+  if (!tool) return null;
+  const loaded = tool.material !== '---';
+  return {
+    type: 'FFF_PRINT_HEAD',
+    features: { nozzle_diameter: 0.4, nozzle_hardened: false },
+    ...(loaded && {
+      material_package_instance: {
+        class: 'FFF',
+        package: {
+          class: 'FFF',
+          material: {
+            class: 'FFF',
+            abbreviation: tool.material,
+            ...(tool.color && { primary_color: { color_rgba: tool.color } }),
+          },
+        },
+      },
+    }),
+  };
+}
 export function handleApi(
   printer: MockPrinter,
   req: MockRequest,
@@ -56,12 +158,35 @@ export function handleApi(
       nozzle_diameter: 0.4,
       mmu: printer.mmu,
       min_extrusion_temp: 170,
+      ...(printer.apiV2 && {
+        tool_count: printer.toolCount,
+        tools: Object.fromEntries(
+          printer.tools.map((_, i) => [String(i), toolInfo(printer, i)]),
+        ),
+        ...(printer.enclosure && {
+          enclosure: { enabled: true, printing_filtration: true },
+        }),
+        features: [
+          ...FEATURES,
+          ...(printer.chamber ? ['chamber' as const] : []),
+        ],
+      }),
     };
-    return json(body);
+    return cached(req, body);
   }
+
+  // Firmware before API v2 compares the whole URL: a query is a 404.
+  if (
+    method === 'GET' &&
+    path === '/api/v1/status' &&
+    req.query?.includes('expanded=true') &&
+    !printer.apiV2
+  )
+    return empty(404);
 
   if (method === 'GET' && path === '/api/v1/status') {
     const tool = printer.activeToolState;
+    const expanded = req.query?.includes('expanded=true') ?? false;
     const body: Ok<'/api/v1/status', 'get'> = {
       storage: { path: '/usb/', name: 'usb', read_only: false },
       printer: {
@@ -76,11 +201,45 @@ export function handleApi(
         flow: printer.flow,
         speed: printer.speed,
         fan_hotend: 0,
-        fan_print: 0,
+        fan_print: printer.fanPrint,
         ...(printer.state === 'ATTENTION' &&
           printer.question && {
             status_printer: { ok: false, message: printer.question },
           }),
+        ...(expanded && {
+          tools: Object.fromEntries(
+            printer.tools.map((t, i) => [
+              String(i),
+              {
+                type: 'FFF_PRINT_HEAD',
+                active: !printer.parked && i === printer.activeTool,
+                nozzle_temp: t.temp,
+                nozzle_target_temp: t.target || null,
+                heatbreak_fan_rpm: t.temp > 50 ? 5200 : 0,
+                print_fan_rpm: 0,
+              },
+            ]),
+          ),
+          ...(printer.chamber && {
+            chamber: {
+              temp: printer.chamber.temp,
+              target_temp: printer.chamber.target || null,
+              fan_1_rpm: 0,
+              fan_2_rpm: 0,
+              fan_pwm_target: 0,
+              led_intensity: 100,
+            },
+          }),
+          ...(printer.enclosure && {
+            enclosure: {
+              temp: printer.enclosure.temp,
+              fan_rpm: 0,
+              time_in_use: 12345,
+            },
+          }),
+          ...(printer.dialog && { dialog_id: printer.dialog.id }),
+          cancel_object_revision: printer.objectsRevision,
+        }),
       },
       ...(printer.job && {
         job: {
@@ -176,6 +335,25 @@ export function handleApi(
     }
   }
 
+  const v2 = printer.apiV2 ? handleV2(printer, req) : undefined;
+  if (v2) return v2;
+
+  if (method === 'GET' && path.startsWith('/usb/')) {
+    const f = printer.file(decodeURIComponent(path.slice(5)));
+    if (!f || !printer.usb) return empty(404);
+    return {
+      status: 200,
+      body:
+        printer.bytes(f) ??
+        f.gcode ??
+        `; ${f.display_name}\n; mock printer, no G-code\n`,
+      headers: {
+        'content-type': 'application/octet-stream',
+        'content-disposition': `attachment; filename="${f.display_name}"`,
+      },
+    };
+  }
+
   const thumb = /^\/thumb\/([sl])\/usb\/(.+)$/.exec(path);
   if (method === 'GET' && thumb) {
     const f = printer.file(decodeURIComponent(thumb[2] ?? ''));
@@ -207,6 +385,7 @@ export function handleApi(
       printer.folders.includes(dir)
     ) {
       const { files, folders } = printer.list(dir);
+      const firmware = printer.apiV2 && !dir ? printer.firmwareUploads : [];
       return json({
         type: 'FOLDER',
         name: dir ? (dir.split('/').pop() ?? dir) : 'usb',
@@ -227,6 +406,15 @@ export function handleApi(
             m_timestamp: f.m_timestamp,
             refs: fileRefs(filePath(f)),
           })),
+          ...firmware.map((display_name, i) => ({
+            type: 'FIRMWARE',
+            name: firmwareShortName(i),
+            display_name,
+            ro: false,
+            size: 2_500_000,
+            m_timestamp: 1_760_000_000,
+            refs: { download: `/usb/${firmwareShortName(i)}` },
+          })),
         ],
       });
     }
@@ -243,7 +431,10 @@ export function handleApi(
       if (name.toLowerCase().endsWith('.bbf')) {
         if (slash >= 0 || req.headers['print-after-upload'] === '?1')
           return empty(422);
-        printer.firmwareUploads.push(name);
+        printer.firmwareUploads = [
+          ...printer.firmwareUploads.filter((n) => n !== name),
+          name,
+        ];
         return empty(201);
       }
       if (!/\.(gcode|bgcode|gco|gc|g|bgc)$/i.test(name)) return empty(415);
@@ -257,6 +448,7 @@ export function handleApi(
         name,
         body?.length ?? 0,
         body && body.length < 1024 ? new TextDecoder().decode(body) : undefined,
+        body && body.length < UPLOAD_KEPT ? new Uint8Array(body) : undefined,
       );
       if (req.headers['print-after-upload'] === '?1')
         printer.startPrint(stored);
@@ -276,6 +468,221 @@ export function handleApi(
     body: '404: Not Found',
     headers: { 'content-type': 'text/plain' },
   };
+}
+
+/// Uploads up to this size keep their bytes, for downloads (cancel object
+/// reads the shapes from the job file).
+const UPLOAD_KEPT = 32 << 20;
+
+const firmwareShortName = (i: number) => `FIRMWA~${String(i + 1)}.BBF`;
+
+const firmwareByShortName = (printer: MockPrinter, name: string) =>
+  printer.firmwareUploads.find((_, i) => firmwareShortName(i) === name);
+
+/// The PrusaLink 2 endpoints (doc/prusalink-api-v2.md in Buddy).
+function handleV2(
+  printer: MockPrinter,
+  req: MockRequest,
+): MockResponse | undefined {
+  const { method, path } = req;
+  const idle = IDLE_STATES.includes(printer.state);
+  const conflict = (message: string) =>
+    json({ title: 'Conflict', text: message }, 409);
+
+  if (path === '/api/v1/dialog' && method === 'GET') {
+    const d = printer.dialog;
+    if (!d) return empty(204);
+    return cached(
+      req,
+      {
+        dialog_id: d.id,
+        state: d.state,
+        ...(d.code && { code: d.code }),
+        title: d.title,
+        text: d.text,
+        buttons: d.buttons,
+      } satisfies Ok<'/api/v1/dialog', 'get'>,
+      `"${String(d.id)}"`,
+    );
+  }
+
+  const press = /^\/api\/v1\/dialog\/(\d+)$/.exec(path);
+  if (press && method === 'POST') {
+    const button = readJson(req)?.button;
+    if (typeof button !== 'string') return empty(400);
+    const result = printer.press(Number(press[1]), button);
+    return empty({ ok: 204, stale: 404, invalid: 400 }[result]);
+  }
+
+  const objects =
+    /^\/api\/v1\/job\/(\d+)\/objects(?:\/(\d+)\/(cancel|uncancel))?$/.exec(
+      path,
+    );
+  if (objects) {
+    const job = printer.job;
+    if (job?.id !== Number(objects[1])) return empty(404);
+    if (method === 'GET' && !objects[2]) {
+      const current = printer.currentObject;
+      return cached(
+        req,
+        {
+          ...(current !== undefined && { current }),
+          objects: job.objects.map((o, id) => ({
+            id,
+            canceled: o.canceled,
+            // Like the firmware: names of the first 16 objects only.
+            ...(id < 16 && { name: o.name }),
+          })),
+        } satisfies Ok<'/api/v1/job/{id}/objects', 'get'>,
+        `"${String(printer.objectsRevision)}"`,
+      );
+    }
+    if (method === 'PUT' && objects[2]) {
+      if (printer.state !== 'PRINTING' && printer.state !== 'PAUSED')
+        return conflict('Not printing');
+      return printer.setCanceled(Number(objects[2]), objects[3] === 'cancel')
+        ? empty(204)
+        : empty(404);
+    }
+  }
+
+  if (path === '/api/v1/printer' && method === 'PUT') {
+    const body = readJson(req);
+    if (!body) return empty(400);
+    const printing = printer.state === 'PRINTING' || printer.state === 'PAUSED';
+    const apply: (() => void)[] = [];
+    for (const [key, value] of Object.entries(body)) {
+      if (typeof value !== 'number') return empty(422);
+      const tool = /^tools\.(\d+)\.nozzle_target_temp$/.exec(key);
+      const t = tool ? printer.tools[Number(tool[1])] : undefined;
+      if (t) apply.push(() => (t.target = value));
+      else if (key === 'speed') apply.push(() => (printer.speed = value));
+      else if (key === 'flow') apply.push(() => (printer.flow = value));
+      else if (key === 'fan_print')
+        apply.push(() => (printer.fanPrint = value));
+      else if (key === 'target_bed')
+        apply.push(() => (printer.bed.target = value));
+      else if (key === 'chamber.target_temp' && printer.chamber) {
+        const chamber = printer.chamber;
+        apply.push(() => (chamber.target = value));
+      } else if (key === 'z_offset_delta') {
+        if (!printing) return conflict('Babysteps only while printing');
+        if (Math.abs(value) > 2) return empty(422);
+        apply.push(
+          () =>
+            (printer.zOffset =
+              Math.round((printer.zOffset + value) * 1000) / 1000),
+        );
+      } else return empty(422);
+    }
+    for (const f of apply) f();
+    return empty(204);
+  }
+
+  if (path === '/api/v1/printer/preheat' && method === 'POST') {
+    const body = readJson(req);
+    if (!body || !('filament' in body)) return empty(400);
+    if (!idle) return conflict('Printer is busy');
+    const { filament, tool } = body;
+    if (filament !== null && !FILAMENTS.some((f) => f.name === filament))
+      return empty(422);
+    printer.preheat(
+      typeof filament === 'string' ? filament : undefined,
+      typeof tool === 'number' ? tool : undefined,
+    );
+    return empty(204);
+  }
+
+  if (path === '/api/v1/filaments' && method === 'GET') {
+    return json({
+      filaments: FILAMENTS.map((f) => ({
+        name: f.name,
+        properties: {
+          min_print_temperature: f.nozzle,
+          max_print_temperature: f.nozzle,
+          preheat_temperature: f.preheat,
+          min_bed_temperature: f.bed,
+          max_bed_temperature: f.bed,
+          ...(f.chamber && { chamber_temperature: f.chamber }),
+        },
+      })),
+    } satisfies Ok<'/api/v1/filaments', 'get'>);
+  }
+
+  const toolFilament = /^\/api\/v1\/tools\/(\d+)\/filament$/.exec(path);
+  if (toolFilament && (method === 'POST' || method === 'PUT')) {
+    const tool = Number(toolFilament[1]);
+    const t = printer.tools[tool];
+    const body = readJson(req);
+    if (!t || !body) return empty(t ? 400 : 404);
+    const material = body.material as
+      { material_type?: unknown; primary_color?: unknown } | undefined;
+    const type = material?.material_type;
+    const color =
+      typeof material?.primary_color === 'string'
+        ? material.primary_color
+        : undefined;
+    const known =
+      typeof type === 'string' && FILAMENTS.some((f) => f.name === type);
+    if (method === 'PUT') {
+      if (!known || t.material === '---') return empty(422);
+      t.material = type;
+      t.color = color;
+      return empty(202);
+    }
+    const command = body.command;
+    if (command === 'unload') {
+      if (!idle) return conflict('Printer is busy');
+      printer.toolFilament(tool, '---');
+      return empty(202);
+    }
+    if (command !== 'load' && command !== 'change') return empty(400);
+    if (!known) return empty(422);
+    const printing = printer.state === 'PRINTING' || printer.state === 'PAUSED';
+    if (command === 'load' ? !idle : !printing && !idle)
+      return conflict('Printer is busy');
+    printer.toolFilament(tool, type, color);
+    return empty(202);
+  }
+
+  const fw = /^\/api\/v1\/files\/usb\/([^/]+\.bbf)$/i.exec(path);
+  const fwName =
+    fw && firmwareByShortName(printer, decodeURIComponent(fw[1] ?? ''));
+  if (fw && fwName) {
+    const meta = firmwareMeta(printer, fwName);
+    if (method === 'GET')
+      return json({
+        type: 'FIRMWARE',
+        name: decodeURIComponent(fw[1] ?? ''),
+        display_name: fwName,
+        read_only: false,
+        m_timestamp: 1_760_000_000,
+        size: 2_500_000,
+        meta,
+      });
+    if (method === 'POST') {
+      if (!idle) return conflict('Printer is busy');
+      if (!meta.compatible) return empty(422);
+      if (meta.relation !== 'newer')
+        return json(
+          {
+            reason: 'not_newer',
+            installed: `${printer.firmware}+mock`,
+            file: meta.version,
+          },
+          409,
+        );
+      printer.flash(meta.version);
+      return empty(202);
+    }
+    if (method === 'DELETE') {
+      printer.firmwareUploads = printer.firmwareUploads.filter(
+        (n) => n !== fwName,
+      );
+      return empty(204);
+    }
+  }
+  return undefined;
 }
 
 function fileRefs(name: string) {

@@ -19,6 +19,7 @@
   const FILES: Record<string, string> = {
     MK4S: mk4s,
     XL: xl,
+    XL_2: xl,
     XL_SINGLE: xl,
     COREONE: coreone,
     COREONE_INDX: coreoneIndx,

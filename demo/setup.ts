@@ -1,11 +1,22 @@
 import { mountDrawer } from '../dev/mount-drawer.ts';
 import { MockPrinter } from '../mock/printer.ts';
 import { installMockTransport } from './transport.ts';
+import shapesBgcode from '../mock/fixtures/three-shapes.bgcode?url';
+import shapesGcode from '../mock/fixtures/three-shapes.gcode?url';
 
 // Runs before the app (demo/main.ts imports it first): the page's printer is
 // the mock, answered in the browser, and the visitor is signed in.
 const printer = new MockPrinter();
 installMockTransport(printer);
+// The seeded plate with shapes, for cancelling objects; fetched before the
+// transport answers /usb with it.
+for (const [name, url] of [
+  ['three-shapes.bgcode', shapesBgcode],
+  ['three-shapes.gcode', shapesGcode],
+] as const)
+  void fetch(url)
+    .then((r) => r.arrayBuffer())
+    .then((b) => (MockPrinter.fixtures[name] = new Uint8Array(b)));
 setInterval(() => {
   printer.tick();
 }, 1000);

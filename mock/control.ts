@@ -1,12 +1,46 @@
 import {
+  type MockDialog,
   type MockPrinter,
   PRINTER_CODE,
   type PrinterModel,
   type PrinterState,
 } from './printer.ts';
 
+import { seedFirmware } from './seed.ts';
+
 // What the dev panel does to the mock printer, shared by the dev server
 // (mock/vite-plugin.ts) and the in-browser demo (demo/), so no Node here.
+
+/// Dialogs the dev panel can put on the printer's screen.
+export const DIALOGS = {
+  runout: {
+    state: 'ATTENTION',
+    code: '12301',
+    title: 'FILAMENT RUNOUT',
+    text: 'The filament sensor detected the end of the filament.',
+    buttons: ['Continue', 'Unload'],
+  },
+  heaters: {
+    state: 'ATTENTION',
+    code: '17520',
+    title: 'HEATING DISABLED',
+    text: 'Heating was disabled after 30 minutes without activity.',
+    buttons: ['Continue'],
+  },
+  thermal: {
+    state: 'ERROR',
+    code: '17201',
+    title: 'THERMAL RUNAWAY',
+    text: 'Check the heatbed heater and thermistor wiring for possible damage.',
+    buttons: [],
+  },
+  bsod: {
+    state: 'ERROR',
+    title: 'BSOD',
+    text: 'HardFault at 0x08012345',
+    buttons: [],
+  },
+} as const satisfies Record<string, Omit<MockDialog, 'id'>>;
 
 export interface MockPatch {
   /// Back to the seeded state of the current model.
@@ -32,6 +66,16 @@ export interface MockPatch {
   filament?: 'removed' | 'inserted' | 'cancel';
   /// Seconds the printer takes to pause, resume or stop.
   transitionSeconds?: number;
+  /// Today's firmware (false) or PrusaLink 2's API.
+  apiV2?: boolean;
+  chamber?: boolean;
+  enclosure?: boolean;
+  /// Puts a dialog on the printer's screen; null takes it away.
+  dialog?: keyof typeof DIALOGS | null;
+  /// A button pressed on the printer's own screen.
+  press?: string;
+  /// Puts release files for this and another printer in the USB root.
+  firmwareFiles?: boolean;
 }
 
 export function applyPatch(printer: MockPrinter, patch: MockPatch) {
@@ -50,8 +94,28 @@ export function applyPatch(printer: MockPrinter, patch: MockPatch) {
   if (patch.parked !== undefined) printer.parked = patch.parked;
   if (patch.mmu !== undefined) printer.mmu = patch.mmu && printer.takesMmu;
   if (patch.bed) Object.assign(printer.bed, patch.bed);
-  if (patch.question !== undefined)
+  if (patch.question !== undefined) {
     printer.question = patch.question ?? undefined;
+    if (patch.question === null) printer.dialog = undefined;
+  }
+  if (patch.apiV2 !== undefined) printer.apiV2 = patch.apiV2;
+  if (patch.chamber !== undefined)
+    printer.chamber = patch.chamber ? { temp: 24, target: 0 } : undefined;
+  if (patch.enclosure !== undefined)
+    printer.enclosure = patch.enclosure ? { temp: 26 } : undefined;
+  if (patch.dialog === null) {
+    printer.dialog = undefined;
+    printer.state = printer.job ? 'PRINTING' : 'IDLE';
+  } else if (patch.dialog) {
+    printer.showDialog({
+      ...DIALOGS[patch.dialog],
+      buttons: [...DIALOGS[patch.dialog].buttons],
+    });
+  }
+  if (patch.firmwareFiles)
+    printer.firmwareUploads = seedFirmware(printer.model);
+  if (patch.press && printer.dialog)
+    printer.press(printer.dialog.id, patch.press);
   if (patch.offline !== undefined) printer.offline = patch.offline;
   if (patch.filament) printer.answer(patch.filament);
   if (patch.transitionSeconds !== undefined)
@@ -77,5 +141,18 @@ export function snapshot(printer: MockPrinter) {
     job: printer.job,
     question: printer.question,
     filamentStep: printer.filamentStep,
+    apiV2: printer.apiV2,
+    chamber: printer.chamber,
+    enclosure: printer.enclosure,
+    dialog: printer.dialog,
+    objects: printer.job?.objects.map((o) => ({
+      name: o.name,
+      canceled: o.canceled,
+    })),
+    currentObject: printer.currentObject,
+    zOffset: printer.zOffset,
+    speed: printer.speed,
+    flow: printer.flow,
+    axis: printer.axis,
   };
 }

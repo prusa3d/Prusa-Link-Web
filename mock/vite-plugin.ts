@@ -1,3 +1,4 @@
+import { readdirSync, readFileSync } from 'node:fs';
 import type { IncomingMessage, ServerResponse } from 'node:http';
 import type { Connect, Plugin, ProxyOptions } from 'vite';
 
@@ -16,6 +17,7 @@ const API_PREFIXES = ['/api', '/thumb', '/usb'];
 /// it from a MockPrinter that the dev panel (/dev/panel.html) drives through
 /// /__mock/state.
 export function devPrinter(options: DevPrinterOptions = {}): Plugin {
+  loadFixtures();
   const printer = new MockPrinter();
 
   return {
@@ -95,15 +97,25 @@ const serveMockState: Handler = async (printer, req, res) => {
   send(res, 200, snapshot(printer));
 };
 
+/// The files the seeded stick serves for download (mock/fixtures).
+export function loadFixtures() {
+  const dir = new URL('./fixtures/', import.meta.url);
+  for (const name of readdirSync(dir))
+    MockPrinter.fixtures[name] = new Uint8Array(
+      readFileSync(new URL(name, dir)),
+    );
+}
+
 const serveApi: Handler = async (printer, req, res, next) => {
-  const path = (req.url ?? '').split('?')[0] ?? '';
-  if (!path.startsWith('/api/') && !path.startsWith('/thumb/')) {
+  const [path = '', query] = (req.url ?? '').split('?');
+  if (!/^\/(api|thumb|usb)\//.test(path)) {
     next();
     return;
   }
   const out = handleApi(printer, {
     method: req.method ?? 'GET',
     path,
+    ...(query !== undefined && { query }),
     headers: req.headers,
     body: await readBody(req),
   });
@@ -131,6 +143,8 @@ function send(
 ) {
   if (body === undefined) {
     res.writeHead(status, headers).end();
+  } else if (body instanceof Uint8Array) {
+    res.writeHead(status, headers).end(body);
   } else if (typeof body === 'string') {
     res
       .writeHead(status, { 'content-type': 'text/plain', ...headers })
