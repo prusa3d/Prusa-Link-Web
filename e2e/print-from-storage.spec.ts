@@ -239,17 +239,27 @@ test('a finished print settles to ready and offers printing again', async ({
   await expect(page.getByRole('heading', { name: 'Printer' })).toBeVisible();
 });
 
-test('temperatures follow the region, switch and stay switched', async ({
-  page,
-}) => {
-  await page.goto(`/#key=${await mockKey(page)}`);
-  const reading = page.getByTestId('heater-reading').first();
-  // Playwright's browser says en-US: Fahrenheit until switched.
-  await expect(reading).toHaveText(/°F/);
-  await page.getByRole('button', { name: /^Temperature in °F/ }).click();
-  await expect(reading).toHaveText(/°C/);
-  await page.reload();
-  await expect(reading).toHaveText(/°C/);
+test.describe('in the United States', () => {
+  test.use({ locale: 'en-US', timezoneId: 'America/New_York' });
+
+  test('temperatures are in °F, switch and stay switched', async ({ page }) => {
+    await page.goto(`/#key=${await mockKey(page)}`);
+    const reading = page.getByTestId('heater-reading').first();
+    await expect(reading).toHaveText(/°F/);
+    await page.getByRole('button', { name: /^Temperature in °F/ }).click();
+    await expect(reading).toHaveText(/°C/);
+    await page.reload();
+    await expect(reading).toHaveText(/°C/);
+  });
+});
+
+test.describe('a US English browser in Europe', () => {
+  test.use({ locale: 'en-US', timezoneId: 'Europe/Prague' });
+
+  test('temperatures are in °C', async ({ page }) => {
+    await page.goto(`/#key=${await mockKey(page)}`);
+    await expect(page.getByTestId('heater-reading').first()).toHaveText(/°C/);
+  });
 });
 
 test('print buttons are off while the printer is busy', async ({

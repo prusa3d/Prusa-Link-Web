@@ -1,6 +1,7 @@
-/// Celsius or Fahrenheit. The browser's region picks it on a first visit
-/// (Fahrenheit where people use it: the United States and a few others);
-/// the header toggle changes it and localStorage keeps the choice.
+/// Celsius or Fahrenheit. On a first visit the browser picks it: Fahrenheit
+/// where people use it (the United States and a few others), judged by the
+/// language's region and the clock's time zone together; the header toggle
+/// changes it and localStorage keeps the choice.
 
 export type TemperatureUnit = 'C' | 'F';
 
@@ -9,11 +10,21 @@ export const UNIT_KEY = 'prusalink.temperature';
 /// Regions that measure temperature in Fahrenheit.
 const FAHRENHEIT = new Set(['US', 'LR', 'BS', 'BZ', 'KY', 'PW', 'FM', 'MH']);
 
-export function regionUnit(languages: readonly string[]): TemperatureUnit {
+/// Browsers default to "en-US" in many countries, so the language alone says
+/// little: a US English browser in Prague still means Celsius. Fahrenheit
+/// also needs a time zone where those regions are.
+const FAHRENHEIT_ZONE = /^(America|Pacific|Africa\/Monrovia|US)\b/;
+
+export function regionUnit(
+  languages: readonly string[],
+  timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone,
+): TemperatureUnit {
   const region = languages
     .map((tag) => /-([A-Z]{2})\b/i.exec(tag)?.[1]?.toUpperCase())
     .find(Boolean);
-  return region && FAHRENHEIT.has(region) ? 'F' : 'C';
+  return region && FAHRENHEIT.has(region) && FAHRENHEIT_ZONE.test(timeZone)
+    ? 'F'
+    : 'C';
 }
 
 function stored(): TemperatureUnit | undefined {
