@@ -281,8 +281,9 @@
     {t('files.storage')}
   </h2>
   {@render children?.()}
-  {#if files.path}
-    <div class="mt-2 flex min-h-11 items-center gap-1">
+  <!-- Always there, also at the root, so entering a folder moves nothing. -->
+  <div class="flex min-h-11 items-center gap-1">
+    {#if files.path}
       <Button
         variant="ghost"
         class="size-11 px-0 md:size-9"
@@ -291,37 +292,39 @@
       >
         <Icon node={ChevronLeft} />
       </Button>
-      <!-- Deep paths keep the root, the parent and the current folder: the
+    {:else}
+      <span class="size-11 shrink-0 md:size-9" aria-hidden="true"></span>
+    {/if}
+    <!-- Deep paths keep the root, the parent and the current folder: the
            rest collapses into "…", which names them all on hover. Earlier
            folders are links back. Long names wrap instead of hiding the end. -->
-      <nav
-        bind:this={heading}
-        tabindex="-1"
-        aria-label={t('files.path')}
-        class="flex min-w-0 flex-wrap items-center gap-x-1 rounded-sm font-semibold break-all outline-none focus-visible:ring-2 focus-visible:ring-ring"
-        data-testid="files-path"
-      >
-        {#each shown as crumb, i (crumb.depth)}
-          {#if i > 0}<span class="text-muted-foreground" aria-hidden="true"
-              >/</span
-            >{/if}
-          {#if crumb.depth < 0}
-            <span class="text-muted-foreground" title={hidden}>…</span>
-          {:else if crumb.depth === files.crumbs.length}
-            <span aria-current="location">{crumb.label}</span>
-          {:else}
-            <Button
-              variant="ghost"
-              class="h-auto px-0.5! text-base! font-semibold! break-all whitespace-normal text-link! hover:bg-transparent hover:underline max-sm:min-h-11"
-              onclick={() => void go(() => files.goTo(crumb.depth))}
-            >
-              {crumb.label}
-            </Button>
-          {/if}
-        {/each}
-      </nav>
-    </div>
-  {/if}
+    <nav
+      bind:this={heading}
+      tabindex="-1"
+      aria-label={t('files.path')}
+      class="flex min-w-0 flex-wrap items-center gap-x-1 rounded-sm font-semibold break-all outline-none focus-visible:ring-2 focus-visible:ring-ring"
+      data-testid="files-path"
+    >
+      {#each shown as crumb, i (crumb.depth)}
+        {#if i > 0}<span class="text-muted-foreground" aria-hidden="true"
+            >/</span
+          >{/if}
+        {#if crumb.depth < 0}
+          <span class="text-muted-foreground" title={hidden}>…</span>
+        {:else if crumb.depth === files.crumbs.length}
+          <span aria-current="location">{crumb.label}</span>
+        {:else}
+          <Button
+            variant="ghost"
+            class="h-auto px-0.5! text-base! font-semibold! break-all whitespace-normal text-link! hover:bg-transparent hover:underline max-sm:min-h-11"
+            onclick={() => void go(() => files.goTo(crumb.depth))}
+          >
+            {crumb.label}
+          </Button>
+        {/if}
+      {/each}
+    </nav>
+  </div>
 
   {#if files.folders.length + files.files.length > 8}
     <div class="relative">
