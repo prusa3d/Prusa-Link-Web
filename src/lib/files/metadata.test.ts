@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { parseSlicerTime, readMetadata } from './metadata';
+import { filamentGrams, parseSlicerTime, readMetadata } from './metadata';
 
 const PNG = Uint8Array.from([0x89, 0x50, 0x4e, 0x47, 1, 2, 3]);
 
@@ -75,5 +75,14 @@ describe('parseSlicerTime', () => {
   it('adds up the units', () => {
     expect(parseSlicerTime('1d 2h 3m 4s')).toBe(93_784);
     expect(parseSlicerTime('nothing')).toBeUndefined();
+  });
+});
+
+describe('filamentGrams', () => {
+  it('sums every extruder, and has none without the key or the grams', () => {
+    expect(filamentGrams('18.55, 0.00, 0.00, 0.00')).toBe(18.55);
+    expect(filamentGrams('6.20, 4.85, 3.10, 1.42')).toBeCloseTo(15.57);
+    expect(filamentGrams(undefined)).toBeUndefined();
+    expect(filamentGrams('0.00')).toBeUndefined();
   });
 });
