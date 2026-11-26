@@ -40,34 +40,35 @@
 </script>
 
 {#if picture}
-  <div
-    class="rounded-t-lg relative -mx-4 -mt-4 overflow-hidden dark:bg-white/90"
-  >
-    <img
-      src={picture.url}
-      alt={model?.name ?? ''}
-      class="block h-auto w-full"
-      data-testid="printer-image"
-    />
-    {#if picture.status && labels.length}
-      <svg
-        viewBox="0 0 500 500"
-        aria-hidden="true"
-        class="absolute inset-0 size-full text-(--color-orange-light-9)"
-        data-testid="printer-labels"
-      >
-        {#each labels as label (label.heater)}
-          {@const reading = readings[label.heater]}
-          {#if reading}
-            <HeaterLabel {label} style={picture.status.style} {reading} />
-          {/if}
-        {/each}
-      </svg>
-    {/if}
+  <!-- At most 356 px square, so on a phone it does not fill the screen. -->
+  <div class="rounded-t-lg -mx-4 -mt-4 overflow-hidden dark:bg-white/90">
+    <div class="relative mx-auto w-full max-w-89">
+      <img
+        src={picture.url}
+        alt={model?.name ?? ''}
+        class="block h-auto w-full"
+        data-testid="printer-image"
+      />
+      {#if picture.status && labels.length}
+        <svg
+          viewBox="0 0 500 500"
+          aria-hidden="true"
+          class="absolute inset-0 size-full text-(--color-orange-light-9)"
+          data-testid="printer-labels"
+        >
+          {#each labels as label (label.heater)}
+            {@const reading = readings[label.heater]}
+            {#if reading}
+              <HeaterLabel {label} style={picture.status.style} {reading} />
+            {/if}
+          {/each}
+        </svg>
+      {/if}
+    </div>
   </div>
 {:else}
   <div
-    class="rounded-t-lg -mx-4 -mt-4 flex aspect-square items-center justify-center bg-muted text-muted-foreground"
+    class="rounded-t-lg -mx-4 -mt-4 flex aspect-square max-h-89 items-center justify-center bg-muted text-muted-foreground"
   >
     <Icon node={Printer} class="size-12" />
   </div>
