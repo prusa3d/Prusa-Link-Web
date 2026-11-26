@@ -401,11 +401,11 @@ paths:
 
   /api/v1/filament/change-all:
     get:
-      summary: what to change so the loaded filaments match a print
+      summary: the printer's suggestion for the print on its preview's tools mapping screen
       parameters:
         - in: query
           name: for
-          description: The print file's path
+          description: Ignored by the firmware; the suggestion is for the previewed file
           schema:
             type: string
       responses:
@@ -1565,7 +1565,7 @@ components:
           description: What this firmware's API can do
           items:
             type: string
-            enum: [ cancel_object, chamber, dialogs, firmware_update, crash_dump, preheat, tune, filament, pairing, tool_mapping, change_all ]
+            enum: [ status_expanded, cancel_object, chamber, dialogs, firmware_update, crash_dump, preheat, tune, filament, pairing, tool_mapping, change_all, filament_change_all ]
         hw_checks:
           type: object
           description: The printer's severity of each check before a print (HWCheckSeverity); read-only
@@ -1665,9 +1665,11 @@ components:
               example: "OK"
         tools:
           type: object
-          description: Expanded only. By 0-based tool index as a string, "0.N" for MMU slots
+          description: Expanded only. By 0-based tool index as a string, "0.N" for MMU slots (type FFF_FEEDER_SLOT, active only); null for a disabled head
           additionalProperties:
-            $ref: "#/components/schemas/StatusTool"
+            allOf:
+              - $ref: "#/components/schemas/StatusTool"
+            nullable: true
         chamber:
           type: object
           description: Expanded only
@@ -1701,6 +1703,12 @@ components:
         cancel_object_revision:
           type: integer
           description: Expanded only. Changes when an object is cancelled or the list changes
+        info_revision:
+          type: integer
+          description: Expanded only. The /api/v1/info ETag; refetch /info when it changes
+        z_offset:
+          type: number
+          description: Expanded only. The probe Z offset in mm; 0 on printers with a loadcell, where babysteps are not accumulated
       required:
         - state
 
@@ -1710,15 +1718,17 @@ components:
 
     ChangeAllItems:
       type: object
-      description: By 1-based tool number
+      description: By 0-based Connect tool id of /api/v1/info ("0".."4", "0.N" for MMU slots)
       additionalProperties:
         type: object
         properties:
           action:
             type: string
             enum: [ keep, change, unload ]
-          material:
-            $ref: "#/components/schemas/Material"
+          filament:
+            type: string
+            description: A preset or user filament name
+            example: PLA
           color:
             type: string
             example: "#ff8000"

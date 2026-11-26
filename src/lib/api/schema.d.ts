@@ -840,11 +840,11 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** what to change so the loaded filaments match a print */
+        /** the printer's suggestion for the print on its preview's tools mapping screen */
         get: {
             parameters: {
                 query?: {
-                    /** @description The print file's path */
+                    /** @description Ignored by the firmware; the suggestion is for the previewed file */
                     for?: string;
                 };
                 header?: never;
@@ -2241,7 +2241,7 @@ export interface components {
                 printing_filtration?: boolean;
             };
             /** @description What this firmware's API can do */
-            features?: ("cancel_object" | "chamber" | "dialogs" | "firmware_update" | "crash_dump" | "preheat" | "tune" | "filament" | "pairing" | "tool_mapping" | "change_all")[];
+            features?: ("status_expanded" | "cancel_object" | "chamber" | "dialogs" | "firmware_update" | "crash_dump" | "preheat" | "tune" | "filament" | "pairing" | "tool_mapping" | "change_all" | "filament_change_all")[];
             /** @description The printer's severity of each check before a print (HWCheckSeverity); read-only */
             hw_checks?: {
                 nozzle?: components["schemas"]["CheckSeverity"];
@@ -2316,9 +2316,9 @@ export interface components {
                 /** @example OK */
                 message?: string;
             };
-            /** @description Expanded only. By 0-based tool index as a string, "0.N" for MMU slots */
+            /** @description Expanded only. By 0-based tool index as a string, "0.N" for MMU slots (type FFF_FEEDER_SLOT, active only); null for a disabled head */
             tools?: {
-                [key: string]: components["schemas"]["StatusTool"];
+                [key: string]: components["schemas"]["StatusTool"] | null;
             };
             /** @description Expanded only */
             chamber?: {
@@ -2339,15 +2339,23 @@ export interface components {
             dialog_id?: number;
             /** @description Expanded only. Changes when an object is cancelled or the list changes */
             cancel_object_revision?: number;
+            /** @description Expanded only. The /api/v1/info ETag; refetch /info when it changes */
+            info_revision?: number;
+            /** @description Expanded only. The probe Z offset in mm; 0 on printers with a loadcell, where babysteps are not accumulated */
+            z_offset?: number;
         };
         /** @enum {string} */
         CheckSeverity: "ignore" | "warning" | "abort";
-        /** @description By 1-based tool number */
+        /** @description By 0-based Connect tool id of /api/v1/info ("0".."4", "0.N" for MMU slots) */
         ChangeAllItems: {
             [key: string]: {
                 /** @enum {string} */
                 action: "keep" | "change" | "unload";
-                material?: components["schemas"]["Material"];
+                /**
+                 * @description A preset or user filament name
+                 * @example PLA
+                 */
+                filament?: string;
                 /** @example #ff8000 */
                 color?: string;
             };
