@@ -5,5 +5,5 @@ playwright-report/
 test-results/
 .vite/
 .video/
-share/
+/share/
 .DS_Store

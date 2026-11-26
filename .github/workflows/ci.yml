@@ -23,10 +23,13 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - run: pnpm exec playwright install --with-deps chromium
       - run: make ci
+      # The release zip of this commit, for testing an unreleased build in
+      # the firmware.
+      - run: make package
       - uses: actions/upload-artifact@v4
         with:
-          name: prusalink-index-html
-          path: dist/index.html
+          name: prusalink-web
+          path: share/prusalink-web-*.zip
 
   spec-drift:
     runs-on: ubuntu-latest
