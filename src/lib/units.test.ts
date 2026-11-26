@@ -4,12 +4,14 @@ import { regionUnit } from './units.svelte';
 
 describe('regionUnit', () => {
   it.each([
-    [['en-US'], 'F'],
-    [['en-GB', 'en-US'], 'C'],
-    [['cs-CZ'], 'C'],
-    [['en'], 'C'],
-    [[], 'C'],
-  ] as const)('%j → °%s', (languages, unit) => {
-    expect(regionUnit(languages)).toBe(unit);
+    [['en-US'], 'America/New_York', 'F'],
+    [['en-US'], 'Pacific/Honolulu', 'F'],
+    [['en-US'], 'Europe/Prague', 'C'],
+    [['en-GB', 'en-US'], 'America/New_York', 'C'],
+    [['cs-CZ'], 'America/New_York', 'C'],
+    [['en'], 'America/Chicago', 'C'],
+    [[], 'America/Chicago', 'C'],
+  ] as const)('%j in %s → °%s', (languages, zone, unit) => {
+    expect(regionUnit(languages, zone)).toBe(unit);
   });
 });
