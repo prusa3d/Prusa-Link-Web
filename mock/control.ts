@@ -76,6 +76,8 @@ export interface MockPatch {
   press?: string;
   /// Puts release files for this and another printer in the USB root.
   firmwareFiles?: boolean;
+  /// The printer's nozzle check (hw_checks in /info).
+  nozzleCheck?: 'ignore' | 'warning' | 'abort';
 }
 
 export function applyPatch(printer: MockPrinter, patch: MockPatch) {
@@ -112,6 +114,7 @@ export function applyPatch(printer: MockPrinter, patch: MockPatch) {
       buttons: [...DIALOGS[patch.dialog].buttons],
     });
   }
+  if (patch.nozzleCheck) printer.nozzleCheck = patch.nozzleCheck;
   if (patch.firmwareFiles)
     printer.firmwareUploads = seedFirmware(printer.model);
   if (patch.press && printer.dialog)
@@ -151,6 +154,8 @@ export function snapshot(printer: MockPrinter) {
     })),
     currentObject: printer.currentObject,
     zOffset: printer.zOffset,
+    nozzleCheck: printer.nozzleCheck,
+    mapping: printer.job?.mapping,
     speed: printer.speed,
     flow: printer.flow,
     axis: printer.axis,

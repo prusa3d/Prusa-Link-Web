@@ -5,6 +5,7 @@ import {
   PRINTER_CODE,
   type MockPrinter,
 } from './printer.ts';
+import { gcodeFilaments } from '../src/lib/printer/tool-mapping.ts';
 import { FILAMENTS, firmwarePrefix } from './seed.ts';
 import { mockThumbnail } from './thumbnail.ts';
 
@@ -113,7 +114,12 @@ function toolInfo(printer: MockPrinter, i: number) {
   const loaded = tool.material !== '---';
   return {
     type: 'FFF_PRINT_HEAD',
-    features: { nozzle_diameter: 0.4, nozzle_hardened: false },
+    features: {
+      nozzle_diameter: 0.4,
+      nozzle_hardened: false,
+      // The INDX ships with high-flow nozzles.
+      nozzle_high_flow: printer.model === 'COREONE_INDX',
+    },
     ...(loaded && {
       material_package_instance: {
         class: 'FFF',
@@ -169,7 +175,18 @@ export function handleApi(
         features: [
           ...FEATURES,
           ...(printer.chamber ? ['chamber' as const] : []),
+          ...(printer.toolCount > 1
+            ? (['tool_mapping', 'change_all'] as const)
+            : []),
         ],
+        hw_checks: {
+          nozzle: printer.nozzleCheck,
+          model: 'warning',
+          firmware: 'warning',
+          gcode_level: 'warning',
+          input_shaper: 'warning',
+          gcode_compatibility: 'warning',
+        },
       }),
     };
     return cached(req, body);
@@ -341,6 +358,7 @@ export function handleApi(
   if (method === 'GET' && path.startsWith('/usb/')) {
     const f = printer.file(decodeURIComponent(path.slice(5)));
     if (!f || !printer.usb) return empty(404);
+    printer.header(f);
     return {
       status: 200,
       body:
@@ -456,7 +474,17 @@ export function handleApi(
     }
     if (method === 'POST') {
       if (!printer.file(name)) return empty(404);
-      return printer.startPrint(name) ? empty(204) : empty(409);
+      const mapping = req.body?.length
+        ? (readJson(req)?.tool_mapping as Record<string, unknown> | undefined)
+        : undefined;
+      if (mapping !== undefined && !validMapping(printer, mapping))
+        return json({ title: 'Unprocessable', text: 'Bad tool mapping' }, 422);
+      return printer.startPrint(
+        name,
+        mapping as Record<string, number[]> | undefined,
+      )
+        ? empty(204)
+        : empty(409);
     }
     if (method === 'DELETE') {
       return printer.delete(name) ? empty(204) : empty(409);
@@ -468,6 +496,30 @@ export function handleApi(
     body: '404: Not Found',
     headers: { 'content-type': 'text/plain' },
   };
+}
+
+/// Like the firmware's handle_tool_mapping: each extruder (1-based) to one
+/// or more enabled tools, no tool twice.
+function validMapping(
+  printer: MockPrinter,
+  mapping: Record<string, unknown>,
+): boolean {
+  const used = new Set<number>();
+  for (const [from, to] of Object.entries(mapping)) {
+    if (!/^[1-9]\d*$/.test(from) || !Array.isArray(to) || !to.length)
+      return false;
+    for (const tool of to) {
+      if (
+        typeof tool !== 'number' ||
+        !printer.tools[tool - 1] ||
+        printer.tools[tool - 1]?.material === '---' ||
+        used.has(tool)
+      )
+        return false;
+      used.add(tool);
+    }
+  }
+  return true;
 }
 
 /// Uploads up to this size keep their bytes, for downloads (cancel object
@@ -607,6 +659,63 @@ function handleV2(
         },
       })),
     } satisfies Ok<'/api/v1/filaments', 'get'>);
+  }
+
+  if (path === '/api/v1/filament/change-all') {
+    if (method === 'GET') {
+      // The firmware's from_current_print_setup: every tool the file uses,
+      // 1:1, whose filament is not the file's.
+      const file = printer.file(
+        decodeURIComponent(
+          new URLSearchParams(req.query).get('for')?.replace(/^\/?usb\//, '') ??
+            '',
+        ),
+      );
+      const header = file && printer.header(file);
+      const items: Record<string, unknown> = {};
+      for (const f of gcodeFilaments(header)) {
+        const t = printer.tools[f.index - 1];
+        if (t && t.material !== f.material)
+          items[String(f.index)] = {
+            action: 'change',
+            material: { material_type: f.material },
+            ...(f.color && { color: f.color }),
+          };
+      }
+      return json({ items });
+    }
+    if (method === 'POST') {
+      if (!idle) return conflict('Printer is busy');
+      const items = readJson(req)?.items as
+        | Record<
+            string,
+            {
+              action?: string;
+              material?: { material_type?: string };
+              color?: string;
+            }
+          >
+        | undefined;
+      if (!items) return empty(400);
+      const changes = [];
+      for (const [tool, item] of Object.entries(items)) {
+        const index = Number(tool) - 1;
+        if (!printer.tools[index]) return empty(422);
+        if (item.action === 'unload')
+          changes.push({ tool: index, material: '---' });
+        else if (item.action === 'change') {
+          const type = item.material?.material_type;
+          if (!FILAMENTS.some((f) => f.name === type)) return empty(422);
+          changes.push({
+            tool: index,
+            material: type ?? '',
+            color: item.color,
+          });
+        }
+      }
+      printer.changeFilaments(changes);
+      return empty(202);
+    }
   }
 
   const toolFilament = /^\/api\/v1\/tools\/(\d+)\/filament$/.exec(path);

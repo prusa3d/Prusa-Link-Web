@@ -1,6 +1,11 @@
 import type { components } from '../src/lib/api/schema';
 import { parseFileName } from '../src/lib/files/name.ts';
-import { type PlateObject, readObjectsInfo } from '../src/lib/files/header.ts';
+import {
+  type Header,
+  type PlateObject,
+  readHeader,
+  readObjectsInfo,
+} from '../src/lib/files/header.ts';
 import { ambient, FILAMENTS, seedFiles, seedTools, shortName } from './seed.ts';
 
 type Schemas = components['schemas'];
@@ -76,6 +81,8 @@ export interface MockJob {
   time_remaining: number;
   /// From the file's objects_info, once read; empty without one.
   objects: MockObject[];
+  /// The tool mapping the print started with.
+  mapping?: Record<string, number[]> | undefined;
 }
 
 /// The `printer` field of /api/version (src/lib/printer/models.ts).
@@ -148,15 +155,23 @@ export class MockPrinter {
   /// Seconds until a printer flashing firmware answers again.
   #rebooting = 0;
   /// A filament command of API v2 the printer works on.
+  /// Filament commands of API v2 the printer works on: one tool, or several
+  /// at once (change all).
   #toolOp:
     | {
-        tool: number;
-        material: string;
-        color?: string | undefined;
+        changes: {
+          tool: number;
+          material: string;
+          color?: string | undefined;
+        }[];
         ticks: number;
         back: PrinterState;
       }
     | undefined;
+  /// The printer's own nozzle check (hw_checks in /info).
+  nozzleCheck: 'ignore' | 'warning' | 'abort' = 'warning';
+  /// File headers read so far, for change all.
+  #headers = new WeakMap<MockFile, Header | null>();
   /// A filament helper job (M701/M702) and the step it is at. Like the real
   /// printer it waits for a person: the dev panel's buttons take the filament
   /// out, put it in, or cancel.
@@ -261,10 +276,33 @@ export class MockPrinter {
 
   /// A filament load, change or unload by API v2; `material` '---' unloads.
   toolFilament(tool: number, material: string, color?: string) {
-    this.#toolOp = { tool, material, color, ticks: 4, back: this.state };
-    const t = this.tools[tool];
-    if (t) t.target = 230;
+    this.changeFilaments([{ tool, material, color }]);
+  }
+
+  /// The printer's change all: it heats every tool, then changes them.
+  changeFilaments(
+    changes: { tool: number; material: string; color?: string | undefined }[],
+  ) {
+    this.#toolOp = { changes, ticks: 3 + changes.length, back: this.state };
+    for (const c of changes) {
+      const t = this.tools[c.tool];
+      if (t) t.target = 230;
+    }
     if (IDLE_STATES.includes(this.state)) this.state = 'BUSY';
+  }
+
+  /// A file's header, read once from its bytes; undefined until read.
+  header(f: MockFile): Header | undefined {
+    const known = this.#headers.get(f);
+    if (known !== undefined) return known ?? undefined;
+    const bytes = this.bytes(f);
+    if (bytes) {
+      this.#headers.set(f, null);
+      void readHeader(new Blob([bytes.slice()]).stream()).then((h) =>
+        this.#headers.set(f, h ?? null),
+      );
+    }
+    return undefined;
   }
 
   /// Heats for a filament, or cools down with undefined.
@@ -348,7 +386,9 @@ export class MockPrinter {
     };
   }
 
-  startPrint(path: string): boolean {
+  /// Starts a print; with a tool mapping (extruder to tools, 1-based) the
+  /// printer skips its own mapping and filament check, as the firmware does.
+  startPrint(path: string, mapping?: Record<string, number[]>): boolean {
     const f = this.file(path);
     if (!f || this.state === 'PRINTING' || this.state === 'PAUSED') {
       return false;
@@ -360,6 +400,7 @@ export class MockPrinter {
       time_printing: 0,
       time_remaining: f.print_time,
       objects: [],
+      mapping,
     };
     this.zOffset = 0;
     this.objectsRevision++;
@@ -384,7 +425,7 @@ export class MockPrinter {
     // loaded one stops for a question on the printer's screen.
     const wanted = new Set(parseFileName(f.display_name).materials);
     const loaded = this.activeToolState.material.toUpperCase();
-    if (wanted.size === 1 && !wanted.has(loaded)) {
+    if (!mapping && wanted.size === 1 && !wanted.has(loaded)) {
       this.question = `Filament mismatch: the file is for ${[...wanted].join('')}, ${loaded} is loaded.`;
       this.showDialog({
         state: 'ATTENTION',
@@ -523,10 +564,11 @@ export class MockPrinter {
     this.#settle();
     const op = this.#toolOp;
     if (op && --op.ticks <= 0) {
-      const t = this.tools[op.tool];
-      if (t) {
-        t.material = op.material;
-        t.color = op.material === '---' ? undefined : op.color;
+      for (const c of op.changes) {
+        const t = this.tools[c.tool];
+        if (!t) continue;
+        t.material = c.material;
+        t.color = c.material === '---' ? undefined : c.color;
         t.target = 0;
       }
       this.#toolOp = undefined;

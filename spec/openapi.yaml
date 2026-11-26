@@ -399,6 +399,47 @@ paths:
         422:
           description: Field out of range or incompatible
 
+  /api/v1/filament/change-all:
+    get:
+      summary: what to change so the loaded filaments match a print
+      parameters:
+        - in: query
+          name: for
+          description: The print file's path
+          schema:
+            type: string
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  items:
+                    $ref: "#/components/schemas/ChangeAllItems"
+        401:
+          $ref: "#/components/responses/Unauthorized"
+    post:
+      summary: change the filament of several tools; the printer preheats them all, then changes one by one
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                items:
+                  $ref: "#/components/schemas/ChangeAllItems"
+      responses:
+        202:
+          description: Accepted
+        401:
+          $ref: "#/components/responses/Unauthorized"
+        409:
+          $ref: "#/components/responses/Conflict"
+        422:
+          description: Unknown tool or material
+
   /api/v1/storage:
     parameters:
       - in: header
@@ -555,10 +596,22 @@ paths:
           $ref: "#/components/responses/Conflict"
     post:
       summary: Start print of file if there's no print job running, or flash a newer firmware (.bbf)
-      description: Body is ignored. A .bbf in the USB root is flashed only when it is newer and compatible; the printer resets about 1 s after the 202.
+      description: A .bbf in the USB root is flashed only when it is newer and compatible; the printer resets about 1 s after the 202. A print takes an optional tool mapping (Connect's shape), and then starts without the printer's own mapping screen.
       requestBody:
         required: false
-        content: {}
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                tool_mapping:
+                  type: object
+                  description: G-code extruder (1-based) to printer tools (1-based); the first prints, the others are spool-join backups
+                  additionalProperties:
+                    type: array
+                    items:
+                      type: integer
+                  example: { "1": [3, 5], "2": [1] }
       responses:
         202:
           description: Firmware accepted, the printer flashes it
@@ -1512,7 +1565,23 @@ components:
           description: What this firmware's API can do
           items:
             type: string
-            enum: [ cancel_object, chamber, dialogs, firmware_update, crash_dump, preheat, tune, filament, pairing, expanded_status ]
+            enum: [ cancel_object, chamber, dialogs, firmware_update, crash_dump, preheat, tune, filament, pairing, tool_mapping, change_all ]
+        hw_checks:
+          type: object
+          description: The printer's severity of each check before a print (HWCheckSeverity); read-only
+          properties:
+            nozzle:
+              $ref: "#/components/schemas/CheckSeverity"
+            model:
+              $ref: "#/components/schemas/CheckSeverity"
+            firmware:
+              $ref: "#/components/schemas/CheckSeverity"
+            gcode_level:
+              $ref: "#/components/schemas/CheckSeverity"
+            input_shaper:
+              $ref: "#/components/schemas/CheckSeverity"
+            gcode_compatibility:
+              $ref: "#/components/schemas/CheckSeverity"
 
     StatusJob:
       type: object
@@ -1634,6 +1703,27 @@ components:
           description: Expanded only. Changes when an object is cancelled or the list changes
       required:
         - state
+
+    CheckSeverity:
+      type: string
+      enum: [ ignore, warning, abort ]
+
+    ChangeAllItems:
+      type: object
+      description: By 1-based tool number
+      additionalProperties:
+        type: object
+        properties:
+          action:
+            type: string
+            enum: [ keep, change, unload ]
+          material:
+            $ref: "#/components/schemas/Material"
+          color:
+            type: string
+            example: "#ff8000"
+        required:
+          - action
 
     StatusTool:
       type: object

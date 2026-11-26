@@ -59,6 +59,7 @@
     objects?: { name: string; canceled: boolean }[];
     currentObject?: number;
     zOffset: number;
+    nozzleCheck: 'ignore' | 'warning' | 'abort';
     speed: number;
     flow: number;
     axis: { x: number; y: number };
@@ -155,6 +156,21 @@
           class={[chip, snap.enclosure && on]}
           onclick={() => patch({ enclosure: !snap?.enclosure })}
           >Enclosure {snap.enclosure ? 'on' : 'off'}</button
+        >
+        <button
+          type="button"
+          class={chip}
+          title="The printer's nozzle check (hw_checks)"
+          onclick={() =>
+            patch({
+              nozzleCheck: (
+                {
+                  warning: 'abort',
+                  abort: 'ignore',
+                  ignore: 'warning',
+                } as const
+              )[snap?.nozzleCheck ?? 'warning'],
+            })}>Nozzle check {snap.nozzleCheck}</button
         >
         <button
           type="button"

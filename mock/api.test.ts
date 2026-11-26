@@ -408,4 +408,55 @@ describe('PrusaLink 2 API', () => {
     expect(printer.firmware).toBe('8.0.2');
     expect(get(printer, '/api/version').status).toBe(503);
   });
+
+  it('starts a print with a tool mapping the printer accepts', () => {
+    const printer = new MockPrinter('XL');
+    const file = printer.files[0]?.name ?? '';
+    const start = (tool_mapping: unknown) =>
+      send(printer, 'POST', `/api/v1/files/usb/${file}`, { tool_mapping });
+    expect(start({ '1': [1, 1] }).status).toBe(422);
+    expect(start({ '1': [9] }).status).toBe(422);
+    expect(start({ '1': [3, 5], '2': [1] }).status).toBe(204);
+    expect(printer.job?.mapping).toEqual({ '1': [3, 5], '2': [1] });
+  });
+
+  it('suggests and runs a change of every tool a print needs', async () => {
+    MockPrinter.fixtures['three-shapes.bgcode'] = new Uint8Array(
+      readFileSync(new URL('./fixtures/three-shapes.bgcode', import.meta.url)),
+    );
+    const printer = new MockPrinter('XL');
+    printer.tools[0] = {
+      ...printer.tools[0],
+      material: 'PETG',
+      temp: 20,
+      target: 0,
+    };
+    const shapes = printer.files.find(
+      (f) => f.fixture === 'three-shapes.bgcode',
+    );
+    if (!shapes) throw new Error('no fixture file');
+    printer.header(shapes);
+    await expect.poll(() => printer.header(shapes)).toBeDefined();
+    const query = `for=${encodeURIComponent(`/usb/${shapes.name}`)}`;
+    const res = send(
+      printer,
+      'GET',
+      '/api/v1/filament/change-all',
+      undefined,
+      query,
+    );
+    const items = (res.body as { items: Record<string, unknown> }).items;
+    expect(items).toEqual({
+      '1': {
+        action: 'change',
+        material: { material_type: 'PLA' },
+        color: '#F58231',
+      },
+    });
+    expect(
+      send(printer, 'POST', '/api/v1/filament/change-all', { items }).status,
+    ).toBe(202);
+    for (let i = 0; i < 6; i++) printer.tick();
+    expect(printer.tools[0].material).toBe('PLA');
+  });
 });

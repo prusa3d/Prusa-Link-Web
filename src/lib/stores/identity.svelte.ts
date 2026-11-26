@@ -2,6 +2,7 @@ import { api } from '../api/client';
 import { modelOf, printerTitle, type Model } from '../printer/models';
 import { rememberVariant } from '../printer/picture';
 import type { components } from '../api/schema';
+import type { PrinterTool, Severity } from '../printer/tool-mapping';
 
 /// A tool as /api/v1/info describes it (PrusaLink 2); undefined for a
 /// disabled one.
@@ -22,7 +23,32 @@ type FetchIdentity = () => Promise<{
   features?: string[] | undefined;
   tools?: (ToolInfo | undefined)[] | undefined;
   enclosure?: boolean | undefined;
+  slots?: PrinterTool[] | undefined;
+  nozzleCheck?: Severity | undefined;
 }>;
+
+/// What tool mapping maps to: the MMU's slots (`"0.N"`) where the printer
+/// reports them, else its tools; numbered from 1 as Connect's tool_mapping.
+export function mappingTargets(info: Info | undefined): PrinterTool[] {
+  const entries = Object.entries(info?.tools ?? {});
+  const slots = entries.filter(([k]) => /^\d+\.\d+$/.test(k));
+  return (slots.length ? slots : entries.filter(([k]) => /^\d+$/.test(k))).map(
+    ([key, tool]) => {
+      const material = tool?.material_package_instance?.package?.material;
+      const features = tool?.features;
+      const loaded = material?.abbreviation;
+      return {
+        index: Number(key.split('.').pop()) + 1,
+        material: loaded && loaded !== '---' ? loaded : undefined,
+        color: material?.primary_color?.color_rgba,
+        nozzle: features?.nozzle_diameter,
+        hardened: features?.nozzle_hardened,
+        highFlow: features?.nozzle_high_flow,
+        disabled: tool === null,
+      };
+    },
+  );
+}
 
 /// Tools by index from the `"0"`, `"1"`… keys; MMU slots (`"0.N"`) are left
 /// out.
@@ -58,6 +84,8 @@ const fetchIdentity: FetchIdentity = async () => {
     features: info.data?.features,
     tools: toolsOf(info.data),
     enclosure: info.data?.enclosure?.enabled,
+    slots: __TOOL_MAPPING__ ? mappingTargets(info.data) : [],
+    nozzleCheck: info.data?.hw_checks?.nozzle,
   };
 };
 
@@ -73,6 +101,8 @@ export class IdentityStore {
   #tools = $state<(ToolInfo | undefined)[]>([]);
   #enclosure = $state(false);
   #code = $state<string | undefined>();
+  #slots = $state<PrinterTool[]>([]);
+  #nozzleCheck = $state<Severity | undefined>();
   #fetch: FetchIdentity;
 
   constructor(fetch: FetchIdentity = fetchIdentity) {
@@ -118,6 +148,17 @@ export class IdentityStore {
     return this.#tools;
   }
 
+  /// The tools or MMU slots a print's extruders map to.
+  get slots(): readonly PrinterTool[] {
+    return this.#slots;
+  }
+
+  /// What the printer does with a file for another nozzle; firmware that
+  /// does not say warns.
+  get nozzleCheck(): Severity {
+    return this.#nozzleCheck ?? 'warning';
+  }
+
   /// The `printer` code of /api/version, e.g. `1.4.1`.
   get code() {
     return this.#code;
@@ -142,7 +183,11 @@ export class IdentityStore {
         features,
         tools,
         enclosure,
+        slots,
+        nozzleCheck,
       } = await this.#fetch();
+      this.#slots = slots ?? [];
+      this.#nozzleCheck = nozzleCheck;
       this.#mmu = mmu ?? false;
       this.#features = features;
       this.#tools = tools ?? [];
