@@ -23,6 +23,8 @@
   import { Button } from '../../lib/ui/button';
   import { EmptyState } from '../../lib/ui/empty-state';
   import { MaterialChip } from '../../lib/ui/material';
+  import { groupMaterials } from '../../lib/files/group-materials';
+  import { when } from '../../lib/files/when';
   import { Dialog } from '../../lib/ui/dialog';
   import { Input } from '../../lib/ui/input';
   import { listings, searchBelow, type Found } from './crawl';
@@ -184,13 +186,18 @@
             96,
           )
       : undefined);
+  // "7 minutes ago" moves on by itself.
+  let now = $state(Date.now());
+  $effect(() => {
+    const id = setInterval(() => (now = Date.now()), 30_000);
+    return () => {
+      clearInterval(id);
+    };
+  });
   const date = (s: number | undefined) =>
-    s === undefined
-      ? ''
-      : new Date(s * 1000).toLocaleDateString(language(), {
-          day: 'numeric',
-          month: 'short',
-        });
+    s === undefined ? '' : when(s, now, language());
+  const fullDate = (s: number | undefined) =>
+    s === undefined ? undefined : new Date(s * 1000).toLocaleString(language());
 </script>
 
 {#snippet row(
@@ -205,7 +212,7 @@
       <!-- The name opens the file's details, also while printing. -->
       <Button
         variant="ghost"
-        class="h-auto w-full min-w-0 shrink! justify-start p-0 text-start text-base font-medium whitespace-normal! text-foreground hover:bg-transparent hover:underline"
+        class="h-auto w-full min-w-0 shrink! justify-start p-0! text-start text-base font-medium whitespace-normal! text-foreground hover:bg-transparent hover:underline"
         onclick={() => onprint(file, dir, where)}
       >
         <span class="line-clamp-2 break-words">{info.name}</span>
@@ -213,7 +220,7 @@
       <p
         class="mt-1 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-muted-foreground"
       >
-        {#each info.materials as material, i (i)}
+        {#each groupMaterials(info.materials) as material (material)}
           <MaterialChip name={material} />
         {/each}
         {#if info.duration !== undefined}
@@ -223,7 +230,7 @@
             {formatDuration(info.duration)}
           </span>
         {/if}
-        <span>{date(file.m_timestamp)}</span>
+        <span title={fullDate(file.m_timestamp)}>{date(file.m_timestamp)}</span>
       </p>
       {#if where}
         <p
