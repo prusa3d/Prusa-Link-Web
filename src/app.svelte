@@ -304,6 +304,9 @@
         {canStart}
         {blocked}
         printing={printer.job ? printer.jobFile?.path : undefined}
+        printingNote={printer.status?.state
+          ? `${t(`status.state.${printer.status.state}` as MessageKey)} · ${String(Math.floor(printer.job?.progress ?? 0))} %`
+          : undefined}
         onprint={(entry: PrinterEntry, dir?: string, where?: string) =>
           (candidate = { ...fromList(entry), dir, where })}
       >
