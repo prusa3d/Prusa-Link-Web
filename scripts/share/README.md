@@ -5,11 +5,11 @@ with `index.html.gz` and `favicon.ico.gz` gzipped exactly as the firmware
 embeds them. `manifest.json` names the release, its commit, and the size and
 SHA-256 of every file.
 
-| Folder | Printer |
-|---|---|
-| `generic` | any printer (picture and favicon of none in particular) |
-| `mk4`, `mk35`, `coreone`, `coreonel`, `coreone_indx`, `coreonel_indx`, `xl`, `ix` | that printer |
-| `mini-<lang>` | MINI, one language each (its firmware ships per language) |
+| Folder                                                                            | Printer                                                   |
+| --------------------------------------------------------------------------------- | --------------------------------------------------------- |
+| `generic`                                                                         | any printer (picture and favicon of none in particular)   |
+| `mk4`, `mk35`, `coreone`, `coreonel`, `coreone_indx`, `coreonel_indx`, `xl`, `ix` | that printer                                              |
+| `mini-<lang>`                                                                     | MINI, one language each (its firmware ships per language) |
 
 ## Try it against your printer, without flashing
 

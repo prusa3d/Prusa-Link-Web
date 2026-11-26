@@ -12,6 +12,9 @@ export function firmwareGzip(data: Buffer): Buffer {
   const python = spawnSync('python3', ['-c', PYTHON_GZIP], {
     input: data,
     maxBuffer: 64 * 1024 * 1024,
+    // A stuck child once held a build for 20 minutes; Node's zlib then
+    // stands in.
+    timeout: 60_000,
   });
   return python.status === 0 && python.stdout.length > 0
     ? python.stdout
