@@ -833,6 +833,81 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/filament/change-all": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** what to change so the loaded filaments match a print */
+        get: {
+            parameters: {
+                query?: {
+                    /** @description The print file's path */
+                    for?: string;
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            items?: components["schemas"]["ChangeAllItems"];
+                        };
+                    };
+                };
+                401: components["responses"]["Unauthorized"];
+            };
+        };
+        put?: never;
+        /** change the filament of several tools; the printer preheats them all, then changes one by one */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": {
+                        items?: components["schemas"]["ChangeAllItems"];
+                    };
+                };
+            };
+            responses: {
+                /** @description Accepted */
+                202: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                401: components["responses"]["Unauthorized"];
+                409: components["responses"]["Conflict"];
+                /** @description Unknown tool or material */
+                422: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/storage": {
         parameters: {
             query?: never;
@@ -1069,7 +1144,7 @@ export interface paths {
         };
         /**
          * Start print of file if there's no print job running, or flash a newer firmware (.bbf)
-         * @description Body is ignored. A .bbf in the USB root is flashed only when it is newer and compatible; the printer resets about 1 s after the 202.
+         * @description A .bbf in the USB root is flashed only when it is newer and compatible; the printer resets about 1 s after the 202. A print takes an optional tool mapping (Connect's shape), and then starts without the printer's own mapping screen.
          */
         post: {
             parameters: {
@@ -1090,7 +1165,23 @@ export interface paths {
             };
             requestBody?: {
                 content: {
-                    "*/*"?: never;
+                    "application/json": {
+                        /**
+                         * @description G-code extruder (1-based) to printer tools (1-based); the first prints, the others are spool-join backups
+                         * @example {
+                         *       "1": [
+                         *         3,
+                         *         5
+                         *       ],
+                         *       "2": [
+                         *         1
+                         *       ]
+                         *     }
+                         */
+                        tool_mapping?: {
+                            [key: string]: number[];
+                        };
+                    };
                 };
             };
             responses: {
@@ -2150,7 +2241,16 @@ export interface components {
                 printing_filtration?: boolean;
             };
             /** @description What this firmware's API can do */
-            features?: ("cancel_object" | "chamber" | "dialogs" | "firmware_update" | "crash_dump" | "preheat" | "tune" | "filament" | "pairing" | "expanded_status")[];
+            features?: ("cancel_object" | "chamber" | "dialogs" | "firmware_update" | "crash_dump" | "preheat" | "tune" | "filament" | "pairing" | "tool_mapping" | "change_all")[];
+            /** @description The printer's severity of each check before a print (HWCheckSeverity); read-only */
+            hw_checks?: {
+                nozzle?: components["schemas"]["CheckSeverity"];
+                model?: components["schemas"]["CheckSeverity"];
+                firmware?: components["schemas"]["CheckSeverity"];
+                gcode_level?: components["schemas"]["CheckSeverity"];
+                input_shaper?: components["schemas"]["CheckSeverity"];
+                gcode_compatibility?: components["schemas"]["CheckSeverity"];
+            };
         };
         /** @description Telemetry info about current job, all values are optional */
         StatusJob: {
@@ -2239,6 +2339,18 @@ export interface components {
             dialog_id?: number;
             /** @description Expanded only. Changes when an object is cancelled or the list changes */
             cancel_object_revision?: number;
+        };
+        /** @enum {string} */
+        CheckSeverity: "ignore" | "warning" | "abort";
+        /** @description By 1-based tool number */
+        ChangeAllItems: {
+            [key: string]: {
+                /** @enum {string} */
+                action: "keep" | "change" | "unload";
+                material?: components["schemas"]["Material"];
+                /** @example #ff8000 */
+                color?: string;
+            };
         };
         StatusTool: {
             /** @example FFF_PRINT_HEAD */
