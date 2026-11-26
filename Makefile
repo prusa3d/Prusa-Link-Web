@@ -16,7 +16,7 @@ DEV_PORT ?= 5957
 
 .DEFAULT_GOAL := start
 .PHONY: start help node deps setup spec-sync spec-update spec-check dev dev-sim storybook \
-        check test e2e build fw-web fw-build sim ci all
+        check test e2e package serve build fw-web fw-build sim ci all
 
 start: ## Default: install what is missing, open the app on the mock printer
 	@DEV_PORT=$(DEV_PORT) PORT=$(DEV_PORT) MOCK_KEY=$(MOCK_KEY) scripts/start.sh
@@ -76,13 +76,9 @@ fw-build: fw-web ## Build PRINTER's debug noboot firmware with this web app
 	cd $(BUDDY) && .venv/bin/python utils/build.py --preset $(PRINTER) \
 		--build-type debug --bootloader no --skip-bootstrap
 
-package: ## Build every printer's page and zip it with serve.mjs for sharing
+package: ## Every printer's page, zipped for releases: share/prusalink-web-<version>.zip
 	$(PNPM) build
-	rm -rf share && mkdir -p share/prusalink2
-	cp -R dist/* share/prusalink2/
-	cp scripts/serve.mjs scripts/share/README.md share/prusalink2/
-	cd share && zip -qr prusalink2.zip prusalink2
-	@echo "share/prusalink2.zip"
+	node scripts/package.ts
 
 serve: ## Built page against a real printer: make serve PRINTER_URL=http://192.168.1.20 [VARIANT=xl]
 	node scripts/serve.mjs $(PRINTER_URL) $(or $(VARIANT),generic) $(or $(SERVE_PORT),5970)
