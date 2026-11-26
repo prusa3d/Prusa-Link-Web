@@ -48,7 +48,9 @@
 
 {#if picture}
   <!-- At most 356 px square, so on a phone it does not fill the screen. -->
-  <div class="rounded-t-lg -mx-4 -mt-4 overflow-hidden dark:bg-white/90">
+  <div
+    class="rounded-t-lg -mx-4 -mt-4 overflow-hidden max-md:rounded-none dark:bg-white/90"
+  >
     <div class="relative mx-auto w-full max-w-89">
       <img
         src={picture.url}
@@ -90,7 +92,7 @@
   </div>
 {:else}
   <div
-    class="rounded-t-lg -mx-4 -mt-4 flex aspect-square max-h-89 items-center justify-center bg-muted text-muted-foreground"
+    class="rounded-t-lg -mx-4 -mt-4 flex aspect-square max-h-89 items-center justify-center bg-muted text-muted-foreground max-md:rounded-none"
   >
     <Icon node={Printer} class="size-12" />
   </div>

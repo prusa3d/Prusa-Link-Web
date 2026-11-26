@@ -43,7 +43,7 @@
 
 <section
   aria-labelledby="objects-title"
-  class="rounded-lg flex flex-col gap-3 border bg-card p-4"
+  class="rounded-lg edge flex flex-col gap-3 border bg-card p-4"
   data-testid="objects"
 >
   <h2 id="objects-title" class="font-semibold">{t('objects.title')}</h2>

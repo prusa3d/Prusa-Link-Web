@@ -360,7 +360,7 @@
   {/if}
 
   {#if files.failed}
-    <div class="rounded-lg border bg-card">
+    <div class="rounded-lg edge border bg-card">
       {#if files.noUsb}
         <EmptyState
           icon={Usb}
@@ -390,7 +390,7 @@
     </div>
   {:else if files.loading}
     <ul
-      class="rounded-lg divide-y border bg-card"
+      class="rounded-lg edge divide-y border bg-card"
       aria-busy="true"
       aria-label={t('files.loading')}
     >
@@ -408,7 +408,7 @@
     </ul>
   {:else}
     <ul
-      class="rounded-lg divide-y border bg-card"
+      class="rounded-lg edge divide-y border bg-card"
       aria-label={t('files.label')}
     >
       {#each folders as folder (`${folder.name}|${label(folder)}`)}

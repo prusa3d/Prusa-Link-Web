@@ -36,7 +36,7 @@
   class={[
     'rounded-lg m-auto max-h-dvh w-full overflow-y-auto',
     size === 'lg' ? 'max-w-xl' : 'max-w-md',
-    'border bg-card p-0 text-card-foreground backdrop:bg-black/50 max-sm:mb-0 max-sm:max-w-full max-sm:rounded-b-none',
+    'border bg-card p-0 text-card-foreground backdrop:bg-black/50 max-sm:mb-0 max-sm:max-w-full max-sm:rounded-b-none max-sm:border-x-0',
   ]}
 >
   <div class="flex flex-col gap-4 p-5">
