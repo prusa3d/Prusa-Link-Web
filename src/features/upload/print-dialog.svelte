@@ -16,6 +16,7 @@
   import { identity } from '../../lib/stores/identity.svelte';
   import { thumbnailUrl } from '../../lib/api/thumbnail';
   import { formatDuration, parseFileName } from '../../lib/files/name';
+  import { filamentGrams } from '../../lib/files/metadata';
   import { language, t } from '../../lib/i18n.svelte';
   import { Alert } from '../../lib/ui/alert';
   import { Button } from '../../lib/ui/button';
@@ -165,6 +166,9 @@
     });
   });
   const extruders = $derived(mapsTools ? gcodeFilaments(header) : []);
+  const grams = $derived(
+    file?.meta?.grams ?? filamentGrams(header?.['filament used [g]']),
+  );
   // Suggested once per file: the printer's tools are read again every few
   // seconds, and the person's changes stay.
   $effect(() => {
@@ -227,6 +231,15 @@
         <span class="flex items-center gap-1">
           <Icon node={Clock} class="size-3.5" />{formatDuration(duration)}
         </span>
+      {/if}
+      {#if grams !== undefined}
+        <span data-testid="file-grams"
+          >{new Intl.NumberFormat(language(), {
+            style: 'unit',
+            unit: 'gram',
+            maximumFractionDigits: 1,
+          }).format(grams)}</span
+        >
       {/if}
       {#if sliced}
         <span>{t('upload.slicedFor', { printer: sliced })}</span>

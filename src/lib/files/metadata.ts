@@ -13,6 +13,19 @@ export interface FileMetadata {
   /// Seconds.
   duration?: number;
   printerModel?: string;
+  /// Filament of every extruder together.
+  grams?: number;
+}
+
+/// `18.55, 0.00, …` per extruder, summed; undefined without the key.
+export function filamentGrams(value: string | undefined): number | undefined {
+  if (!value) return undefined;
+  const sum = value
+    .split(/[,;]/)
+    .map(Number)
+    .filter((n) => Number.isFinite(n))
+    .reduce((a, b) => a + b, 0);
+  return sum > 0 ? sum : undefined;
 }
 
 const GCDE = 0x45444347;
@@ -70,6 +83,8 @@ function fromSettings(settings: Record<string, string>): FileMetadata {
   );
   if (duration !== undefined) meta.duration = duration;
   if (settings.printer_model) meta.printerModel = settings.printer_model;
+  const grams = filamentGrams(settings['filament used [g]']);
+  if (grams !== undefined) meta.grams = grams;
   return meta;
 }
 

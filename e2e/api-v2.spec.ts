@@ -348,3 +348,15 @@ test.describe('tool mapping', () => {
     );
   });
 });
+
+test('the print dialog says how much filament a file takes', async ({
+  page,
+  request,
+}) => {
+  await printer(request, { model: 'XL', reset: true });
+  await openApp(page);
+  await page.getByRole('button', { name: 'Print four colours' }).click();
+  await expect(page.getByRole('dialog').getByTestId('file-grams')).toHaveText(
+    '15.6 g',
+  );
+});
