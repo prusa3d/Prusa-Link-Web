@@ -221,5 +221,13 @@
   "status.chamber": "Chamber",
   "status.active": "In use",
   "dialog.help": "Help",
-  "dialog.refused": "The printer did not take the answer"
+  "dialog.refused": "The printer did not take the answer",
+  "objects.title": "Objects",
+  "objects.bed": "Objects on the bed",
+  "objects.cancel": "Cancel object",
+  "objects.cancelTitle": "Cancel {name}?",
+  "objects.cancelBody": "The printer skips it for the rest of the print. The other objects go on.",
+  "objects.canceled": "Cancelled",
+  "objects.printing": "Printing now",
+  "objects.refused": "The printer did not cancel the object"
 }

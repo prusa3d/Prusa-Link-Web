@@ -16,7 +16,16 @@ export default [
     ],
   },
   // Build-time constants (vite.config.ts `define`).
-  { languageOptions: { globals: { __MULTI_TOOL__: 'readonly' } } },
+  {
+    languageOptions: {
+      globals: {
+        __MULTI_TOOL__: 'readonly',
+        __CANCEL_OBJECT__: 'readonly',
+        __CONTROLS__: 'readonly',
+        __FIRMWARE_FLASH__: 'readonly',
+      },
+    },
+  },
   // prusa-connect bans fetch because its SDK owns the transport. Here the
   // transport is src/lib/api, so fetch is allowed there, and in the firmware
   // release check, which asks GitHub rather than the printer.

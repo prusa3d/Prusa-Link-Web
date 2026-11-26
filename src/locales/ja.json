@@ -221,5 +221,13 @@
   "status.chamber": "チャンバー",
   "status.active": "使用中",
   "dialog.help": "ヘルプ",
-  "dialog.refused": "プリンターが応答を受け付けませんでした"
+  "dialog.refused": "プリンターが応答を受け付けませんでした",
+  "objects.title": "オブジェクト",
+  "objects.bed": "ベッド上のオブジェクト",
+  "objects.cancel": "オブジェクトを中止",
+  "objects.cancelTitle": "{name}を中止しますか？",
+  "objects.cancelBody": "プリンターは残りの印刷でこのオブジェクトを飛ばします。他のオブジェクトは続行します。",
+  "objects.canceled": "中止済み",
+  "objects.printing": "印刷中",
+  "objects.refused": "プリンターはオブジェクトを中止しませんでした"
 }

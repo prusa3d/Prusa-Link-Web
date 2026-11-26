@@ -39,6 +39,9 @@ declare module 'virtual:locales' {
   export default locales;
 }
 
-/// The build can run on a printer with several tools (vite.config.ts). The
-/// builds of single-tool printers leave the per-tool views out.
+/// PrusaLink 2 features in this build (vite.config.ts): a build leaves out
+/// what its printer does not need or its budget has no room for.
 declare const __MULTI_TOOL__: boolean;
+declare const __CANCEL_OBJECT__: boolean;
+declare const __CONTROLS__: boolean;
+declare const __FIRMWARE_FLASH__: boolean;

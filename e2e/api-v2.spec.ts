@@ -1,3 +1,5 @@
+import { readFileSync } from 'node:fs';
+
 import { expect, test, type APIRequestContext } from '@playwright/test';
 
 import { freshPrinter, openApp, printer } from './support';
@@ -92,5 +94,83 @@ test.describe('dialogs', () => {
     const alert = page.getByTestId('printer-alert');
     await expect(alert).toContainText('THERMAL RUNAWAY');
     await expect(alert.getByRole('button')).toHaveCount(0);
+  });
+});
+
+test.describe('cancel object', () => {
+  test('the plate on the bed; an outline cancels its object after a yes', async ({
+    page,
+    request,
+  }) => {
+    await printer(request, {
+      model: 'COREONE_INDX',
+      reset: true,
+      timeScale: 1,
+    });
+    await openApp(page);
+    await printer(request, { startPrint: 'THREES~1.BGC' });
+    const bed = page.getByTestId('bed-view');
+    await expect(bed.locator('polygon')).toHaveCount(3);
+    await expect(page.getByTestId('nozzle')).toBeVisible();
+    await bed.getByRole('button', { name: 'Shape-Box' }).click();
+    await page
+      .getByRole('dialog', { name: 'Cancel Shape-Box?' })
+      .getByRole('button', { name: 'Cancel object' })
+      .click();
+    await expect(
+      bed.getByRole('button', { name: 'Shape-Box' }),
+    ).toHaveAttribute('data-state', 'canceled');
+    expect((await mock(request)).objects?.[2]?.canceled).toBe(true);
+  });
+
+  test('a plain G-code file has its outlines in the header', async ({
+    page,
+    request,
+  }) => {
+    await printer(request, {
+      model: 'COREONE_INDX',
+      reset: true,
+      timeScale: 1,
+    });
+    await openApp(page);
+    await printer(request, { startPrint: 'THREES~1.GCO' });
+    await expect(page.getByTestId('bed-view').locator('polygon')).toHaveCount(
+      3,
+    );
+  });
+
+  test('a file uploaded from this page is read here; nothing is downloaded back', async ({
+    page,
+    request,
+  }) => {
+    await printer(request, {
+      model: 'COREONE_INDX',
+      reset: true,
+      timeScale: 1,
+    });
+    await openApp(page);
+    const downloads: string[] = [];
+    page.on('request', (r) => {
+      if (new URL(r.url()).pathname.startsWith('/usb/'))
+        downloads.push(r.url());
+    });
+    await page
+      .getByTestId('file-input')
+      .first()
+      .setInputFiles({
+        name: 'my plate_0.4n_0.15mm_PLA_COREONEINDX4T_43m.bgcode',
+        mimeType: 'application/octet-stream',
+        buffer: readFileSync(
+          new URL('../mock/fixtures/three-shapes.bgcode', import.meta.url),
+        ),
+      });
+    await page
+      .getByRole('dialog')
+      .getByRole('button', { name: 'Print now' })
+      .click();
+    await expect(page.getByTestId('bed-view').locator('polygon')).toHaveCount(
+      3,
+    );
+    expect(downloads).toEqual([]);
   });
 });

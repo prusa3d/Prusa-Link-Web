@@ -221,5 +221,13 @@
   "status.chamber": "Cámara",
   "status.active": "En uso",
   "dialog.help": "Ayuda",
-  "dialog.refused": "La impresora no aceptó la respuesta"
+  "dialog.refused": "La impresora no aceptó la respuesta",
+  "objects.title": "Objetos",
+  "objects.bed": "Objetos en la base",
+  "objects.cancel": "Cancelar objeto",
+  "objects.cancelTitle": "¿Cancelar {name}?",
+  "objects.cancelBody": "La impresora lo omite el resto de la impresión. Los demás objetos siguen.",
+  "objects.canceled": "Cancelado",
+  "objects.printing": "Imprimiendo",
+  "objects.refused": "La impresora no canceló el objeto"
 }

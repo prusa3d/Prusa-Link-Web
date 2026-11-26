@@ -227,5 +227,13 @@
   "status.chamber": "Камера",
   "status.active": "Використовується",
   "dialog.help": "Довідка",
-  "dialog.refused": "Принтер не прийняв відповідь"
+  "dialog.refused": "Принтер не прийняв відповідь",
+  "objects.title": "Об’єкти",
+  "objects.bed": "Об’єкти на столі",
+  "objects.cancel": "Скасувати об’єкт",
+  "objects.cancelTitle": "Скасувати {name}?",
+  "objects.cancelBody": "Принтер пропустить його до кінця друку. Інші об’єкти друкуються далі.",
+  "objects.canceled": "Скасовано",
+  "objects.printing": "Друкується",
+  "objects.refused": "Принтер не скасував об’єкт"
 }

@@ -221,5 +221,13 @@
   "status.chamber": "Kammer",
   "status.active": "In Benutzung",
   "dialog.help": "Hilfe",
-  "dialog.refused": "Der Drucker hat die Antwort nicht angenommen"
+  "dialog.refused": "Der Drucker hat die Antwort nicht angenommen",
+  "objects.title": "Objekte",
+  "objects.bed": "Objekte auf dem Bett",
+  "objects.cancel": "Objekt abbrechen",
+  "objects.cancelTitle": "{name} abbrechen?",
+  "objects.cancelBody": "Der Drucker lässt es für den Rest des Drucks aus. Die anderen Objekte werden weitergedruckt.",
+  "objects.canceled": "Abgebrochen",
+  "objects.printing": "Wird gedruckt",
+  "objects.refused": "Der Drucker hat das Objekt nicht abgebrochen"
 }

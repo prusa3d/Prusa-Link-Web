@@ -221,5 +221,13 @@
   "status.chamber": "Chambre",
   "status.active": "En cours",
   "dialog.help": "Aide",
-  "dialog.refused": "L’imprimante n’a pas accepté la réponse"
+  "dialog.refused": "L’imprimante n’a pas accepté la réponse",
+  "objects.title": "Objets",
+  "objects.bed": "Objets sur le plateau",
+  "objects.cancel": "Annuler l’objet",
+  "objects.cancelTitle": "Annuler {name} ?",
+  "objects.cancelBody": "L’imprimante l’ignore pour le reste de l’impression. Les autres objets continuent.",
+  "objects.canceled": "Annulé",
+  "objects.printing": "En impression",
+  "objects.refused": "L’imprimante n’a pas annulé l’objet"
 }

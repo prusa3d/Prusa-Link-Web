@@ -224,5 +224,13 @@
   "status.chamber": "Komora",
   "status.active": "Používá se",
   "dialog.help": "Nápověda",
-  "dialog.refused": "Tiskárna odpověď nepřijala"
+  "dialog.refused": "Tiskárna odpověď nepřijala",
+  "objects.title": "Objekty",
+  "objects.bed": "Objekty na podložce",
+  "objects.cancel": "Zrušit objekt",
+  "objects.cancelTitle": "Zrušit {name}?",
+  "objects.cancelBody": "Tiskárna ho po zbytek tisku vynechá. Ostatní objekty se tisknou dál.",
+  "objects.canceled": "Zrušeno",
+  "objects.printing": "Právě se tiskne",
+  "objects.refused": "Tiskárna objekt nezrušila"
 }
