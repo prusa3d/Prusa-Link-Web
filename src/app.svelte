@@ -42,6 +42,9 @@
   import { heaterReadings } from './lib/printer/status-picture';
   import { toolRows } from './lib/printer/tools';
   import { dialog } from './lib/stores/dialog.svelte';
+  import BedView from './features/objects/bed-view.svelte';
+  import { plateObjects } from './features/objects/objects.svelte';
+  import { bedOf } from './lib/printer/bed';
   import { notices } from './lib/stores/notices.svelte';
   import { badgeTabIcon } from './features/printer/tab-icon';
   import { printer, type JobFile } from './lib/stores/printer.svelte';
@@ -135,6 +138,19 @@
   $effect(() => {
     void dialog.follow(printer.status?.dialog_id, printer.status?.state);
   });
+
+  $effect(() => {
+    if (!__CANCEL_OBJECT__) return;
+    void plateObjects.follow(
+      identity.can('cancel_object') ? printer.job?.id : undefined,
+      printer.status?.cancel_object_revision,
+      printer.jobFile,
+    );
+  });
+
+  async function cancelObject(id: number) {
+    if (!(await plateObjects.cancel(id))) notices.add(t('objects.refused'));
+  }
 
   async function pressDialog(button: string) {
     if (!(await dialog.press(button))) notices.add(t('dialog.refused'));
@@ -325,6 +341,16 @@
               <Notices />
             {/snippet}
           </StatusPanel>
+        {/if}
+        {#if __CANCEL_OBJECT__ && plateObjects.items.length && (printer.status?.state === 'PRINTING' || printer.status?.state === 'PAUSED')}
+          <BedView
+            items={plateObjects.items}
+            bed={bedOf(identity.code)}
+            x={printer.status.axis_x}
+            y={printer.status.axis_y}
+            cancelling={plateObjects.cancelling}
+            oncancel={(id: number) => void cancelObject(id)}
+          />
         {/if}
         <UploadPanel />
         {#if printer.last && !isHelper(printer.last.file.displayName) && !(printer.job && (printer.status?.state === 'PRINTING' || printer.status?.state === 'PAUSED'))}

@@ -221,5 +221,13 @@
   "status.chamber": "Camera",
   "status.active": "In uso",
   "dialog.help": "Aiuto",
-  "dialog.refused": "La stampante non ha accettato la risposta"
+  "dialog.refused": "La stampante non ha accettato la risposta",
+  "objects.title": "Oggetti",
+  "objects.bed": "Oggetti sul piano",
+  "objects.cancel": "Annulla oggetto",
+  "objects.cancelTitle": "Annullare {name}?",
+  "objects.cancelBody": "La stampante lo salta per il resto della stampa. Gli altri oggetti continuano.",
+  "objects.canceled": "Annullato",
+  "objects.printing": "In stampa",
+  "objects.refused": "La stampante non ha annullato l’oggetto"
 }

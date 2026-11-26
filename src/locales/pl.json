@@ -227,5 +227,13 @@
   "status.chamber": "Komora",
   "status.active": "W użyciu",
   "dialog.help": "Pomoc",
-  "dialog.refused": "Drukarka nie przyjęła odpowiedzi"
+  "dialog.refused": "Drukarka nie przyjęła odpowiedzi",
+  "objects.title": "Obiekty",
+  "objects.bed": "Obiekty na stole",
+  "objects.cancel": "Anuluj obiekt",
+  "objects.cancelTitle": "Anulować {name}?",
+  "objects.cancelBody": "Drukarka pominie go do końca wydruku. Pozostałe obiekty drukują się dalej.",
+  "objects.canceled": "Anulowano",
+  "objects.printing": "Drukowany",
+  "objects.refused": "Drukarka nie anulowała obiektu"
 }

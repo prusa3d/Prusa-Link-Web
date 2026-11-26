@@ -72,6 +72,7 @@ export class IdentityStore {
   #features = $state<readonly string[] | undefined>();
   #tools = $state<(ToolInfo | undefined)[]>([]);
   #enclosure = $state(false);
+  #code = $state<string | undefined>();
   #fetch: FetchIdentity;
 
   constructor(fetch: FetchIdentity = fetchIdentity) {
@@ -117,6 +118,11 @@ export class IdentityStore {
     return this.#tools;
   }
 
+  /// The `printer` code of /api/version, e.g. `1.4.1`.
+  get code() {
+    return this.#code;
+  }
+
   get enclosure() {
     return this.#enclosure;
   }
@@ -143,6 +149,7 @@ export class IdentityStore {
       this.#enclosure = enclosure ?? false;
       this.#firmware = firmware;
       this.#nozzle = nozzle;
+      this.#code = code;
       this.#model = modelOf(code);
       if (this.#model) rememberVariant(this.#model.variant);
       this.#hostname = hostname === '' ? undefined : hostname;

@@ -19,18 +19,49 @@ import { pictureEditor } from './dev/picture-editor/vite-plugin.ts';
 // the app, the mock printer and its panel, for a static host such as GitHub
 // Pages. Never embedded in firmware, so neither one file nor budgeted.
 const VARIANT = process.env.PRUSALINK_VARIANT;
-// Builds that may run on a printer with several tools; the others drop the
-// per-tool views, which the firmware budget has no room for.
-const MULTI_TOOL = ['generic', 'xl', 'ix', 'coreone_indx', 'coreonel_indx'];
+// PrusaLink 2 features each firmware build has room for (scripts/check-size.ts
+// budgets). The dev server, tests and the demo have all of them;
+// PRUSALINK_FEATURES (comma-separated) overrides the table, to measure.
+// multiTool: only printers with several tools need the per-tool views.
+const FEATURES = [
+  'multiTool',
+  'cancelObject',
+  'controls',
+  'firmwareFlash',
+] as const;
+type Feature = (typeof FEATURES)[number];
+const SINGLE: Feature[] = ['cancelObject', 'controls', 'firmwareFlash'];
+const MULTI: Feature[] = [...SINGLE, 'multiTool'];
+const BUILD_FEATURES: Record<string, readonly Feature[]> = {
+  generic: MULTI,
+  xl: MULTI,
+  ix: MULTI,
+  coreone_indx: MULTI,
+  coreonel_indx: MULTI,
+  mk35: SINGLE,
+  mk4: SINGLE,
+  coreone: SINGLE,
+  coreonel: SINGLE,
+  mini: SINGLE,
+};
+const buildFeatures = (variant: string | undefined): readonly string[] => {
+  const forced = process.env.PRUSALINK_FEATURES;
+  if (forced !== undefined) return forced.split(',');
+  if (!variant) return FEATURES;
+  return BUILD_FEATURES[variant.replace(/-\w+$/, '')] ?? FEATURES;
+};
 const VERSION = process.env.PRUSALINK_VERSION;
 
 export default defineConfig(({ command, mode }) => ({
   ...(mode === 'demo' && {
     base: process.env.DEMO_BASE ?? '/Prusa-Link-Web/',
   }),
-  define: {
-    __MULTI_TOOL__: JSON.stringify(!VARIANT || MULTI_TOOL.includes(VARIANT)),
-  },
+  define: Object.fromEntries(
+    FEATURES.map((f) => [
+      `__${f.replace(/[A-Z]/g, (c) => `_${c}`).toUpperCase()}__`,
+      JSON.stringify(buildFeatures(VARIANT).includes(f)),
+    ]),
+  ),
   plugins: [
     mode === 'demo' && demoPage(),
     VERSION !== undefined && version(VERSION),
