@@ -41,6 +41,29 @@
   }
 }
 
+/* What a phone's rounded corners, notch, home indicator or toolbar cover
+   (viewport-fit=cover): bottom sheets and the sticky footer keep their
+   last row above it, the page its sides clear of it in landscape. */
+@utility safe-bottom {
+  padding-bottom: max(var(--spacing) * 5, env(safe-area-inset-bottom));
+}
+@utility safe-inset {
+  padding-bottom: env(safe-area-inset-bottom);
+}
+body {
+  padding-inline: env(safe-area-inset-left) env(safe-area-inset-right);
+}
+
+/* iOS Safari zooms into a field under 16px on focus: none is on a phone.
+   Unlayered, so it outranks a field's own text size. */
+@media (width < 48rem) {
+  input,
+  select,
+  textarea {
+    font-size: max(1rem, 1em);
+  }
+}
+
 /* The app's one stylesheet, on prusa-connect's model (frontend-structure.md):
    Tailwind, the scan of this tree, the theme, and the base layer. */
 

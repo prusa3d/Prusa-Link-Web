@@ -44,7 +44,7 @@
     'border bg-card p-0 text-card-foreground backdrop:bg-black/50 max-sm:mb-0 max-sm:max-w-full max-sm:rounded-b-none max-sm:border-x-0',
   ]}
 >
-  <div class="flex flex-col gap-4 p-5">
+  <div class="flex flex-col gap-4 px-5 pt-5 safe-bottom">
     <div class="flex items-start gap-2">
       <h2
         id="{id}-title"
