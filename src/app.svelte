@@ -159,11 +159,26 @@
     };
   };
 
+  let printerColumn = $state<HTMLElement>();
+
+  /// The printer's card with the new job's progress; on a phone it is far
+  /// above the file the print started from.
+  function showPrinter() {
+    const still = globalThis.matchMedia(
+      '(prefers-reduced-motion: reduce)',
+    ).matches;
+    printerColumn?.scrollIntoView({
+      behavior: still ? 'instant' : 'smooth',
+      block: 'start',
+    });
+  }
+
   async function print(name: string) {
     const ok = await files.print(name, candidate?.dir ?? files.path);
     if (ok) {
       candidate = undefined;
       await printer.refresh();
+      showPrinter();
     }
     return ok;
   }
@@ -209,7 +224,10 @@
 {#if session.signedIn}
   <main class="mx-auto flex max-w-5xl flex-col gap-6 p-4 md:p-6">
     <div class="grid items-start gap-6 md:grid-cols-2">
-      <div class="flex flex-col gap-6 md:sticky md:top-6">
+      <div
+        bind:this={printerColumn}
+        class="flex scroll-mt-4 flex-col gap-6 md:sticky md:top-6 md:scroll-mt-6"
+      >
         {#if printer.offline && !printer.status}
           <div class="rounded-lg border bg-card">
             <EmptyState
