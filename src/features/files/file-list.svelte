@@ -17,7 +17,10 @@
 
   import { files, label, type PrinterEntry } from './files.svelte';
   import { fileVersion, smallThumbnail } from '../../lib/api/thumbnail';
-  import { localThumbnail } from '../../lib/files/local-thumbnails';
+  import {
+    localDetails,
+    localThumbnail,
+  } from '../../lib/files/local-thumbnails';
   import { formatDuration, parseFileName } from '../../lib/files/name';
   import { language, t } from '../../lib/i18n.svelte';
   import { Alert } from '../../lib/ui/alert';
@@ -212,7 +215,16 @@
   dir: string | undefined,
   where: string | undefined,
 )}
-  {@const info = parseFileName(label(file))}
+  {@const named = parseFileName(label(file))}
+  {@const known = localDetails(label(file))}
+  <!-- A name without PrusaSlicer's template: what the upload read. -->
+  {@const info = {
+    ...named,
+    materials: named.materials.length
+      ? named.materials
+      : (known?.materials ?? []),
+    duration: named.duration ?? known?.duration,
+  }}
   {@const current = printing !== undefined && pathOf(file, dir) === printing}
   <li
     class={['flex items-center gap-3 p-3', current && 'bg-state-active']}

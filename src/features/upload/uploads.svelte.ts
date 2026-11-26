@@ -2,7 +2,10 @@ import type { PrintCandidate } from './uploaded';
 import { fileVersion } from '../../lib/api/thumbnail';
 import { uploadToUsb } from '../../lib/api/upload';
 import { expandZips, type Picked } from '../../lib/files/collect';
-import { rememberThumbnail } from '../../lib/files/local-thumbnails';
+import {
+  rememberDetails,
+  rememberThumbnail,
+} from '../../lib/files/local-thumbnails';
 import { readMetadata } from '../../lib/files/metadata';
 import { fileKey, rememberHeader } from '../../lib/files/header-cache';
 import { readHeader } from '../../lib/files/header';
@@ -176,8 +179,9 @@ export class Uploads {
           if (read) rememberHeader(fileKey(dir, file.name), read);
           // Each file shows in the list as soon as it is on the drive.
           await files.refresh();
-          const picture = (await readMetadata(file, file.name)).thumbnail;
-          if (picture) rememberThumbnail(file.name, picture);
+          const meta = await readMetadata(file, file.name);
+          if (meta.thumbnail) rememberThumbnail(file.name, meta.thumbnail);
+          rememberDetails(file.name, meta);
         }
       }
       if (failed)
