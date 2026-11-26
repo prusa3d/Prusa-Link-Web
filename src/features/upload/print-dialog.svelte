@@ -151,28 +151,34 @@
   let mapping = $state<Mapping>({});
   let changingAll = $state(false);
   const mapsTools = $derived(
-    MappingView !== undefined &&
+    __TOOL_MAPPING__ &&
       identity.can('tool_mapping') &&
       identity.slots.length > 1,
   );
   $effect(() => {
     header = undefined;
     changingAll = false;
-    if (!file || !mapsTools) return;
+    if (!__TOOL_MAPPING__ || !file || !mapsTools) return;
     const folder = file.dir ?? dir;
     const path = folder ? `${folder}/${file.name}` : file.name;
     void fileHeader(path, fileKey(folder, file.displayName)).then((h) => {
       header = h;
     });
   });
-  const extruders = $derived(mapsTools ? gcodeFilaments(header) : []);
+  const extruders = $derived(
+    __TOOL_MAPPING__ && mapsTools ? gcodeFilaments(header) : [],
+  );
   const grams = $derived(
-    file?.meta?.grams ?? filamentGrams(header?.['filament used [g]']),
+    file?.meta?.grams ??
+      (__TOOL_MAPPING__
+        ? filamentGrams(header?.['filament used [g]'])
+        : undefined),
   );
   // Suggested once per file: the printer's tools are read again every few
   // seconds, and the person's changes stay.
   $effect(() => {
     const used = extruders;
+    if (!__TOOL_MAPPING__) return;
     mapping = untrack(() =>
       suggest(used, identity.slots, identity.nozzleCheck),
     );
@@ -181,7 +187,7 @@
 
   // The printer's change all: what it suggests for this print, run at once.
   async function changeAll() {
-    if (!file) return;
+    if (!__TOOL_MAPPING__ || !file) return;
     const folder = file.dir ?? dir;
     const path = `/usb/${folder ? `${folder}/` : ''}${file.name}`;
     const { data } = await api.GET('/api/v1/filament/change-all', {
@@ -196,7 +202,8 @@
   // A single-tool printer's nozzle against the file's, by the printer's own
   // nozzle check; a printer with several tools checks each in the mapping.
   const nozzleMismatch = $derived(
-    !multiTool &&
+    __CONTROLS__ &&
+      !multiTool &&
       info?.nozzle !== undefined &&
       identity.nozzle !== undefined &&
       Math.abs(Number(info.nozzle) - identity.nozzle) > 0.001 &&
@@ -208,7 +215,7 @@
     busy = true;
     failed = !(await onprint(
       name,
-      extruders.length ? toApi(mapping) : undefined,
+      __TOOL_MAPPING__ && extruders.length ? toApi(mapping) : undefined,
     ));
     busy = false;
   }

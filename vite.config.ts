@@ -19,11 +19,14 @@ import { pictureEditor } from './dev/picture-editor/vite-plugin.ts';
 // the app, the mock printer and its panel, for a static host such as GitHub
 // Pages. Never embedded in firmware, so neither one file nor budgeted.
 const VARIANT = process.env.PRUSALINK_VARIANT;
+// apiV2: the expanded status (every tool, chamber, change counters) and the
+// printer's dialogs, which the rest builds on.
 // PrusaLink 2 features each firmware build has room for (scripts/check-size.ts
 // budgets). The dev server, tests and the demo have all of them;
 // PRUSALINK_FEATURES (comma-separated) overrides the table, to measure.
 // multiTool: only printers with several tools need the per-tool views.
 const FEATURES = [
+  'apiV2',
   'multiTool',
   'toolMapping',
   'cancelObject',
@@ -49,12 +52,13 @@ const BUILD_FEATURES: Record<string, readonly Feature[]> = {
   mini: SINGLE,
 };
 /// The messages only a feature uses, by key prefix.
-const MESSAGES: Record<Feature, string> = {
-  multiTool: 'tools.',
-  toolMapping: 'mapping.',
-  cancelObject: 'objects.',
-  controls: 'controls.',
-  firmwareFlash: 'flash.',
+const MESSAGES: Record<Feature, string[]> = {
+  apiV2: ['dialog.', 'status.chamber'],
+  multiTool: ['tools.'],
+  toolMapping: ['mapping.'],
+  cancelObject: ['objects.'],
+  controls: ['controls.'],
+  firmwareFlash: ['flash.'],
 };
 const buildFeatures = (variant: string | undefined): readonly string[] => {
   const forced = process.env.PRUSALINK_FEATURES;
@@ -84,7 +88,7 @@ export default defineConfig(({ command, mode }) => ({
       process.env.PRUSALINK_LANG,
       Object.entries(MESSAGES)
         .filter(([f]) => !buildFeatures(VARIANT).includes(f))
-        .map(([, prefix]) => prefix),
+        .flatMap(([, prefixes]) => prefixes),
     ),
     command === 'serve' &&
       mode !== 'test' &&

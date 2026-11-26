@@ -19,6 +19,7 @@ export default [
   {
     languageOptions: {
       globals: {
+        __API_V2__: 'readonly',
         __MULTI_TOOL__: 'readonly',
         __TOOL_MAPPING__: 'readonly',
         __CANCEL_OBJECT__: 'readonly',
