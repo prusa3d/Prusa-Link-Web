@@ -3,6 +3,7 @@
   import { CloudUpload, Printer } from '../../lib/ui/icon/icons';
 
   import { uploads } from './uploads.svelte';
+  import { files } from '../files/files.svelte';
   import { collectDropped } from '../../lib/files/collect';
   import { t } from '../../lib/i18n.svelte';
   import type { Model } from '../../lib/printer/models';
@@ -44,6 +45,10 @@
     if (data)
       await uploads.upload(await collectDropped(data.items, data.files));
   }
+  // Where a drop lands: the folder the storage column shows.
+  const folder = $derived(
+    [t('files.usb'), ...files.crumbs.map((c) => c.label)].join(' / '),
+  );
 </script>
 
 <!-- Capture resets the overlay for every drop, also one the drop zone
@@ -83,7 +88,7 @@
         <Icon node={CloudUpload} class="size-6" />{t('upload.dropAnywhere')}
       </p>
       <p class="text-sm text-muted-foreground">
-        {t('upload.dropAnywhereHint')}
+        {t('upload.dropInto', { folder })}
       </p>
     </div>
   </div>

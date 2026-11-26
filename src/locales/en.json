@@ -97,7 +97,6 @@
   "status.idleHint": "Ready for the next print.",
   "login.subtitle": "Control and watch your printer.",
   "upload.dropAnywhere": "Drop anywhere to upload",
-  "upload.dropAnywhereHint": "G-code, folders and ZIP files go to the USB drive.",
   "files.mismatchTitle": "Sliced for {file}, but {loaded} is loaded",
   "files.mismatchBody": "The printer will stop and ask on its screen.",
   "files.printAnyway": "Print anyway",
@@ -212,5 +211,10 @@
   "heating.waiting": "Waiting for the tool to heat up",
   "heating.ready": "The tool is at the right temperature",
   "heating.idle": "Waiting for the printer to start heating",
-  "heating.label": "Tool temperature"
+  "heating.label": "Tool temperature",
+  "heating.eta": "about {time} left",
+  "heating.bedWaiting": "Waiting for the bed to heat up",
+  "heating.bedReady": "The bed is at the right temperature",
+  "heating.bedLabel": "Bed temperature",
+  "upload.dropInto": "G-code, folders and ZIP files go to {folder}."
 }

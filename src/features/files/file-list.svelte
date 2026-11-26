@@ -33,7 +33,7 @@
   import { Thumbnail } from '../../lib/ui/thumbnail';
 
   interface Props {
-    /// Shown under the Storage heading, above the folder path (the drop zone).
+    /// Shown under the search while not searching (the drop zone).
     children?: Snippet;
     /// The printer takes a new print now.
     canStart: boolean;
@@ -277,53 +277,51 @@
 {/snippet}
 
 <section aria-labelledby="files-title" class="flex min-w-0 flex-col gap-2">
-  <h2 id="files-title" class="flex min-h-11 items-center text-lg font-semibold">
-    {t('files.storage')}
-  </h2>
-  {@render children?.()}
-  <!-- Always there, also at the root, so entering a folder moves nothing. -->
+  <!-- The heading is the storage at its root and the folder's path inside
+       it. Deep paths keep the root, the parent and the current folder: the
+       rest collapses into "…", which names them all on hover. Earlier
+       folders are links back. Long names wrap instead of hiding the end. -->
   <div class="flex min-h-11 items-center gap-1">
     {#if files.path}
       <Button
         variant="ghost"
-        class="size-11 px-0 md:size-9"
+        class="-ms-2 size-11 shrink-0 px-0 md:size-9"
         onclick={() => void go(() => files.up())}
         aria-label={t('files.up')}
       >
         <Icon node={ChevronLeft} />
       </Button>
-    {:else}
-      <span class="size-11 shrink-0 md:size-9" aria-hidden="true"></span>
     {/if}
-    <!-- Deep paths keep the root, the parent and the current folder: the
-           rest collapses into "…", which names them all on hover. Earlier
-           folders are links back. Long names wrap instead of hiding the end. -->
-    <nav
+    <h2
+      id="files-title"
       bind:this={heading}
       tabindex="-1"
-      aria-label={t('files.path')}
-      class="flex min-w-0 flex-wrap items-center gap-x-1 rounded-sm font-semibold break-all outline-none focus-visible:ring-2 focus-visible:ring-ring"
-      data-testid="files-path"
+      class="flex min-w-0 flex-wrap items-center gap-x-1 rounded-sm text-lg font-semibold break-all outline-none focus-visible:ring-2 focus-visible:ring-ring"
+      data-testid={files.path ? 'files-path' : undefined}
     >
-      {#each shown as crumb, i (crumb.depth)}
-        {#if i > 0}<span class="text-muted-foreground" aria-hidden="true"
-            >/</span
-          >{/if}
-        {#if crumb.depth < 0}
-          <span class="text-muted-foreground" title={hidden}>…</span>
-        {:else if crumb.depth === files.crumbs.length}
-          <span aria-current="location">{crumb.label}</span>
-        {:else}
-          <Button
-            variant="ghost"
-            class="h-auto px-0.5! text-base! font-semibold! break-all whitespace-normal text-link! hover:bg-transparent hover:underline max-sm:min-h-11"
-            onclick={() => void go(() => files.goTo(crumb.depth))}
-          >
-            {crumb.label}
-          </Button>
-        {/if}
-      {/each}
-    </nav>
+      {#if !files.path}
+        {t('files.storage')}
+      {:else}
+        {#each shown as crumb, i (crumb.depth)}
+          {#if i > 0}<span class="text-muted-foreground" aria-hidden="true"
+              >/</span
+            >{/if}
+          {#if crumb.depth < 0}
+            <span class="text-muted-foreground" title={hidden}>…</span>
+          {:else if crumb.depth === files.crumbs.length}
+            <span aria-current="location">{crumb.label}</span>
+          {:else}
+            <Button
+              variant="ghost"
+              class="h-auto px-0.5! text-lg! font-semibold! break-all whitespace-normal text-link! hover:bg-transparent hover:underline max-sm:min-h-11"
+              onclick={() => void go(() => files.goTo(crumb.depth))}
+            >
+              {crumb.label}
+            </Button>
+          {/if}
+        {/each}
+      {/if}
+    </h2>
   </div>
 
   {#if files.folders.length + files.files.length > 8}
@@ -342,6 +340,12 @@
         oninput={() => (limit = PAGE)}
       />
     </div>
+  {/if}
+
+  <!-- Dropping goes into the folder shown; a search hides it, since the
+       results may come from other folders. -->
+  {#if query.trim() === ''}
+    {@render children?.()}
   {/if}
 
   {#if files.failed}
