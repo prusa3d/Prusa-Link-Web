@@ -24,6 +24,7 @@
   import { Button } from '../../lib/ui/button';
   import { EmptyState } from '../../lib/ui/empty-state';
   import { MaterialChip } from '../../lib/ui/material';
+  import { Badge } from '../../lib/ui/badge';
   import { groupMaterials } from '../../lib/files/group-materials';
   import { when } from '../../lib/files/when';
   import { Dialog } from '../../lib/ui/dialog';
@@ -43,12 +44,15 @@
     /// The path of the file being printed (`toys/DRAGON~1.BGC`): it cannot
     /// be deleted.
     printing?: string | undefined;
+    /// Said on the printing file's row, e.g. "Printing · 60 %".
+    printingNote?: string | undefined;
     /// Opens the file's details and print dialog. `dir` and `where` are set
     /// for a file found in a subfolder by search.
     onprint: (entry: PrinterEntry, dir?: string, where?: string) => void;
   }
 
-  let { canStart, blocked, printing, onprint, children }: Props = $props();
+  let { canStart, blocked, printing, printingNote, onprint, children }: Props =
+    $props();
   const pathOf = (file: PrinterEntry, dir: string | undefined) => {
     const folder = dir ?? files.path;
     return folder ? `${folder}/${file.name}` : file.name;
@@ -209,7 +213,11 @@
   where: string | undefined,
 )}
   {@const info = parseFileName(label(file))}
-  <li class="flex items-center gap-3 p-3">
+  {@const current = printing !== undefined && pathOf(file, dir) === printing}
+  <li
+    class={['flex items-center gap-3 p-3', current && 'bg-state-active']}
+    data-printing={current || undefined}
+  >
     <Thumbnail src={icon(file)} class="size-12" />
     <div class="min-w-0 flex-1">
       <!-- The name opens the file's details, also while printing. -->
@@ -223,6 +231,9 @@
       <p
         class="mt-1 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-muted-foreground"
       >
+        {#if current && printingNote}
+          <Badge tone="active" testid="file-printing">{printingNote}</Badge>
+        {/if}
         {#each groupMaterials(info.materials) as material (material)}
           <MaterialChip name={material} />
         {/each}
