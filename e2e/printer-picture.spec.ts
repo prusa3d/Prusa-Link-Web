@@ -1,5 +1,8 @@
-import { expect, test } from '@playwright/test';
+import { readFileSync } from 'node:fs';
 
+import { expect, type Page, test } from '@playwright/test';
+
+import { halveStatus } from '../mock/printer-images';
 import { freshPrinter, openApp, printer } from './support';
 
 // The printer's picture carries each heater's reading on the part it heats.
@@ -97,4 +100,67 @@ test('the labels go while the printer is unreachable', async ({
   await expect(page.getByTestId('heater-label-bed')).toBeVisible({
     timeout: 15_000,
   });
+});
+
+/// The MK4S picture with the bed area of e2e/fixtures/mk4s-bed.json (a
+/// saved status picture's bed, in its 1000-unit canvas), the way a status
+/// picture with a bed area would carry it.
+async function withBedArea(page: Page) {
+  const { bed } = JSON.parse(
+    readFileSync(new URL('fixtures/mk4s-bed.json', import.meta.url), 'utf8'),
+  ) as Pick<Parameters<typeof halveStatus>[0], 'bed'>;
+  const halved = halveStatus({
+    viewBox: '0 0 1000 1000',
+    style: { value: 60, caption: 30, stroke: 4 },
+    labels: [],
+    ...(bed && { bed }),
+  }).bed;
+  await page.route(/virtual:printer-images/, async (route) => {
+    const res = await route.fetch();
+    const [code = ''] = (await res.text()).split('\n//# sourceMappingURL');
+    const pictures = JSON.parse(
+      code.replace(/^export default /, '').replace(/;\s*$/, ''),
+    ) as { images: { mk4: { status: { bed?: unknown } } } };
+    pictures.images.mk4.status.bed = halved;
+    await route.fulfill({
+      response: res,
+      body: `export default ${JSON.stringify(pictures)};`,
+    });
+  });
+}
+
+test('the bed area glows from grey to orange as the bed heats', async ({
+  page,
+  request,
+}) => {
+  await withBedArea(page);
+  await printer(request, { bed: { temp: 22, target: 0 } });
+  await openApp(page);
+  const bed = page.getByTestId('printer-bed');
+  await expect(bed).toHaveAttribute('data-heat', '0.00');
+  await expect(bed).toHaveAttribute('width', '330');
+  // Drawn over the picture and under the labels.
+  await expect(
+    page.getByTestId('printer-labels').locator(':scope > *').first(),
+  ).toHaveAttribute('data-testid', 'printer-bed');
+  const fill = () => bed.evaluate((e) => getComputedStyle(e).fill);
+  const cold = await fill();
+
+  await printer(request, { bed: { temp: 60, target: 60 } });
+  await expect(bed).toHaveAttribute('data-heat', '1.00');
+  await expect.poll(fill).not.toBe(cold);
+
+  // Cooling with no target: measured against the last target seen (60 ℃),
+  // not the 110 ℃ default, so still fully orange at 100 ℃.
+  await printer(request, { bed: { temp: 100, target: 0 } });
+  await expect(page.getByTestId('heater-label-bed')).toContainText(
+    /(100|9\d)℃/,
+  );
+  await expect(bed).toHaveAttribute('data-heat', '1.00');
+});
+
+test('a picture without a bed area has none', async ({ page }) => {
+  await openApp(page);
+  await expect(page.getByTestId('heater-label-bed')).toBeVisible();
+  await expect(page.getByTestId('printer-bed')).toHaveCount(0);
 });

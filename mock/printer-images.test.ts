@@ -72,6 +72,24 @@ describe('halveStatus', () => {
     });
   });
 
+  it('puts the bed area on the halved grid, where there is one', () => {
+    const saved = {
+      viewBox: '0 0 1000 1000',
+      style: { value: 60, caption: 30, stroke: 4 },
+      labels: [],
+    };
+    expect(
+      halveStatus({
+        ...saved,
+        bed: { x: 201, y: 701.3, width: 600, height: 24, rx: 5 },
+      }).bed,
+    ).toEqual({ x: 100.5, y: 350.7, width: 300, height: 12, rx: 2.5 });
+    expect(
+      halveStatus({ ...saved, bed: { x: 0, y: 0, width: 10, height: 10 } }).bed,
+    ).toEqual({ x: 0, y: 0, width: 5, height: 5 });
+    expect(halveStatus(saved)).not.toHaveProperty('bed');
+  });
+
   it('refuses a canvas the halving does not fit', () => {
     expect(() =>
       halveStatus({

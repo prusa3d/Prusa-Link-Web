@@ -12,6 +12,7 @@
     pictureFor,
     rememberedVariant,
   } from '../../lib/printer/picture';
+  import { bedHeat, bedStyle, bedTop } from '../../lib/printer/bed-heat';
   import {
     type Heater,
     type Reading,
@@ -37,6 +38,10 @@
       ? shownLabels(picture.status.labels, equipmentOf(mmu), readings)
       : [],
   );
+  const bed = $derived(picture?.status?.bed);
+  const bedHeatNow = $derived(
+    readings.bed && bedHeat(readings.bed.current, bedTop(readings.bed.target)),
+  );
 </script>
 
 {#if picture}
@@ -49,13 +54,23 @@
         class="block h-auto w-full"
         data-testid="printer-image"
       />
-      {#if picture.status && labels.length}
+      {#if picture.status && (labels.length || (bed && readings.bed))}
         <svg
           viewBox="0 0 500 500"
           aria-hidden="true"
           class="absolute inset-0 size-full text-(--color-orange-light-9)"
           data-testid="printer-labels"
         >
+          {#if bed && bedHeatNow !== undefined}
+            <rect
+              {...bed}
+              opacity="0.9"
+              style={bedStyle(bedHeatNow)}
+              class="transition-all duration-700 motion-reduce:transition-none"
+              data-testid="printer-bed"
+              data-heat={bedHeatNow.toFixed(2)}
+            />
+          {/if}
           {#each labels as label (label.heater)}
             {@const reading = readings[label.heater]}
             {#if reading}
