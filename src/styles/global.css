@@ -87,6 +87,9 @@
    and Linux draw them light while the page inherits white text. */
 :root {
   color-scheme: light;
+  /* Room for the scrollbar is kept even when the page fits, so opening a
+     short folder or a dialog does not shift the page sideways. */
+  scrollbar-gutter: stable;
 }
 .dark {
   color-scheme: dark;
