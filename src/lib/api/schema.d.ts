@@ -91,7 +91,10 @@ export interface paths {
          */
         get: {
             parameters: {
-                query?: never;
+                query?: {
+                    /** @description Adds per-tool, chamber and enclosure telemetry, live X/Y and change counters (PrusaLink 2.1, capability in /api/v1/info `features`) */
+                    expanded?: boolean;
+                };
                 header?: never;
                 path?: never;
                 cookie?: never;
@@ -354,6 +357,482 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/job/{id}/objects": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description job id */
+                id: components["parameters"]["JobId"];
+            };
+            cookie?: never;
+        };
+        /**
+         * cancelable objects of the job
+         * @description ETag is the objects revision (status `cancel_object_revision`). Shapes are in the job file's `objects_info` metadata.
+         */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    /** @description job id */
+                    id: components["parameters"]["JobId"];
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["JobObjects"];
+                    };
+                };
+                304: components["responses"]["NotModified"];
+                401: components["responses"]["Unauthorized"];
+                404: components["responses"]["NotFound"];
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/job/{id}/objects/{object_id}/cancel": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description job id */
+                id: components["parameters"]["JobId"];
+                /** @description object id, the M486 S number and the index in objects_info */
+                object_id: components["parameters"]["ObjectId"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        /** cancel an object of the job */
+        put: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    /** @description job id */
+                    id: components["parameters"]["JobId"];
+                    /** @description object id, the M486 S number and the index in objects_info */
+                    object_id: components["parameters"]["ObjectId"];
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description No Content */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                401: components["responses"]["Unauthorized"];
+                404: components["responses"]["NotFound"];
+                409: components["responses"]["Conflict"];
+            };
+        };
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/job/{id}/objects/{object_id}/uncancel": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description job id */
+                id: components["parameters"]["JobId"];
+                /** @description object id, the M486 S number and the index in objects_info */
+                object_id: components["parameters"]["ObjectId"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        /** print a cancelled object again */
+        put: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    /** @description job id */
+                    id: components["parameters"]["JobId"];
+                    /** @description object id, the M486 S number and the index in objects_info */
+                    object_id: components["parameters"]["ObjectId"];
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description No Content */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                401: components["responses"]["Unauthorized"];
+                404: components["responses"]["NotFound"];
+                409: components["responses"]["Conflict"];
+            };
+        };
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/dialog": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * the dialog the printer shows
+         * @description ETag is the dialog id (status `dialog_id`)
+         */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["Dialog"];
+                    };
+                };
+                /** @description No dialog */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                401: components["responses"]["Unauthorized"];
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/dialog/{dialog_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                dialog_id: number;
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** press a button of the dialog */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    dialog_id: number;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": {
+                        /** @example Continue */
+                        button: string;
+                    };
+                };
+            };
+            responses: {
+                /** @description No Content */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                400: components["responses"]["BadRequest"];
+                401: components["responses"]["Unauthorized"];
+                404: components["responses"]["NotFound"];
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/printer": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /**
+         * tune the printer
+         * @description Flat keys, dotted for nested values, as Connect SET_VALUE. All or nothing. `z_offset_delta` is a babystep, only while printing or paused.
+         */
+        put: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": components["schemas"]["Tune"];
+                };
+            };
+            responses: {
+                /** @description No Content */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                401: components["responses"]["Unauthorized"];
+                409: components["responses"]["Conflict"];
+                /** @description Unknown key or value out of range */
+                422: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/printer/preheat": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * preheat for a filament, or cool down
+         * @description Only when idle (IDLE, READY, FINISHED, STOPPED)
+         */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": {
+                        /**
+                         * @description Filament name; null cools down
+                         * @example PLA
+                         */
+                        filament: string | null;
+                        tool?: number;
+                    };
+                };
+            };
+            responses: {
+                /** @description No Content */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                401: components["responses"]["Unauthorized"];
+                409: components["responses"]["Conflict"];
+                /** @description Unknown filament */
+                422: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/filaments": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** filament presets and user filaments */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            filaments: components["schemas"]["FilamentPreset"][];
+                        };
+                    };
+                };
+                401: components["responses"]["Unauthorized"];
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/tools/{tool}/filament": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                tool: number;
+            };
+            cookie?: never;
+        };
+        get?: never;
+        /** update the loaded filament in place */
+        put: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    tool: number;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": {
+                        material: components["schemas"]["Material"];
+                    };
+                };
+            };
+            responses: {
+                /** @description Accepted */
+                202: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                401: components["responses"]["Unauthorized"];
+                409: components["responses"]["Conflict"];
+                /** @description Field out of range or incompatible */
+                422: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        /**
+         * load, change or unload filament
+         * @description Load and unload only when idle, change while printing or paused
+         */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    tool: number;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": {
+                        /** @enum {string} */
+                        command: "load" | "change" | "unload";
+                        material?: components["schemas"]["Material"];
+                    };
+                };
+            };
+            responses: {
+                /** @description Accepted */
+                202: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                401: components["responses"]["Unauthorized"];
+                409: components["responses"]["Conflict"];
+                /** @description Field out of range or incompatible */
+                422: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/storage": {
         parameters: {
             query?: never;
@@ -589,8 +1068,8 @@ export interface paths {
             };
         };
         /**
-         * Start print of file if there's no print job running
-         * @description Body is ignored
+         * Start print of file if there's no print job running, or flash a newer firmware (.bbf)
+         * @description Body is ignored. A .bbf in the USB root is flashed only when it is newer and compatible; the printer resets about 1 s after the 202.
          */
         post: {
             parameters: {
@@ -615,6 +1094,13 @@ export interface paths {
                 };
             };
             responses: {
+                /** @description Firmware accepted, the printer flashes it */
+                202: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
                 /** @description No Content */
                 204: {
                     headers: {
@@ -624,7 +1110,29 @@ export interface paths {
                 };
                 401: components["responses"]["Unauthorized"];
                 404: components["responses"]["NotFound"];
-                409: components["responses"]["Conflict"];
+                /** @description Busy, or the firmware is not newer */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            /** @example not_newer */
+                            reason?: string;
+                            /** @example 6.5.0+1234 */
+                            installed?: string;
+                            /** @example 6.4.1+1100 */
+                            file?: string;
+                        };
+                    };
+                };
+                /** @description Firmware for another printer */
+                422: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
             };
         };
         /** Delete a file or folder */
@@ -1593,6 +2101,13 @@ export interface components {
                 version?: string;
                 printer_type?: number;
                 printer_version?: number;
+                /** @description Printer type and version match this printer */
+                compatible?: boolean;
+                /**
+                 * @description Against the installed firmware
+                 * @enum {string}
+                 */
+                relation?: "newer" | "same" | "older";
             };
         };
         /** @description Info about the folder and its content, except nested children */
@@ -1624,6 +2139,18 @@ export interface components {
             port?: string;
             /** @example true */
             network_error_chime?: boolean;
+            /** @example 5 */
+            tool_count?: number;
+            /** @description By 0-based tool index as a string; null for a disabled tool */
+            tools?: {
+                [key: string]: components["schemas"]["ToolInfo"] | null;
+            };
+            enclosure?: {
+                enabled?: boolean;
+                printing_filtration?: boolean;
+            };
+            /** @description What this firmware's API can do */
+            features?: ("cancel_object" | "chamber" | "dialogs" | "firmware_update" | "crash_dump" | "preheat" | "tune" | "filament" | "pairing" | "expanded_status")[];
         };
         /** @description Telemetry info about current job, all values are optional */
         StatusJob: {
@@ -1689,6 +2216,134 @@ export interface components {
                 /** @example OK */
                 message?: string;
             };
+            /** @description Expanded only. By 0-based tool index as a string, "0.N" for MMU slots */
+            tools?: {
+                [key: string]: components["schemas"]["StatusTool"];
+            };
+            /** @description Expanded only */
+            chamber?: {
+                temp?: number;
+                target_temp?: number | null;
+                fan_1_rpm?: number;
+                fan_2_rpm?: number;
+                fan_pwm_target?: number;
+                led_intensity?: number;
+            };
+            /** @description Expanded only */
+            enclosure?: {
+                temp?: number;
+                fan_rpm?: number;
+                time_in_use?: number;
+            };
+            /** @description Expanded only. Changes when the printer's dialog changes; absent without one */
+            dialog_id?: number;
+            /** @description Expanded only. Changes when an object is cancelled or the list changes */
+            cancel_object_revision?: number;
+        };
+        StatusTool: {
+            /** @example FFF_PRINT_HEAD */
+            type?: string;
+            active?: boolean;
+            nozzle_temp?: number;
+            nozzle_target_temp?: number | null;
+            heatbreak_fan_rpm?: number;
+            print_fan_rpm?: number;
+        };
+        ToolInfo: {
+            /** @example FFF_PRINT_HEAD */
+            type?: string;
+            features?: {
+                nozzle_diameter?: number;
+                nozzle_hardened?: boolean;
+                nozzle_high_flow?: boolean;
+                nozzle_high_temp?: boolean;
+            };
+            material_package_instance?: {
+                class?: string;
+                uuid?: string;
+                actual_netto_full_weight?: number;
+                package?: {
+                    class?: string;
+                    uuid?: string;
+                    nominal_netto_full_weight?: number;
+                    material?: {
+                        class?: string;
+                        uuid?: string;
+                        /** @example PLA */
+                        abbreviation?: string;
+                        primary_color?: {
+                            /** @example #ff8000 */
+                            color_rgba?: string;
+                        };
+                        tags?: string[];
+                        properties?: components["schemas"]["MaterialTemperatures"];
+                    };
+                };
+            };
+        };
+        MaterialTemperatures: {
+            min_print_temperature?: number;
+            max_print_temperature?: number;
+            preheat_temperature?: number;
+            min_bed_temperature?: number;
+            max_bed_temperature?: number;
+            chamber_temperature?: number;
+        };
+        /** @description Filament data in OpenPrintTag field names */
+        Material: components["schemas"]["MaterialTemperatures"] & {
+            /** @example PLA */
+            material_type?: string;
+            /** @example PLA */
+            material_abbreviation?: string;
+            /** @example #ff8000 */
+            primary_color?: string;
+            tags?: string[];
+        };
+        FilamentPreset: {
+            /** @example PLA */
+            name: string;
+            properties?: components["schemas"]["MaterialTemperatures"];
+        };
+        Dialog: {
+            /** @example 1234 */
+            dialog_id: number;
+            /** @example ATTENTION */
+            state?: string;
+            /**
+             * @description Prusa error code (%05u); the help page is https://prusa.io/<code>. Absent on a BSOD
+             * @example 12601
+             */
+            code?: string;
+            title?: string;
+            text?: string;
+            /**
+             * @example [
+             *       "Continue",
+             *       "Abort"
+             *     ]
+             */
+            buttons: string[];
+        };
+        JobObjects: {
+            /** @description The object being printed now */
+            current?: number;
+            objects: {
+                id: number;
+                canceled: boolean;
+                /** @description Kept for the first 16 objects */
+                name?: string;
+            }[];
+        };
+        Tune: {
+            speed?: number;
+            flow?: number;
+            fan_print?: number;
+            target_bed?: number;
+            "chamber.target_temp"?: number;
+            /** @description Babystep in mm, while printing or paused */
+            z_offset_delta?: number;
+        } & {
+            [key: string]: number;
         };
         /** @description Telemetry info about current transfer status, all values except id and time_transferring are optional */
         StatusTransfer: {
@@ -1988,7 +2643,12 @@ export interface components {
             };
         };
     };
-    parameters: never;
+    parameters: {
+        /** @description job id */
+        JobId: number;
+        /** @description object id, the M486 S number and the index in objects_info */
+        ObjectId: number;
+    };
     requestBodies: never;
     headers: {
         /** @description Parameter specifying supported data format from client. PCL has to support it. Slicer doesn't have to use this. If the header is not present, it defaults to text/plain */
