@@ -190,5 +190,11 @@
   "upload.item.saving": "Saving to USB…",
   "tool.nozzle": "{size} mm nozzle",
   "footer.api": "REST API",
-  "footer.apiHint": "PrusaLink REST API reference (OpenAPI). /api/version, /api/printer and /api/job also answer like OctoPrint, for OctoPrint-compatible tools."
+  "footer.apiHint": "PrusaLink REST API reference (OpenAPI). /api/version, /api/printer and /api/job also answer like OctoPrint, for OctoPrint-compatible tools.",
+  "files.storage": "Storage",
+  "files.path": "Folder path",
+  "heating.waiting": "Waiting for the tool to heat up",
+  "heating.ready": "The tool is at the right temperature",
+  "heating.idle": "Waiting for the printer to start heating",
+  "heating.label": "Tool temperature"
 }

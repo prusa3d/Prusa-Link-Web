@@ -196,5 +196,11 @@
   "upload.item.saving": "Zapisywanie na USB…",
   "tool.nozzle": "dysza {size} mm",
   "footer.api": "REST API",
-  "footer.apiHint": "Dokumentacja REST API PrusaLink (OpenAPI). /api/version, /api/printer i /api/job odpowiadają też jak OctoPrint, dla narzędzi zgodnych z OctoPrint."
+  "footer.apiHint": "Dokumentacja REST API PrusaLink (OpenAPI). /api/version, /api/printer i /api/job odpowiadają też jak OctoPrint, dla narzędzi zgodnych z OctoPrint.",
+  "files.storage": "Pamięć",
+  "files.path": "Ścieżka folderu",
+  "heating.waiting": "Czekanie na nagrzanie narzędzia",
+  "heating.ready": "Narzędzie ma właściwą temperaturę",
+  "heating.idle": "Czekanie, aż drukarka zacznie grzać",
+  "heating.label": "Temperatura narzędzia"
 }

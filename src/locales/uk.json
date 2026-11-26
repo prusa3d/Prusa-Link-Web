@@ -196,5 +196,11 @@
   "upload.item.saving": "Збереження на USB…",
   "tool.nozzle": "сопло {size} мм",
   "footer.api": "REST API",
-  "footer.apiHint": "Довідка REST API PrusaLink (OpenAPI). /api/version, /api/printer і /api/job також відповідають як OctoPrint, для сумісних з OctoPrint інструментів."
+  "footer.apiHint": "Довідка REST API PrusaLink (OpenAPI). /api/version, /api/printer і /api/job також відповідають як OctoPrint, для сумісних з OctoPrint інструментів.",
+  "files.storage": "Сховище",
+  "files.path": "Шлях до папки",
+  "heating.waiting": "Очікування нагрівання інструмента",
+  "heating.ready": "Інструмент має правильну температуру",
+  "heating.idle": "Очікування, поки принтер почне нагрівання",
+  "heating.label": "Температура інструмента"
 }

@@ -193,5 +193,11 @@
   "upload.item.saving": "Ukládání na USB…",
   "tool.nozzle": "tryska {size} mm",
   "footer.api": "REST API",
-  "footer.apiHint": "Dokumentace REST API PrusaLink (OpenAPI). /api/version, /api/printer a /api/job odpovídají i jako OctoPrint, pro nástroje kompatibilní s OctoPrintem."
+  "footer.apiHint": "Dokumentace REST API PrusaLink (OpenAPI). /api/version, /api/printer a /api/job odpovídají i jako OctoPrint, pro nástroje kompatibilní s OctoPrintem.",
+  "files.storage": "Úložiště",
+  "files.path": "Cesta ke složce",
+  "heating.waiting": "Čeká se na nahřátí nástroje",
+  "heating.ready": "Nástroj má správnou teplotu",
+  "heating.idle": "Čeká se, až tiskárna začne nahřívat",
+  "heating.label": "Teplota nástroje"
 }
