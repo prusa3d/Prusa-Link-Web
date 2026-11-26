@@ -190,5 +190,11 @@
   "upload.item.saving": "Salvataggio su USB…",
   "tool.nozzle": "ugello da {size} mm",
   "footer.api": "API REST",
-  "footer.apiHint": "Riferimento API REST di PrusaLink (OpenAPI). /api/version, /api/printer e /api/job rispondono anche come OctoPrint, per gli strumenti compatibili."
+  "footer.apiHint": "Riferimento API REST di PrusaLink (OpenAPI). /api/version, /api/printer e /api/job rispondono anche come OctoPrint, per gli strumenti compatibili.",
+  "files.storage": "Archivio",
+  "files.path": "Percorso della cartella",
+  "heating.waiting": "In attesa che l'utensile si scaldi",
+  "heating.ready": "L'utensile è alla temperatura giusta",
+  "heating.idle": "In attesa che la stampante inizi a scaldare",
+  "heating.label": "Temperatura dell'utensile"
 }

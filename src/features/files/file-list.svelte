@@ -1,4 +1,5 @@
 <script lang="ts">
+  import type { Snippet } from 'svelte';
   import { Icon } from '../../lib/ui/icon';
   import {
     ChevronLeft,
@@ -32,6 +33,8 @@
   import { Thumbnail } from '../../lib/ui/thumbnail';
 
   interface Props {
+    /// Shown under the Storage heading, above the folder path (the drop zone).
+    children?: Snippet;
     /// The printer takes a new print now.
     canStart: boolean;
     /// Why it does not, said on the print buttons ("Already printing").
@@ -45,7 +48,7 @@
     onprint: (entry: PrinterEntry, dir?: string, where?: string) => void;
   }
 
-  let { canStart, blocked, printing, onprint }: Props = $props();
+  let { canStart, blocked, printing, onprint, children }: Props = $props();
   const pathOf = (file: PrinterEntry, dir: string | undefined) => {
     const folder = dir ?? files.path;
     return folder ? `${folder}/${file.name}` : file.name;
@@ -132,7 +135,7 @@
     query = '';
     limit = PAGE;
   });
-  let heading: HTMLHeadingElement | undefined = $state();
+  let heading: HTMLElement | undefined = $state();
 
   // Also on `prusalink:identity`: a different printer (the dev server's mock
   // switching model) has a different USB drive.
@@ -274,8 +277,12 @@
 {/snippet}
 
 <section aria-labelledby="files-title" class="flex min-w-0 flex-col gap-2">
-  <div class="flex min-h-11 items-center gap-1">
-    {#if files.path}
+  <h2 id="files-title" class="flex min-h-11 items-center text-lg font-semibold">
+    {t('files.storage')}
+  </h2>
+  {@render children?.()}
+  {#if files.path}
+    <div class="mt-2 flex min-h-11 items-center gap-1">
       <Button
         variant="ghost"
         class="size-11 px-0 md:size-9"
@@ -284,37 +291,37 @@
       >
         <Icon node={ChevronLeft} />
       </Button>
-    {/if}
-    <!-- Deep paths keep the root, the parent and the current folder: the
-         rest collapses into "…", which names them all on hover. Earlier
-         folders are links back. Long names wrap instead of hiding the end. -->
-    <h2
-      id="files-title"
-      bind:this={heading}
-      tabindex="-1"
-      class="flex min-w-0 flex-wrap items-center gap-x-1 rounded-sm text-lg font-semibold break-all outline-none focus-visible:ring-2 focus-visible:ring-ring"
-      data-testid="files-path"
-    >
-      {#each shown as crumb, i (crumb.depth)}
-        {#if i > 0}<span class="text-muted-foreground" aria-hidden="true"
-            >/</span
-          >{/if}
-        {#if crumb.depth < 0}
-          <span class="text-muted-foreground" title={hidden}>…</span>
-        {:else if crumb.depth === files.crumbs.length}
-          <span>{crumb.label}</span>
-        {:else}
-          <Button
-            variant="ghost"
-            class="h-auto px-0.5! text-lg! font-semibold! break-all whitespace-normal text-link! hover:bg-transparent hover:underline max-sm:min-h-11"
-            onclick={() => void go(() => files.goTo(crumb.depth))}
-          >
-            {crumb.label}
-          </Button>
-        {/if}
-      {/each}
-    </h2>
-  </div>
+      <!-- Deep paths keep the root, the parent and the current folder: the
+           rest collapses into "…", which names them all on hover. Earlier
+           folders are links back. Long names wrap instead of hiding the end. -->
+      <nav
+        bind:this={heading}
+        tabindex="-1"
+        aria-label={t('files.path')}
+        class="flex min-w-0 flex-wrap items-center gap-x-1 rounded-sm font-semibold break-all outline-none focus-visible:ring-2 focus-visible:ring-ring"
+        data-testid="files-path"
+      >
+        {#each shown as crumb, i (crumb.depth)}
+          {#if i > 0}<span class="text-muted-foreground" aria-hidden="true"
+              >/</span
+            >{/if}
+          {#if crumb.depth < 0}
+            <span class="text-muted-foreground" title={hidden}>…</span>
+          {:else if crumb.depth === files.crumbs.length}
+            <span aria-current="location">{crumb.label}</span>
+          {:else}
+            <Button
+              variant="ghost"
+              class="h-auto px-0.5! text-base! font-semibold! break-all whitespace-normal text-link! hover:bg-transparent hover:underline max-sm:min-h-11"
+              onclick={() => void go(() => files.goTo(crumb.depth))}
+            >
+              {crumb.label}
+            </Button>
+          {/if}
+        {/each}
+      </nav>
+    </div>
+  {/if}
 
   {#if files.folders.length + files.files.length > 8}
     <div class="relative">

@@ -235,7 +235,6 @@
             oncontrol={(action: 'pause' | 'resume' | 'stop') =>
               printer.control(action)}
             {activity}
-            history={printer.history}
             material={multiTool
               ? undefined
               : filament.loaded && filamentLabel(filament.loaded)}
@@ -261,7 +260,6 @@
             }}
           />
         {/if}
-        <DropZone />
         <UpdateNotice as="card" />
       </div>
       <FileList
@@ -270,7 +268,9 @@
         printing={printer.job ? printer.jobFile?.path : undefined}
         onprint={(entry: PrinterEntry, dir?: string, where?: string) =>
           (candidate = { ...fromList(entry), dir, where })}
-      />
+      >
+        <DropZone />
+      </FileList>
     </div>
   </main>
   <WindowDrop
