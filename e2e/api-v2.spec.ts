@@ -131,6 +131,10 @@ test.describe('cancel object', () => {
     await expect(dialog.locator('polygon[data-highlight="true"]')).toHaveCount(
       1,
     );
+    // Only that one: not the object being printed too.
+    await expect(dialog.locator('polygon[data-state="current"]')).toHaveCount(
+      0,
+    );
     await page.keyboard.press('Escape');
     await expect(
       bed.getByRole('button', { name: 'Shape-Box' }),
@@ -516,4 +520,37 @@ test('the print dialog says how much filament a file takes', async ({
   await expect(page.getByRole('dialog').getByTestId('file-grams')).toHaveText(
     '15.6 g',
   );
+});
+
+test('a file uploaded here shows what it says about itself, also from the list', async ({
+  page,
+  request,
+}) => {
+  await printer(request, { model: 'COREONE_INDX', reset: true });
+  await openApp(page);
+  await page
+    .getByTestId('file-input')
+    .first()
+    .setInputFiles({
+      name: 'simple core one indx 3 shapes.bgcode',
+      mimeType: 'application/octet-stream',
+      buffer: readFileSync(
+        new URL('../mock/fixtures/three-shapes.bgcode', import.meta.url),
+      ),
+    });
+  await page
+    .getByRole('dialog')
+    .getByRole('button', { name: 'Not now' })
+    .click();
+  const list = page.getByRole('list', { name: 'Files on the printer' });
+  const row = list.getByRole('listitem').filter({ hasText: 'simple core one' });
+  await expect(row).toContainText('PLA');
+  await expect(row).toContainText('43m');
+  await page
+    .getByRole('button', { name: 'Print simple core one indx 3 shapes' })
+    .click();
+  const dialog = page.getByRole('dialog');
+  await expect(dialog).toContainText('43m');
+  await expect(dialog.getByTestId('file-grams')).toHaveText('18.6 g');
+  await expect(dialog.locator('img').first()).toHaveAttribute('src', /^blob:/);
 });

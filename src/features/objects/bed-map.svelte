@@ -45,7 +45,10 @@
       .join(' ');
   const stateOf = (item: PlateItem) => {
     if (item.canceled) return 'canceled';
-    return item.id === current ? 'current' : 'pending';
+    // In the cancel dialog only the object going is marked.
+    return item.id === current && highlight === undefined
+      ? 'current'
+      : 'pending';
   };
   const pick = (e: Event, item: PlateItem) => {
     // A click leaves no focus behind to be drawn once the dialog closes;
@@ -121,7 +124,7 @@
         cx={x}
         cy={area.depth - y}
         r={area.width / 120}
-        class="fill-primary"
+        class={highlight === undefined ? 'fill-primary' : 'fill-white'}
       />
       <!-- The tool's icon, its tip on the position. -->
       <path
