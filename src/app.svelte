@@ -246,8 +246,8 @@
     });
   }
 
-  async function print(name: string) {
-    const ok = await files.print(name, candidate?.dir ?? files.path);
+  async function print(name: string, mapping?: Record<string, number[]>) {
+    const ok = await files.print(name, candidate?.dir ?? files.path, mapping);
     if (ok) {
       candidate = undefined;
       await printer.refresh();
@@ -435,6 +435,7 @@
   <UpdateDialog />
   <PrintDialog
     file={candidate}
+    dir={files.path}
     onprint={print}
     {canStart}
     {blocked}

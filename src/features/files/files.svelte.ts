@@ -144,7 +144,13 @@ export class FilesStore {
 
   /// Starts a print from `dir` (the current folder unless given); false when
   /// the printer refuses.
-  async print(name: string, dir = this.path): Promise<boolean> {
+  /// Starts a print; a tool mapping (Connect's shape) starts it without the
+  /// printer's own mapping screen.
+  async print(
+    name: string,
+    dir = this.path,
+    mapping?: Record<string, number[]>,
+  ): Promise<boolean> {
     const { response } = await api.POST('/api/v1/files/{storage}/{path}', {
       params: {
         path: {
@@ -152,6 +158,7 @@ export class FilesStore {
           path: dir ? `${dir}/${name}` : name,
         },
       },
+      ...(mapping && { body: { tool_mapping: mapping } }),
     });
     return response.ok;
   }

@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { untrack } from 'svelte';
   import { Icon } from '../../lib/ui/icon';
   import { Clock, Printer } from '../../lib/ui/icon/icons';
 
@@ -23,11 +24,31 @@
   import { MaterialChip } from '../../lib/ui/material';
   import { groupMaterials } from '../../lib/files/group-materials';
   import { Thumbnail } from '../../lib/ui/thumbnail';
+  import ToolMappingView from '../mapping/tool-mapping.svelte';
+  import { api } from '../../lib/api/client';
+  import { fileHeader } from '../../lib/api/download';
+  import { fileKey } from '../../lib/files/header-cache';
+  import type { Header } from '../../lib/files/header';
+  import {
+    gcodeFilaments,
+    type Mapping,
+    suggest,
+    toApi,
+  } from '../../lib/printer/tool-mapping';
+
+  // A constant the bundler folds: builds without tool mapping drop it.
+  const MappingView = __TOOL_MAPPING__ ? ToolMappingView : undefined;
 
   interface Props {
     file: PrintCandidate | undefined;
-    /// Starts the print; false when the printer refuses.
-    onprint: (name: string) => Promise<boolean>;
+    /// Starts the print, with a tool mapping where there is one; false
+    /// when the printer refuses.
+    onprint: (
+      name: string,
+      mapping?: Record<string, number[]>,
+    ) => Promise<boolean>;
+    /// The file's folder on the USB drive.
+    dir?: string;
     onclose: () => void;
     /// The printer takes a job now.
     canStart?: boolean;
@@ -35,7 +56,14 @@
     blocked?: string | undefined;
   }
 
-  let { file, onprint, onclose, canStart = true, blocked }: Props = $props();
+  let {
+    file,
+    onprint,
+    onclose,
+    canStart = true,
+    blocked,
+    dir = '',
+  }: Props = $props();
   let busy = $state(false);
   let failed = $state(false);
   const loaded = $derived(filament.loaded);
@@ -116,9 +144,68 @@
     busy = false;
   }
 
+  // Tool mapping (PrusaLink 2): the file's extruders from its header, read
+  // on upload or from the head of the file on the printer.
+  let header = $state<Header | undefined>();
+  let mapping = $state<Mapping>({});
+  let changingAll = $state(false);
+  const mapsTools = $derived(
+    MappingView !== undefined &&
+      identity.can('tool_mapping') &&
+      identity.slots.length > 1,
+  );
+  $effect(() => {
+    header = undefined;
+    changingAll = false;
+    if (!file || !mapsTools) return;
+    const folder = file.dir ?? dir;
+    const path = folder ? `${folder}/${file.name}` : file.name;
+    void fileHeader(path, fileKey(folder, file.displayName)).then((h) => {
+      header = h;
+    });
+  });
+  const extruders = $derived(mapsTools ? gcodeFilaments(header) : []);
+  // Suggested once per file: the printer's tools are read again every few
+  // seconds, and the person's changes stay.
+  $effect(() => {
+    const used = extruders;
+    mapping = untrack(() =>
+      suggest(used, identity.slots, identity.nozzleCheck),
+    );
+  });
+  const mapped = $derived(extruders.every((f) => mapping[f.index]?.length));
+
+  // The printer's change all: what it suggests for this print, run at once.
+  async function changeAll() {
+    if (!file) return;
+    const folder = file.dir ?? dir;
+    const path = `/usb/${folder ? `${folder}/` : ''}${file.name}`;
+    const { data } = await api.GET('/api/v1/filament/change-all', {
+      params: { query: { for: path } },
+    });
+    const { response } = await api.POST('/api/v1/filament/change-all', {
+      body: { items: data?.items ?? {} },
+    });
+    changingAll = response.ok;
+  }
+
+  // A single-tool printer's nozzle against the file's, by the printer's own
+  // nozzle check; a printer with several tools checks each in the mapping.
+  const nozzleMismatch = $derived(
+    !multiTool &&
+      info?.nozzle !== undefined &&
+      identity.nozzle !== undefined &&
+      Math.abs(Number(info.nozzle) - identity.nozzle) > 0.001 &&
+      identity.nozzleCheck !== 'ignore',
+  );
+  const refused = $derived(nozzleMismatch && identity.nozzleCheck === 'abort');
+
   async function start(name: string) {
     busy = true;
-    failed = !(await onprint(name));
+    failed = !(await onprint(
+      name,
+      extruders.length ? toApi(mapping) : undefined,
+    ));
     busy = false;
   }
 </script>
@@ -153,6 +240,30 @@
         </div>
       {/each}
     </dl>
+    {#if MappingView && extruders.length}
+      <MappingView
+        filaments={extruders}
+        slots={identity.slots}
+        bind:mapping
+        severity={identity.nozzleCheck}
+        onchangeall={identity.can('change_all') && canStart
+          ? () => void changeAll()
+          : undefined}
+      />
+      {#if changingAll}
+        <Alert variant="info">{t('mapping.changing')}</Alert>
+      {:else if !mapped}
+        <Alert variant="info">{t('mapping.incomplete')}</Alert>
+      {/if}
+    {/if}
+    {#if __CONTROLS__ && nozzleMismatch}
+      <Alert variant={refused ? 'destructive' : 'info'}>
+        {t(refused ? 'controls.nozzleAbort' : 'controls.nozzleWarn', {
+          file: info.nozzle ?? '',
+          printer: identity.nozzle ?? '',
+        })}
+      </Alert>
+    {/if}
     <FilamentProgress />
     {#if changing}
       <!-- The progress above says it all. -->
@@ -201,7 +312,7 @@
       {:else}
         <Button
           size="lg"
-          disabled={!canStart}
+          disabled={!canStart || !mapped || (__CONTROLS__ && refused)}
           loading={busy}
           onclick={() => void start(file.name)}
         >
