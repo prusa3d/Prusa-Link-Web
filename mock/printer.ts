@@ -1,20 +1,53 @@
 import type { components } from '../src/lib/api/schema';
 import { parseFileName } from '../src/lib/files/name.ts';
-import { ambient, seedFiles, seedTools, shortName } from './seed.ts';
+import {
+  type PlateObject,
+  readObjectsInfo,
+} from '../src/lib/files/objects-info.ts';
+import { ambient, FILAMENTS, seedFiles, seedTools, shortName } from './seed.ts';
 
 type Schemas = components['schemas'];
 export type PrinterState = Schemas['StatusPrinter']['state'];
 
-/// XL is the five-tool XL, XL_SINGLE the one-tool XL: the same firmware and
-/// the same /api/version, so the page cannot tell them apart.
+/// XL is the five-tool XL, XL_2 a two-tool one and XL_SINGLE the one-tool
+/// XL: the same firmware and the same /api/version, so the page tells them
+/// apart only by the tool count of API v2.
 export type PrinterModel =
-  'MK4S' | 'XL' | 'XL_SINGLE' | 'COREONE' | 'COREONE_INDX';
+  'MK4S' | 'XL' | 'XL_2' | 'XL_SINGLE' | 'COREONE' | 'COREONE_INDX';
 
 export interface MockTool {
   temp: number;
   target: number;
   material: string;
+  color?: string | undefined;
 }
+
+/// What the printer shows on its screen and PrusaLink 2 bridges to
+/// /api/v1/dialog. `kind` says what pressing a button does in the mock.
+export interface MockDialog {
+  id: number;
+  state: 'ATTENTION' | 'ERROR';
+  code?: string | undefined;
+  title: string;
+  text: string;
+  buttons: string[];
+  kind?: 'mismatch' | undefined;
+}
+
+export interface MockObject {
+  name: string;
+  polygon: PlateObject['polygon'];
+  canceled: boolean;
+}
+
+/// The states Connect and PrusaLink 2 take a preheat, a filament load or a
+/// firmware flash in.
+export const IDLE_STATES: readonly PrinterState[] = [
+  'IDLE',
+  'READY',
+  'FINISHED',
+  'STOPPED',
+];
 
 export interface MockFile {
   /// Folder on the stick, '' for the root, 'a/b' for nested ones.
@@ -27,6 +60,11 @@ export interface MockFile {
   print_time: number;
   /// The text of a small upload (a helper job's G-code).
   gcode?: string;
+  /// The bytes of an upload, or of a fixture the dev server or demo loaded,
+  /// for downloads.
+  data?: Uint8Array;
+  /// A file in mock/fixtures that `MockPrinter.fixtures` holds.
+  fixture?: string;
 }
 
 /// Where a filament change is: heating, waiting for the old filament to come
@@ -39,12 +77,15 @@ export interface MockJob {
   progress: number;
   time_printing: number;
   time_remaining: number;
+  /// From the file's objects_info, once read; empty without one.
+  objects: MockObject[];
 }
 
 /// The `printer` field of /api/version (src/lib/printer/models.ts).
 export const PRINTER_CODE: Record<PrinterModel, string> = {
   MK4S: '1.4.1',
   XL: '3.1.0',
+  XL_2: '3.1.0',
   XL_SINGLE: '3.1.0',
   COREONE: '7.1.0',
   COREONE_INDX: '7.10.0',
@@ -53,6 +94,7 @@ export const PRINTER_CODE: Record<PrinterModel, string> = {
 const HOSTNAME: Record<PrinterModel, string> = {
   MK4S: 'prusa-mk4s',
   XL: 'prusa-xl',
+  XL_2: 'prusa-xl',
   XL_SINGLE: 'prusa-xl',
   COREONE: 'prusa-core-one',
   COREONE_INDX: 'prusa-core-one-indx',
@@ -85,9 +127,39 @@ export class MockPrinter {
   axis = { x: 0, y: 0, z: 0 };
   speed = 100;
   flow = 100;
+  fanPrint = 0;
+  /// Babysteps of this print, in mm.
+  zOffset = 0;
+  /// Answers the PrusaLink 2 API (/api/v1/info features, expanded status,
+  /// dialogs, objects, tune, preheat, filament, firmware flash). Off, it is
+  /// today's firmware.
+  apiV2 = true;
+  /// The CORE One's chamber; null without one.
+  chamber: { temp: number; target: number } | undefined;
+  /// The XL's enclosure.
+  enclosure: { temp: number } | undefined;
+  dialog: MockDialog | undefined;
+  #nextDialogId = 1;
+  /// Changes whenever an object is cancelled or the list changes.
+  objectsRevision = 0;
   files: MockFile[] = [];
-  /// Firmware (.bbf) put in the USB root, which the printer does not list.
+  /// Firmware (.bbf) in the USB root, by its long name. Firmware before API v2
+  /// does not list them.
   firmwareUploads: string[] = [];
+  /// Fixture bytes by name, which the dev server or demo loads.
+  static fixtures: Record<string, Uint8Array> = {};
+  /// Seconds until a printer flashing firmware answers again.
+  #rebooting = 0;
+  /// A filament command of API v2 the printer works on.
+  #toolOp:
+    | {
+        tool: number;
+        material: string;
+        color?: string | undefined;
+        ticks: number;
+        back: PrinterState;
+      }
+    | undefined;
   /// A filament helper job (M701/M702) and the step it is at. Like the real
   /// printer it waits for a person: the dev panel's buttons take the filament
   /// out, put it in, or cancel.
@@ -128,7 +200,16 @@ export class MockPrinter {
     this.bed = { temp: ambient(9), target: 0 };
     this.tools = seedTools(this.model);
     this.activeTool = 0;
-    this.parked = this.model === 'XL';
+    this.parked = this.model === 'XL' || this.model === 'XL_2';
+    this.chamber = this.model.startsWith('COREONE')
+      ? { temp: ambient(3), target: 0 }
+      : undefined;
+    this.enclosure = undefined;
+    this.dialog = undefined;
+    this.#toolOp = undefined;
+    this.#rebooting = 0;
+    this.fanPrint = 0;
+    this.zOffset = 0;
     if (!this.takesMmu) this.mmu = false;
     this.axis = { x: 0, y: -4, z: 5 };
     this.speed = 100;
@@ -137,6 +218,100 @@ export class MockPrinter {
     this.files = seeded.files;
     this.folders = seeded.folders;
     this.firmwareUploads = [];
+  }
+
+  get toolCount() {
+    return this.tools.length;
+  }
+
+  /// The bytes a download of `f` answers with, when the mock has them.
+  bytes(f: MockFile): Uint8Array | undefined {
+    return f.data ?? (f.fixture ? MockPrinter.fixtures[f.fixture] : undefined);
+  }
+
+  /// Shows a dialog on the printer's screen, with a new id.
+  showDialog(d: Omit<MockDialog, 'id'>) {
+    this.dialog = { ...d, id: this.#nextDialogId++ };
+    this.state = d.state;
+  }
+
+  /// A button pressed on the printer's dialog, from its screen or the API.
+  press(id: number, button: string): 'ok' | 'stale' | 'invalid' {
+    const d = this.dialog;
+    if (d?.id !== id) return 'stale';
+    if (!d.buttons.includes(button)) return 'invalid';
+    this.dialog = undefined;
+    this.question = undefined;
+    if (d.kind === 'mismatch' && button === 'Abort') {
+      this.state = 'STOPPED';
+      this.cool();
+    } else {
+      this.state = this.job ? 'PRINTING' : 'IDLE';
+    }
+    return 'ok';
+  }
+
+  get rebooting() {
+    return this.#rebooting > 0;
+  }
+
+  /// Flashes the firmware and restarts: it answers nothing for a few seconds.
+  flash(version: string) {
+    this.firmware = version;
+    this.#rebooting = 6;
+    this.offline = true;
+  }
+
+  /// A filament load, change or unload by API v2; `material` '---' unloads.
+  toolFilament(tool: number, material: string, color?: string) {
+    this.#toolOp = { tool, material, color, ticks: 4, back: this.state };
+    const t = this.tools[tool];
+    if (t) t.target = 230;
+    if (IDLE_STATES.includes(this.state)) this.state = 'BUSY';
+  }
+
+  /// Heats for a filament, or cools down with undefined.
+  preheat(name: string | undefined, tool?: number) {
+    const preset = FILAMENTS.find((f) => f.name === name);
+    if (!preset) {
+      this.cool();
+      return;
+    }
+    this.tools.forEach((t, i) => {
+      if (tool === undefined || tool === i) t.target = preset.nozzle;
+    });
+    this.bed.target = preset.bed;
+    if (this.chamber && preset.chamber) this.chamber.target = preset.chamber;
+  }
+
+  /// The object the head is on: it moves through the objects left as the
+  /// print goes on.
+  get currentObject(): number | undefined {
+    const job = this.job;
+    if (!job) return undefined;
+    const left = job.objects
+      .map((o, i) => ({ o, i }))
+      .filter(({ o }) => !o.canceled);
+    if (!left.length) return undefined;
+    const layer = Math.floor(job.time_printing / 30);
+    return left[layer % left.length]?.i;
+  }
+
+  setCanceled(id: number, canceled: boolean): boolean {
+    const o = this.job?.objects[id];
+    if (!o) return false;
+    o.canceled = canceled;
+    this.objectsRevision++;
+    return true;
+  }
+
+  async #readObjects(job: MockJob) {
+    const bytes = this.bytes(job.file);
+    if (!bytes) return;
+    const objects = await readObjectsInfo(new Blob([bytes.slice()]).stream());
+    if (this.job !== job || !objects) return;
+    job.objects = objects.map((o) => ({ ...o, canceled: false }));
+    this.objectsRevision++;
   }
 
   get activeToolState(): MockTool {
@@ -187,7 +362,11 @@ export class MockPrinter {
       progress: 0,
       time_printing: 0,
       time_remaining: f.print_time,
+      objects: [],
     };
+    this.zOffset = 0;
+    this.objectsRevision++;
+    void this.#readObjects(this.job);
     // A filament helper job (M701/M702): heats, swaps, finishes.
     const load = /M701 S"([A-Z]+)"/.exec(f.gcode ?? '');
     if (load || f.gcode?.includes('M702')) {
@@ -209,8 +388,15 @@ export class MockPrinter {
     const wanted = new Set(parseFileName(f.display_name).materials);
     const loaded = this.activeToolState.material.toUpperCase();
     if (wanted.size === 1 && !wanted.has(loaded)) {
-      this.state = 'ATTENTION';
       this.question = `Filament mismatch: the file is for ${[...wanted].join('')}, ${loaded} is loaded.`;
+      this.showDialog({
+        state: 'ATTENTION',
+        code: '12608',
+        title: 'FILAMENT MISMATCH',
+        text: this.question,
+        buttons: ['Print', 'Abort'],
+        kind: 'mismatch',
+      });
     } else {
       this.state = 'PRINTING';
       this.question = undefined;
@@ -248,7 +434,12 @@ export class MockPrinter {
   }
 
   /// Stores an upload under its 8.3 name and returns its path.
-  upload(path: string, size: number, gcode?: string): string {
+  upload(
+    path: string,
+    size: number,
+    gcode?: string,
+    data?: Uint8Array,
+  ): string {
     const slash = path.lastIndexOf('/');
     const dir = slash < 0 ? '' : path.slice(0, slash);
     const displayName = path.slice(slash + 1);
@@ -267,6 +458,7 @@ export class MockPrinter {
       m_timestamp: Math.floor(Date.now() / 1000),
       print_time: 45 * 60,
       ...(gcode !== undefined && { gcode }),
+      ...(data && { data }),
     });
     return dir ? `${dir}/${name}` : name;
   }
@@ -326,7 +518,23 @@ export class MockPrinter {
 
   /// One real second.
   tick() {
+    if (this.#rebooting > 0 && --this.#rebooting === 0) {
+      this.offline = false;
+      this.state = 'IDLE';
+      this.job = undefined;
+    }
     this.#settle();
+    const op = this.#toolOp;
+    if (op && --op.ticks <= 0) {
+      const t = this.tools[op.tool];
+      if (t) {
+        t.material = op.material;
+        t.color = op.material === '---' ? undefined : op.color;
+        t.target = 0;
+      }
+      this.#toolOp = undefined;
+      if (this.state === 'BUSY') this.state = op.back;
+    }
     // Stopped on the printer (the dev panel's state buttons): the filament
     // stays as it was.
     if (this.#helper && !['BUSY', 'ATTENTION'].includes(this.state)) {
@@ -350,6 +558,17 @@ export class MockPrinter {
     };
     approach(this.bed, 9);
     this.tools.forEach(approach);
+    if (this.chamber) approach(this.chamber, 3);
+    const current = this.currentObject;
+    const polygon =
+      current === undefined ? undefined : this.job?.objects[current]?.polygon;
+    if (this.state === 'PRINTING' && polygon?.length) {
+      const [x, y] = polygon[
+        (this.job?.time_printing ?? 0) % polygon.length
+      ] ?? [0, 0];
+      this.axis.x = Math.round(x * 100) / 100;
+      this.axis.y = Math.round(y * 100) / 100;
+    }
     if (this.state === 'PRINTING' && this.job) {
       const total = this.job.time_printing + this.job.time_remaining;
       const dt = Math.min(this.timeScale, this.job.time_remaining);
@@ -366,6 +585,7 @@ export class MockPrinter {
   cool() {
     this.bed.target = 0;
     this.tools.forEach((t) => (t.target = 0));
+    if (this.chamber) this.chamber.target = 0;
   }
 }
 

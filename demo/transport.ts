@@ -16,6 +16,7 @@ export function answer(
   pathname: string,
   headers: Headers,
   body: Uint8Array | undefined,
+  query = '',
 ): MockResponse {
   if (pathname === '/__mock/state') {
     if (method === 'PATCH' && body?.length) {
@@ -26,40 +27,31 @@ export function answer(
     }
     return { status: 200, body: snapshot(printer) };
   }
-  // Downloads: the mock keeps no G-code beyond a helper job's few lines.
-  if (method === 'GET' && pathname.startsWith('/usb/')) {
-    const file = printer.file(decodeURIComponent(pathname.slice(5)));
-    if (!file) return { status: 404 };
-    return {
-      status: 200,
-      body: file.gcode ?? `; ${file.display_name}\n; mock printer, no G-code\n`,
-      headers: {
-        'content-type': 'text/x-gcode',
-        'content-disposition': `attachment; filename="${file.display_name}"`,
-      },
-    };
-  }
   return handleApi(printer, {
     method,
     path: pathname,
+    query,
     headers,
     ...(body && { body }),
   });
 }
 
-function bodyText(body: unknown): string {
+function bodyText(body: unknown): string | Uint8Array<ArrayBuffer> {
   if (body === undefined) return '';
+  if (body instanceof Uint8Array) return new Uint8Array(body);
   return typeof body === 'string' ? body : JSON.stringify(body);
 }
 
 function toResponse(out: MockResponse): Response {
   const empty =
     out.body === undefined || [101, 204, 205, 304].includes(out.status);
-  const isText = typeof out.body === 'string';
+  let type = 'application/json';
+  if (typeof out.body === 'string') type = 'text/plain';
+  else if (out.body instanceof Uint8Array) type = 'application/octet-stream';
   return new Response(empty ? null : bodyText(out.body), {
     status: out.status,
     headers: {
-      'content-type': isText ? 'text/plain' : 'application/json',
+      'content-type': type,
       ...out.headers,
     },
   });
@@ -106,6 +98,7 @@ export function installMockTransport(printer: MockPrinter) {
         url.pathname,
         lowerCase(request.headers),
         body,
+        url.search.slice(1),
       ),
     );
   };
@@ -230,7 +223,9 @@ function mockXhr(printer: MockPrinter) {
       );
       this.status = out.status;
       this.readyState = 4;
-      this.responseText = bodyText(out.body);
+      const text = bodyText(out.body);
+      this.responseText =
+        typeof text === 'string' ? text : new TextDecoder().decode(text);
       this.#emit('load', new ProgressEvent('load'));
     }
 

@@ -4,6 +4,7 @@ import { parse } from 'yaml';
 
 import { handleApi } from './api.ts';
 import { MockPrinter } from './printer.ts';
+import { seedFirmware } from './seed.ts';
 
 interface Schema {
   $ref?: string;
@@ -109,7 +110,14 @@ describe('mock printer API', () => {
 });
 
 describe('seeded printer', () => {
-  it.each(['MK4S', 'XL', 'XL_SINGLE', 'COREONE', 'COREONE_INDX'] as const)(
+  it.each([
+    'MK4S',
+    'XL',
+    'XL_2',
+    'XL_SINGLE',
+    'COREONE',
+    'COREONE_INDX',
+  ] as const)(
     '%s starts idle and cold with files on the USB stick',
     (model) => {
       const printer = new MockPrinter(model);
@@ -125,7 +133,9 @@ describe('seeded printer', () => {
         ).size,
       ).toBe(printer.files.length);
       expect(
-        printer.files.every((f) => /^[A-Z0-9_]{1,6}~\d+\.BGC$/.test(f.name)),
+        printer.files.every((f) =>
+          /^[A-Z0-9_]{1,6}~\d+\.(BGC|GCO)$/.test(f.name),
+        ),
       ).toBe(true);
     },
   );
@@ -201,5 +211,201 @@ describe('seeded printer', () => {
       'MK4_MK4S_MK3.9_MK3.9S_firmware_8.0.2.bbf',
     ]);
     expect(printer.files).toHaveLength(before);
+  });
+});
+
+const send = (
+  printer: MockPrinter,
+  method: string,
+  path: string,
+  body?: unknown,
+  query?: string,
+) =>
+  handleApi(printer, {
+    method,
+    path,
+    ...(query !== undefined && { query }),
+    headers: authed(printer),
+    ...(body !== undefined && {
+      body: new TextEncoder().encode(JSON.stringify(body)),
+    }),
+  });
+
+describe('PrusaLink 2 API', () => {
+  it('reports tools, materials and features in /info, with an ETag', () => {
+    const printer = new MockPrinter('XL');
+    const res = get(printer, '/api/v1/info');
+    const info = res.body as {
+      tool_count: number;
+      tools: Record<string, { material_package_instance?: unknown }>;
+      features: string[];
+    };
+    expect(info.tool_count).toBe(5);
+    expect(Object.keys(info.tools)).toEqual(['0', '1', '2', '3', '4']);
+    expect(info.features).toContain('cancel_object');
+    const again = handleApi(printer, {
+      method: 'GET',
+      path: '/api/v1/info',
+      headers: { ...authed(printer), 'if-none-match': res.headers?.etag },
+    });
+    expect(again.status).toBe(304);
+  });
+
+  it('answers ?expanded=true with every tool, or 404 like old firmware', () => {
+    const printer = new MockPrinter('XL_2');
+    printer.parked = false;
+    printer.activeTool = 1;
+    const res = send(
+      printer,
+      'GET',
+      '/api/v1/status',
+      undefined,
+      'expanded=true',
+    );
+    const tools = (
+      res.body as { printer: { tools: Record<string, { active: boolean }> } }
+    ).printer.tools;
+    expect(Object.keys(tools)).toEqual(['0', '1']);
+    expect(tools['1']?.active).toBe(true);
+    printer.apiV2 = false;
+    expect(
+      send(printer, 'GET', '/api/v1/status', undefined, 'expanded=true').status,
+    ).toBe(404);
+    expect(get(printer, '/api/v1/status').status).toBe(200);
+  });
+
+  it('shows a dialog and takes its buttons', () => {
+    const printer = new MockPrinter();
+    printer.showDialog({
+      state: 'ATTENTION',
+      code: '12301',
+      title: 'FILAMENT RUNOUT',
+      text: '…',
+      buttons: ['Continue'],
+    });
+    const d = get(printer, '/api/v1/dialog').body as { dialog_id: number };
+    expect(
+      send(printer, 'POST', `/api/v1/dialog/${String(d.dialog_id)}`, {
+        button: 'Nope',
+      }).status,
+    ).toBe(400);
+    expect(
+      send(printer, 'POST', '/api/v1/dialog/999', { button: 'Continue' })
+        .status,
+    ).toBe(404);
+    expect(
+      send(printer, 'POST', `/api/v1/dialog/${String(d.dialog_id)}`, {
+        button: 'Continue',
+      }).status,
+    ).toBe(204);
+    expect(get(printer, '/api/v1/dialog').status).toBe(204);
+  });
+
+  it('lists the objects of a print from its file and cancels one', async () => {
+    MockPrinter.fixtures['three-shapes.bgcode'] = new Uint8Array(
+      readFileSync(new URL('./fixtures/three-shapes.bgcode', import.meta.url)),
+    );
+    const printer = new MockPrinter('COREONE_INDX');
+    const shapes = printer.files.find(
+      (f) => f.fixture === 'three-shapes.bgcode',
+    );
+    if (!shapes) throw new Error('no fixture file');
+    printer.startPrint(shapes.name);
+    await expect.poll(() => printer.job?.objects.length).toBe(3);
+    const id = String(printer.job?.id);
+    const list = get(printer, `/api/v1/job/${id}/objects`).body as {
+      objects: { id: number; name: string; canceled: boolean }[];
+    };
+    expect(list.objects.map((o) => o.name)).toEqual([
+      'Shape-Cylinder',
+      'Shape-Sphere',
+      'Shape-Box',
+    ]);
+    expect(
+      send(printer, 'PUT', `/api/v1/job/${id}/objects/1/cancel`).status,
+    ).toBe(204);
+    expect(printer.job?.objects[1]?.canceled).toBe(true);
+    expect(
+      send(printer, 'PUT', `/api/v1/job/${id}/objects/7/cancel`).status,
+    ).toBe(404);
+  });
+
+  it('preheats only when idle and babysteps only while printing', () => {
+    const printer = new MockPrinter();
+    expect(
+      send(printer, 'PUT', '/api/v1/printer', { z_offset_delta: -0.025 })
+        .status,
+    ).toBe(409);
+    expect(
+      send(printer, 'POST', '/api/v1/printer/preheat', { filament: 'PETG' })
+        .status,
+    ).toBe(204);
+    expect(printer.bed.target).toBe(85);
+    printer.state = 'PRINTING';
+    expect(
+      send(printer, 'POST', '/api/v1/printer/preheat', { filament: 'PLA' })
+        .status,
+    ).toBe(409);
+    expect(
+      send(printer, 'PUT', '/api/v1/printer', { z_offset_delta: -0.025 })
+        .status,
+    ).toBe(204);
+    expect(printer.zOffset).toBe(-0.025);
+    expect(send(printer, 'PUT', '/api/v1/printer', { nope: 1 }).status).toBe(
+      422,
+    );
+  });
+
+  it('loads filament into a tool by its OpenPrintTag fields', () => {
+    const printer = new MockPrinter('XL');
+    expect(
+      send(printer, 'POST', '/api/v1/tools/2/filament', {
+        command: 'load',
+        material: { material_type: 'PETG', primary_color: '#00ff00' },
+      }).status,
+    ).toBe(202);
+    for (let i = 0; i < 5; i++) printer.tick();
+    expect(printer.tools[2]).toMatchObject({
+      material: 'PETG',
+      color: '#00ff00',
+    });
+    expect(
+      send(printer, 'POST', '/api/v1/tools/2/filament', {
+        command: 'load',
+        material: { material_type: 'UNOBTAINIUM' },
+      }).status,
+    ).toBe(422);
+  });
+
+  it('lists firmware in the root and flashes only newer ones', () => {
+    const printer = new MockPrinter('COREONE');
+    printer.firmwareUploads = seedFirmware('COREONE');
+    const root = get(printer, '/api/v1/files/usb').body as {
+      children: { type: string; name: string; display_name: string }[];
+    };
+    const firmware = root.children.filter((c) => c.type === 'FIRMWARE');
+    expect(firmware).toHaveLength(3);
+    const meta = (name: string) =>
+      (
+        get(printer, `/api/v1/files/usb/${name}`).body as {
+          meta: { relation: string; compatible: boolean };
+        }
+      ).meta;
+    const [newer, older, other] = firmware.map((f) => f.name);
+    expect(meta(newer ?? '')).toMatchObject({
+      relation: 'newer',
+      compatible: true,
+    });
+    expect(
+      send(printer, 'POST', `/api/v1/files/usb/${older ?? ''}`).status,
+    ).toBe(409);
+    expect(
+      send(printer, 'POST', `/api/v1/files/usb/${other ?? ''}`).status,
+    ).toBe(422);
+    expect(
+      send(printer, 'POST', `/api/v1/files/usb/${newer ?? ''}`).status,
+    ).toBe(202);
+    expect(printer.firmware).toBe('8.0.2');
+    expect(get(printer, '/api/version').status).toBe(503);
   });
 });
