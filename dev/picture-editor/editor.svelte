@@ -21,6 +21,19 @@
   } from './conditions.ts';
   import type { Reading } from './glyphs.ts';
   import LabelMark from './label-mark.svelte';
+  import {
+    align,
+    distribute,
+    layoutRow,
+    nearRow,
+    respaceRow,
+    rowAt,
+    rowFits,
+    sameLength,
+    snap,
+    type Snapped,
+    snapTargets,
+  } from './label-tools.ts';
   import { LivePicture } from './live.ts';
   import {
     compareKeys,
@@ -114,8 +127,13 @@
   let dirty = $state(false);
   let selection = $state<string[]>([]);
   let selectedLabel = $state<number | undefined>();
+  /// Labels picked for align and distribute; the primary one shows handles.
+  let labelSel = $state<number[]>([]);
+  let guides = $state<{ x?: number; y?: number }>({});
+  let rowCount = $state(2);
+  let rowAnchors = $state<Point[]>([]);
   let hover = $state<string | undefined>();
-  let mode = $state<'select' | 'label'>('select');
+  let mode = $state<'select' | 'label' | 'row'>('select');
   let pendingAnchor = $state<Point | undefined>();
   let cursor = $state<Point | undefined>();
   let newHeater = $state<Heater>('T1');
@@ -545,16 +563,90 @@
       }
     | undefined;
 
+  function pickLabel(
+    i: number,
+    e?: { shiftKey: boolean; metaKey: boolean; ctrlKey: boolean },
+  ) {
+    selection = [];
+    if (e && (e.shiftKey || e.metaKey || e.ctrlKey)) {
+      labelSel = labelSel.includes(i)
+        ? labelSel.filter((x) => x !== i)
+        : [...labelSel, i];
+      selectedLabel = labelSel.includes(i) ? i : labelSel[0];
+      return;
+    }
+    labelSel = [i];
+    selectedLabel = i;
+  }
+
+  function editLabels(change: (labels: Label[]) => Label[]) {
+    checkpoint();
+    doc.labels = change($state.snapshot(doc.labels));
+  }
+
+  const toolHeaters = $derived(heaters.filter((h) => /^T\d$/.test(h)));
+
+  function startRow() {
+    mode = 'row';
+    rowAnchors = [];
+    selection = [];
+    labelSel = [];
+    selectedLabel = undefined;
+  }
+
+  /// Tool row: one click per nozzle (T1, T2, …), then one for the row's
+  /// height. The labels replace any for those tools, in one undo step.
+  function addRowPoint(at: Point) {
+    if (rowAnchors.length < rowCount) {
+      rowAnchors = [...rowAnchors, at];
+      return;
+    }
+    const tools = rowAnchors.map((anchor, k) => ({
+      heater: toolHeaters[k] ?? 'T1',
+      anchor,
+    }));
+    const row = layoutRow(tools, at[1], doc.style, viewBox);
+    checkpoint();
+    const kept = doc.labels.filter(
+      (l) => !tools.some((t) => t.heater === l.heater),
+    );
+    doc.labels = [...kept, ...row];
+    labelSel = row.map((_, k) => kept.length + k);
+    selectedLabel = labelSel[0];
+    rowAnchors = [];
+    mode = 'select';
+    message = rowFits(tools.length, doc.style, viewBox)
+      ? `Added a row of ${String(tools.length)} tools`
+      : `Added a row of ${String(tools.length)} tools with shorter lines: the values may touch, a smaller value size fits them`;
+  }
+
   function addLabelPoint(at: Point) {
     if (!pendingAnchor) {
       pendingAnchor = at;
       return;
     }
     checkpoint();
+    // A tool joining an existing row lands on it and the row re-spaces.
+    const row = /^T\d$/.test(newHeater)
+      ? nearRow(doc.labels, at[1])
+      : undefined;
     doc.labels.push(
-      newLabel(newHeater, pendingAnchor, at, labelLength(doc.style)),
+      newLabel(
+        newHeater,
+        pendingAnchor,
+        [at[0], row ?? at[1]],
+        labelLength(doc.style),
+      ),
     );
+    if (row !== undefined)
+      doc.labels = respaceRow(
+        $state.snapshot(doc.labels),
+        row,
+        doc.style,
+        viewBox,
+      );
     selectedLabel = doc.labels.length - 1;
+    labelSel = [selectedLabel];
     selection = [];
     pendingAnchor = undefined;
     mode = 'select';
@@ -568,6 +660,10 @@
     const at = toSvg(e);
     if (mode === 'label') {
       addLabelPoint(at);
+      return;
+    }
+    if (mode === 'row') {
+      addRowPoint(at);
       return;
     }
     const handle = target.closest('[data-handle]');
@@ -589,6 +685,7 @@
     } else if (handle) {
       const label = Number(handle.getAttribute('data-label'));
       selectedLabel = label;
+      if (!labelSel.includes(label)) labelSel = [label];
       checkpoint();
       drag = {
         kind: 'handle',
@@ -597,10 +694,10 @@
         moved: false,
       };
     } else if (target.closest('[data-label]')) {
-      selectedLabel = Number(
-        target.closest('[data-label]')?.getAttribute('data-label'),
+      pickLabel(
+        Number(target.closest('[data-label]')?.getAttribute('data-label')),
+        e,
       );
-      selection = [];
       return;
     } else if (selectedHit && !e.shiftKey && !e.metaKey && !e.ctrlKey) {
       checkpoint();
@@ -635,12 +732,21 @@
       const l = doc.labels[drag.label];
       if (!l) return;
       drag.moved = true;
-      if (drag.handle === 'anchor') l.anchor = at;
-      else if (drag.handle === 'end') l.end = [at[0], l.elbow[1]];
+      // Snaps to the other labels' points and the centre lines; Alt is free.
+      const { xs, ys } = snapTargets(doc.labels, drag.label, viewBox);
+      const snapped: Snapped = e.altKey
+        ? { point: at }
+        : snap(at, xs, drag.handle === 'end' ? [] : ys);
+      const p = snapped.point;
+      guides = {};
+      if (snapped.x !== undefined) guides.x = snapped.x;
+      if (snapped.y !== undefined) guides.y = snapped.y;
+      if (drag.handle === 'anchor') l.anchor = p;
+      else if (drag.handle === 'end') l.end = [p[0], l.elbow[1]];
       else {
         const length = l.end[0] - l.elbow[0];
-        l.elbow = at;
-        l.end = [at[0] + length, at[1]];
+        l.elbow = p;
+        l.end = [p[0] + length, p[1]];
       }
       doc.labels[drag.label] = normalizeLabel(l);
     } else if (drag.kind === 'move') {
@@ -688,6 +794,7 @@
     drag = undefined;
     const root = content;
     if (!d || !root || !svgEl) return;
+    guides = {};
     if (d.kind === 'handle' || d.kind === 'scale') {
       if (!d.moved) past.pop();
       return;
@@ -761,9 +868,11 @@
       moveSelection([dir[0] * n, dir[1] * n]);
     } else if (e.key === 'Escape') {
       pendingAnchor = undefined;
+      rowAnchors = [];
       mode = 'select';
       selection = [];
       selectedLabel = undefined;
+      labelSel = [];
     } else if (
       (e.key === 'Delete' || e.key === 'Backspace') &&
       selectedLabel !== undefined
@@ -1122,6 +1231,7 @@
             <g
               class="label"
               class:active={selectedLabel === i}
+              class:picked={labelSel.includes(i) && selectedLabel !== i}
               class:inherited={base && isInherited(label, base.status.labels)}
               data-label={i}
             >
@@ -1166,6 +1276,44 @@
               />
             {/each}
           {/if}
+          {#if guides.x !== undefined}
+            <line
+              class="snap-guide"
+              x1={guides.x}
+              x2={guides.x}
+              y1={viewBox.y}
+              y2={viewBox.y + viewBox.height}
+            />
+          {/if}
+          {#if guides.y !== undefined}
+            <line
+              class="snap-guide"
+              y1={guides.y}
+              y2={guides.y}
+              x1={viewBox.x}
+              x2={viewBox.x + viewBox.width}
+            />
+          {/if}
+          {#if mode === 'row'}
+            {#each rowAnchors as a, k (k)}
+              <circle cx={a[0]} cy={a[1]} r={5 * px} class="pending" />
+              <text
+                class="row-tag"
+                x={a[0] + 8 * px}
+                y={a[1] - 8 * px}
+                font-size={14 * px}>{toolHeaters[k]}</text
+              >
+            {/each}
+            {#if cursor && rowAnchors.length === rowCount}
+              <line
+                class="snap-guide"
+                y1={cursor[1]}
+                y2={cursor[1]}
+                x1={viewBox.x}
+                x2={viewBox.x + viewBox.width}
+              />
+            {/if}
+          {/if}
           {#if mode === 'label' && pendingAnchor}
             <circle
               cx={pendingAnchor[0]}
@@ -1187,7 +1335,11 @@
         </g>
       </svg>
       <p class="hint">
-        {#if mode === 'label'}
+        {#if mode === 'row'}
+          {rowAnchors.length < rowCount
+            ? `Click the nozzle of ${toolHeaters[rowAnchors.length] ?? ''} (${String(rowAnchors.length + 1)} of ${String(rowCount)}). Esc cancels.`
+            : 'Click the height of the row of lines.'}
+        {:else if mode === 'label'}
           {pendingAnchor
             ? 'Click where the leader turns into the horizontal line.'
             : 'Click the point the label names (nozzle tip, bed, …). Esc cancels.'}
@@ -1391,16 +1543,74 @@
             >Add label</button
           >
         </div>
+        {#if toolHeaters.length > 1}
+          <div class="buttons">
+            <select bind:value={rowCount} aria-label="Tools in the row">
+              {#each toolHeaters.slice(1) as h (h)}
+                <option value={Number(h.slice(1))}>{h.slice(1)} tools</option>
+              {/each}
+            </select>
+            <button class:on={mode === 'row'} onclick={startRow}
+              >Add tool row</button
+            >
+          </div>
+        {/if}
+        {#if labelSel.length > 1}
+          <div class="buttons arrange" aria-label="Arrange labels">
+            {#each [['top', 'Top'], ['middle', 'Middle'], ['bottom', 'Bottom'], ['left', 'Left'], ['right', 'Right']] as const as [how, name] (how)}
+              <button
+                onclick={() => {
+                  editLabels((ls) => align(ls, labelSel, how));
+                }}>{name}</button
+              >
+            {/each}
+            <button
+              onclick={() => {
+                editLabels((ls) => sameLength(ls, labelSel));
+              }}
+              title="As long as the first picked">Same length</button
+            >
+            {#if labelSel.length > 2}
+              <button
+                onclick={() => {
+                  editLabels((ls) => distribute(ls, labelSel, 'x'));
+                }}>Distribute ↔</button
+              >
+              <button
+                onclick={() => {
+                  editLabels((ls) => distribute(ls, labelSel, 'y'));
+                }}>Distribute ↕</button
+              >
+            {/if}
+          </div>
+          <div class="small">
+            {labelSel.length} labels picked (Shift/⌘-click to add)
+          </div>
+        {/if}
+        {#if selectedLabel !== undefined && rowAt(doc.labels, doc.labels[selectedLabel]?.elbow[1] ?? NaN).length > 1}
+          <div class="buttons">
+            <button
+              onclick={() => {
+                const y = doc.labels[selectedLabel ?? -1]?.elbow[1];
+                if (y !== undefined)
+                  editLabels((ls) => respaceRow(ls, y, doc.style, viewBox));
+              }}>Re-space tool row</button
+            >
+          </div>
+        {/if}
         {#each doc.labels as label, i (i)}
           {@const inherited =
             base !== undefined && isInherited(label, base.status.labels)}
           <div
             class="label-row"
-            class:selected={selectedLabel === i}
+            class:selected={labelSel.includes(i)}
             class:inherited-row={inherited}
           >
-            <button class="link" onclick={() => (selectedLabel = i)}
-              >#{i + 1}</button
+            <button
+              class="link"
+              onclick={(e) => {
+                pickLabel(i, e);
+              }}>#{i + 1}</button
             >
             <select
               value={label.heater}
@@ -1745,6 +1955,20 @@
   }
   .label-row.inherited-row select:first-of-type {
     opacity: 0.6;
+  }
+  .label.picked {
+    color: #ffb27a;
+  }
+  .snap-guide {
+    stroke: #e5398f;
+    stroke-width: 1;
+    vector-effect: non-scaling-stroke;
+    pointer-events: none;
+  }
+  .row-tag {
+    fill: #00a3ff;
+    font-weight: 600;
+    pointer-events: none;
   }
   .label.active {
     color: #ff9a3c;
