@@ -1,0 +1,55 @@
+/* The app's one stylesheet, on prusa-connect's model (frontend-structure.md):
+   Tailwind, the scan of this tree, the theme, and the base layer. */
+@import 'tailwindcss';
+@source '../';
+@import './tokens.css';
+
+/* White on the brand orange is 3.3:1, under WCAG AA for button labels. The
+   darker step of the same orange (the link colour) keeps white text at 4.5:1.
+   The dark theme's orange and its label colour already pass. */
+:root:not(.dark) {
+  --primary: var(--link);
+  --primary-hovered: var(--color-orange-light-11);
+  --primary-pressed: var(--color-orange-light-12);
+}
+
+@layer base {
+  *,
+  ::before,
+  ::after {
+    border-color: var(--color-border);
+  }
+  /* A Home Screen shortcut runs full screen: keep clear of the notch and
+     the home indicator. */
+  body {
+    padding: env(safe-area-inset-top) env(safe-area-inset-right)
+      env(safe-area-inset-bottom) env(safe-area-inset-left);
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    font-family: var(--font-sans);
+  }
+  /* A button waiting for the printer shows only its spinner, in place of
+     its own icon (Button's `loading`). */
+  button[aria-busy='true'] > svg:not(.animate-spin) {
+    display: none;
+  }
+}
+
+/* A line that runs down while something closes by itself; the element sets
+   animation-duration. */
+.countdown {
+  animation: countdown linear forwards;
+}
+@keyframes countdown {
+  from {
+    transform: scaleX(1);
+  }
+  to {
+    transform: scaleX(0);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .countdown {
+    animation: none;
+  }
+}

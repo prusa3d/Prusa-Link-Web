@@ -1,0 +1,90 @@
+<script lang="ts">
+  import { Icon } from '../../lib/ui/icon';
+  import { CloudUpload, Printer } from '../../lib/ui/icon/icons';
+
+  import { uploads } from './uploads.svelte';
+  import { collectDropped } from '../../lib/files/collect';
+  import { t } from '../../lib/i18n.svelte';
+  import type { Model } from '../../lib/printer/models';
+  import { pictureFor } from '../../lib/printer/picture';
+
+  // Dragging files anywhere over the page turns the whole window into a drop
+  // target, with the printer they are going to.
+  interface Props {
+    model: Model | undefined;
+    name: string;
+  }
+
+  let { model, name }: Props = $props();
+  let depth = $state(0);
+  const picture = $derived(pictureFor(model?.variant));
+
+  const hasFiles = (e: DragEvent) =>
+    e.dataTransfer?.types.includes('Files') ?? false;
+
+  function ondragenter(e: DragEvent) {
+    if (!hasFiles(e)) return;
+    depth += 1;
+  }
+
+  function ondragleave(e: DragEvent) {
+    if (!hasFiles(e)) return;
+    depth = Math.max(0, depth - 1);
+  }
+
+  function ondragover(e: DragEvent) {
+    if (hasFiles(e)) e.preventDefault();
+  }
+
+  async function ondrop(e: DragEvent) {
+    if (!hasFiles(e)) return;
+    e.preventDefault();
+    depth = 0;
+    const data = e.dataTransfer;
+    if (data)
+      await uploads.upload(await collectDropped(data.items, data.files));
+  }
+</script>
+
+<!-- Capture resets the overlay for every drop, also one the drop zone
+     handles itself (it stops the event there). -->
+<svelte:window
+  {ondragenter}
+  {ondragleave}
+  {ondragover}
+  ondropcapture={() => (depth = 0)}
+  ondrop={(e: DragEvent) => void ondrop(e)}
+/>
+
+{#if depth > 0}
+  <div
+    class="pointer-events-none fixed inset-0 z-50 flex items-center justify-center bg-background/85 p-6 backdrop-blur-sm"
+    data-testid="window-drop"
+  >
+    <div
+      class="rounded-2xl flex w-full max-w-md flex-col items-center gap-4 border-2 border-dashed border-primary bg-card p-8 text-center shadow-xl"
+    >
+      {#if picture}
+        <img
+          src={picture}
+          alt=""
+          class="dark:rounded-lg h-36 w-auto object-contain dark:bg-white/90 dark:p-2"
+        />
+      {:else}
+        <Icon node={Printer} class="size-20 text-muted-foreground" />
+      {/if}
+      <div>
+        <p class="text-xl font-semibold">{name}</p>
+        {#if model}<p class="text-sm text-muted-foreground">
+            {model.name}
+          </p>{/if}
+      </div>
+      <p class="flex items-center gap-2 text-lg font-medium text-primary">
+        <Icon node={CloudUpload} class="size-6" />{t('upload.dropAnywhere')}
+      </p>
+      <p class="text-sm text-muted-foreground">
+        {t('upload.dropAnywhereHint')}
+      </p>
+    </div>
+  </div>
+{/if}

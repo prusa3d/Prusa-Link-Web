@@ -1,0 +1,11 @@
+packages:
+  - .
+
+# Same supply-chain policy as prusa-connect/frontend: a dependency must have
+# been public for 3 days, versions are written exact, and no dependency may run
+# an install script.
+minimumReleaseAge: 4320
+savePrefix: ''
+allowBuilds:
+  esbuild: false
+verifyDepsBeforeRun: error
