@@ -26,16 +26,16 @@
 
   const why = (f: UsbFirmware): MessageKey =>
     f.compatible === false
-      ? 'firmware.otherPrinter'
-      : (`firmware.${f.relation ?? 'older'}` as MessageKey);
+      ? 'flash.otherPrinter'
+      : (`flash.${f.relation ?? 'older'}` as MessageKey);
 
   async function install(file: UsbFirmware) {
     asked = undefined;
     const result: Flash = await usbFirmware.flash(file);
     if (result !== 'started')
       notices.add(
-        t('firmware.refused'),
-        t(`firmware.refused.${result}` as MessageKey),
+        t('flash.refused'),
+        t(`flash.refused.${result}` as MessageKey),
       );
   }
 </script>
@@ -47,10 +47,10 @@
     data-testid="usb-firmware"
   >
     <h2 id="usb-firmware-title" class="text-sm font-semibold">
-      {t('firmware.onUsb')}
+      {t('flash.onUsb')}
     </h2>
     {#if usbFirmware.flashing}
-      <p class="text-sm" role="status">{t('firmware.restarting')}</p>
+      <p class="text-sm" role="status">{t('flash.restarting')}</p>
     {:else}
       <ul class="flex flex-col divide-y">
         {#each usbFirmware.files as file (file.name)}
@@ -64,7 +64,7 @@
                 size="sm"
                 class="max-sm:h-11"
                 disabled={!canStart}
-                onclick={() => (asked = file)}>{t('firmware.install')}</Button
+                onclick={() => (asked = file)}>{t('flash.install')}</Button
               >
             {/if}
           </li>
@@ -76,10 +76,10 @@
 
 <Dialog
   open={asked !== undefined}
-  title={t('firmware.installTitle', { version: asked?.version ?? '' })}
+  title={t('flash.installTitle', { version: asked?.version ?? '' })}
   onclose={() => (asked = undefined)}
 >
-  <p class="text-sm text-muted-foreground">{t('firmware.installBody')}</p>
+  <p class="text-sm text-muted-foreground">{t('flash.installBody')}</p>
   <div class="flex flex-wrap justify-end gap-2 max-sm:[&>*]:flex-1">
     <Button variant="secondary" size="lg" onclick={() => (asked = undefined)}
       >{t('upload.cancel')}</Button
@@ -88,7 +88,7 @@
       size="lg"
       onclick={() => {
         if (asked) void install(asked);
-      }}>{t('firmware.install')}</Button
+      }}>{t('flash.install')}</Button
     >
   </div>
 </Dialog>
