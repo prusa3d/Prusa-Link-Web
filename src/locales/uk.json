@@ -289,5 +289,7 @@
   "tools.none": "Матеріал не призначено",
   "tools.load": "Заправити",
   "tools.preheat": "Нагріти {tool}",
-  "controls.preheatFor": "Нагріти для {material}"
+  "controls.preheatFor": "Нагріти для {material}",
+  "controls.modelWarn": "Нарізано для {file}, а не для цього {printer}. Принтер запитає перед друком.",
+  "controls.modelAbort": "Нарізано для {file}, а не для цього {printer}: перевірка принтера відхиляє друк."
 }

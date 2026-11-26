@@ -289,5 +289,7 @@
   "tools.none": "Brak materiału",
   "tools.load": "Załaduj",
   "tools.preheat": "Podgrzej {tool}",
-  "controls.preheatFor": "Podgrzej dla {material}"
+  "controls.preheatFor": "Podgrzej dla {material}",
+  "controls.modelWarn": "Pocięte dla {file}, nie dla tej {printer}. Drukarka zapyta przed drukiem.",
+  "controls.modelAbort": "Pocięte dla {file}, nie dla tej {printer}: jej kontrola drukarki odrzuca wydruk."
 }

@@ -27,6 +27,7 @@ type FetchIdentity = () => Promise<{
   enclosure?: boolean | undefined;
   slots?: PrinterTool[] | undefined;
   nozzleCheck?: Severity | undefined;
+  modelCheck?: Severity | undefined;
 }>;
 
 /// What tool mapping maps to: the MMU's slots (`"0.N"`) where the printer
@@ -90,6 +91,7 @@ const fetchIdentity: FetchIdentity = async () => {
     enclosure: info.data?.enclosure?.enabled,
     slots: __TOOL_MAPPING__ ? mappingTargets(info.data) : [],
     nozzleCheck: info.data?.hw_checks?.nozzle,
+    modelCheck: info.data?.hw_checks?.model,
   };
 };
 
@@ -107,6 +109,7 @@ export class IdentityStore {
   #code = $state<string | undefined>();
   #slots = $state<PrinterTool[]>([]);
   #nozzleCheck = $state<Severity | undefined>();
+  #modelCheck = $state<Severity | undefined>();
   #fetch: FetchIdentity;
 
   constructor(fetch: FetchIdentity = fetchIdentity) {
@@ -157,6 +160,11 @@ export class IdentityStore {
     return this.#nozzleCheck ?? 'warning';
   }
 
+  /// What the printer does with a file sliced for another printer.
+  get modelCheck(): Severity {
+    return this.#modelCheck ?? 'warning';
+  }
+
   /// The `printer` code of /api/version, e.g. `1.4.1`.
   get code() {
     return this.#code;
@@ -183,7 +191,9 @@ export class IdentityStore {
         enclosure,
         slots,
         nozzleCheck,
+        modelCheck,
       } = await this.#fetch();
+      this.#modelCheck = modelCheck;
       this.#slots = slots ?? [];
       this.#nozzleCheck = nozzleCheck;
       this.#mmu = mmu ?? false;

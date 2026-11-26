@@ -21,6 +21,7 @@
     localThumbnail,
   } from '../../lib/files/local-thumbnails';
   import { filamentGrams } from '../../lib/files/metadata';
+  import { fitsPrinter } from '../../lib/printer/compat';
   import { language, t } from '../../lib/i18n.svelte';
   import { Alert } from '../../lib/ui/alert';
   import { Button } from '../../lib/ui/button';
@@ -230,7 +231,16 @@
       Math.abs(Number(info.nozzle) - identity.nozzle) > 0.001 &&
       identity.nozzleCheck !== 'ignore',
   );
-  const refused = $derived(nozzleMismatch && identity.nozzleCheck === 'abort');
+  // The printer's printer_model check, as printcompat's RulePrinterModel.
+  const otherPrinter = $derived(
+    __CONTROLS__ &&
+      fitsPrinter(sliced, identity.code) === false &&
+      identity.modelCheck !== 'ignore',
+  );
+  const refused = $derived(
+    (nozzleMismatch && identity.nozzleCheck === 'abort') ||
+      (otherPrinter && identity.modelCheck === 'abort'),
+  );
 
   async function start(name: string) {
     busy = true;
@@ -305,12 +315,32 @@
         <Alert variant="info">{t('mapping.incomplete')}</Alert>
       {/if}
     {/if}
+    {#if __CONTROLS__ && otherPrinter}
+      <Alert variant={identity.modelCheck === 'abort' ? 'destructive' : 'info'}>
+        {t(
+          identity.modelCheck === 'abort'
+            ? 'controls.modelAbort'
+            : 'controls.modelWarn',
+          {
+            file: sliced ?? '',
+            printer: identity.model?.name ?? '',
+          },
+        )}
+      </Alert>
+    {/if}
     {#if __CONTROLS__ && nozzleMismatch}
-      <Alert variant={refused ? 'destructive' : 'info'}>
-        {t(refused ? 'controls.nozzleAbort' : 'controls.nozzleWarn', {
-          file: info.nozzle ?? '',
-          printer: identity.nozzle ?? '',
-        })}
+      <Alert
+        variant={identity.nozzleCheck === 'abort' ? 'destructive' : 'info'}
+      >
+        {t(
+          identity.nozzleCheck === 'abort'
+            ? 'controls.nozzleAbort'
+            : 'controls.nozzleWarn',
+          {
+            file: info.nozzle ?? '',
+            printer: identity.nozzle ?? '',
+          },
+        )}
       </Alert>
     {/if}
     <FilamentProgress />

@@ -283,5 +283,7 @@
   "tools.none": "素材なし",
   "tools.load": "装填",
   "tools.preheat": "{tool}を予熱",
-  "controls.preheatFor": "{material}用に予熱"
+  "controls.preheatFor": "{material}用に予熱",
+  "controls.modelWarn": "{file}用にスライスされており、この{printer}用ではありません。印刷前に確認されます。",
+  "controls.modelAbort": "{file}用にスライスされており、この{printer}用ではありません。プリンターチェックにより印刷が拒否されます。"
 }

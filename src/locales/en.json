@@ -283,5 +283,7 @@
   "tools.none": "No material assigned",
   "tools.load": "Load",
   "tools.preheat": "Preheat {tool}",
-  "controls.preheatFor": "Preheat for {material}"
+  "controls.preheatFor": "Preheat for {material}",
+  "controls.modelWarn": "Sliced for {file}, not this {printer}. The printer will ask before printing.",
+  "controls.modelAbort": "Sliced for {file}, not this {printer}: its printer check refuses the print."
 }

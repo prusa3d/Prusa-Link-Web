@@ -286,5 +286,7 @@
   "tools.none": "Bez materiálu",
   "tools.load": "Zavést",
   "tools.preheat": "Předehřát {tool}",
-  "controls.preheatFor": "Předehřát pro {material}"
+  "controls.preheatFor": "Předehřát pro {material}",
+  "controls.modelWarn": "Slicováno pro {file}, ne pro tuto {printer}. Tiskárna se před tiskem zeptá.",
+  "controls.modelAbort": "Slicováno pro {file}, ne pro tuto {printer}: její kontrola tiskárny tisk odmítne."
 }

@@ -283,5 +283,7 @@
   "tools.none": "Nessun materiale",
   "tools.load": "Carica",
   "tools.preheat": "Preriscalda {tool}",
-  "controls.preheatFor": "Preriscalda per {material}"
+  "controls.preheatFor": "Preriscalda per {material}",
+  "controls.modelWarn": "Slicato per {file}, non per questa {printer}. La stampante chiederà prima di stampare.",
+  "controls.modelAbort": "Slicato per {file}, non per questa {printer}: il suo controllo della stampante rifiuta la stampa."
 }
