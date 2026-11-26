@@ -20,6 +20,7 @@ export default [
     languageOptions: {
       globals: {
         __MULTI_TOOL__: 'readonly',
+        __TOOL_MAPPING__: 'readonly',
         __CANCEL_OBJECT__: 'readonly',
         __CONTROLS__: 'readonly',
         __FIRMWARE_FLASH__: 'readonly',

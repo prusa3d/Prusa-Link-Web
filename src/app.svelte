@@ -45,7 +45,7 @@
   import { dialog } from './lib/stores/dialog.svelte';
   import BedView from './features/objects/bed-view.svelte';
   import PrinterControls from './features/heating/printer-controls.svelte';
-  import UsbFirmware from './features/firmware/usb-firmware.svelte';
+  import UsbFirmwareCard from './features/firmware/usb-firmware.svelte';
   import { controls as tuning } from './features/heating/controls.svelte';
   import { plateObjects } from './features/objects/objects.svelte';
   import { bedOf } from './lib/printer/bed';
@@ -56,6 +56,10 @@
   import { EmptyState } from './lib/ui/empty-state';
   import { PrusaLinkLogo } from './lib/ui/logo';
   import { Spinner } from './lib/ui/spinner';
+
+  // A build without the feature drops the component: a constant the bundler
+  // folds, which a branch of the markup is not.
+  const UsbFirmware = __FIRMWARE_FLASH__ ? UsbFirmwareCard : undefined;
 
   session.takeKeyFromFragment(globalThis.location, globalThis.history);
 
@@ -400,7 +404,7 @@
           />
         {/if}
         <UpdateNotice as="card" />
-        {#if __FIRMWARE_FLASH__ && identity.can('firmware_update')}
+        {#if UsbFirmware && identity.can('firmware_update')}
           <UsbFirmware {canStart} />
         {/if}
       </div>

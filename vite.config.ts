@@ -25,28 +25,33 @@ const VARIANT = process.env.PRUSALINK_VARIANT;
 // multiTool: only printers with several tools need the per-tool views.
 const FEATURES = [
   'multiTool',
+  'toolMapping',
   'cancelObject',
   'controls',
   'firmwareFlash',
 ] as const;
 type Feature = (typeof FEATURES)[number];
+// toolMapping: the printers whose firmware has HAS_TOOL_MAPPING (a tool
+// changer or an MMU), not the MINI and the iX.
 const SINGLE: Feature[] = ['cancelObject', 'controls', 'firmwareFlash'];
-const MULTI: Feature[] = [...SINGLE, 'multiTool'];
+const MMU: Feature[] = [...SINGLE, 'toolMapping'];
+const MULTI: Feature[] = [...MMU, 'multiTool'];
 const BUILD_FEATURES: Record<string, readonly Feature[]> = {
   generic: MULTI,
   xl: MULTI,
-  ix: MULTI,
+  ix: SINGLE,
   coreone_indx: MULTI,
   coreonel_indx: MULTI,
-  mk35: SINGLE,
-  mk4: SINGLE,
-  coreone: SINGLE,
-  coreonel: SINGLE,
+  mk35: MMU,
+  mk4: MMU,
+  coreone: MMU,
+  coreonel: MMU,
   mini: SINGLE,
 };
 /// The messages only a feature uses, by key prefix.
 const MESSAGES: Record<Feature, string> = {
   multiTool: 'tools.',
+  toolMapping: 'mapping.',
   cancelObject: 'objects.',
   controls: 'controls.',
   firmwareFlash: 'flash.',
@@ -97,6 +102,15 @@ export default defineConfig(({ command, mode }) => ({
     target: 'es2022',
     assetsInlineLimit: mode === 'demo' ? 4096 : Number.MAX_SAFE_INTEGER,
     reportCompressedSize: false,
+    // A component or store a build's feature flags leave unused is dropped,
+    // though its module registers event handlers or creates its store: the
+    // app's modules do nothing at import that a used one would miss.
+    rollupOptions: {
+      treeshake: {
+        moduleSideEffects: (id: string) =>
+          !/\/src\/(?!main\.ts).*\.(ts|svelte)$/.test(id),
+      },
+    },
     chunkSizeWarningLimit: mode === 'demo' ? 1024 : 500,
     // public/ (the favicon) is for the dev server: the firmware has its own.
     copyPublicDir: mode === 'demo',
