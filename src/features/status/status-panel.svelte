@@ -3,7 +3,6 @@
   import { Clock, Pause, Play, Square } from '../../lib/ui/icon/icons';
   import HeaterRow from './heater-row.svelte';
   import ToolCard from './tool-card.svelte';
-  import TemperatureChart from './temperature-chart.svelte';
 
   import { smallThumbnail } from '../../lib/api/thumbnail';
   import { localThumbnail } from '../../lib/files/local-thumbnails';
@@ -13,7 +12,6 @@
   import type {
     ControlAnswer,
     JobFile,
-    Sample,
     Status,
     StatusJob,
   } from '../../lib/stores/printer.svelte';
@@ -32,8 +30,6 @@
     oncontrol?: (action: 'pause' | 'resume' | 'stop') => Promise<ControlAnswer>;
     /// The loaded filament, shown on the nozzle row.
     material?: string | undefined;
-    /// Temperature samples for the chart.
-    history?: readonly Sample[];
     /// Shown instead of the material when the printer cannot tell.
     materialNote?: string | undefined;
     nozzle?: number | undefined;
@@ -57,7 +53,6 @@
     onfilament,
     onunload,
     activity,
-    history = [],
   }: Props = $props();
 
   /// The action waiting for the person's yes.
@@ -327,7 +322,6 @@
           target={status.target_bed}
         />
       </div>
-      <TemperatureChart samples={history} />
     {:else}
       <div
         class="flex flex-col gap-3"

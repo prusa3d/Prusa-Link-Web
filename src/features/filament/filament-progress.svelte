@@ -1,5 +1,5 @@
-<!-- A filament change in progress, then its outcome: the tool's temperature
-     and graph while the printer works, and afterwards whether the filament
+<!-- A filament change in progress, then its outcome: the tool heating up
+     while the printer works, and afterwards whether the filament
      the printer reports is the one asked for. -->
 <script lang="ts">
   import { filament } from './filament.svelte';
@@ -8,8 +8,7 @@
   import { printer } from '../../lib/stores/printer.svelte';
   import { Alert } from '../../lib/ui/alert';
   import { Spinner } from '../../lib/ui/spinner';
-  import HeaterRow from '../status/heater-row.svelte';
-  import TemperatureChart from '../status/temperature-chart.svelte';
+  import HeatingProgress from './heating-progress.svelte';
 
   const loaded = $derived(
     filament.loaded ? filamentLabel(filament.loaded) : t('filament.noneShort'),
@@ -44,13 +43,10 @@
       </Alert>
     </div>
   {/if}
-  <HeaterRow
-    kind="nozzle"
-    label={t('status.tool')}
+  <HeatingProgress
     current={printer.status?.temp_nozzle}
     target={printer.status?.target_nozzle}
   />
-  <TemperatureChart samples={printer.history} />
 {:else if filament.outcome?.ok}
   <div data-testid="filament-outcome">
     <Alert variant="success">

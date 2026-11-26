@@ -63,7 +63,7 @@ test.describe('filament before a print', () => {
       .getByRole('button', { name: 'Change filament to PETG' })
       .click();
     await expect(dialog.getByTestId('filament-progress')).toBeVisible();
-    await expect(dialog.getByTestId('heater-reading')).toBeVisible();
+    await expect(dialog.getByTestId('heating-progress')).toBeVisible();
     // The printer's question shows in the dialog in front, not behind it.
     await expect(dialog.getByTestId('filament-question')).toContainText(
       'Remove the filament',
