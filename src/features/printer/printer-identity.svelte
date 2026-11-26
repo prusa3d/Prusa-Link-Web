@@ -19,7 +19,7 @@
   <img
     src={image}
     alt={model?.name ?? ''}
-    class="rounded-lg mx-auto max-h-56 w-full object-contain dark:bg-white/90 dark:p-2"
+    class="rounded-lg mx-auto h-auto max-h-80 w-9/10 object-contain dark:bg-white/90 dark:p-2"
     data-testid="printer-image"
   />
 {:else}

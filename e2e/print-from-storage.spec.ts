@@ -67,7 +67,10 @@ test('starting a file from USB shows the print in progress', async ({
     'data-state',
     'IDLE',
   );
-  await page.getByRole('button', { name: 'Print' }).first().click();
+  await page
+    .getByRole('button', { name: /^Print / })
+    .first()
+    .click();
   await page
     .getByRole('dialog')
     .getByRole('button', { name: 'Print now' })
@@ -153,7 +156,10 @@ test('the tab shows the print: progress in the title, a dot on the icon', async 
   await expect(page).toHaveTitle(
     'prusa-mk4s · Original Prusa MK4S · PrusaLink',
   );
-  await page.getByRole('button', { name: 'Print' }).first().click();
+  await page
+    .getByRole('button', { name: /^Print / })
+    .first()
+    .click();
   await page
     .getByRole('dialog')
     .getByRole('button', { name: 'Print now' })
@@ -168,7 +174,10 @@ test('the tab shows the print: progress in the title, a dot on the icon', async 
 
 test('pausing and stopping a print, both ask first', async ({ page }) => {
   await page.goto(`/#key=${await mockKey(page)}`);
-  await page.getByRole('button', { name: 'Print' }).first().click();
+  await page
+    .getByRole('button', { name: /^Print / })
+    .first()
+    .click();
   await page
     .getByRole('dialog')
     .getByRole('button', { name: 'Print now' })
@@ -279,7 +288,7 @@ test('offers the newer firmware beside the files', async ({ page }) => {
   const card = page.getByRole('region', {
     name: 'Firmware 8.0.2 is available',
   });
-  await card.getByRole('button', { name: 'How to update' }).click();
+  await card.getByRole('button', { name: 'Update printer' }).click();
   const dialog = page.getByRole('dialog', {
     name: 'Firmware 8.0.2 is available',
   });
