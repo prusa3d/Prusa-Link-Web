@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { bedHeat, bedStyle, bedTop } from '../../src/lib/printer/bed-heat.ts';
   import {
     type Equipment,
     hideIds,
@@ -10,8 +11,8 @@
   import { parseViewBox } from './geometry.ts';
   import { type Heater, scopeIds, type StatusPicture } from './status.ts';
 
-  // How the app could draw a status picture: the saved SVG with each heater's
-  // reading on its leader line. Not wired into src/ yet.
+  // How the app draws a status picture: the saved SVG, the bed area tinted
+  // by the bed's reading, and each heater's reading on its leader line.
   interface Props {
     svg: string;
     status: StatusPicture;
@@ -34,6 +35,11 @@
       `${uid}-`,
     ),
   );
+  const bed = $derived(readings.bed);
+  const bedLook = $derived(
+    bed &&
+      `${bedStyle(bedHeat(bed.current, bedTop(bed.target)))};transition:all 0.7s`,
+  );
   const labels = $derived(
     status.labels.filter((l) =>
       met(labelCondition(l.heater, l.when), equipment),
@@ -48,6 +54,9 @@
   <!-- eslint-disable-next-line svelte/no-at-html-tags -- our own saved SVG -->
   <div class="picture">{@html picture}</div>
   <svg class="labels" viewBox={status.viewBox} aria-hidden="true">
+    {#if status.bed && bedLook}
+      <rect {...status.bed} opacity="0.9" style={bedLook} />
+    {/if}
     {#each labels as label, i (i)}
       <LabelMark
         {label}
@@ -60,6 +69,7 @@
 
 <style>
   .status-picture {
+    --color-orange-light-9: #fa6831;
     position: relative;
     color: #fa6831;
   }

@@ -13,6 +13,7 @@ import {
   NO_CHANGE,
   withAffine,
 } from './geometry.ts';
+import type { Bed } from '../../src/lib/printer/bed-heat.ts';
 import { type Condition, parseCondition } from './conditions.ts';
 import {
   applyStructure,
@@ -77,30 +78,37 @@ export interface StatusPicture {
   labels: Label[];
   /// For the app: the ids of the saved SVG's conditional parts.
   conditional: { id: string; when: Condition }[];
+  /// The bed area the app tints by the bed's temperature, over the picture
+  /// and under the labels.
+  bed?: Bed;
   edits: Edits;
-  /// A variant picture (`<base>_<suffix>.svg`) takes its labels and style
-  /// from its base's status picture; `labels` and `style` above are that
-  /// result, `overrides` what the variant changed.
+  /// A variant picture (`<base>_<suffix>.svg`) takes its labels, style and
+  /// bed area from its base's status picture; those above are that result,
+  /// `overrides` what the variant changed.
   base?: string;
   overrides?: VariantOverrides;
 }
 
 /// Per heater: the variant's own label, or null when it drops the base's.
+/// `bed` null: the variant has no bed area though its base has one.
 export interface VariantOverrides {
   style?: LabelStyle;
   labels: Partial<Record<Heater, Label | null>>;
+  bed?: Bed | null;
 }
+
+type Inheritable = Pick<StatusPicture, 'labels' | 'style' | 'bed'>;
 
 function sameLabel(a: Label, b: Label): boolean {
   return JSON.stringify(labelJson(a)) === JSON.stringify(labelJson(b));
 }
 
-/// The base's labels and style with the variant's overrides applied. Labels
-/// are matched by heater.
+/// The base's labels, style and bed area with the variant's overrides
+/// applied. Labels are matched by heater.
 export function resolveVariant(
-  base: Pick<StatusPicture, 'labels' | 'style'>,
+  base: Inheritable,
   overrides: VariantOverrides,
-): { labels: Label[]; style: LabelStyle } {
+): Inheritable {
   const own = overrides.labels;
   const inherited = base.labels.flatMap((l) => {
     const o = own[l.heater];
@@ -111,18 +119,21 @@ export function resolveVariant(
     const o = own[h];
     return o && !base.labels.some((l) => l.heater === h) ? [o] : [];
   });
+  const bed = overrides.bed === undefined ? base.bed : overrides.bed;
   return {
     labels: [...inherited, ...added],
     style: overrides.style ?? base.style,
+    ...(bed && { bed }),
   };
 }
 
 /// What a variant changed from its base: labels moved, added or dropped,
-/// and its own sizes.
+/// its own sizes and bed area.
 export function diffVariant(
-  base: Pick<StatusPicture, 'labels' | 'style'>,
+  base: Inheritable,
   labels: Label[],
   style: LabelStyle,
+  bed?: Bed,
 ): VariantOverrides {
   const out: VariantOverrides['labels'] = {};
   for (const b of base.labels) {
@@ -133,10 +144,44 @@ export function diffVariant(
   for (const l of labels)
     if (!base.labels.some((b) => b.heater === l.heater))
       out[l.heater] = normalizeLabel(l);
+  const ownBed = bed && normalizeBed(bed);
+  const baseBed = base.bed && normalizeBed(base.bed);
   return {
     ...(JSON.stringify(style) !== JSON.stringify(base.style) && { style }),
     labels: out,
+    ...(JSON.stringify(ownBed) !== JSON.stringify(baseBed) && {
+      bed: ownBed ?? null,
+    }),
   };
+}
+
+/// Rounded to a tenth, with no zero or negative size and no zero radius.
+export function normalizeBed(bed: Bed): Bed {
+  const r = (v: number) => round(v, 1);
+  const rx = r(Math.min(bed.rx ?? 0, bed.width / 2, bed.height / 2));
+  return {
+    x: r(bed.x),
+    y: r(bed.y),
+    width: Math.max(r(bed.width), 0.1),
+    height: Math.max(r(bed.height), 0.1),
+    ...(rx > 0 && { rx }),
+  };
+}
+
+function parseBed(value: unknown): Bed {
+  const b = record(value, 'bed');
+  const n = (k: string) => {
+    const v = b[k];
+    if (typeof v === 'number' && Number.isFinite(v)) return v;
+    throw new Error(`Bad bed ${k} ${JSON.stringify(v)}`);
+  };
+  return normalizeBed({
+    x: n('x'),
+    y: n('y'),
+    width: n('width'),
+    height: n('height'),
+    ...(b.rx !== undefined && { rx: n('rx') }),
+  });
 }
 
 /// Whether `label` is still exactly the base's label for its heater.
@@ -275,6 +320,7 @@ export function serializeStatus(status: StatusPicture): string {
       style: status.style,
       ...(status.base !== undefined && { base: status.base }),
       labels: status.labels.map(labelJson),
+      ...(status.bed && { bed: normalizeBed(status.bed) }),
       conditional: status.conditional,
       edits: {
         hidden: [...status.edits.hidden].sort(compareKeys),
@@ -296,6 +342,9 @@ export function serializeStatus(status: StatusPicture): string {
               return [[h, o && labelJson(o)]];
             }),
           ),
+          ...(status.overrides.bed !== undefined && {
+            bed: status.overrides.bed && normalizeBed(status.overrides.bed),
+          }),
         },
       }),
     },
@@ -357,6 +406,9 @@ function parseOverrides(value: unknown): VariantOverrides | undefined {
         },
       ),
     ),
+    ...(o.bed !== undefined && {
+      bed: o.bed === null ? null : parseBed(o.bed),
+    }),
   };
 }
 
@@ -383,6 +435,7 @@ export function parseStatus(text: string): StatusPicture {
       stroke: size('stroke'),
     },
     labels: labels.map(parseLabel),
+    ...(raw.bed !== undefined && { bed: parseBed(raw.bed) }),
     conditional: (Array.isArray(raw.conditional)
       ? raw.conditional
       : []
@@ -591,4 +644,44 @@ export function scopeIds(svg: string, prefix: string): string {
     .replace(/\bid="([^"]+)"/g, `id="${prefix}$1"`)
     .replace(/url\(#([^)]+)\)/g, `url(#${prefix}$1)`)
     .replace(/href="#([^"]+)"/g, `href="#${prefix}$1"`);
+}
+
+/// Bed handles: a side or corner to resize by (n, se, …), the whole area to
+/// move, or a new area drawn from the press point.
+export type BedHandle =
+  'draw' | 'move' | 'nw' | 'n' | 'ne' | 'e' | 'se' | 's' | 'sw' | 'w';
+
+/// The bed area while dragging `handle` from `start` to `at`.
+export function dragBed(
+  from: Bed | undefined,
+  handle: BedHandle,
+  start: Point,
+  at: Point,
+): Bed {
+  const dx = at[0] - start[0];
+  const dy = at[1] - start[1];
+  if (!from || handle === 'draw')
+    return normalizeBed({
+      x: Math.min(start[0], at[0]),
+      y: Math.min(start[1], at[1]),
+      width: Math.abs(dx),
+      height: Math.abs(dy),
+    });
+  if (handle === 'move')
+    return normalizeBed({ ...from, x: from.x + dx, y: from.y + dy });
+  let x0 = from.x;
+  let x1 = from.x + from.width;
+  let y0 = from.y;
+  let y1 = from.y + from.height;
+  if (handle.includes('w')) x0 += dx;
+  if (handle.includes('e')) x1 += dx;
+  if (handle.includes('n')) y0 += dy;
+  if (handle.includes('s')) y1 += dy;
+  return normalizeBed({
+    ...from,
+    x: Math.min(x0, x1),
+    y: Math.min(y0, y1),
+    width: Math.abs(x1 - x0),
+    height: Math.abs(y1 - y0),
+  });
 }
