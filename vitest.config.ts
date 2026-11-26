@@ -14,7 +14,7 @@ export default mergeConfig(
           extends: true,
           test: {
             name: 'browser',
-            include: ['src/**/*.svelte.test.ts'],
+            include: ['src/**/*.svelte.test.ts', 'dev/**/*.svelte.test.ts'],
             browser: {
               enabled: true,
               headless: true,
@@ -33,8 +33,9 @@ export default mergeConfig(
               'mock/**/*.test.ts',
               'scripts/**/*.test.ts',
               'demo/**/*.test.ts',
+              'dev/**/*.test.ts',
             ],
-            exclude: ['src/**/*.svelte.test.ts'],
+            exclude: ['src/**/*.svelte.test.ts', 'dev/**/*.svelte.test.ts'],
             environment: 'node',
           },
         },
