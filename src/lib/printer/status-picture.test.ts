@@ -8,6 +8,7 @@ import {
   type Label,
   labelValue,
   shownLabels,
+  tone,
   trend,
 } from './status-picture';
 
@@ -33,7 +34,8 @@ describe('trend', () => {
     [213, 215, undefined],
     [217, 215, undefined],
     [218, 215, 'down'],
-    [120, 0, undefined],
+    [120, 0, 'down'],
+    [25, 0, undefined],
     [20, 0, undefined],
   ] as const)('%s °C towards %s °C: %s', (current, target, expected) => {
     expect(trend({ current, target })).toBe(expected);
@@ -135,5 +137,17 @@ describe('hideIds', () => {
     expect(
       hideIds("<g id='door'/><g id='mmu-a'/><path id='door2'/>", ['door']),
     ).toBe("<g id='door' display='none'/><g id='mmu-a'/><path id='door2'/>");
+  });
+});
+
+describe('tone', () => {
+  it.each([
+    [{ current: 120, target: 215 }, 'heating'],
+    [{ current: 214, target: 215 }, 'heating'],
+    [{ current: 230, target: 215 }, 'cooling'],
+    [{ current: 150, target: 0 }, 'cooling'],
+    [{ current: 25, target: 0 }, 'off'],
+  ] as const)('%o: %s', (reading, expected) => {
+    expect(tone(reading)).toBe(expected);
   });
 });

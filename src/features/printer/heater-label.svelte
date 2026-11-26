@@ -9,6 +9,7 @@
     type LabelStyle,
     labelValue,
     type Reading,
+    tone,
     trend,
   } from '../../lib/printer/status-picture';
   import {
@@ -61,7 +62,15 @@
   const iconY = $derived(l.captionY - style.caption * 0.85);
 </script>
 
-<g data-testid="heater-label-{label.heater}">
+<g
+  data-testid="heater-label-{label.heater}"
+  data-tone={tone(reading)}
+  class={{
+    heating: 'text-(--color-orange-light-9)',
+    cooling: 'text-(--color-blue-light-9)',
+    off: 'text-(--color-gray-light-9)',
+  }[tone(reading)]}
+>
   <polyline
     points="{label.anchor.join(',')} {label.elbow.join(',')} {label.end.join(
       ',',
