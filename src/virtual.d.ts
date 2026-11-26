@@ -1,11 +1,26 @@
 declare module 'virtual:printer-images' {
-  import type { Variant } from './lib/printer/models';
+  /* eslint-disable @typescript-eslint/consistent-type-imports --
+     an import declaration in an ambient module cannot name a relative path,
+     and the types would silently become any. */
+  /// Per variant: SVG markup on a 500-unit canvas, with its status picture's
+  /// labels in the same units where it has one.
+  type Pictures = Readonly<
+    Partial<
+      Record<
+        import('./lib/printer/models').Variant,
+        {
+          svg: string;
+          status?: import('./lib/printer/status-picture').PictureStatus;
+        }
+      >
+    >
+  >;
+  /* eslint-enable @typescript-eslint/consistent-type-imports */
 
   const printerImages: {
-    /// SVG markup per build.
-    images: Readonly<Partial<Record<Variant, string>>>;
+    images: Pictures;
     /// The same printers with an MMU3, where the build has one.
-    mmu: Readonly<Partial<Record<Variant, string>>>;
+    mmu: Pictures;
   };
   export default printerImages;
 }

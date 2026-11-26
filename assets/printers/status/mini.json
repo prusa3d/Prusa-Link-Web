@@ -1,0 +1,32 @@
+{
+  "source": "mini.svg",
+  "viewBox": "0 0 1000 1000",
+  "style": {
+    "value": 60,
+    "caption": 30,
+    "stroke": 4
+  },
+  "labels": [
+    {
+      "heater": "T1",
+      "anchor": [446.1, 549.9],
+      "elbow": [265.7, 376.7],
+      "end": [85.7, 376.7],
+      "side": "left"
+    },
+    {
+      "heater": "bed",
+      "anchor": [454.4, 747.6],
+      "elbow": [279.9, 655.6],
+      "end": [99.9, 655.6],
+      "side": "left"
+    }
+  ],
+  "conditional": [],
+  "edits": {
+    "hidden": [],
+    "transforms": {},
+    "structure": [],
+    "conditions": {}
+  }
+}

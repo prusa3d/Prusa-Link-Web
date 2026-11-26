@@ -19,7 +19,9 @@
 
   let { model, name }: Props = $props();
   let depth = $state(0);
-  const picture = $derived(pictureFor(model?.variant ?? rememberedVariant()));
+  const picture = $derived(
+    pictureFor(model?.variant ?? rememberedVariant())?.url,
+  );
 
   const hasFiles = (e: DragEvent) =>
     e.dataTransfer?.types.includes('Files') ?? false;

@@ -1,10 +1,19 @@
-import { readFileSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
+import { fileURLToPath } from 'node:url';
 
 import { optimize } from 'svgo';
 import svgpath from 'svgpath';
 import type { Plugin } from 'vite';
 
-import type { Variant } from '../src/lib/printer/models';
+import type { Variant } from '../src/lib/printer/models.ts';
+import type {
+  Condition,
+  Heater,
+  Label,
+  LabelStyle,
+  PictureStatus,
+  Point,
+} from '../src/lib/printer/status-picture.ts';
 
 /// The picture each PrusaLink build carries, from assets/printers.
 export const PRINTER_IMAGES: Readonly<Partial<Record<Variant, string>>> = {
@@ -28,10 +37,17 @@ export const MMU_IMAGES: Readonly<Partial<Record<Variant, string>>> = {
 
 const ID = 'virtual:printer-images';
 
-/// `virtual:printer-images` exports `{ images: { [variant]: svg } }`: every
-/// picture in the dev server, only `variant`'s in a printer build, and the
-/// CORE One's in the generic build, where it stands for every printer. SVGs
-/// are optimised to whole pixels.
+/// A picture as the build carries it: its SVG markup and, where the picture
+/// editor saved a status picture, the labels drawn over it.
+export interface BuiltPicture {
+  svg: string;
+  status?: PictureStatus;
+}
+
+/// `virtual:printer-images` exports `{ images, mmu }`, a BuiltPicture per
+/// variant: every picture in the dev server, only `variant`'s in a printer
+/// build, and the CORE One's in the generic build, where it stands for
+/// every printer. SVGs are optimised to whole pixels.
 export function printerImages(variant: string | undefined): Plugin {
   return {
     name: 'prusalink-printer-images',
@@ -41,32 +57,107 @@ export function printerImages(variant: string | undefined): Plugin {
     load(id) {
       if (id !== `\0${ID}`) return undefined;
       const pick = variant === 'generic' ? 'coreone' : variant;
-      const entries = Object.entries(PRINTER_IMAGES).filter(
-        ([v]) => !pick || v === pick,
-      );
-      const images = Object.fromEntries(
-        entries.map(([v, file]) => [v, svgSource(file)]),
-      );
-      const mmu = Object.fromEntries(
-        Object.entries(MMU_IMAGES)
-          .filter(([v]) => !pick || v === pick)
-          .map(([v, file]) => [v, svgSource(file)]),
-      );
-      return `export default ${JSON.stringify({ images, mmu })};`;
+      const built = (files: Readonly<Partial<Record<Variant, string>>>) =>
+        Object.fromEntries(
+          Object.entries(files)
+            .filter(([v]) => !pick || v === pick)
+            .map(([v, file]) => [v, builtPicture(file)]),
+        );
+      for (const file of Object.values({ ...PRINTER_IMAGES, ...MMU_IMAGES }))
+        for (const f of statusFiles(file)) this.addWatchFile(f);
+      return `export default ${JSON.stringify({
+        images: built(PRINTER_IMAGES),
+        mmu: built(MMU_IMAGES),
+      })};`;
     },
   };
 }
 
-export function svgSource(file: string): string {
-  const path = new URL(`../assets/printers/${file}`, import.meta.url);
-  const flat = optimize(flattenGradients(readFileSync(path, 'utf8')), {
+function statusFiles(file: string): [string, string] {
+  const name = file.replace(/\.svg$/, '');
+  return [`status/${name}.svg`, `status/${name}.json`].map((f) =>
+    fileURLToPath(asset(f)),
+  ) as [string, string];
+}
+
+const asset = (file: string) =>
+  new URL(`../assets/printers/${file}`, import.meta.url);
+
+/// The status picture (assets/printers/status/<name>.svg and .json, from
+/// the picture editor) where both are there, else the plain picture.
+export function builtPicture(file: string): BuiltPicture {
+  const [svg, json] = statusFiles(file);
+  if (!existsSync(svg) || !existsSync(json)) return { svg: svgSource(file) };
+  const status = halveStatus(
+    JSON.parse(readFileSync(json, 'utf8')) as SavedStatus,
+  );
+  return {
+    svg: svgSource(
+      `status/${file}`,
+      status.conditional.map((c) => c.id),
+    ),
+    status,
+  };
+}
+
+interface SavedStatus {
+  viewBox: string;
+  style: LabelStyle;
+  labels: {
+    heater: Heater;
+    anchor: Point;
+    elbow: Point;
+    end: Point;
+    when?: Condition;
+  }[];
+  conditional?: { id: string; when: Condition }[];
+}
+
+/// The saved labels on the halved picture's grid (see halve).
+export function halveStatus(saved: SavedStatus): PictureStatus {
+  if (
+    saved.viewBox
+      .trim()
+      .split(/[\s,]+/)
+      .join(' ') !== '0 0 1000 1000'
+  )
+    throw new Error(`A status picture on a ${saved.viewBox} canvas`);
+  const n = (v: number) => Math.round(v * 5) / 10;
+  const p = ([x, y]: Point): Point => [n(x), n(y)];
+  return {
+    style: {
+      value: n(saved.style.value),
+      caption: n(saved.style.caption),
+      stroke: n(saved.style.stroke),
+    },
+    labels: saved.labels.map((l): Label => ({
+      heater: l.heater,
+      anchor: p(l.anchor),
+      elbow: p(l.elbow),
+      end: p(l.end),
+      ...(l.when && { when: l.when }),
+    })),
+    conditional: saved.conditional ?? [],
+  };
+}
+
+/// `keep`: ids the page looks the parts up by, which svgo would shorten.
+export function svgSource(file: string, keep: readonly string[] = []): string {
+  const config = {
     multipass: true,
     floatPrecision: 0,
-  }).data;
-  const { data } = optimize(halve(flat), {
-    multipass: true,
-    floatPrecision: 0,
-  });
+    plugins: [
+      {
+        name: 'preset-default' as const,
+        params: { overrides: { cleanupIds: { preserve: [...keep] } } },
+      },
+    ],
+  };
+  const flat = optimize(
+    flattenGradients(readFileSync(asset(file), 'utf8')),
+    config,
+  ).data;
+  const { data } = optimize(halve(flat), config);
   // Single quotes inside, so the JSON string around it needs no escaping.
   return data.replace(/"/g, "'");
 }
@@ -120,6 +211,10 @@ function halve(svg: string): string {
         ),
       )
       .replace(
+        / transform="([^"]+)"/g,
+        (_, t: string) => ` transform="${halveTransform(t)}"`,
+      )
+      .replace(
         /stroke-width="([\d.]+)"/g,
         (_, w: string) => `stroke-width="${String(Number(w) / 2)}"`,
       )
@@ -127,5 +222,25 @@ function halve(svg: string): string {
         const kept = attrs.replace(/ (?:width|height|viewBox)="[^"]*"/g, '');
         return `<svg${kept} width="500" height="500" viewBox="0 0 500 500">`;
       })
+  );
+}
+
+/// The transform that does on the halved grid what `t` did on the full one:
+/// its translations halve, its scales and angles stay.
+function halveTransform(t: string): string {
+  return t.replace(
+    /(matrix|translate|rotate)\(([^)]*)\)/g,
+    (_, fn: string, args: string) => {
+      const a = args
+        .trim()
+        .split(/[\s,]+/)
+        .map(Number);
+      const halved = a.map((v, i) => {
+        if (fn === 'translate') return v / 2;
+        if (fn === 'matrix') return i >= 4 ? v / 2 : v;
+        return i >= 1 ? v / 2 : v;
+      });
+      return `${fn}(${halved.join(' ')})`;
+    },
   );
 }
