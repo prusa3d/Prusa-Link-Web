@@ -408,8 +408,11 @@ test('a file from the printer offers Close, not Not now', async ({ page }) => {
   await page.goto(`/#key=${await mockKey(page)}`);
   await page.getByRole('button', { name: 'Print 3DBenchy' }).click();
   const dialog = page.getByRole('dialog');
-  await expect(dialog.getByRole('button', { name: 'Close' })).toBeVisible();
+  // The title's X and the footer's Close both close it.
+  await expect(dialog.getByRole('button', { name: 'Close' })).toHaveCount(2);
   await expect(dialog.getByRole('button', { name: 'Not now' })).toHaveCount(0);
+  await dialog.getByRole('button', { name: 'Close' }).first().click();
+  await expect(dialog).toBeHidden();
 });
 
 test('speaks Czech once chosen, also after a reload', async ({ page }) => {

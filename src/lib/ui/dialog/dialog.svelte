@@ -3,6 +3,11 @@
 <script lang="ts">
   import type { Snippet } from 'svelte';
 
+  import { t } from '../../i18n.svelte';
+  import { Button } from '../button';
+  import { Icon } from '../icon';
+  import { X } from '../icon/icons';
+
   interface Props {
     open: boolean;
     title: string;
@@ -29,7 +34,22 @@
   class="rounded-lg m-auto max-h-dvh w-full max-w-md overflow-y-auto border bg-card p-0 text-card-foreground backdrop:bg-black/50 max-sm:mb-0 max-sm:max-w-full max-sm:rounded-b-none"
 >
   <div class="flex flex-col gap-4 p-5">
-    <h2 id="{id}-title" class="text-lg font-semibold break-words">{title}</h2>
+    <div class="flex items-start gap-2">
+      <h2
+        id="{id}-title"
+        class="min-w-0 flex-1 text-lg font-semibold break-words"
+      >
+        {title}
+      </h2>
+      <Button
+        variant="ghost"
+        class="-me-2 -mt-1 size-9 shrink-0 px-0 max-sm:size-11"
+        aria-label={t('common.close')}
+        onclick={onclose}
+      >
+        <Icon node={X} />
+      </Button>
+    </div>
     {@render children()}
   </div>
 </dialog>
