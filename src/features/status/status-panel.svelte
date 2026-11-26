@@ -1,7 +1,9 @@
 <script lang="ts">
+  import type { Snippet } from 'svelte';
   import { Icon } from '../../lib/ui/icon';
   import { Clock, Pause, Play, Square } from '../../lib/ui/icon/icons';
   import HeaterRow from './heater-row.svelte';
+  import HeatingProgress from '../heating/heating-progress.svelte';
   import ToolCard from './tool-card.svelte';
 
   import { smallThumbnail } from '../../lib/api/thumbnail';
@@ -23,6 +25,8 @@
   import { Thumbnail } from '../../lib/ui/thumbnail';
 
   interface Props {
+    /// What needs the person now (warnings, refusals), under the heading.
+    alerts?: Snippet;
     status: Status | undefined;
     job: StatusJob | undefined;
     jobFile?: JobFile | undefined;
@@ -42,6 +46,7 @@
   }
 
   let {
+    alerts,
     status,
     job,
     jobFile,
@@ -87,6 +92,15 @@
     if (activity) return 'active';
     return ended ? 'quiet' : tone;
   });
+  const far = (current: number | undefined, target: number | undefined) =>
+    (target ?? 0) > 0 && Math.abs((current ?? 0) - (target ?? 0)) > 2;
+  // A print's first minutes: the printer heats before the first layer.
+  const preheating = $derived(
+    status?.state === 'PRINTING' &&
+      (job?.progress ?? 0) < 1 &&
+      (far(status.temp_nozzle, status.target_nozzle) ||
+        far(status.temp_bed, status.target_bed)),
+  );
   const showJob = $derived(!!job && !activity && !ended);
   const trouble = $derived(
     status?.state === 'ERROR' || status?.state === 'ATTENTION',
@@ -157,6 +171,7 @@
       {showJob ? t('status.nowPrinting') : t('status.label')}
     </h2>
   </div>
+  {@render alerts?.()}
   <div
     class={[
       'rounded-lg flex flex-col gap-4 border border-l-4 bg-card p-4 text-card-foreground',
@@ -308,20 +323,40 @@
         onchange={onfilament}
         {onunload}
       />
-      <div class="flex flex-col divide-y">
-        <HeaterRow
-          kind="nozzle"
-          label={t('status.tool')}
-          current={status.temp_nozzle}
-          target={status.target_nozzle}
-        />
-        <HeaterRow
-          kind="bed"
-          label={t('status.bed')}
-          current={status.temp_bed}
-          target={status.target_bed}
-        />
-      </div>
+      {#if preheating}
+        <!-- A print that is still warming up: how far each heater is, and
+             about how long until it starts, in place of the plain rows. -->
+        <div class="flex flex-col gap-3" data-testid="print-heating">
+          {#if (status.target_nozzle ?? 0) > 0}
+            <HeatingProgress
+              current={status.temp_nozzle}
+              target={status.target_nozzle}
+            />
+          {/if}
+          {#if (status.target_bed ?? 0) > 0}
+            <HeatingProgress
+              kind="bed"
+              current={status.temp_bed}
+              target={status.target_bed}
+            />
+          {/if}
+        </div>
+      {:else}
+        <div class="flex flex-col divide-y">
+          <HeaterRow
+            kind="nozzle"
+            label={t('status.tool')}
+            current={status.temp_nozzle}
+            target={status.target_nozzle}
+          />
+          <HeaterRow
+            kind="bed"
+            label={t('status.bed')}
+            current={status.temp_bed}
+            target={status.target_bed}
+          />
+        </div>
+      {/if}
     {:else}
       <div
         class="flex flex-col gap-3"
