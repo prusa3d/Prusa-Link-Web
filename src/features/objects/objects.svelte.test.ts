@@ -1,7 +1,6 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import { PlateObjects } from './objects.svelte';
-import { rememberObjects } from '../../lib/files/objects-cache';
 
 const listing = {
   current: 1,
@@ -32,7 +31,10 @@ describe('PlateObjects', () => {
     await store.follow(4, 1, file);
     await store.follow(4, 1, file);
     expect(list).toHaveBeenCalledTimes(1);
-    expect(download).toHaveBeenCalledWith('plates/SHAPES~1.BGC');
+    expect(download).toHaveBeenCalledWith(
+      'plates/SHAPES~1.BGC',
+      'plates/shapes.bgcode',
+    );
     expect(download).toHaveBeenCalledTimes(1);
     expect(store.items).toEqual([
       {
@@ -52,15 +54,6 @@ describe('PlateObjects', () => {
     ]);
     await store.follow(4, 2, file);
     expect(list).toHaveBeenCalledTimes(2);
-  });
-
-  it('takes the outlines read on upload instead of downloading them', async () => {
-    rememberObjects('plates/shapes.bgcode', shapes);
-    const download = vi.fn(() => Promise.resolve(undefined));
-    const store = new PlateObjects(() => Promise.resolve(listing), download);
-    await store.follow(5, 0, file);
-    expect(download).not.toHaveBeenCalled();
-    expect(store.items[0]?.polygon).toEqual([[1, 2]]);
   });
 
   it('downloads nothing for a print without objects', async () => {

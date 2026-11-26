@@ -1,13 +1,15 @@
-/// The plate's objects with their outlines, from a sliced file's
-/// `objects_info` metadata: the index is the object's M486 id, the polygon
-/// its convex outline in bed millimetres.
+/// What a sliced file says about the printer it needs, from its head: the
+/// printer metadata block of binary G-code (the second block), or the
+/// leading `; key = value` comment block of plain G-code, which ends with a
+/// bare `;` before the thumbnails. Filament types, colours, grams, nozzles
+/// (Connect's gcodeSlots reads the same keys) and `objects_info`, the
+/// plate's objects with their outlines.
 ///
 /// One reader for a local File (`file.stream()`) and a printer download
-/// (`response.body`): it reads only the head of the file and cancels the
-/// stream once it has the value, so a print file is never downloaded whole.
-/// Binary G-code keeps it in the printer metadata block, the second block;
-/// plain G-code in one `; objects_info = …` line of the leading
-/// `; key = value` comment block, before the thumbnails.
+/// (`response.body`): it reads only that block and cancels the stream, so a
+/// print file is never downloaded whole.
+
+export type Header = Record<string, string>;
 
 export interface PlateObject {
   name: string;
@@ -20,7 +22,6 @@ const PRINTER_METADATA = 3;
 const THUMBNAIL = 5;
 /// Plain G-code without the value is given up after this much.
 const TEXT_CAP = 1 << 20;
-const KEY = 'objects_info';
 
 export function parseObjectsInfo(value: string): PlateObject[] | undefined {
   try {
@@ -106,9 +107,22 @@ class Bytes {
   }
 }
 
+/// The objects of the plate: the index is the object's M486 id, the polygon
+/// its convex outline in bed millimetres.
+export function objectsOf(header: Header | undefined) {
+  const value = header?.objects_info;
+  return value === undefined ? undefined : parseObjectsInfo(value);
+}
+
 export async function readObjectsInfo(
   stream: ReadableStream<Uint8Array>,
 ): Promise<PlateObject[] | undefined> {
+  return objectsOf(await readHeader(stream));
+}
+
+export async function readHeader(
+  stream: ReadableStream<Uint8Array>,
+): Promise<Header | undefined> {
   const bytes = new Bytes(stream);
   try {
     const head = await bytes.exact(0, 10);
@@ -146,11 +160,12 @@ async function readBinary(bytes: Bytes, checksum: number) {
       if (compression > 1) return undefined;
       const data = await bytes.exact(start, start + size);
       if (!data) return undefined;
-      const text = new TextDecoder().decode(
-        compression ? await inflate(data) : data,
-      );
-      const line = text.split('\n').find((l) => l.startsWith(`${KEY}=`));
-      return line ? parseObjectsInfo(line.slice(KEY.length + 1)) : undefined;
+      const header: Header = {};
+      for (const line of new TextDecoder()
+        .decode(compression ? await inflate(data) : data)
+        .split('\n'))
+        keyValue(header, line);
+      return header;
     }
     at = start + size + checksum;
   }
@@ -163,12 +178,18 @@ async function inflate(data: Uint8Array): Promise<ArrayBuffer> {
   return new Response(stream).arrayBuffer();
 }
 
-/// `; key = value` lines until objects_info, whose line is read to its end
-/// however long; a bare `;` or a line that is not a comment ends the header.
-/// Lines are looked at as they arrive, so nothing past the header is asked
+function keyValue(header: Header, line: string) {
+  const eq = line.indexOf('=');
+  if (eq > 0) header[line.slice(0, eq).trim()] = line.slice(eq + 1).trim();
+}
+
+/// `; key = value` lines until a bare `;` or a line that is not a comment;
+/// a line is read to its end however long (objects_info is one line).
+/// Lines are looked at as they arrive, so nothing past the block is asked
 /// for.
 async function readText(bytes: Bytes) {
   const decoder = new TextDecoder();
+  const header: Header = {};
   let text = '';
   let read = 0;
   for (;;) {
@@ -181,10 +202,9 @@ async function readText(bytes: Bytes) {
       const line = (nl < 0 ? text : text.slice(0, nl)).trim();
       text = nl < 0 ? '' : text.slice(nl + 1);
       if (!line) continue;
-      if (line === ';' || !line.startsWith(';')) return undefined;
-      const m = /^;\s*objects_info\s*=\s*(.*)$/.exec(line);
-      if (m) return parseObjectsInfo(m[1] ?? '');
+      if (line === ';' || !line.startsWith(';')) return header;
+      keyValue(header, line.slice(1));
     }
-    if (!chunk || (read > TEXT_CAP && !text.includes(KEY))) return undefined;
+    if (!chunk || (read > TEXT_CAP && !text.includes('='))) return header;
   }
 }

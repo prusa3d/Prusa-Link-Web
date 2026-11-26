@@ -3,7 +3,7 @@ import { parseFileName } from '../src/lib/files/name.ts';
 import {
   type PlateObject,
   readObjectsInfo,
-} from '../src/lib/files/objects-info.ts';
+} from '../src/lib/files/header.ts';
 import { ambient, FILAMENTS, seedFiles, seedTools, shortName } from './seed.ts';
 
 type Schemas = components['schemas'];
