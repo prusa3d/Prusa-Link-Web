@@ -283,5 +283,7 @@
   "tools.none": "Aucun matériau",
   "tools.load": "Charger",
   "tools.preheat": "Préchauffer {tool}",
-  "controls.preheatFor": "Préchauffer pour {material}"
+  "controls.preheatFor": "Préchauffer pour {material}",
+  "controls.modelWarn": "Tranché pour {file}, pas pour cette {printer}. L’imprimante demandera avant d’imprimer.",
+  "controls.modelAbort": "Tranché pour {file}, pas pour cette {printer} : son contrôle d’imprimante refuse l’impression."
 }

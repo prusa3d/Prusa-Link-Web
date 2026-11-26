@@ -283,5 +283,7 @@
   "tools.none": "Kein Material zugewiesen",
   "tools.load": "Laden",
   "tools.preheat": "{tool} vorheizen",
-  "controls.preheatFor": "Für {material} vorheizen"
+  "controls.preheatFor": "Für {material} vorheizen",
+  "controls.modelWarn": "Für {file} gesliced, nicht für diesen {printer}. Der Drucker fragt vor dem Druck.",
+  "controls.modelAbort": "Für {file} gesliced, nicht für diesen {printer}: seine Druckerprüfung lehnt den Druck ab."
 }

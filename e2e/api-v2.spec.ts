@@ -554,3 +554,16 @@ test('a file uploaded here shows what it says about itself, also from the list',
   await expect(dialog.getByTestId('file-grams')).toHaveText('18.6 g');
   await expect(dialog.locator('img').first()).toHaveAttribute('src', /^blob:/);
 });
+
+test('a file sliced for another printer says so before printing', async ({
+  page,
+}) => {
+  await openApp(page);
+  await page
+    .getByRole('button', { name: 'Print three shapes' })
+    .first()
+    .click();
+  await expect(page.getByRole('dialog')).toContainText(
+    'not this Original Prusa MK4S',
+  );
+});

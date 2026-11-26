@@ -283,5 +283,7 @@
   "tools.none": "Sin material asignado",
   "tools.load": "Cargar",
   "tools.preheat": "Precalentar {tool}",
-  "controls.preheatFor": "Precalentar para {material}"
+  "controls.preheatFor": "Precalentar para {material}",
+  "controls.modelWarn": "Laminado para {file}, no para esta {printer}. La impresora preguntará antes de imprimir.",
+  "controls.modelAbort": "Laminado para {file}, no para esta {printer}: su comprobación de impresora rechaza la impresión."
 }
