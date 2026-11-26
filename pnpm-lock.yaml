@@ -674,7 +674,7 @@ packages:
     resolution: {integrity: sha512-wwQAWhWSuHaag8c4q/KN/vCoeOJYshAIvMQwD4GpSb3OiZklFfvAgmj0VCBBImRpuF/aFgIRzllXlVX93Jevww==}
 
   '@prusa/frontend-standards@https://codeload.github.com/prusa3d/prusa-connect/tar.gz/74a5dc0c7ff48396595c01c2445f3727fa64c730#path:packages/standards':
-    resolution: {gitHosted: true, integrity: sha512-O69WarDCHbSDpanhiDxCtWN6BSumc2tYqtNlf/IoefGHVqM0hLHD1SfOFq2Vz9cQb8do0l3q4vOXmGS16+Ug/g==, tarball: https://codeload.github.com/prusa3d/prusa-connect/tar.gz/74a5dc0c7ff48396595c01c2445f3727fa64c730}
+    resolution: {gitHosted: true, integrity: sha512-O69WarDCHbSDpanhiDxCtWN6BSumc2tYqtNlf/IoefGHVqM0hLHD1SfOFq2Vz9cQb8do0l3q4vOXmGS16+Ug/g==, tarball: https://codeload.github.com/prusa3d/prusa-connect/tar.gz/74a5dc0c7ff48396595c01c2445f3727fa64c730, path: packages/standards}
     version: 0.1.0
     engines: {node: '>=22.12.0'}
     peerDependencies:
