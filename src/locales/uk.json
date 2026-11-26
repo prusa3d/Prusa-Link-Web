@@ -235,5 +235,12 @@
   "objects.cancelBody": "Принтер пропустить його до кінця друку. Інші об’єкти друкуються далі.",
   "objects.canceled": "Скасовано",
   "objects.printing": "Друкується",
-  "objects.refused": "Принтер не скасував об’єкт"
+  "objects.refused": "Принтер не скасував об’єкт",
+  "controls.filament": "Філамент для попереднього нагріву",
+  "controls.preheat": "Нагріти",
+  "controls.cooldown": "Охолодити",
+  "controls.zOffset": "Зміщення Z",
+  "controls.lower": "Сопло ближче до столу",
+  "controls.raise": "Сопло далі від столу",
+  "controls.refused": "Принтер зараз цього не прийняв"
 }

@@ -229,5 +229,12 @@
   "objects.cancelBody": "La impresora lo omite el resto de la impresión. Los demás objetos siguen.",
   "objects.canceled": "Cancelado",
   "objects.printing": "Imprimiendo",
-  "objects.refused": "La impresora no canceló el objeto"
+  "objects.refused": "La impresora no canceló el objeto",
+  "controls.filament": "Filamento para precalentar",
+  "controls.preheat": "Precalentar",
+  "controls.cooldown": "Enfriar",
+  "controls.zOffset": "Desfase Z",
+  "controls.lower": "Boquilla más cerca de la base",
+  "controls.raise": "Boquilla más lejos de la base",
+  "controls.refused": "La impresora no lo aceptó ahora"
 }

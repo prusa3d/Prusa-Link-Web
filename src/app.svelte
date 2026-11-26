@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { untrack } from 'svelte';
   import { Icon } from './lib/ui/icon';
   import { CloudOff, LogOut } from './lib/ui/icon/icons';
 
@@ -43,6 +44,8 @@
   import { toolRows } from './lib/printer/tools';
   import { dialog } from './lib/stores/dialog.svelte';
   import BedView from './features/objects/bed-view.svelte';
+  import PrinterControls from './features/heating/printer-controls.svelte';
+  import { controls as tuning } from './features/heating/controls.svelte';
   import { plateObjects } from './features/objects/objects.svelte';
   import { bedOf } from './lib/printer/bed';
   import { notices } from './lib/stores/notices.svelte';
@@ -92,7 +95,13 @@
   // firmware answer with a Digest challenge and the browser show its dialog.
   $effect(() => {
     if (!session.signedIn) return undefined;
-    const stops = [printer.poll(), identity.poll(), filament.poll()];
+    // Untracked: a first poll reads state (the printer's features) that must
+    // not restart every poll when it changes.
+    const stops = untrack(() => [
+      printer.poll(),
+      identity.poll(),
+      filament.poll(),
+    ]);
     return () => {
       for (const stop of stops) stop();
     };
@@ -146,6 +155,18 @@
       printer.status?.cancel_object_revision,
       printer.jobFile,
     );
+  });
+
+  // Babysteps add up per print. A derived id: the job object is new on
+  // every poll.
+  const jobId = $derived(printer.job?.id);
+  $effect(() => {
+    if (__CONTROLS__ && jobId !== undefined) tuning.forget();
+  });
+  const controlMode = $derived.by(() => {
+    const state = printer.status?.state;
+    if (state === 'PRINTING' || state === 'PAUSED') return 'printing';
+    return canStart ? 'idle' : undefined;
   });
 
   async function cancelObject(id: number) {
@@ -298,6 +319,12 @@
               printer.control(action)}
             {activity}
             tools={printer.offline ? undefined : tools}
+            ontoolfilament={__CONTROLS__ && canStart && identity.can('filament')
+              ? (tool: number) => {
+                  filament.tool = tool;
+                  filamentOpen = true;
+                }
+              : undefined}
             chamber={printer.status?.chamber}
             material={multiTool
               ? undefined
@@ -328,6 +355,15 @@
                   toolPicked: !multiTool || filament.loaded !== undefined,
                 })}
               />
+            {/snippet}
+            {#snippet controls()}
+              {#if __CONTROLS__ && controlMode && !printer.offline}
+                <PrinterControls
+                  mode={controlMode}
+                  preheat={identity.can('preheat')}
+                  babystep={identity.can('tune')}
+                />
+              {/if}
             {/snippet}
             {#snippet alerts()}
               <!-- A dialog in front that already shows the printer's

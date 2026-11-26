@@ -65,6 +65,22 @@ export class Filament {
   #outcome = $state<Outcome | undefined>();
   #helper: string | undefined;
   #seenRunning = false;
+  #tool = $state(0);
+
+  /// The tool the dialog loads, 0-based; PrusaLink 2 loads any tool.
+  get tool() {
+    return this.#tool;
+  }
+
+  set tool(index: number) {
+    this.#tool = index;
+    if (identity.v2) this.#loaded = this.#ofTool();
+  }
+
+  #ofTool() {
+    const material = identity.tools[this.#tool]?.material;
+    return material && material !== '---' ? material : undefined;
+  }
 
   /// The active tool's filament; undefined when none is loaded or unknown.
   get loaded() {
@@ -93,7 +109,10 @@ export class Filament {
   }
 
   async refresh() {
-    this.#loaded = await loadedMaterial();
+    if (__CONTROLS__ && identity.can('filament')) {
+      await identity.refresh();
+      this.#loaded = this.#ofTool();
+    } else this.#loaded = await loadedMaterial();
   }
 
   /// Polls the loaded filament every 10 s: it changes rarely, and the printer
@@ -120,6 +139,19 @@ export class Filament {
     this.#outcome = undefined;
     this.#target = action === 'unload' ? undefined : material;
     this.#seenRunning = false;
+    // PrusaLink 2 takes the command itself, with the filament in OpenPrintTag
+    // fields; the printer heats and guides the person as for a helper job.
+    if (__CONTROLS__ && identity.can('filament')) {
+      const { response } = await api.POST('/api/v1/tools/{tool}/filament', {
+        params: { path: { tool: this.#tool } },
+        body: {
+          command: action,
+          ...(material && { material: { material_type: material } }),
+        },
+      });
+      if (!response.ok) this.#busy = undefined;
+      return response.ok;
+    }
     const name = `${HELPER_PREFIX}-${Date.now().toString(36)}.gcode`;
     const file = new File(
       [helperGcode(action, material, identity.model?.variant)],

@@ -232,5 +232,12 @@
   "objects.cancelBody": "Tiskárna ho po zbytek tisku vynechá. Ostatní objekty se tisknou dál.",
   "objects.canceled": "Zrušeno",
   "objects.printing": "Právě se tiskne",
-  "objects.refused": "Tiskárna objekt nezrušila"
+  "objects.refused": "Tiskárna objekt nezrušila",
+  "controls.filament": "Filament pro předehřev",
+  "controls.preheat": "Předehřát",
+  "controls.cooldown": "Zchladit",
+  "controls.zOffset": "Z offset",
+  "controls.lower": "Tryska blíž k podložce",
+  "controls.raise": "Tryska dál od podložky",
+  "controls.refused": "Tiskárna to teď nepřijala"
 }

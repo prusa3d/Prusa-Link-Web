@@ -229,5 +229,12 @@
   "objects.cancelBody": "プリンターは残りの印刷でこのオブジェクトを飛ばします。他のオブジェクトは続行します。",
   "objects.canceled": "中止済み",
   "objects.printing": "印刷中",
-  "objects.refused": "プリンターはオブジェクトを中止しませんでした"
+  "objects.refused": "プリンターはオブジェクトを中止しませんでした",
+  "controls.filament": "予熱するフィラメント",
+  "controls.preheat": "予熱",
+  "controls.cooldown": "冷却",
+  "controls.zOffset": "Zオフセット",
+  "controls.lower": "ノズルをベッドに近づける",
+  "controls.raise": "ノズルをベッドから離す",
+  "controls.refused": "プリンターは今は受け付けませんでした"
 }

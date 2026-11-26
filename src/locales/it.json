@@ -229,5 +229,12 @@
   "objects.cancelBody": "La stampante lo salta per il resto della stampa. Gli altri oggetti continuano.",
   "objects.canceled": "Annullato",
   "objects.printing": "In stampa",
-  "objects.refused": "La stampante non ha annullato l’oggetto"
+  "objects.refused": "La stampante non ha annullato l’oggetto",
+  "controls.filament": "Filamento da preriscaldare",
+  "controls.preheat": "Preriscalda",
+  "controls.cooldown": "Raffredda",
+  "controls.zOffset": "Offset Z",
+  "controls.lower": "Ugello più vicino al piano",
+  "controls.raise": "Ugello più lontano dal piano",
+  "controls.refused": "La stampante non l’ha accettato ora"
 }
