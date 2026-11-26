@@ -62,7 +62,7 @@
         })
       : await fetch('/__mock/state');
     snap = (await res.json()) as Snapshot;
-    if (body.model || body.firmware || body.reset) {
+    if (body.model || body.firmware || body.reset || body.mmu !== undefined) {
       dispatchEvent(new Event('prusalink:identity'));
     }
   }
