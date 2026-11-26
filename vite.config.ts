@@ -44,6 +44,13 @@ const BUILD_FEATURES: Record<string, readonly Feature[]> = {
   coreonel: SINGLE,
   mini: SINGLE,
 };
+/// The messages only a feature uses, by key prefix.
+const MESSAGES: Record<Feature, string> = {
+  multiTool: 'tools.',
+  cancelObject: 'objects.',
+  controls: 'controls.',
+  firmwareFlash: 'flash.',
+};
 const buildFeatures = (variant: string | undefined): readonly string[] => {
   const forced = process.env.PRUSALINK_FEATURES;
   if (forced !== undefined) return forced.split(',');
@@ -68,7 +75,12 @@ export default defineConfig(({ command, mode }) => ({
     printerImages(VARIANT?.startsWith('mini-') ? 'mini' : VARIANT),
     tailwindcss(),
     svelte(),
-    locales(process.env.PRUSALINK_LANG),
+    locales(
+      process.env.PRUSALINK_LANG,
+      Object.entries(MESSAGES)
+        .filter(([f]) => !buildFeatures(VARIANT).includes(f))
+        .map(([, prefix]) => prefix),
+    ),
     command === 'serve' &&
       mode !== 'test' &&
       devPrinter({ printerUrl: process.env.PRINTER_URL }),

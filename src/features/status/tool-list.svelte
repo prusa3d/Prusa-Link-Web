@@ -44,7 +44,7 @@
         />
       </div>
       {#if tool.active}
-        <Badge tone="active">{t('status.active')}</Badge>
+        <Badge tone="active">{t('tools.active')}</Badge>
       {/if}
       {#if onfilament}
         <Button

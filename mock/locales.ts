@@ -8,7 +8,8 @@ const ID = 'virtual:locales';
 /// messages in one shared key order, `null` where a language has none.
 /// Nine languages repeat 140 keys each; as lists the page carries the keys
 /// once, which saves a few KB gzipped. English is the base, as an object.
-export function locales(only?: string): Plugin {
+/// `drop`: key prefixes of features the build leaves out (vite.config.ts).
+export function locales(only?: string, drop: readonly string[] = []): Plugin {
   return {
     name: 'prusalink-locales',
     resolveId: (id) => (id === ID ? `\0${ID}` : undefined),
@@ -16,10 +17,14 @@ export function locales(only?: string): Plugin {
       if (id !== `\0${ID}`) return undefined;
       const read = (file: string) => {
         this.addWatchFile(new URL(file, DIR).pathname);
-        return JSON.parse(readFileSync(new URL(file, DIR), 'utf8')) as Record<
-          string,
-          string
-        >;
+        const all = JSON.parse(
+          readFileSync(new URL(file, DIR), 'utf8'),
+        ) as Record<string, string>;
+        return Object.fromEntries(
+          Object.entries(all).filter(
+            ([k]) => !drop.some((d) => k.startsWith(d)),
+          ),
+        );
       };
       const en = read('en.json');
       // A one-language build (the MINI's, per locale): that language is the
