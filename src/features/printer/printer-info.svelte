@@ -6,14 +6,17 @@
   interface Props {
     model: Model | undefined;
     firmware?: string | undefined;
+    mmu?: boolean;
   }
 
-  let { model, firmware }: Props = $props();
+  let { model, firmware, mmu = false }: Props = $props();
 </script>
 
 {#if model !== undefined || firmware !== undefined}
   <p class="flex flex-wrap items-center gap-x-1.5" data-testid="printer-info">
     {#if model}<span>{model.name}</span>{/if}
+    {#if mmu}<span aria-hidden="true">·</span><span>{t('printer.mmu')}</span
+      >{/if}
     {#if model && firmware}<span aria-hidden="true">·</span>{/if}
     {#if firmware}<span
         >{t('firmware.version', {

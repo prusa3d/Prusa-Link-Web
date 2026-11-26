@@ -41,6 +41,8 @@
     timeScale: number;
     usb: boolean;
     parked: boolean;
+    mmu: boolean;
+    takesMmu: boolean;
     firmware: string;
     bed: { temp: number; target: number };
     tools: { temp: number; target: number; material: string }[];
@@ -108,6 +110,14 @@
           onclick={() => patch({ usb: !snap?.usb })}
           >USB drive {snap.usb ? 'in' : 'out'}</button
         >
+        {#if snap.takesMmu}
+          <button
+            type="button"
+            class={[chip, snap.mmu && on]}
+            onclick={() => patch({ mmu: !snap?.mmu })}
+            >MMU3 {snap.mmu ? 'on' : 'off'}</button
+          >
+        {/if}
         {#each ['8.0.1', '8.0.2'] as firmware (firmware)}
           <button
             class={[chip, snap.firmware === firmware && on]}

@@ -247,7 +247,7 @@
               : undefined}
           >
             {#snippet top()}
-              <PrinterIdentity model={identity.model} />
+              <PrinterIdentity model={identity.model} mmu={identity.mmu} />
             {/snippet}
             {#snippet alerts()}
               <!-- A dialog in front that already shows the printer's

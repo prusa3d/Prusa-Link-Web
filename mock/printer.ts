@@ -79,6 +79,9 @@ export class MockPrinter {
   /// No tool picked: a toolchanger parks them all when idle, and PrusaLink
   /// then reports no material (FilamentType::for_tool(NoTool) in Buddy).
   parked = false;
+  /// An MMU3 attached and turned on (/api/v1/info `mmu`). Kept across a model
+  /// switch only where the model can carry one.
+  mmu = false;
   axis = { x: 0, y: 0, z: 0 };
   speed = 100;
   flow = 100;
@@ -126,6 +129,7 @@ export class MockPrinter {
     this.tools = seedTools(this.model);
     this.activeTool = 0;
     this.parked = this.model === 'XL';
+    if (!this.takesMmu) this.mmu = false;
     this.axis = { x: 0, y: -4, z: 5 };
     this.speed = 100;
     this.flow = 100;
@@ -140,6 +144,11 @@ export class MockPrinter {
     if (!tool)
       throw new Error(`no tool ${String(this.activeTool)} on ${this.model}`);
     return tool;
+  }
+
+  /// The printers an MMU3 fits (MK4S, CORE One).
+  get takesMmu() {
+    return this.model === 'MK4S' || this.model === 'COREONE';
   }
 
   get hostname() {

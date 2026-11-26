@@ -1,4 +1,3 @@
-import { Resvg } from '@resvg/resvg-js';
 import { readFileSync } from 'node:fs';
 
 import { optimize } from 'svgo';
@@ -17,6 +16,14 @@ export const PRINTER_IMAGES: Readonly<Partial<Record<Variant, string>>> = {
   coreonel: 'coreonel.svg',
   coreone_indx: 'coreone_indx.svg',
   coreonel_indx: 'coreonel_indx.svg',
+};
+
+/// The same printer with an MMU3 attached, drawn on the same canvas with the
+/// printer in the same place: the page swaps to it once the printer reports
+/// the MMU.
+export const MMU_IMAGES: Readonly<Partial<Record<Variant, string>>> = {
+  mk4: 'mk4s_mmu3.svg',
+  coreone: 'coreone_mmu3.svg',
 };
 
 const ID = 'virtual:printer-images';
@@ -40,7 +47,12 @@ export function printerImages(variant: string | undefined): Plugin {
       const images = Object.fromEntries(
         entries.map(([v, file]) => [v, svgSource(file)]),
       );
-      return `export default ${JSON.stringify({ images })};`;
+      const mmu = Object.fromEntries(
+        Object.entries(MMU_IMAGES)
+          .filter(([v]) => !pick || v === pick)
+          .map(([v, file]) => [v, svgSource(file)]),
+      );
+      return `export default ${JSON.stringify({ images, mmu })};`;
     },
   };
 }
@@ -51,7 +63,7 @@ export function svgSource(file: string): string {
     multipass: true,
     floatPrecision: 0,
   }).data;
-  const { data } = optimize(trim(halve(flat)), {
+  const { data } = optimize(halve(flat), {
     multipass: true,
     floatPrecision: 0,
   });
@@ -86,29 +98,6 @@ function flattenGradients(svg: string): string {
       (ref: string, id: string) => colors.get(id) ?? ref,
     )
     .replace(/<linearGradient[\s\S]*?<\/linearGradient>/g, '');
-}
-
-/// Frames the picture to what it draws, plus a small margin: the sources sit
-/// in a square canvas with wide empty borders, which would make the printer
-/// small wherever the page scales the picture to a width. Horizontally the
-/// frame stays centred on the canvas: the artwork places the printer's middle
-/// there, and a part sticking out on one side (an extruder motor) must not
-/// pull it off centre.
-function trim(svg: string): string {
-  const box = new Resvg(svg).getBBox();
-  if (!box) return svg;
-  const m = 4;
-  const centre = 250;
-  const half = Math.max(centre - box.x, box.x + box.width - centre) + m;
-  const x = Math.floor(centre - half);
-  const y = Math.floor(box.y - m);
-  const w = Math.ceil(2 * half);
-  const h = Math.ceil(box.height + 2 * m);
-  return svg.replace(
-    /<svg([^>]*)>/,
-    (_, attrs: string) =>
-      `<svg${attrs.replace(/ (?:width|height|viewBox)="[^"]*"/g, '')} width="${String(w)}" height="${String(h)}" viewBox="${String(x)} ${String(y)} ${String(w)} ${String(h)}">`,
-  );
 }
 
 /// Draws the 1000-unit picture on a 500-unit grid (paths and the shapes svgo

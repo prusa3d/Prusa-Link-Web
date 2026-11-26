@@ -27,7 +27,11 @@
       <PrusaWordmark class="h-4 w-auto text-foreground" />
       <span>{t('footer.copyright')}</span>
     </div>
-    <PrinterInfo model={identity.model} firmware={identity.firmware} />
+    <PrinterInfo
+      model={identity.model}
+      firmware={identity.firmware}
+      mmu={identity.mmu}
+    />
     <nav aria-label={t('footer.label')}>
       <ul class="flex flex-wrap gap-x-4 gap-y-1">
         {#each LINKS as link (link.href)}

@@ -222,5 +222,6 @@
   "heating.bedWaiting": "Очікування нагрівання столу",
   "heating.bedReady": "Стіл має правильну температуру",
   "heating.bedLabel": "Температура столу",
-  "upload.dropInto": "G-code, папки та ZIP потраплять до {folder}."
+  "upload.dropInto": "G-code, папки та ZIP потраплять до {folder}.",
+  "printer.mmu": "MMU3"
 }
