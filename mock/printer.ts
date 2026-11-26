@@ -150,7 +150,8 @@ export class MockPrinter {
   zOffset = 0;
   /// Answers the PrusaLink 2 API (/api/v1/info features, expanded status,
   /// dialogs, objects, tune, preheat, filament, firmware flash). Off, it is
-  /// today's firmware.
+  /// a printer on older firmware, which the page does not support; a dev
+  /// build pointed at one must not crash.
   apiV2 = true;
   /// The CORE One's chamber; null without one.
   chamber: { temp: number; target: number } | undefined;
@@ -189,9 +190,14 @@ export class MockPrinter {
     | {
         step: FilamentStep;
         material: string;
+        color?: string | undefined;
         unload: boolean;
         load: boolean;
         ticks: number;
+        tool: MockTool;
+        /// A filament command of API v2 rather than a G-code job: the
+        /// printer is idle afterwards.
+        api?: boolean;
       }
     | undefined;
   /// What the printer asks on its screen in ATTENTION (status_printer.message).
@@ -286,9 +292,23 @@ export class MockPrinter {
   }
 
   /// A filament load, change or unload by API v2; `material` '---' unloads.
+  /// Like the firmware's own, it heats, then asks the person to take the
+  /// old filament out and put the new one in.
   toolFilament(tool: number, material: string, color?: string) {
     const t = this.tools[tool];
-    if (t) this.changeFilaments([{ tool: t, material, color }]);
+    if (!t) return;
+    t.target = 230;
+    this.state = 'BUSY';
+    this.#helper = {
+      step: 'heating',
+      material,
+      color,
+      unload: t.material !== '---',
+      load: material !== '---',
+      ticks: 0,
+      tool: t,
+      api: true,
+    };
   }
 
   /// The MMU3's five slots, which tool mapping maps to while it is on.
@@ -438,6 +458,7 @@ export class MockPrinter {
         unload: f.gcode?.includes('M702') ?? false,
         load: !!load,
         ticks: 0,
+        tool: this.activeToolState,
       };
       return true;
     }
@@ -542,12 +563,12 @@ export class MockPrinter {
     if (action === 'cancel') {
       // Cancelled after the old filament came out: nothing is loaded.
       if (helper.step === 'insert' && helper.unload)
-        this.activeToolState.material = '---';
+        helper.tool.material = '---';
       this.#endHelper('STOPPED');
     } else if (action === 'removed' && helper.step === 'remove') {
       if (helper.load) this.#ask('insert');
       else {
-        this.activeToolState.material = '---';
+        helper.tool.material = '---';
         this.#endHelper('FINISHED');
       }
     } else if (action === 'inserted' && helper.step === 'insert') {
@@ -569,11 +590,16 @@ export class MockPrinter {
   }
 
   #endHelper(state: PrinterState) {
+    const api = this.#helper?.api;
     this.#helper = undefined;
-    this.job = undefined;
     this.question = undefined;
-    this.state = state;
     this.cool();
+    if (api) {
+      this.state = 'IDLE';
+      return;
+    }
+    this.job = undefined;
+    this.state = state;
   }
 
   /// One real second.
@@ -598,8 +624,8 @@ export class MockPrinter {
     // Stopped on the printer (the dev panel's state buttons): the filament
     // stays as it was.
     if (this.#helper && !['BUSY', 'ATTENTION'].includes(this.state)) {
+      if (!this.#helper.api) this.job = undefined;
       this.#helper = undefined;
-      this.job = undefined;
     }
     const helper = this.#helper;
     // A few seconds of heating, then the printer asks for the person.
@@ -607,7 +633,8 @@ export class MockPrinter {
       helper.ticks = 0;
       this.#ask(helper.unload ? 'remove' : 'insert');
     } else if (helper?.step === 'purging' && ++helper.ticks >= 3) {
-      this.activeToolState.material = helper.material;
+      helper.tool.material = helper.material;
+      helper.tool.color = helper.color;
       this.#endHelper('FINISHED');
     }
     const approach = (t: { temp: number; target: number }, i: number) => {

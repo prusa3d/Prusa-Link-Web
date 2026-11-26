@@ -12,14 +12,12 @@
   interface Props {
     /// idle: preheat; printing: babysteps.
     mode: 'idle' | 'printing';
-    preheat: boolean;
-    babystep: boolean;
     /// The printer's own Z offset; 0 where it does not keep babysteps
     /// (printers with a loadcell), and the page shows what it sent.
     zOffset?: number | undefined;
   }
 
-  let { mode, preheat, babystep, zOffset }: Props = $props();
+  let { mode, zOffset }: Props = $props();
   const shown = $derived(
     zOffset !== undefined && zOffset !== 0 ? zOffset : controls.zOffset,
   );
@@ -27,7 +25,7 @@
   let chosen = $state('PLA');
 
   $effect(() => {
-    if (preheat && mode === 'idle') void controls.loadFilaments();
+    if (mode === 'idle') void controls.loadFilaments();
   });
 
   async function send(ok: Promise<boolean>) {
@@ -35,7 +33,7 @@
   }
 </script>
 
-{#if preheat && mode === 'idle'}
+{#if mode === 'idle'}
   <div class="flex flex-wrap items-center gap-2" data-testid="preheat">
     <Select
       bind:value={chosen}
@@ -61,7 +59,7 @@
       >{t('controls.cooldown')}</Button
     >
   </div>
-{:else if babystep && mode === 'printing'}
+{:else}
   <div class="flex items-center gap-2" data-testid="babystep">
     <span class="flex-1 text-sm font-medium">{t('controls.zOffset')}</span>
     <Button

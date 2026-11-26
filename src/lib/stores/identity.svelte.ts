@@ -133,12 +133,6 @@ export class IdentityStore {
     return this.#mmu;
   }
 
-  /// The firmware has the PrusaLink 2 API: /api/v1/info lists its features.
-  /// Detected by the answer, never by the version string.
-  get v2() {
-    return this.#features !== undefined;
-  }
-
   /// One of /api/v1/info's `features`, such as `cancel_object`.
   can(feature: string) {
     return this.#features?.includes(feature) ?? false;

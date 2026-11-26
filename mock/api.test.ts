@@ -364,11 +364,16 @@ describe('PrusaLink 2 API', () => {
         material: { material_type: 'PETG', primary_color: '#00ff00' },
       }).status,
     ).toBe(202);
+    // The person at the printer takes the old filament out, puts PETG in.
     for (let i = 0; i < 5; i++) printer.tick();
+    printer.answer('removed');
+    printer.answer('inserted');
+    for (let i = 0; i < 4; i++) printer.tick();
     expect(printer.tools[2]).toMatchObject({
       material: 'PETG',
       color: '#00ff00',
     });
+    expect(printer.state).toBe('IDLE');
     expect(
       send(printer, 'POST', '/api/v1/tools/2/filament', {
         command: 'load',
