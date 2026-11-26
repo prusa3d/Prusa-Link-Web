@@ -6,7 +6,14 @@ import {
   readHeader,
   readObjectsInfo,
 } from '../src/lib/files/header.ts';
-import { ambient, FILAMENTS, seedFiles, seedTools, shortName } from './seed.ts';
+import {
+  ambient,
+  FILAMENTS,
+  seedFiles,
+  seedSlots,
+  seedTools,
+  shortName,
+} from './seed.ts';
 
 type Schemas = components['schemas'];
 export type PrinterState = Schemas['StatusPrinter']['state'];
@@ -34,6 +41,13 @@ export interface MockDialog {
   text: string;
   buttons: string[];
   kind?: 'mismatch' | undefined;
+}
+
+export interface Change {
+  tool: MockTool;
+  /// '---' unloads.
+  material: string;
+  color?: string | undefined;
 }
 
 export interface MockObject {
@@ -159,11 +173,7 @@ export class MockPrinter {
   /// at once (change all).
   #toolOp:
     | {
-        changes: {
-          tool: number;
-          material: string;
-          color?: string | undefined;
-        }[];
+        changes: Change[];
         ticks: number;
         back: PrinterState;
       }
@@ -223,6 +233,7 @@ export class MockPrinter {
     this.fanPrint = 0;
     this.zOffset = 0;
     if (!this.takesMmu) this.mmu = false;
+    this.slots = this.takesMmu ? seedSlots() : [];
     this.axis = { x: 0, y: -4, z: 5 };
     this.speed = 100;
     this.flow = 100;
@@ -276,17 +287,28 @@ export class MockPrinter {
 
   /// A filament load, change or unload by API v2; `material` '---' unloads.
   toolFilament(tool: number, material: string, color?: string) {
-    this.changeFilaments([{ tool, material, color }]);
+    const t = this.tools[tool];
+    if (t) this.changeFilaments([{ tool: t, material, color }]);
   }
 
-  /// The printer's change all: it heats every tool, then changes them.
-  changeFilaments(
-    changes: { tool: number; material: string; color?: string | undefined }[],
-  ) {
+  /// The MMU3's five slots, which tool mapping maps to while it is on.
+  slots: MockTool[] = [];
+
+  /// What a print's extruders map to: the MMU's slots while it is on, else
+  /// the tools; Connect's ids are `"0.N"` and `"N"`.
+  get targets(): { id: string; tool: MockTool }[] {
+    return this.mmu
+      ? this.slots.map((tool, i) => ({ id: `0.${String(i)}`, tool }))
+      : this.tools.map((tool, i) => ({ id: String(i), tool }));
+  }
+
+  /// The printer's change all: it heats every head involved, then changes
+  /// them one by one.
+  changeFilaments(changes: Change[]) {
     this.#toolOp = { changes, ticks: 3 + changes.length, back: this.state };
     for (const c of changes) {
-      const t = this.tools[c.tool];
-      if (t) t.target = 230;
+      const head = this.mmu ? this.tools[0] : c.tool;
+      if (head) head.target = 230;
     }
     if (IDLE_STATES.includes(this.state)) this.state = 'BUSY';
   }
@@ -565,8 +587,7 @@ export class MockPrinter {
     const op = this.#toolOp;
     if (op && --op.ticks <= 0) {
       for (const c of op.changes) {
-        const t = this.tools[c.tool];
-        if (!t) continue;
+        const t = c.tool;
         t.material = c.material;
         t.color = c.material === '---' ? undefined : c.color;
         t.target = 0;

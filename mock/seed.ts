@@ -166,6 +166,18 @@ export function seedTools(model: PrinterModel): MockTool[] {
   }));
 }
 
+/// An MMU3's five slots: four of the four-colour plate's filaments, one
+/// empty.
+export function seedSlots(): MockTool[] {
+  return [
+    { material: 'PLA', color: '#f58231' },
+    { material: 'PETG', color: '#1f77b4' },
+    { material: 'PLA', color: '#ff0000' },
+    { material: 'ASA', color: '#d62728' },
+    { material: '---' },
+  ].map((s, i) => ({ temp: ambient(i), target: 0, ...s }));
+}
+
 /// The firmware's filament presets (src/common/filament_presets.cpp), as
 /// GET /api/v1/filaments lists them.
 export const FILAMENTS: {
@@ -298,7 +310,9 @@ export function seedFiles(
   files.push(
     { ...SHAPES, m_timestamp: stamp },
     { ...SHAPES_TEXT, m_timestamp: stamp - 60 },
-    ...(multi ? [{ ...FOUR_COLOURS, m_timestamp: stamp - 120 }] : []),
+    ...(multi || model === 'MK4S' || model === 'COREONE'
+      ? [{ ...FOUR_COLOURS, m_timestamp: stamp - 120 }]
+      : []),
   );
   files.sort((a, b) => b.m_timestamp - a.m_timestamp);
   return { files, folders: OS_FOLDERS };

@@ -1,11 +1,12 @@
 import type { paths } from '../src/lib/api/schema';
 import {
+  type Change,
   filePath,
+  type MockTool,
   IDLE_STATES,
   PRINTER_CODE,
   type MockPrinter,
 } from './printer.ts';
-import { gcodeFilaments } from '../src/lib/printer/tool-mapping.ts';
 import { FILAMENTS, firmwarePrefix } from './seed.ts';
 import { mockThumbnail } from './thumbnail.ts';
 
@@ -63,6 +64,7 @@ function cached(req: MockRequest, body: unknown, tag = etag(body)) {
 }
 
 const FEATURES = [
+  'status_expanded',
   'cancel_object',
   'dialogs',
   'firmware_update',
@@ -108,19 +110,9 @@ function firmwareMeta(printer: MockPrinter, name: string) {
   };
 }
 
-function toolInfo(printer: MockPrinter, i: number) {
-  const tool = printer.tools[i];
-  if (!tool) return null;
-  const loaded = tool.material !== '---';
+function materialOf(tool: MockTool) {
   return {
-    type: 'FFF_PRINT_HEAD',
-    features: {
-      nozzle_diameter: 0.4,
-      nozzle_hardened: false,
-      // The INDX ships with high-flow nozzles.
-      nozzle_high_flow: printer.model === 'COREONE_INDX',
-    },
-    ...(loaded && {
+    ...(tool.material !== '---' && {
       material_package_instance: {
         class: 'FFF',
         package: {
@@ -135,6 +127,71 @@ function toolInfo(printer: MockPrinter, i: number) {
     }),
   };
 }
+
+function toolInfo(printer: MockPrinter, i: number) {
+  const tool = printer.tools[i];
+  if (!tool) return null;
+  return {
+    type: 'FFF_PRINT_HEAD',
+    features: {
+      nozzle_diameter: 0.4,
+      nozzle_hardened: false,
+      // The INDX ships with high-flow nozzles.
+      nozzle_high_flow: printer.model === 'COREONE_INDX',
+    },
+    ...materialOf(tool),
+  };
+}
+
+/// /api/v1/info, whose hash is its ETag and the status's info_revision.
+function info(printer: MockPrinter): Ok<'/api/v1/info', 'get'> {
+  return {
+    hostname: printer.hostname,
+    serial: 'MOCK-0000000000000000',
+    nozzle_diameter: 0.4,
+    mmu: printer.mmu,
+    min_extrusion_temp: 170,
+    ...(printer.apiV2 && {
+      tool_count: printer.toolCount,
+      tools: {
+        ...Object.fromEntries(
+          printer.tools.map((_, i) => [String(i), toolInfo(printer, i)]),
+        ),
+        ...(printer.mmu &&
+          Object.fromEntries(
+            printer.slots.map((slot, i) => [
+              `0.${String(i)}`,
+              { type: 'FFF_FEEDER_SLOT', ...materialOf(slot) },
+            ]),
+          )),
+      },
+      ...(printer.enclosure && {
+        enclosure: { enabled: true, printing_filtration: true },
+      }),
+      features: [
+        ...FEATURES,
+        ...(printer.chamber ? ['chamber' as const] : []),
+        ...(printer.toolCount > 1 || printer.takesMmu
+          ? (['tool_mapping', 'change_all'] as const)
+          : []),
+      ],
+      hw_checks: {
+        nozzle: printer.nozzleCheck,
+        model: 'warning',
+        firmware: 'warning',
+        gcode_level: 'warning',
+        input_shaper: 'warning',
+        gcode_compatibility: 'warning',
+      },
+    }),
+  };
+}
+
+const revision = (body: unknown) => {
+  let h = 0;
+  for (const c of JSON.stringify(body)) h = (h * 31 + c.charCodeAt(0)) | 0;
+  return h >>> 0;
+};
 export function handleApi(
   printer: MockPrinter,
   req: MockRequest,
@@ -158,38 +215,8 @@ export function handleApi(
   }
 
   if (method === 'GET' && path === '/api/v1/info') {
-    const body: Ok<'/api/v1/info', 'get'> = {
-      hostname: printer.hostname,
-      serial: 'MOCK-0000000000000000',
-      nozzle_diameter: 0.4,
-      mmu: printer.mmu,
-      min_extrusion_temp: 170,
-      ...(printer.apiV2 && {
-        tool_count: printer.toolCount,
-        tools: Object.fromEntries(
-          printer.tools.map((_, i) => [String(i), toolInfo(printer, i)]),
-        ),
-        ...(printer.enclosure && {
-          enclosure: { enabled: true, printing_filtration: true },
-        }),
-        features: [
-          ...FEATURES,
-          ...(printer.chamber ? ['chamber' as const] : []),
-          ...(printer.toolCount > 1
-            ? (['tool_mapping', 'change_all'] as const)
-            : []),
-        ],
-        hw_checks: {
-          nozzle: printer.nozzleCheck,
-          model: 'warning',
-          firmware: 'warning',
-          gcode_level: 'warning',
-          input_shaper: 'warning',
-          gcode_compatibility: 'warning',
-        },
-      }),
-    };
-    return cached(req, body);
+    const body = info(printer);
+    return cached(req, body, `"${String(revision(body))}"`);
   }
 
   // Firmware before API v2 compares the whole URL: a query is a 404.
@@ -224,19 +251,35 @@ export function handleApi(
             status_printer: { ok: false, message: printer.question },
           }),
         ...(expanded && {
-          tools: Object.fromEntries(
-            printer.tools.map((t, i) => [
-              String(i),
-              {
-                type: 'FFF_PRINT_HEAD',
-                active: !printer.parked && i === printer.activeTool,
-                nozzle_temp: t.temp,
-                nozzle_target_temp: t.target || null,
-                heatbreak_fan_rpm: t.temp > 50 ? 5200 : 0,
-                print_fan_rpm: 0,
-              },
-            ]),
-          ),
+          tools: {
+            ...Object.fromEntries(
+              printer.tools.map((t, i) => [
+                String(i),
+                {
+                  type: 'FFF_PRINT_HEAD',
+                  active:
+                    !printer.parked && !printer.mmu && i === printer.activeTool,
+                  nozzle_temp: t.temp,
+                  nozzle_target_temp: t.target || null,
+                  heatbreak_fan_rpm: t.temp > 50 ? 5200 : 0,
+                  print_fan_rpm: 0,
+                },
+              ]),
+            ),
+            // The MMU's slots, the one feeding marked (Connect telemetry).
+            ...(printer.mmu &&
+              Object.fromEntries(
+                printer.slots.map((_, i) => [
+                  `0.${String(i)}`,
+                  {
+                    type: 'FFF_FEEDER_SLOT',
+                    active: printer.job !== undefined && i === 0,
+                  },
+                ]),
+              )),
+          },
+          z_offset: 0,
+          info_revision: revision(info(printer)),
           ...(printer.chamber && {
             chamber: {
               temp: printer.chamber.temp,
@@ -509,10 +552,12 @@ function validMapping(
     if (!/^[1-9]\d*$/.test(from) || !Array.isArray(to) || !to.length)
       return false;
     for (const tool of to) {
+      const target =
+        typeof tool === 'number' ? printer.targets[tool - 1] : undefined;
       if (
         typeof tool !== 'number' ||
-        !printer.tools[tool - 1] ||
-        printer.tools[tool - 1]?.material === '---' ||
+        !target ||
+        target.tool.material === '---' ||
         used.has(tool)
       )
         return false;
@@ -662,56 +707,26 @@ function handleV2(
   }
 
   if (path === '/api/v1/filament/change-all') {
-    if (method === 'GET') {
-      // The firmware's from_current_print_setup: every tool the file uses,
-      // 1:1, whose filament is not the file's.
-      const file = printer.file(
-        decodeURIComponent(
-          new URLSearchParams(req.query).get('for')?.replace(/^\/?usb\//, '') ??
-            '',
-        ),
-      );
-      const header = file && printer.header(file);
-      const items: Record<string, unknown> = {};
-      for (const f of gcodeFilaments(header)) {
-        const t = printer.tools[f.index - 1];
-        if (t && t.material !== f.material)
-          items[String(f.index)] = {
-            action: 'change',
-            material: { material_type: f.material },
-            ...(f.color && { color: f.color }),
-          };
-      }
-      return json({ items });
-    }
+    // The firmware suggests only on its print preview's tools mapping
+    // screen, which the mock does not have.
+    if (method === 'GET') return conflict('Not on the print preview');
     if (method === 'POST') {
       if (!idle) return conflict('Printer is busy');
       const items = readJson(req)?.items as
-        | Record<
-            string,
-            {
-              action?: string;
-              material?: { material_type?: string };
-              color?: string;
-            }
-          >
+        | Record<string, { action?: string; filament?: string; color?: string }>
         | undefined;
       if (!items) return empty(400);
-      const changes = [];
-      for (const [tool, item] of Object.entries(items)) {
-        const index = Number(tool) - 1;
-        if (!printer.tools[index]) return empty(422);
-        if (item.action === 'unload')
-          changes.push({ tool: index, material: '---' });
+      const changes: Change[] = [];
+      for (const [id, item] of Object.entries(items)) {
+        const tool = printer.targets.find((t) => t.id === id)?.tool;
+        if (!tool) return empty(422);
+        if (item.action === 'unload') changes.push({ tool, material: '---' });
         else if (item.action === 'change') {
-          const type = item.material?.material_type;
-          if (!FILAMENTS.some((f) => f.name === type)) return empty(422);
-          changes.push({
-            tool: index,
-            material: type ?? '',
-            color: item.color,
-          });
-        }
+          const name = item.filament;
+          if (!name || !FILAMENTS.some((f) => f.name === name))
+            return empty(422);
+          changes.push({ tool, material: name, color: item.color });
+        } else if (item.action !== 'keep') return empty(422);
       }
       printer.changeFilaments(changes);
       return empty(202);

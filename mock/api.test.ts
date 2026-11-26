@@ -420,43 +420,73 @@ describe('PrusaLink 2 API', () => {
     expect(printer.job?.mapping).toEqual({ '1': [3, 5], '2': [1] });
   });
 
-  it('suggests and runs a change of every tool a print needs', async () => {
-    MockPrinter.fixtures['three-shapes.bgcode'] = new Uint8Array(
-      readFileSync(new URL('./fixtures/three-shapes.bgcode', import.meta.url)),
-    );
+  it('changes the filaments of several tools by Connect id, as the firmware', () => {
     const printer = new MockPrinter('XL');
-    printer.tools[0] = {
-      ...printer.tools[0],
-      material: 'PETG',
-      temp: 20,
-      target: 0,
+    expect(
+      send(printer, 'GET', '/api/v1/filament/change-all', undefined, 'for=x')
+        .status,
+    ).toBe(409);
+    const items = {
+      '0': { action: 'change', filament: 'PETG', color: '#00ff00' },
+      '4': { action: 'unload' },
+      '1': { action: 'keep' },
     };
-    const shapes = printer.files.find(
-      (f) => f.fixture === 'three-shapes.bgcode',
-    );
-    if (!shapes) throw new Error('no fixture file');
-    printer.header(shapes);
-    await expect.poll(() => printer.header(shapes)).toBeDefined();
-    const query = `for=${encodeURIComponent(`/usb/${shapes.name}`)}`;
-    const res = send(
-      printer,
-      'GET',
-      '/api/v1/filament/change-all',
-      undefined,
-      query,
-    );
-    const items = (res.body as { items: Record<string, unknown> }).items;
-    expect(items).toEqual({
-      '1': {
-        action: 'change',
-        material: { material_type: 'PLA' },
-        color: '#F58231',
-      },
-    });
     expect(
       send(printer, 'POST', '/api/v1/filament/change-all', { items }).status,
     ).toBe(202);
     for (let i = 0; i < 6; i++) printer.tick();
-    expect(printer.tools[0].material).toBe('PLA');
+    expect(printer.tools[0]).toMatchObject({
+      material: 'PETG',
+      color: '#00ff00',
+    });
+    expect(printer.tools[4]?.material).toBe('---');
+    expect(
+      send(printer, 'POST', '/api/v1/filament/change-all', {
+        items: { '9': { action: 'unload' } },
+      }).status,
+    ).toBe(422);
+  });
+
+  it('maps to the MMU3 slots while it is on', () => {
+    const printer = new MockPrinter('MK4S');
+    printer.mmu = true;
+    const info = get(printer, '/api/v1/info').body as {
+      tools: Record<string, unknown>;
+      features: string[];
+    };
+    expect(Object.keys(info.tools)).toEqual([
+      '0',
+      '0.0',
+      '0.1',
+      '0.2',
+      '0.3',
+      '0.4',
+    ]);
+    expect(info.features).toContain('tool_mapping');
+    const status = send(
+      printer,
+      'GET',
+      '/api/v1/status',
+      undefined,
+      'expanded=true',
+    ).body as {
+      printer: {
+        tools: Record<string, { type: string }>;
+        info_revision: number;
+      };
+    };
+    expect(status.printer.tools['0.4']?.type).toBe('FFF_FEEDER_SLOT');
+    const file = printer.files[0]?.name ?? '';
+    // Slot 5 is empty.
+    expect(
+      send(printer, 'POST', `/api/v1/files/usb/${file}`, {
+        tool_mapping: { '1': [5] },
+      }).status,
+    ).toBe(422);
+    expect(
+      send(printer, 'POST', `/api/v1/files/usb/${file}`, {
+        tool_mapping: { '1': [2] },
+      }).status,
+    ).toBe(204);
   });
 });
