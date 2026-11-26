@@ -20,7 +20,7 @@ test.beforeEach(async ({ page, request }) => {
       reset: true,
       firmware: '8.0.1',
       transitionSeconds: 1,
-      apiV2: false,
+      apiV2: true,
     },
   });
   // The firmware release check asks GitHub; tests answer for it.
@@ -495,7 +495,7 @@ test('inside a folder, uploads go to that folder and the overlay says so', async
     .toBe('toys');
 });
 
-test('changes the filament through a helper job and cleans up', async ({
+test('changes the filament through the printer and leaves no file behind', async ({
   page,
   request,
 }) => {
@@ -505,15 +505,12 @@ test('changes the filament through a helper job and cleans up', async ({
   await expect(dialog.getByText('Loaded: PLA')).toBeVisible();
   await dialog.getByRole('button', { name: 'PETG', exact: true }).click();
   const state = page.getByTestId('printer-state');
-  // The upload and start of the helper job queue behind the status poll.
   await expect(state).toHaveAttribute('data-state', 'BUSY', {
     timeout: 10_000,
   });
   await expect(state).toHaveText('Changing to PETG', { timeout: 10_000 });
-  await expect(page.getByTestId('filament-activity')).toBeVisible();
-  await expect(page.getByTestId('job-percent')).toHaveCount(0);
   await swapAtPrinter(request);
-  await expect(state).toHaveAttribute('data-state', 'FINISHED', {
+  await expect(state).toHaveAttribute('data-state', 'IDLE', {
     timeout: 15_000,
   });
   await expect(page.getByText('PETG', { exact: true }).first()).toBeVisible({

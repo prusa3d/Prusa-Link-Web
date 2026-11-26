@@ -8,7 +8,6 @@ import {
   type Update,
 } from '../../lib/firmware/releases';
 import type { Variant } from '../../lib/printer/models';
-import { identity } from '../../lib/stores/identity.svelte';
 import { usbFirmware } from './usb-files.svelte';
 
 const DISMISSED = 'prusalink.firmware-dismissed';
@@ -155,8 +154,7 @@ export class FirmwareUpdate {
     if (status >= 200 && status < 300) {
       this.#transfer = { step: 'done', version };
       // PrusaLink 2 installs it from the page (the USB firmware card).
-      if (__FIRMWARE_FLASH__ && identity.can('firmware_update'))
-        void usbFirmware.refresh();
+      if (__FIRMWARE_FLASH__) void usbFirmware.refresh();
     } else if (abort.signal.aborted) this.#transfer = { step: 'idle' };
     else
       this.#transfer = {

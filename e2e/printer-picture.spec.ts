@@ -71,19 +71,14 @@ test('an MMU3 attached swaps in the picture with it, labels and all', async ({
   await expect.poll(anchor).not.toBe(plainAnchor);
 });
 
-test('an XL with no tool picked labels the bed only', async ({
+test('an XL labels its first tool whether or not one is picked', async ({
   page,
   request,
 }) => {
   await printer(request, { model: 'XL', reset: true });
   await openApp(page);
   await expect(page.getByTestId('heater-label-bed')).toBeVisible();
-  await expect(page.getByTestId('heater-label-T1')).toHaveCount(0);
-
-  await printer(request, { parked: false });
-  await expect(page.getByTestId('heater-label-T1')).toBeVisible({
-    timeout: 15_000,
-  });
+  await expect(page.getByTestId('heater-label-T1')).toBeVisible();
 });
 
 test('the labels go while the printer is unreachable', async ({

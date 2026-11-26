@@ -19,25 +19,26 @@ test.beforeEach(async ({ page, request }) => {
 const state = (page: Page) => page.getByTestId('printer-state');
 
 test.describe('filament before a print', () => {
-  test('a one-tool XL looks the same to the page, so it too leaves the filament to the printer', async ({
+  test('a one-tool XL has one tool: its filament shows and changes like any printer’s', async ({
     page,
     request,
   }) => {
     await printer(request, { model: 'XL_SINGLE', reset: true });
     await openApp(page);
-    await expect(page.getByText('Per tool, on the printer')).toBeVisible();
+    await expect(page.getByTestId('tool-material')).toHaveText('PLA');
+    await expect(page.getByRole('button', { name: 'Change' })).toBeVisible();
   });
 
-  test('an XL with no tool picked reports no filament; the page leaves the tools to the printer', async ({
+  test('a five-tool XL lists every tool with its filament; the print dialog leaves the tools to the mapping', async ({
     page,
     request,
   }) => {
     await printer(request, { model: 'XL', reset: true });
     await openApp(page);
-    await expect(page.getByText('Per tool, on the printer')).toBeVisible();
+    await expect(page.getByTestId('tool-row')).toHaveCount(5);
     await expect(
-      page.getByRole('button', { name: /^(Load|Change)$/ }),
-    ).toHaveCount(0);
+      page.getByRole('button', { name: /^Filament T\d$/ }),
+    ).toHaveCount(5);
     await page
       .getByRole('button', { name: /^Print / })
       .first()

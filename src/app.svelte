@@ -73,7 +73,7 @@
   // PrusaLink 2 counts the tools; before it, the model says whether there
   // can be several.
   const multiTool = $derived(
-    identity.v2
+    __API_V2__
       ? identity.tools.length > 1
       : isMultiTool(identity.model?.variant),
   );
@@ -81,7 +81,7 @@
     __MULTI_TOOL__ ? toolRows(printer.status, identity.tools) : [],
   );
   $effect(() => {
-    printer.expanded = __API_V2__ && identity.can('status_expanded');
+    printer.expanded = __API_V2__;
   });
   // The loaded filaments are in /api/v1/info only: read it again when the
   // printer says it changed.
@@ -109,11 +109,7 @@
     if (!session.signedIn) return undefined;
     // Untracked: a first poll reads state (the printer's features) that must
     // not restart every poll when it changes.
-    const stops = untrack(() => [
-      printer.poll(),
-      identity.poll(),
-      filament.poll(),
-    ]);
+    const stops = untrack(() => [printer.poll(), identity.poll()]);
     return () => {
       for (const stop of stops) stop();
     };
@@ -333,7 +329,7 @@
               printer.control(action)}
             {activity}
             tools={printer.offline ? undefined : tools}
-            ontoolfilament={__CONTROLS__ && canStart && identity.can('filament')
+            ontoolfilament={__CONTROLS__ && canStart
               ? (tool: number) => {
                   filament.tool = tool;
                   filamentOpen = true;
@@ -375,8 +371,6 @@
                 <PrinterControls
                   mode={controlMode}
                   zOffset={printer.status?.z_offset}
-                  preheat={identity.can('preheat')}
-                  babystep={identity.can('tune')}
                 />
               {/if}
             {/snippet}
@@ -414,7 +408,7 @@
           />
         {/if}
         <UpdateNotice as="card" />
-        {#if UsbFirmware && identity.can('firmware_update')}
+        {#if UsbFirmware}
           <UsbFirmware {canStart} />
         {/if}
       </div>

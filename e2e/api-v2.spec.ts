@@ -2,14 +2,14 @@ import { readFileSync } from 'node:fs';
 
 import { expect, test, type APIRequestContext } from '@playwright/test';
 
-import { freshPrinter, openApp, printer } from './support';
+import { freshPrinter, openApp, printer, swapAtPrinter } from './support';
 
 // The printer's firmware has the PrusaLink 2 API (doc/prusalink-api-v2.md in
 // Buddy): every tool, dialogs, cancel object, preheat, babysteps, filament
 // and firmware commands.
 
 test.beforeEach(async ({ page, request }) => {
-  await freshPrinter(page, request, true);
+  await freshPrinter(page, request);
 });
 
 interface Snapshot {
@@ -42,17 +42,10 @@ test.describe('tools', () => {
     await expect(page.getByText('Per tool, on the printer')).toHaveCount(0);
   });
 
-  test('a two-tool XL has two rows; firmware before PrusaLink 2 falls back to the active tool', async ({
-    page,
-    request,
-  }) => {
+  test('a two-tool XL has two rows', async ({ page, request }) => {
     await printer(request, { model: 'XL_2', reset: true });
     await openApp(page);
     await expect(page.getByTestId('tool-row')).toHaveCount(2);
-    await printer(request, { apiV2: false });
-    await page.reload();
-    await expect(page.getByText('Per tool, on the printer')).toBeVisible();
-    await expect(page.getByTestId('tool-row')).toHaveCount(0);
   });
 
   test('the CORE One reports its chamber, on the picture too', async ({
@@ -216,6 +209,7 @@ test.describe('controls', () => {
     await page.getByRole('button', { name: 'Filament T3' }).click();
     const dialog = page.getByRole('dialog');
     await dialog.getByRole('button', { name: 'PETG' }).click();
+    await swapAtPrinter(request);
     await expect
       .poll(async () => (await mock(request)).tools[2]?.material, {
         timeout: 15_000,

@@ -56,16 +56,11 @@ type FetchStatus = (expanded: boolean) => Promise<{
   job?: StatusJob | undefined;
 }>;
 
-/// Firmware before PrusaLink 2 answers a query with 404: then the plain
-/// status, from then on.
-export class Refused extends Error {}
-
 const fetchStatus: FetchStatus = async (expanded) => {
   const { data, response } = await api.GET(
     '/api/v1/status',
     expanded ? { params: { query: { expanded: true } } } : {},
   );
-  if (expanded && response.status === 404) throw new Refused();
   if (!response.ok) throw new Error(`status ${String(response.status)}`);
   return data ?? {};
 };
@@ -107,7 +102,6 @@ export class PrinterStore {
   #sampledAt = 0;
   #fetch: FetchStatus;
   #fetchJobFile: FetchJobFile;
-  #refused = false;
   /// Ask for every tool, the chamber and the change counters (PrusaLink 2).
   expanded = false;
 
@@ -150,12 +144,7 @@ export class PrinterStore {
 
   async refresh() {
     try {
-      const expanded = this.expanded && !this.#refused;
-      const data = await this.#fetch(expanded).catch((e: unknown) => {
-        if (!(e instanceof Refused)) throw e;
-        this.#refused = true;
-        return this.#fetch(false);
-      });
+      const data = await this.#fetch(this.expanded);
       this.#status = data.printer;
       this.#job = data.job;
       this.#error = false;

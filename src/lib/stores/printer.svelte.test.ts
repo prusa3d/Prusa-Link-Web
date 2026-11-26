@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from 'vitest';
 
-import { PrinterStore, Refused, type Status } from './printer.svelte';
+import { PrinterStore, type Status } from './printer.svelte';
 
 const idle = { state: 'IDLE', temp_bed: 22, temp_nozzle: 22 } as Status;
 
@@ -29,21 +29,6 @@ describe('PrinterStore', () => {
     await store.refresh();
     expect(store.offline).toBe(true);
     expect(store.status?.state).toBe('IDLE');
-  });
-
-  it('asks for the expanded status, and for the plain one once refused', async () => {
-    const asked: boolean[] = [];
-    const store = new PrinterStore((expanded) => {
-      asked.push(expanded);
-      return expanded
-        ? Promise.reject(new Refused())
-        : Promise.resolve({ printer: idle });
-    });
-    store.expanded = true;
-    await store.refresh();
-    await store.refresh();
-    expect(asked).toEqual([true, false, false]);
-    expect(store.offline).toBe(false);
   });
 
   it('polls slower in a background tab', async () => {
