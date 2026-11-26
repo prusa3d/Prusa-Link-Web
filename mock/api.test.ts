@@ -178,4 +178,28 @@ describe('seeded printer', () => {
     expect(printer.file(name)).toBeDefined();
     expect(printer.files).toHaveLength(before + 1);
   });
+
+  it('takes firmware into the USB root only, like the printer', () => {
+    const printer = new MockPrinter();
+    const before = printer.files.length;
+    const put = (path: string, headers: Record<string, string> = {}) =>
+      handleApi(printer, {
+        method: 'PUT',
+        path: `/api/v1/files/usb/${path}`,
+        body: new Uint8Array(4),
+        headers: { ...authed(printer), ...headers },
+      }).status;
+    expect(put('MK4_MK4S_MK3.9_MK3.9S_firmware_8.0.2.bbf')).toBe(201);
+    expect(put('toys/MK4_MK4S_MK3.9_MK3.9S_firmware_8.0.2.bbf')).toBe(422);
+    expect(
+      put('MK4_MK4S_MK3.9_MK3.9S_firmware_8.0.2.bbf', {
+        'print-after-upload': '?1',
+      }),
+    ).toBe(422);
+    expect(put('notes.txt')).toBe(415);
+    expect(printer.firmwareUploads).toEqual([
+      'MK4_MK4S_MK3.9_MK3.9S_firmware_8.0.2.bbf',
+    ]);
+    expect(printer.files).toHaveLength(before);
+  });
 });

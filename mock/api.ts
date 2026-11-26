@@ -236,8 +236,18 @@ export function handleApi(
   if (fileOp) {
     const name = decodeURIComponent(fileOp[1] ?? '');
     if (method === 'PUT') {
-      // Like the firmware: a taken name needs `Overwrite: ?1`.
       const slash = name.lastIndexOf('/');
+      // Like the firmware (gcode_upload.cpp): G-code anywhere, firmware only
+      // in the root, where the printer looks for it when it starts. It does
+      // not list .bbf files, so the mock does not keep them.
+      if (name.toLowerCase().endsWith('.bbf')) {
+        if (slash >= 0 || req.headers['print-after-upload'] === '?1')
+          return empty(422);
+        printer.firmwareUploads.push(name);
+        return empty(201);
+      }
+      if (!/\.(gcode|bgcode|gco|gc|g|bgc)$/i.test(name)) return empty(415);
+      // Like the firmware: a taken name needs `Overwrite: ?1`.
       const taken = printer
         .list(slash < 0 ? '' : name.slice(0, slash))
         .files.some((f) => f.display_name === name.slice(slash + 1));

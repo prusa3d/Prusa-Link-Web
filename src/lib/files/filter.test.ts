@@ -46,6 +46,18 @@ describe('collecting picked and dropped files', () => {
     expect(picked.skipped).toBe(2);
   });
 
+  it('sets firmware aside for the update dialog', () => {
+    const picked = collectFiles([
+      file('a.gcode'),
+      file('XL_XL+_firmware_8.0.2.bbf'),
+    ]);
+    expect(picked.files.map((f) => f.path)).toEqual(['a.gcode']);
+    expect(picked.firmware.map((f) => f.name)).toEqual([
+      'XL_XL+_firmware_8.0.2.bbf',
+    ]);
+    expect(picked.skipped).toBe(0);
+  });
+
   it('walks dropped folders and skips hidden ones', async () => {
     const entryFile = (fullPath: string) => ({
       isFile: true,

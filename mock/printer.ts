@@ -83,6 +83,8 @@ export class MockPrinter {
   speed = 100;
   flow = 100;
   files: MockFile[] = [];
+  /// Firmware (.bbf) put in the USB root, which the printer does not list.
+  firmwareUploads: string[] = [];
   /// A filament helper job (M701/M702) and the step it is at. Like the real
   /// printer it waits for a person: the dev panel's buttons take the filament
   /// out, put it in, or cancel.
@@ -130,6 +132,7 @@ export class MockPrinter {
     const seeded = seedFiles(this.model);
     this.files = seeded.files;
     this.folders = seeded.folders;
+    this.firmwareUploads = [];
   }
 
   get activeToolState(): MockTool {
