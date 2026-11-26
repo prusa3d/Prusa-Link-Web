@@ -4,6 +4,7 @@
 
   import { uploads } from './uploads.svelte';
   import { files } from '../files/files.svelte';
+  import { firmwareUpdate } from '../firmware/update.svelte';
   import { collectDropped } from '../../lib/files/collect';
   import { t } from '../../lib/i18n.svelte';
   import type { Model } from '../../lib/printer/models';
@@ -26,11 +27,13 @@
   function ondragenter(e: DragEvent) {
     if (!hasFiles(e)) return;
     depth += 1;
+    firmwareUpdate.dragging = firmwareUpdate.open;
   }
 
   function ondragleave(e: DragEvent) {
     if (!hasFiles(e)) return;
     depth = Math.max(0, depth - 1);
+    if (depth === 0) firmwareUpdate.dragging = false;
   }
 
   function ondragover(e: DragEvent) {
@@ -41,9 +44,16 @@
     if (!hasFiles(e)) return;
     e.preventDefault();
     depth = 0;
+    firmwareUpdate.dragging = false;
     const data = e.dataTransfer;
-    if (data)
-      await uploads.upload(await collectDropped(data.items, data.files));
+    if (!data) return;
+    // With the firmware dialog open the whole window is its drop area.
+    if (firmwareUpdate.open) {
+      const [file] = [...data.files];
+      if (file) void firmwareUpdate.receive(file);
+      return;
+    }
+    await uploads.upload(await collectDropped(data.items, data.files));
   }
   // Where a drop lands: the folder the storage column shows.
   const folder = $derived(
@@ -57,11 +67,14 @@
   {ondragenter}
   {ondragleave}
   {ondragover}
-  ondropcapture={() => (depth = 0)}
+  ondropcapture={() => {
+    depth = 0;
+    firmwareUpdate.dragging = false;
+  }}
   ondrop={(e: DragEvent) => void ondrop(e)}
 />
 
-{#if depth > 0}
+{#if depth > 0 && !firmwareUpdate.open}
   <div
     class="pointer-events-none fixed inset-0 z-50 flex items-center justify-center bg-background/85 p-6 backdrop-blur-sm"
     data-testid="window-drop"
