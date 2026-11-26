@@ -221,6 +221,15 @@ const SHAPES = {
   size: 1_046_686,
   print_time: 43 * 60,
 };
+/// The same plate sliced for four filaments, for tool mapping.
+const FOUR_COLOURS = {
+  dir: '',
+  display_name: 'four colours_0.4n_0.15mm_PLA,PETG,ASA_COREONEINDX4T_43m.gcode',
+  name: 'FOURCO~1.GCO',
+  fixture: 'four-colours.gcode',
+  size: 3479,
+  print_time: 43 * 60,
+};
 const SHAPES_TEXT = {
   dir: '',
   display_name: 'three shapes_0.4n_0.15mm_PLA_COREONEINDX4T_43m.gcode',
@@ -289,6 +298,7 @@ export function seedFiles(
   files.push(
     { ...SHAPES, m_timestamp: stamp },
     { ...SHAPES_TEXT, m_timestamp: stamp - 60 },
+    ...(multi ? [{ ...FOUR_COLOURS, m_timestamp: stamp - 120 }] : []),
   );
   files.sort((a, b) => b.m_timestamp - a.m_timestamp);
   return { files, folders: OS_FOLDERS };

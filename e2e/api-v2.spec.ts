@@ -249,8 +249,102 @@ test.describe('firmware on the USB drive', () => {
       .getByRole('button', { name: 'Install' })
       .click();
     await expect(card).toContainText('restarting');
+    await expect.poll(async () => (await mock(request)).firmware).toBe('8.0.2');
+  });
+});
+
+test.describe('tool mapping', () => {
+  test('suggests by material and colour; changing it, then printing sends it', async ({
+    page,
+    request,
+  }) => {
+    await printer(request, { model: 'COREONE_INDX', reset: true });
+    await printer(request, {
+      tool: { index: 1, material: 'PETG', color: '#1F77B4' },
+    });
+    await printer(request, {
+      tool: { index: 3, material: 'ASA', color: '#D62728' },
+    });
+    await openApp(page);
+    await page.getByRole('button', { name: 'Print four colours' }).click();
+    const dialog = page.getByRole('dialog');
+    const rows = dialog.getByTestId('mapping-row');
+    const slots = dialog.getByTestId('mapping-slots').getByRole('listitem');
+    await expect(rows).toHaveCount(4);
+    await expect(rows.nth(0).getByTestId('mapping-fit')).toHaveText(
+      'Exact match',
+    );
+    // The second green PLA is not loaded: the blue PLA in T7 comes nearest.
+    await expect(rows.nth(2)).toContainText('7.');
+    await expect(rows.nth(2).getByTestId('mapping-fit')).toHaveText(
+      'Similar colour',
+    );
+    // Extruder 1 takes T7: extruder 3 loses it, and printing waits.
+    await rows.nth(0).getByRole('button', { name: 'Assign slot' }).click();
+    await slots.nth(6).getByRole('button', { name: 'Replace' }).click();
+    await expect(rows.nth(2)).toContainText('Unmapped');
+    await expect(
+      dialog.getByRole('button', { name: 'Print now' }),
+    ).toBeDisabled();
+    await rows.nth(2).getByRole('button', { name: 'Assign slot' }).click();
+    await slots.nth(0).getByRole('button', { name: 'Assign slot' }).click();
+    await rows.nth(0).getByRole('button', { name: 'Assign slot' }).click();
+    await slots.nth(5).getByRole('button', { name: 'Spool join' }).click();
+    await rows.nth(0).getByRole('button', { name: 'Cancel' }).click();
+    await dialog.getByRole('button', { name: 'Print now' }).click();
     await expect
-      .poll(async () => (await mock(request)).firmware)
-      .toBe('8.0.2');
+      .poll(
+        async () =>
+          (await (await request.get('/__mock/state')).json()) as unknown,
+      )
+      .toMatchObject({
+        mapping: { '1': [7, 6], '2': [2], '3': [1], '4': [4] },
+      });
+  });
+
+  test('change all lets the printer load what the print needs', async ({
+    page,
+    request,
+  }) => {
+    await printer(request, { model: 'XL', reset: true });
+    await printer(request, { tool: { index: 1, material: 'PLA' } });
+    await openApp(page);
+    await page.getByRole('button', { name: 'Print four colours' }).click();
+    const dialog = page.getByRole('dialog');
+    await expect(dialog.getByTestId('mapping-row')).toHaveCount(4);
+    await dialog.getByRole('button', { name: 'Change all to match' }).click();
+    await expect(dialog).toContainText('The printer is changing the filaments');
+    await expect
+      .poll(async () => (await mock(request)).tools[1]?.material, {
+        timeout: 15_000,
+      })
+      .toBe('PETG');
+  });
+
+  test('a single-tool printer set to abort on another nozzle refuses the print', async ({
+    page,
+    request,
+  }) => {
+    await printer(request, { nozzleCheck: 'abort' });
+    await openApp(page);
+    await page
+      .getByTestId('file-input')
+      .first()
+      .setInputFiles({
+        name: 'bracket_0.6n_0.3mm_PLA_MK4S_20m.gcode',
+        mimeType: 'text/plain',
+        buffer: Buffer.from('; bracket\nG28\n'),
+      });
+    const dialog = page.getByRole('dialog');
+    await expect(dialog).toContainText('its nozzle check refuses the print');
+    await expect(
+      dialog.getByRole('button', { name: 'Print now' }),
+    ).toBeDisabled();
+    await printer(request, { nozzleCheck: 'warning' });
+    await page.reload();
+    await page.getByRole('button', { name: 'Print bracket' }).click();
+    await expect(page.getByRole('dialog')).toContainText(
+      'It will ask before printing',
+    );
   });
 });

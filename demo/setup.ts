@@ -3,6 +3,7 @@ import { MockPrinter } from '../mock/printer.ts';
 import { installMockTransport } from './transport.ts';
 import shapesBgcode from '../mock/fixtures/three-shapes.bgcode?url';
 import shapesGcode from '../mock/fixtures/three-shapes.gcode?url';
+import fourColours from '../mock/fixtures/four-colours.gcode?url';
 
 // Runs before the app (demo/main.ts imports it first): the page's printer is
 // the mock, answered in the browser, and the visitor is signed in.
@@ -13,6 +14,7 @@ installMockTransport(printer);
 for (const [name, url] of [
   ['three-shapes.bgcode', shapesBgcode],
   ['three-shapes.gcode', shapesGcode],
+  ['four-colours.gcode', fourColours],
 ] as const)
   void fetch(url)
     .then((r) => r.arrayBuffer())
