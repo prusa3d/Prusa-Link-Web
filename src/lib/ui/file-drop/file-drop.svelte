@@ -9,6 +9,8 @@
   import { pickerAccept } from '../../files/filter';
 
   interface Props {
+    /// Lit as a drop target although the drag is elsewhere on the page.
+    active?: boolean;
     busy?: boolean;
     /// What the picker offers, `.gcode` and `.bgcode` unless given.
     extensions?: readonly string[];
@@ -18,6 +20,7 @@
   }
 
   let {
+    active = false,
     busy = false,
     extensions,
     multiple = true,
@@ -47,7 +50,7 @@
 <label
   class={[
     'rounded-lg flex min-h-14 cursor-pointer flex-row items-center justify-center gap-3 border-2 border-dashed bg-card p-3 text-center transition-colors hover:border-primary has-focus-visible:ring-2 has-focus-visible:ring-ring md:min-h-40 md:flex-col md:gap-1 md:p-6',
-    dragging ? 'border-primary bg-accent' : 'border-input',
+    dragging || active ? 'border-primary bg-accent' : 'border-input',
   ]}
   ondragover={(e) => {
     e.preventDefault();

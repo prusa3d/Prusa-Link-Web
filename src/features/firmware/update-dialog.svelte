@@ -114,7 +114,12 @@
     {/if}
 
     {#if showDrop}
-      <FileDrop extensions={['.bbf']} multiple={false} {onfiles}>
+      <FileDrop
+        extensions={['.bbf']}
+        multiple={false}
+        active={firmwareUpdate.dragging}
+        {onfiles}
+      >
         <Icon node={CloudUpload} class="size-6 shrink-0 text-primary" />
         <span class="text-sm font-medium">{t('firmware.drop')}</span>
       </FileDrop>

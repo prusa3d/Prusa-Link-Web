@@ -43,6 +43,9 @@ export class FirmwareUpdate {
   #abort: AbortController | undefined;
   /// The dialog with the download.
   open = $state(false);
+  /// Files are being dragged over the page while the dialog is open: the
+  /// dialog's drop area lights up, and a drop anywhere lands there.
+  dragging = $state(false);
   /// The person has the file (or is getting it) and can hand it to the page.
   downloaded = $state(false);
   /// The page could not fetch the file itself, so the person downloads it.

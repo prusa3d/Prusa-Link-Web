@@ -25,7 +25,7 @@ async function openDialog(page: Page) {
   await openApp(page);
   await page
     .getByRole('region', { name: 'Firmware 8.0.2 is available' })
-    .getByRole('button', { name: 'How to update' })
+    .getByRole('button', { name: 'Update printer' })
     .click();
   return page.getByRole('dialog', { name: 'Firmware 8.0.2 is available' });
 }
@@ -150,5 +150,27 @@ test('a .bbf dropped anywhere on the page goes to the update dialog, not the fil
   });
   await expect(dialog.getByRole('alert')).toHaveText(SUCCESS);
   await expect(page.getByTestId('upload-panel')).toHaveCount(0);
+  expect(await firmwareOnPrinter(page)).toEqual([NAME]);
+});
+
+test('with the dialog open, the whole window is its drop area', async ({
+  page,
+}) => {
+  const dialog = await openDialog(page);
+  await page.evaluate((name) => {
+    const data = new DataTransfer();
+    data.items.add(new File([new Uint8Array(4096)], name));
+    window.dispatchEvent(new DragEvent('dragenter', { dataTransfer: data }));
+  }, NAME);
+  // No page-wide upload overlay over the dialog.
+  await expect(page.getByTestId('window-drop')).toHaveCount(0);
+  await page.evaluate((name) => {
+    const data = new DataTransfer();
+    data.items.add(new File([new Uint8Array(4096)], name));
+    window.dispatchEvent(
+      new DragEvent('drop', { dataTransfer: data, cancelable: true }),
+    );
+  }, NAME);
+  await expect(dialog.getByRole('alert')).toHaveText(SUCCESS);
   expect(await firmwareOnPrinter(page)).toEqual([NAME]);
 });
