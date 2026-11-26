@@ -90,14 +90,19 @@ function flattenGradients(svg: string): string {
 
 /// Frames the picture to what it draws, plus a small margin: the sources sit
 /// in a square canvas with wide empty borders, which would make the printer
-/// small wherever the page scales the picture to a width.
+/// small wherever the page scales the picture to a width. Horizontally the
+/// frame stays centred on the canvas: the artwork places the printer's middle
+/// there, and a part sticking out on one side (an extruder motor) must not
+/// pull it off centre.
 function trim(svg: string): string {
   const box = new Resvg(svg).getBBox();
   if (!box) return svg;
   const m = 4;
-  const x = Math.floor(box.x - m);
+  const centre = 250;
+  const half = Math.max(centre - box.x, box.x + box.width - centre) + m;
+  const x = Math.floor(centre - half);
   const y = Math.floor(box.y - m);
-  const w = Math.ceil(box.width + 2 * m);
+  const w = Math.ceil(2 * half);
   const h = Math.ceil(box.height + 2 * m);
   return svg.replace(
     /<svg([^>]*)>/,
