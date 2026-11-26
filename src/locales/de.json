@@ -52,7 +52,7 @@
   "files.printFailed": "Der Drucker hat den Druck nicht gestartet.",
   "files.busy": "Der Drucker ist beschäftigt",
   "files.confirmTitle": "{name} drucken?",
-  "upload.dropDesktop": "G-Code, Ordner oder ZIP hier ablegen",
+  "upload.dropDesktop": "G-Code hier ablegen",
   "upload.chooseDesktop": "oder klicken, um Dateien auszuwählen",
   "upload.phone": "G-Code hochladen",
   "upload.cancel": "Abbrechen",

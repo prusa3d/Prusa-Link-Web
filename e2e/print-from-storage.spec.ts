@@ -253,11 +253,11 @@ test.describe('in the United States', () => {
   test('temperatures are in °F, switch and stay switched', async ({ page }) => {
     await page.goto(`/#key=${await mockKey(page)}`);
     const reading = page.getByTestId('heater-reading').first();
-    await expect(reading).toHaveText(/°F/);
-    await page.getByRole('button', { name: /^Temperature in °F/ }).click();
-    await expect(reading).toHaveText(/°C/);
+    await expect(reading).toHaveText(/℉/);
+    await page.getByRole('button', { name: /^Temperature in ℉/ }).click();
+    await expect(reading).toHaveText(/℃/);
     await page.reload();
-    await expect(reading).toHaveText(/°C/);
+    await expect(reading).toHaveText(/℃/);
   });
 });
 
@@ -266,7 +266,7 @@ test.describe('a US English browser in Europe', () => {
 
   test('temperatures are in °C', async ({ page }) => {
     await page.goto(`/#key=${await mockKey(page)}`);
-    await expect(page.getByTestId('heater-reading').first()).toHaveText(/°C/);
+    await expect(page.getByTestId('heater-reading').first()).toHaveText(/℃/);
   });
 });
 

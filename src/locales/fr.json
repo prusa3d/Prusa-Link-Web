@@ -52,7 +52,7 @@
   "files.printFailed": "L'imprimante n'a pas lancé l'impression.",
   "files.busy": "L'imprimante est occupée",
   "files.confirmTitle": "Imprimer {name} ?",
-  "upload.dropDesktop": "Déposez ici du G-code, des dossiers ou un ZIP",
+  "upload.dropDesktop": "Déposez ici du G-code",
   "upload.chooseDesktop": "ou cliquez pour choisir des fichiers",
   "upload.phone": "Envoyer du G-code",
   "upload.cancel": "Annuler",

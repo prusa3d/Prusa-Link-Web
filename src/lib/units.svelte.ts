@@ -58,7 +58,12 @@ export function inUnit(celsius: number): number {
   return unit === 'F' ? (celsius * 9) / 5 + 32 : celsius;
 }
 
-/// A Celsius reading in the chosen unit: `23°C`, `73°F`.
+/// The unit's own sign: one character, ℃ or ℉.
+export function unitSign(of: TemperatureUnit = unit): string {
+  return of === 'C' ? '℃' : '℉';
+}
+
+/// A Celsius reading in the chosen unit: `23℃`, `73℉`.
 export function degrees(celsius: number): string {
-  return `${inUnit(celsius).toFixed(0)}°${unit}`;
+  return `${inUnit(celsius).toFixed(0)}${unitSign()}`;
 }
