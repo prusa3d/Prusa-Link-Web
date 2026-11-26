@@ -90,3 +90,7 @@ Generated types (`src/lib/api/schema.d.ts`) type both the app's client and the m
 - `src/locales/en.json` every user-facing string (`t()`); the other printer languages beside it,
   built into the page as compact lists (`mock/locales.ts`)
 - `mock/`, `dev/` dev-server only, never in the build
+
+## License
+
+GPL-3.0, as the PrusaLink web interface on master: see [LICENSE](LICENSE).
