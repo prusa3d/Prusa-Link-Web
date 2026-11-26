@@ -14,14 +14,20 @@ export async function printer(
   await request.patch('/__mock/state', { data: patch });
 }
 
-/// A fresh MK4S on 8.0.1, and GitHub answering that 8.0.2 is out.
-export async function freshPrinter(page: Page, request: APIRequestContext) {
+/// A fresh MK4S on 8.0.1, and GitHub answering that 8.0.2 is out. Its
+/// firmware has today's API unless `apiV2` (PrusaLink 2).
+export async function freshPrinter(
+  page: Page,
+  request: APIRequestContext,
+  apiV2 = false,
+) {
   // A printer quick to pause and stop; the cases about waiting slow it down.
   await printer(request, {
     model: 'MK4S',
     reset: true,
     firmware: '8.0.1',
     transitionSeconds: 1,
+    apiV2,
   });
   await page.route(/api\.github\.com/, (route) =>
     route.fulfill({
