@@ -33,6 +33,7 @@
   import {
     gcodeFilaments,
     type Mapping,
+    changeItems,
     suggest,
     toApi,
   } from '../../lib/printer/tool-mapping';
@@ -50,6 +51,8 @@
     ) => Promise<boolean>;
     /// The file's folder on the USB drive.
     dir?: string;
+    /// Opens the filament dialog, to change the filament before printing.
+    onchangefilament?: (() => void) | undefined;
     onclose: () => void;
     /// The printer takes a job now.
     canStart?: boolean;
@@ -64,6 +67,7 @@
     canStart = true,
     blocked,
     dir = '',
+    onchangefilament,
   }: Props = $props();
   let busy = $state(false);
   let failed = $state(false);
@@ -185,16 +189,21 @@
   });
   const mapped = $derived(extruders.every((f) => mapping[f.index]?.length));
 
-  // The printer's change all: what it suggests for this print, run at once.
-  async function changeAll() {
-    if (!__TOOL_MAPPING__ || !file) return;
-    const folder = file.dir ?? dir;
-    const path = `/usb/${folder ? `${folder}/` : ''}${file.name}`;
-    const { data } = await api.GET('/api/v1/filament/change-all', {
-      params: { query: { for: path } },
-    });
+  // The printer's change all, with what this mapping needs: it suggests
+  // only for a file on its own print preview. It heats the slots' heads and
+  // changes them one by one, asking on its screen (and in the page's alert).
+  const canChange = $derived(
+    __TOOL_MAPPING__ &&
+      canStart &&
+      (identity.can('change_all') || identity.can('filament_change_all')),
+  );
+  const toChange = $derived(
+    __TOOL_MAPPING__ ? changeItems(extruders, identity.slots, mapping) : {},
+  );
+  async function changeAll(only?: number) {
+    if (!__TOOL_MAPPING__) return;
     const { response } = await api.POST('/api/v1/filament/change-all', {
-      body: { items: data?.items ?? {} },
+      body: { items: changeItems(extruders, identity.slots, mapping, only) },
     });
     changingAll = response.ok;
   }
@@ -224,6 +233,7 @@
 <Dialog
   open={file !== undefined}
   title={t('files.confirmTitle', { name: info?.name ?? '' })}
+  size={extruders.length ? 'lg' : 'md'}
   {onclose}
 >
   {#if file && info}
@@ -266,10 +276,17 @@
         slots={identity.slots}
         bind:mapping
         severity={identity.nozzleCheck}
-        onchangeall={identity.can('change_all') && canStart
-          ? () => void changeAll()
+        onchangefilament={canChange
+          ? (slot: number) => void changeAll(slot)
           : undefined}
       />
+      {#if canChange && Object.keys(toChange).length && !changingAll}
+        <Button
+          variant="secondary"
+          class="self-start"
+          onclick={() => void changeAll()}>{t('mapping.changeAll')}</Button
+        >
+      {/if}
       {#if changingAll}
         <Alert variant="info">{t('mapping.changing')}</Alert>
       {:else if !mapped}
@@ -314,6 +331,13 @@
       <Button variant="secondary" size="lg" onclick={onclose}
         >{t(file.meta ? 'upload.later' : 'common.close')}</Button
       >
+      {#if onchangefilament && !multiTool && !extruders.length && !changing && !wanted && canStart}
+        <!-- Another colour or spool of the same filament: the person picks
+             it in the filament dialog, then prints. -->
+        <Button variant="secondary" size="lg" onclick={onchangefilament}>
+          <TelemetryIcon kind="spool" />{t('filament.change')}
+        </Button>
+      {/if}
       {#if changing}
         <Button size="lg" loading>{t('files.changingButton')}</Button>
       {:else if wanted}

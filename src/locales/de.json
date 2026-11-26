@@ -269,5 +269,7 @@
   "mapping.fit.nozzle": "Inkompatible Düse",
   "mapping.fit.refused": "Vom Drucker abgelehnt",
   "controls.nozzleWarn": "Für eine {file}-mm-Düse gesliced; der Drucker hat {printer} mm. Er fragt vor dem Druck.",
-  "controls.nozzleAbort": "Für eine {file}-mm-Düse gesliced; der Drucker hat {printer} mm und seine Düsenprüfung lehnt den Druck ab."
+  "controls.nozzleAbort": "Für eine {file}-mm-Düse gesliced; der Drucker hat {printer} mm und seine Düsenprüfung lehnt den Druck ab.",
+  "filament.change": "Filament wechseln",
+  "mapping.changeFilament": "Filament wechseln"
 }

@@ -14,9 +14,15 @@
     mode: 'idle' | 'printing';
     preheat: boolean;
     babystep: boolean;
+    /// The printer's own Z offset; 0 where it does not keep babysteps
+    /// (printers with a loadcell), and the page shows what it sent.
+    zOffset?: number | undefined;
   }
 
-  let { mode, preheat, babystep }: Props = $props();
+  let { mode, preheat, babystep, zOffset }: Props = $props();
+  const shown = $derived(
+    zOffset !== undefined && zOffset !== 0 ? zOffset : controls.zOffset,
+  );
   const STEP = 0.025;
   let chosen = $state('PLA');
 
@@ -66,7 +72,7 @@
       onclick={() => void send(controls.babystep(-STEP))}>−</Button
     >
     <span class="w-20 text-center text-sm tabular-nums" data-testid="z-offset"
-      >{controls.zOffset > 0 ? '+' : ''}{controls.zOffset.toFixed(3)} mm</span
+      >{shown > 0 ? '+' : ''}{shown.toFixed(3)} mm</span
     >
     <Button
       variant="secondary"

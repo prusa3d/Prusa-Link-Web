@@ -272,5 +272,7 @@
   "mapping.fit.nozzle": "Nekompatibilní tryska",
   "mapping.fit.refused": "Tiskárna odmítne",
   "controls.nozzleWarn": "Slicováno pro trysku {file} mm; tiskárna má {printer} mm. Před tiskem se zeptá.",
-  "controls.nozzleAbort": "Slicováno pro trysku {file} mm; tiskárna má {printer} mm a její kontrola trysky tisk odmítne."
+  "controls.nozzleAbort": "Slicováno pro trysku {file} mm; tiskárna má {printer} mm a její kontrola trysky tisk odmítne.",
+  "filament.change": "Vyměnit filament",
+  "mapping.changeFilament": "Vyměnit filament"
 }

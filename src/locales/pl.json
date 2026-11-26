@@ -275,5 +275,7 @@
   "mapping.fit.nozzle": "Niezgodna dysza",
   "mapping.fit.refused": "Odrzucone przez drukarkę",
   "controls.nozzleWarn": "Pocięte dla dyszy {file} mm; drukarka ma {printer} mm. Zapyta przed drukiem.",
-  "controls.nozzleAbort": "Pocięte dla dyszy {file} mm; drukarka ma {printer} mm i jej kontrola dyszy odrzuca wydruk."
+  "controls.nozzleAbort": "Pocięte dla dyszy {file} mm; drukarka ma {printer} mm i jej kontrola dyszy odrzuca wydruk.",
+  "filament.change": "Wymień filament",
+  "mapping.changeFilament": "Wymień filament"
 }

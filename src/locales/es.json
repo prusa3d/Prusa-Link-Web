@@ -269,5 +269,7 @@
   "mapping.fit.nozzle": "Boquilla incompatible",
   "mapping.fit.refused": "Rechazado por la impresora",
   "controls.nozzleWarn": "Laminado para una boquilla de {file} mm; la impresora tiene {printer} mm. Preguntará antes de imprimir.",
-  "controls.nozzleAbort": "Laminado para una boquilla de {file} mm; la impresora tiene {printer} mm y su comprobación de boquilla rechaza la impresión."
+  "controls.nozzleAbort": "Laminado para una boquilla de {file} mm; la impresora tiene {printer} mm y su comprobación de boquilla rechaza la impresión.",
+  "filament.change": "Cambiar filamento",
+  "mapping.changeFilament": "Cambiar filamento"
 }

@@ -269,5 +269,7 @@
   "mapping.fit.nozzle": "Buse incompatible",
   "mapping.fit.refused": "Refusé par l’imprimante",
   "controls.nozzleWarn": "Tranché pour une buse de {file} mm ; l’imprimante a {printer} mm. Elle demandera avant d’imprimer.",
-  "controls.nozzleAbort": "Tranché pour une buse de {file} mm ; l’imprimante a {printer} mm et son contrôle de buse refuse l’impression."
+  "controls.nozzleAbort": "Tranché pour une buse de {file} mm ; l’imprimante a {printer} mm et son contrôle de buse refuse l’impression.",
+  "filament.change": "Changer le filament",
+  "mapping.changeFilament": "Changer le filament"
 }

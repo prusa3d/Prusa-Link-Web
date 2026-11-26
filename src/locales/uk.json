@@ -275,5 +275,7 @@
   "mapping.fit.nozzle": "Несумісне сопло",
   "mapping.fit.refused": "Принтер відхиляє",
   "controls.nozzleWarn": "Нарізано для сопла {file} мм; у принтера {printer} мм. Він запитає перед друком.",
-  "controls.nozzleAbort": "Нарізано для сопла {file} мм; у принтера {printer} мм, і його перевірка сопла відхиляє друк."
+  "controls.nozzleAbort": "Нарізано для сопла {file} мм; у принтера {printer} мм, і його перевірка сопла відхиляє друк.",
+  "filament.change": "Замінити філамент",
+  "mapping.changeFilament": "Замінити філамент"
 }

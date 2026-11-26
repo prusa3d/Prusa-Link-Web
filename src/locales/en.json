@@ -269,5 +269,7 @@
   "mapping.fit.nozzle": "Incompatible nozzle",
   "mapping.fit.refused": "Refused by the printer",
   "controls.nozzleWarn": "Sliced for a {file} mm nozzle; the printer has {printer} mm. It will ask before printing.",
-  "controls.nozzleAbort": "Sliced for a {file} mm nozzle; the printer has {printer} mm and its nozzle check refuses the print."
+  "controls.nozzleAbort": "Sliced for a {file} mm nozzle; the printer has {printer} mm and its nozzle check refuses the print.",
+  "filament.change": "Change filament",
+  "mapping.changeFilament": "Change filament"
 }

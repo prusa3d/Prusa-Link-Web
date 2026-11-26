@@ -38,6 +38,7 @@ export function mappingTargets(info: Info | undefined): PrinterTool[] {
       const features = tool?.features;
       const loaded = material?.abbreviation;
       return {
+        id: key,
         index: Number(key.split('.').pop()) + 1,
         material: loaded && loaded !== '---' ? loaded : undefined,
         color: material?.primary_color?.color_rgba,

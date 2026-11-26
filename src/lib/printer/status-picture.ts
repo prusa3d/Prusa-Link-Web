@@ -105,7 +105,7 @@ interface Telemetry {
           active?: boolean | undefined;
           nozzle_temp?: number | undefined;
           nozzle_target_temp?: number | null | undefined;
-        }
+        } | null
       >
     | undefined;
   chamber?:
@@ -127,7 +127,7 @@ export function heaterReadings(
     /^\d$/.test(k),
   );
   for (const [key, tool] of tools)
-    if (tool.nozzle_temp !== undefined)
+    if (tool?.nozzle_temp !== undefined)
       out[`T${String(Number(key) + 1)}` as Heater] = {
         current: tool.nozzle_temp,
         target: tool.nozzle_target_temp ?? 0,
