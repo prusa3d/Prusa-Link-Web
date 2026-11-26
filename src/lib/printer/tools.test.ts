@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
 import type { Status } from '../stores/printer.svelte';
-import { toolRows } from './tools';
+import { textOn, toolRows } from './tools';
 
 describe('toolRows', () => {
   it('joins the expanded status with the tools /info describes', () => {
@@ -23,6 +23,7 @@ describe('toolRows', () => {
         active: false,
         material: 'PLA',
         color: '#ff8000',
+        nozzle: undefined,
       },
       {
         index: 1,
@@ -31,11 +32,20 @@ describe('toolRows', () => {
         active: true,
         material: undefined,
         color: undefined,
+        nozzle: undefined,
       },
     ]);
   });
 
   it('is empty without the expanded status', () => {
     expect(toolRows({ state: 'IDLE' }, [])).toEqual([]);
+  });
+});
+
+describe('textOn', () => {
+  it('writes black on light filament and white on dark', () => {
+    expect(textOn('#ffffff')).toBe('#000000');
+    expect(textOn('#1f77b4')).toBe('#ffffff');
+    expect(textOn(undefined)).toBeUndefined();
   });
 });

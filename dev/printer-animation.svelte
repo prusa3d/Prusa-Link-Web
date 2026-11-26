@@ -21,6 +21,7 @@
     XL: xl,
     XL_2: xl,
     XL_SINGLE: xl,
+    XL_GAP: xl,
     COREONE: coreone,
     COREONE_INDX: coreoneIndx,
   };

@@ -119,7 +119,17 @@ interface Telemetry {
 /// 0-based, as T1..T8, and the chamber.
 export function heaterReadings(
   status: Telemetry | undefined,
-  { offline, toolPicked }: { offline: boolean; toolPicked: boolean },
+  {
+    offline,
+    toolPicked,
+    perTool = true,
+  }: {
+    offline: boolean;
+    toolPicked: boolean;
+    /// A heater per tool (the XL). Without (the INDX), the one toolhead's
+    /// reading is the picked tool's, on the first tool's label.
+    perTool?: boolean;
+  },
 ): Partial<Record<Heater, Reading>> {
   if (!status || offline) return {};
   const out: Partial<Record<Heater, Reading>> = {};
@@ -128,7 +138,7 @@ export function heaterReadings(
   );
   for (const [key, tool] of tools)
     if (tool?.nozzle_temp !== undefined)
-      out[`T${String(Number(key) + 1)}` as Heater] = {
+      out[`T${String(perTool ? Number(key) + 1 : 1)}` as Heater] = {
         current: tool.nozzle_temp,
         target: tool.nozzle_target_temp ?? 0,
         ...(tools.length > 1 && tool.active && { active: true }),

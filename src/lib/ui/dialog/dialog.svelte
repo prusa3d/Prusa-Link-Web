@@ -12,8 +12,9 @@
     open: boolean;
     title: string;
     onclose: () => void;
-    /// `lg` for dialogs whose actions need a wider row.
-    size?: 'md' | 'lg';
+    /// `lg` for dialogs whose actions need a wider row, `xl` for ones full
+    /// of content (a print's preview, details and tool mapping).
+    size?: 'md' | 'lg' | 'xl';
     children: Snippet;
   }
 
@@ -35,7 +36,11 @@
   {onclose}
   class={[
     'rounded-lg m-auto max-h-dvh w-full overflow-y-auto',
-    size === 'lg' ? 'max-w-xl' : 'max-w-md',
+    {
+      md: 'max-w-md',
+      lg: 'max-w-xl',
+      xl: 'max-w-xl md:max-w-2xl lg:max-w-3xl',
+    }[size],
     'border bg-card p-0 text-card-foreground backdrop:bg-black/50 max-sm:mb-0 max-sm:max-w-full max-sm:rounded-b-none max-sm:border-x-0',
   ]}
 >

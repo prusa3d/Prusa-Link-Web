@@ -18,17 +18,20 @@ import {
 type Schemas = components['schemas'];
 export type PrinterState = Schemas['StatusPrinter']['state'];
 
-/// XL is the five-tool XL, XL_2 a two-tool one and XL_SINGLE the one-tool
-/// XL: the same firmware and the same /api/version, so the page tells them
-/// apart only by the tool count of API v2.
+/// XL is the five-tool XL, XL_2 a two-tool one, XL_SINGLE the one-tool XL
+/// and XL_GAP one with tools in docks 1, 2, 4 and 5: the same firmware and
+/// the same /api/version; /api/v1/info reports five docks, null where one
+/// is empty.
 export type PrinterModel =
-  'MK4S' | 'XL' | 'XL_2' | 'XL_SINGLE' | 'COREONE' | 'COREONE_INDX';
+  'MK4S' | 'XL' | 'XL_2' | 'XL_SINGLE' | 'XL_GAP' | 'COREONE' | 'COREONE_INDX';
 
 export interface MockTool {
   temp: number;
   target: number;
   material: string;
   color?: string | undefined;
+  /// An empty dock of an XL: no tool there.
+  absent?: boolean;
 }
 
 /// What the printer shows on its screen and PrusaLink 2 bridges to
@@ -105,6 +108,7 @@ export const PRINTER_CODE: Record<PrinterModel, string> = {
   XL: '3.1.0',
   XL_2: '3.1.0',
   XL_SINGLE: '3.1.0',
+  XL_GAP: '3.1.0',
   COREONE: '7.1.0',
   COREONE_INDX: '7.10.0',
 };
@@ -114,6 +118,7 @@ const HOSTNAME: Record<PrinterModel, string> = {
   XL: 'prusa-xl',
   XL_2: 'prusa-xl',
   XL_SINGLE: 'prusa-xl',
+  XL_GAP: 'prusa-xl',
   COREONE: 'prusa-core-one',
   COREONE_INDX: 'prusa-core-one-indx',
 };
@@ -228,7 +233,7 @@ export class MockPrinter {
     this.bed = { temp: ambient(9), target: 0 };
     this.tools = seedTools(this.model);
     this.activeTool = 0;
-    this.parked = this.model === 'XL' || this.model === 'XL_2';
+    this.parked = this.model.startsWith('XL') && this.toolCount > 1;
     this.chamber = this.model.startsWith('COREONE')
       ? { temp: ambient(3), target: 0 }
       : undefined;
@@ -249,8 +254,9 @@ export class MockPrinter {
     this.firmwareUploads = [];
   }
 
+  /// The tools there are; empty docks do not count.
   get toolCount() {
-    return this.tools.length;
+    return this.tools.filter((t) => !t.absent).length;
   }
 
   /// The bytes a download of `f` answers with, when the mock has them.
@@ -348,14 +354,30 @@ export class MockPrinter {
   }
 
   /// Heats for a filament, or cools down with undefined.
+  /// Every tool heats on its own (the XL); the INDX has one heated
+  /// toolhead, for the picked tool only.
+  get perToolHeating() {
+    return this.model.startsWith('XL') && this.toolCount > 1;
+  }
+
+  /// Whether `tool` can heat now: on the INDX only the picked one.
+  heats(tool: number) {
+    return (
+      this.model !== 'COREONE_INDX' ||
+      (!this.parked && tool === this.activeTool)
+    );
+  }
+
   preheat(name: string | undefined, tool?: number) {
     const preset = FILAMENTS.find((f) => f.name === name);
     if (!preset) {
       this.cool();
       return;
     }
+    // Without a tool: every tool that heats (the picked one on the INDX).
     this.tools.forEach((t, i) => {
-      if (tool === undefined || tool === i) t.target = preset.nozzle;
+      if ((tool === undefined || tool === i) && this.heats(i))
+        t.target = preset.nozzle;
     });
     this.bed.target = preset.bed;
     if (this.chamber && preset.chamber) this.chamber.target = preset.chamber;
@@ -366,6 +388,9 @@ export class MockPrinter {
   get currentObject(): number | undefined {
     const job = this.job;
     if (!job) return undefined;
+    // A cancelled object being printed: the moves already planned finish
+    // first, then the printer goes on to the next one.
+    if (this.#skipping) return this.#skipping.id;
     const left = job.objects
       .map((o, i) => ({ o, i }))
       .filter(({ o }) => !o.canceled);
@@ -374,9 +399,13 @@ export class MockPrinter {
     return left[layer % left.length]?.i;
   }
 
+  #skipping: { id: number; ticks: number } | undefined;
+
   setCanceled(id: number, canceled: boolean): boolean {
     const o = this.job?.objects[id];
     if (!o) return false;
+    if (canceled && id === this.currentObject)
+      this.#skipping = { id, ticks: 2 };
     o.canceled = canceled;
     this.objectsRevision++;
     return true;
@@ -650,12 +679,21 @@ export class MockPrinter {
     const polygon =
       current === undefined ? undefined : this.job?.objects[current]?.polygon;
     if (this.state === 'PRINTING' && polygon?.length) {
+      // Inside the object: between its middle and a corner.
+      const mid = polygon.reduce(
+        ([a, b], [x, y]) => [a + x / polygon.length, b + y / polygon.length],
+        [0, 0],
+      );
       const [x, y] = polygon[
         (this.job?.time_printing ?? 0) % polygon.length
       ] ?? [0, 0];
-      this.axis.x = Math.round(x * 100) / 100;
-      this.axis.y = Math.round(y * 100) / 100;
+      const at = (m: number, v: number) =>
+        Math.round((m + (v - m) * 0.6) * 100) / 100;
+      this.axis.x = at(mid[0], x);
+      this.axis.y = at(mid[1], y);
     }
+    if (this.#skipping && --this.#skipping.ticks <= 0)
+      this.#skipping = undefined;
     if (this.state === 'PRINTING' && this.job) {
       const total = this.job.time_printing + this.job.time_remaining;
       const dt = Math.min(this.timeScale, this.job.time_remaining);

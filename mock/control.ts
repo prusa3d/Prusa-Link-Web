@@ -55,6 +55,8 @@ export interface MockPatch {
   tool?: { index: number; temp?: number; target?: number; material?: string };
   /// A toolchanger with no tool picked.
   parked?: boolean;
+  /// The tool a toolchanger picks (0-based); null puts it back.
+  pick?: number | null;
   /// An MMU3 on the printer (only where one fits).
   mmu?: boolean;
   bed?: { temp?: number; target?: number };
@@ -94,6 +96,11 @@ export function applyPatch(printer: MockPrinter, patch: MockPatch) {
     if (tool) Object.assign(tool, patch.tool);
   }
   if (patch.parked !== undefined) printer.parked = patch.parked;
+  if (patch.pick === null) printer.parked = true;
+  else if (patch.pick !== undefined && printer.tools[patch.pick]) {
+    printer.activeTool = patch.pick;
+    printer.parked = false;
+  }
   if (patch.mmu !== undefined) printer.mmu = patch.mmu && printer.takesMmu;
   if (patch.bed) Object.assign(printer.bed, patch.bed);
   if (patch.question !== undefined) {

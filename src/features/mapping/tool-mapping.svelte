@@ -70,9 +70,11 @@
     for (const f of filaments.filter((x) => !mapping[x.index]?.length))
       left.push({ f, row: row++, span: 1, mapped: false });
     const order = mapped.flatMap((f) => mapping[f.index] ?? []);
+    // An empty dock is no slot.
+    const present = slots.filter((s) => !s.disabled);
     const right = [
-      ...order.flatMap((i) => slots.filter((s) => s.index === i)),
-      ...slots.filter((s) => !order.includes(s.index)),
+      ...order.flatMap((i) => present.filter((s) => s.index === i)),
+      ...present.filter((s) => !order.includes(s.index)),
     ];
     return { left, right };
   });

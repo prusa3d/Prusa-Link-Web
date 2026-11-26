@@ -233,7 +233,7 @@
 <Dialog
   open={file !== undefined}
   title={t('files.confirmTitle', { name: info?.name ?? '' })}
-  size={extruders.length ? 'lg' : 'md'}
+  size="xl"
   {onclose}
 >
   {#if file && info}

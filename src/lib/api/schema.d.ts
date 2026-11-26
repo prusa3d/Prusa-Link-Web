@@ -2241,7 +2241,7 @@ export interface components {
                 printing_filtration?: boolean;
             };
             /** @description What this firmware's API can do */
-            features?: ("status_expanded" | "cancel_object" | "chamber" | "dialogs" | "firmware_update" | "crash_dump" | "preheat" | "tune" | "filament" | "pairing" | "tool_mapping" | "change_all" | "filament_change_all")[];
+            features?: ("status_expanded" | "cancel_object" | "chamber" | "dialogs" | "firmware_update" | "crash_dump" | "preheat" | "tune" | "filament" | "pairing" | "tool_mapping" | "change_all" | "filament_change_all" | "per_tool_heating")[];
             /** @description The printer's severity of each check before a print (HWCheckSeverity); read-only */
             hw_checks?: {
                 nozzle?: components["schemas"]["CheckSeverity"];

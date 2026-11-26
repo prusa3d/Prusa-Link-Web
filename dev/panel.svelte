@@ -16,6 +16,7 @@
     'XL',
     'XL_2',
     'XL_SINGLE',
+    'XL_GAP',
     'COREONE',
     'COREONE_INDX',
   ] as const;
@@ -23,6 +24,7 @@
     XL: 'XL 5 tools',
     XL_2: 'XL 2 tools',
     XL_SINGLE: 'XL 1 tool',
+    XL_GAP: 'XL docks 1,2,4,5',
   };
   const STATES = [
     'IDLE',
@@ -48,6 +50,7 @@
     firmware: string;
     bed: { temp: number; target: number };
     tools: { temp: number; target: number; material: string }[];
+    activeTool: number;
     files: { dir: string; name: string; display_name: string }[];
     job?: { progress: number };
     question?: string;
@@ -251,17 +254,28 @@
       <table class="w-full">
         <thead class="text-muted-foreground"
           ><tr
-            ><th class="text-start font-normal">Tool</th><th class="font-normal"
-              >Temp</th
-            ><th class="font-normal">Target</th><th class="font-normal"
-              >Material</th
-            ></tr
+            ><th class="text-start font-normal">Tool</th
+            >{#if snap.tools.length > 1}<th class="font-normal">Picked</th
+              >{/if}<th class="font-normal">Temp</th><th class="font-normal"
+              >Target</th
+            ><th class="font-normal">Material</th></tr
           ></thead
         >
         <tbody>
           {#each snap.tools as tool, index (index)}
             <tr>
-              <td>T{index}</td>
+              <td>T{index + 1}</td>
+              {#if snap.tools.length > 1}
+                <td class="text-center"
+                  ><input
+                    type="radio"
+                    name="picked"
+                    aria-label="T{index + 1} picked"
+                    checked={!snap.parked && snap.activeTool === index}
+                    onchange={() => patch({ pick: index })}
+                  /></td
+                >
+              {/if}
               <td class="text-center tabular-nums">{tool.temp.toFixed(0)}</td>
               <td
                 ><input
@@ -286,7 +300,7 @@
           {/each}
           {#if snap.chamber}
             <tr>
-              <td>Chamber</td>
+              <td>Chamber</td>{#if snap.tools.length > 1}<td></td>{/if}
               <td class="text-center tabular-nums"
                 >{snap.chamber.temp.toFixed(0)}</td
               >
@@ -295,7 +309,7 @@
             </tr>
           {/if}
           <tr>
-            <td>Bed</td>
+            <td>Bed</td>{#if snap.tools.length > 1}<td></td>{/if}
             <td class="text-center tabular-nums">{snap.bed.temp.toFixed(0)}</td>
             <td
               ><input
@@ -312,11 +326,13 @@
         </tbody>
       </table>
       {#if snap.tools.length > 1}
-        <button
-          type="button"
-          class={[chip, 'mt-2', !snap.parked && on]}
-          onclick={() => patch({ parked: !snap?.parked })}
-          >{snap.parked ? 'No tool picked' : 'Tool picked'}</button
+        <label class="flex items-center gap-1.5"
+          ><input
+            type="radio"
+            name="picked"
+            checked={snap.parked}
+            onchange={() => patch({ pick: null })}
+          />No tool picked</label
         >
       {/if}
     </fieldset>

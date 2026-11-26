@@ -66,13 +66,36 @@ describe('PlateObjects', () => {
     expect(download).not.toHaveBeenCalled();
   });
 
-  it('cancels an object and reads the list again', async () => {
+  it('cancels an object once the printer reports it cancelled', async () => {
     const cancel = vi.fn(() => Promise.resolve(true));
-    const list = vi.fn(() => Promise.resolve(listing));
+    let canceled = false;
+    const list = vi.fn(() =>
+      Promise.resolve({
+        objects: [{ id: 0, canceled, name: 'Cylinder' }],
+      }),
+    );
     const store = new PlateObjects(list, () => Promise.resolve(shapes), cancel);
     await store.follow(4, 1, file);
+    canceled = true;
     expect(await store.cancel(0)).toBe(true);
-    expect(cancel).toHaveBeenCalledWith(4, 0);
-    expect(list).toHaveBeenCalledTimes(2);
+    expect(cancel).toHaveBeenCalledWith(4, 0, true);
+    expect(list).toHaveBeenLastCalledWith(4, true);
+    expect(store.items[0]?.canceled).toBe(true);
+    expect(store.failed).toBeUndefined();
+  });
+
+  it('says it failed when the printer never reports the cancel', async () => {
+    vi.useFakeTimers();
+    const store = new PlateObjects(
+      () => Promise.resolve(listing),
+      () => Promise.resolve(shapes),
+      () => Promise.resolve(true),
+    );
+    await store.follow(4, 1, file);
+    const done = store.cancel(0);
+    await vi.advanceTimersByTimeAsync(6000);
+    expect(await done).toBe(false);
+    expect(store.failed).toBe(0);
+    vi.useRealTimers();
   });
 });

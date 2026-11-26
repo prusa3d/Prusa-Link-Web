@@ -41,7 +41,8 @@
   import { identity } from './lib/stores/identity.svelte';
   import { isMultiTool } from './lib/printer/models';
   import { heaterReadings } from './lib/printer/status-picture';
-  import { toolRows } from './lib/printer/tools';
+  import { toolRows, type ToolRow } from './lib/printer/tools';
+  import { firmwareFilament } from './lib/printer/filaments';
   import { dialog } from './lib/stores/dialog.svelte';
   import BedView from './features/objects/bed-view.svelte';
   import PrinterControls from './features/heating/printer-controls.svelte';
@@ -74,7 +75,7 @@
   // can be several.
   const multiTool = $derived(
     __API_V2__
-      ? identity.tools.length > 1
+      ? identity.tools.filter(Boolean).length > 1
       : isMultiTool(identity.model?.variant),
   );
   const tools = $derived(
@@ -178,8 +179,11 @@
     return canStart ? 'idle' : undefined;
   });
 
-  async function cancelObject(id: number) {
-    if (!(await plateObjects.cancel(id))) notices.add(t('objects.refused'));
+  async function cancelObject(id: number, cancel: boolean) {
+    const ok = await plateObjects.cancel(id, cancel);
+    // A cancel says it in its dialog; an undo has none.
+    if (!ok && !cancel) notices.add(t('objects.refused'));
+    return ok;
   }
 
   async function pressDialog(button: string) {
@@ -335,6 +339,20 @@
                   filamentOpen = true;
                 }
               : undefined}
+            ontoolunload={__CONTROLS__ && canStart
+              ? (tool: number) => {
+                  filament.tool = tool;
+                  filamentOpen = true;
+                  void filament.run('unload');
+                }
+              : undefined}
+            ontoolpreheat={__CONTROLS__ && canStart
+              ? (tool: ToolRow) =>
+                  void tuning.preheat(
+                    firmwareFilament(tool.material ?? ''),
+                    tool.index,
+                  )
+              : undefined}
             chamber={__API_V2__ ? printer.status?.chamber : undefined}
             material={multiTool
               ? undefined
@@ -356,13 +374,14 @@
                 model={identity.model}
                 mmu={identity.mmu}
                 equipment={{
-                  tools: identity.tools.length || 1,
+                  tools: identity.tools.filter(Boolean).length || 1,
                   chamber: printer.status?.chamber !== undefined,
                   enclosure: identity.enclosure,
                 }}
                 readings={heaterReadings(printer.status, {
                   offline: printer.offline,
                   toolPicked: !multiTool || filament.loaded !== undefined,
+                  perTool: identity.can('per_tool_heating'),
                 })}
               />
             {/snippet}
@@ -371,6 +390,8 @@
                 <PrinterControls
                   mode={controlMode}
                   zOffset={printer.status?.z_offset}
+                  loaded={filament.loaded}
+                  multi={multiTool}
                 />
               {/if}
             {/snippet}
@@ -387,14 +408,15 @@
             {/snippet}
           </StatusPanel>
         {/if}
-        {#if __CANCEL_OBJECT__ && plateObjects.items.length && (printer.status?.state === 'PRINTING' || printer.status?.state === 'PAUSED')}
+        {#if __CANCEL_OBJECT__ && plateObjects.items.length > 1 && (printer.status?.state === 'PRINTING' || printer.status?.state === 'PAUSED')}
           <BedView
             items={plateObjects.items}
             bed={bedOf(identity.code)}
             x={printer.status.axis_x}
             y={printer.status.axis_y}
             cancelling={plateObjects.cancelling}
-            oncancel={(id: number) => void cancelObject(id)}
+            failed={plateObjects.failed}
+            oncancel={cancelObject}
           />
         {/if}
         <UploadPanel />

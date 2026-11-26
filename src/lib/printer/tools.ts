@@ -11,6 +11,7 @@ export interface ToolRow {
   active: boolean;
   material?: string | undefined;
   color?: string | undefined;
+  nozzle?: number | undefined;
 }
 
 /// Every tool the expanded status reports, in order; MMU slots (`"0.N"`)
@@ -31,7 +32,25 @@ export function toolRows(
         active: t.active ?? false,
         material: about?.material,
         color: about?.color,
+        nozzle: about?.nozzle,
       };
     })
     .sort((a, b) => a.index - b.index);
+}
+
+/// Black or white, whichever reads on a filament's colour: Connect's
+/// materialTextColor (WCAG relative luminance, threshold 0.5 as its mobile
+/// app). Undefined without a colour.
+export function textOn(color: string | undefined): string | undefined {
+  const hex = /^#?([0-9a-f]{6})/i.exec(color ?? '')?.[1];
+  if (!hex) return undefined;
+  const linear = (c: number) => {
+    const v = c / 255;
+    return v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4;
+  };
+  const [r, g, b] = [0, 2, 4].map((i) =>
+    linear(parseInt(hex.slice(i, i + 2), 16)),
+  );
+  const luminance = 0.2126 * (r ?? 0) + 0.7152 * (g ?? 0) + 0.0722 * (b ?? 0);
+  return luminance > 0.5 ? '#000000' : '#ffffff';
 }
