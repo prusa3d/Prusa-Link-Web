@@ -236,7 +236,6 @@ test('a finished print settles to ready and offers printing again', async ({
   await expect(page.getByTestId('job-percent')).toHaveCount(0, {
     timeout: 20_000,
   });
-  await expect(page.getByRole('heading', { name: 'Printer' })).toBeVisible();
 });
 
 test.describe('in the United States', () => {
@@ -420,12 +419,12 @@ test('a file from the printer offers Close, not Not now', async ({ page }) => {
 test('speaks Czech once chosen, also after a reload', async ({ page }) => {
   await page.goto(`/#key=${await mockKey(page)}`);
   await page.getByLabel('Language').selectOption('cs');
-  await expect(page.getByRole('heading', { name: 'Tiskárna' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Úložiště' })).toBeVisible();
   await page.reload();
-  await expect(page.getByRole('heading', { name: 'Tiskárna' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Úložiště' })).toBeVisible();
   await expect(page.locator('html')).toHaveAttribute('lang', 'cs');
   await page.getByLabel('Jazyk').selectOption('en');
-  await expect(page.getByRole('heading', { name: 'Printer' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Storage' })).toBeVisible();
 });
 
 test('the header follows the mock printer model', async ({ page }) => {

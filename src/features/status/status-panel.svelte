@@ -27,6 +27,12 @@
   interface Props {
     /// What needs the person now (warnings, refusals), under the heading.
     alerts?: Snippet;
+    /// The printer itself, first and last in the card (picture and name; model
+    /// and firmware).
+    top?: Snippet;
+    /// The printer's name, the panel's heading.
+    name?: string | undefined;
+    bottom?: Snippet;
     status: Status | undefined;
     job: StatusJob | undefined;
     jobFile?: JobFile | undefined;
@@ -47,6 +53,9 @@
 
   let {
     alerts,
+    name,
+    top,
+    bottom,
     status,
     job,
     jobFile,
@@ -102,9 +111,6 @@
         far(status.temp_bed, status.target_bed)),
   );
   const showJob = $derived(!!job && !activity && !ended);
-  const trouble = $derived(
-    status?.state === 'ERROR' || status?.state === 'ATTENTION',
-  );
   // The firmware leaves the remaining time out until it has an estimate
   // (while homing and heating): no "0m left" meanwhile.
   const showTime = $derived(
@@ -167,8 +173,12 @@
 <!-- The heading row matches the file list's, so both cards start level. -->
 <section aria-labelledby="status-title" class="flex flex-col gap-2">
   <div class="flex min-h-11 items-center">
-    <h2 id="status-title" class="text-lg font-semibold">
-      {showJob ? t('status.nowPrinting') : t('status.label')}
+    <h2
+      id="status-title"
+      class="text-lg font-semibold break-words"
+      data-testid="printer-name"
+    >
+      {name ?? t('status.label')}
     </h2>
   </div>
   {@render alerts?.()}
@@ -179,6 +189,7 @@
       offline && 'opacity-60',
     ]}
   >
+    {@render top?.()}
     {#if status}
       {#if activity}
         <div class="flex items-center gap-3" data-testid="filament-activity">
@@ -191,6 +202,9 @@
       {/if}
 
       {#if showJob}
+        <p class="-mb-2 text-sm font-medium text-muted-foreground">
+          {t('status.nowPrinting')}
+        </p>
         <div class="flex gap-3">
           <Thumbnail
             src={localThumbnail(jobFile?.displayName) ??
@@ -311,10 +325,6 @@
           </p>
         {/if}
       {/if}
-
-      {#if !showJob && !trouble && !activity}
-        <p class="text-sm text-muted-foreground">{t('status.idleHint')}</p>
-      {/if}
       <ToolCard
         label={t('status.tool')}
         {material}
@@ -370,6 +380,7 @@
         </div>
       </div>
     {/if}
+    {@render bottom?.()}
   </div>
 </section>
 

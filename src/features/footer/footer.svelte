@@ -1,6 +1,8 @@
 <script lang="ts">
   import { t } from '../../lib/i18n.svelte';
   import { PrusaWordmark } from '../../lib/ui/logo';
+  import { identity } from '../../lib/stores/identity.svelte';
+  import PrinterInfo from '../printer/printer-info.svelte';
 
   // Places beyond this printer's local page: help, the API reference, the
   // cloud, the shop. The API's /api/version, /api/printer and /api/job answer
@@ -25,6 +27,7 @@
       <PrusaWordmark class="h-4 w-auto text-foreground" />
       <span>{t('footer.copyright')}</span>
     </div>
+    <PrinterInfo model={identity.model} firmware={identity.firmware} />
     <nav aria-label={t('footer.label')}>
       <ul class="flex flex-wrap gap-x-4 gap-y-1">
         {#each LINKS as link (link.href)}
