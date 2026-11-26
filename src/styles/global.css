@@ -1,8 +1,36 @@
-/* The app's one stylesheet, on prusa-connect's model (frontend-structure.md):
-   Tailwind, the scan of this tree, the theme, and the base layer. */
 @import 'tailwindcss';
 @source '../';
 @import './tokens.css';
+
+/* Prusa's typeface from its CDN, when the browser can reach it (the browser
+   keeps it for a year after); offline the system font stands in. */
+@font-face {
+  font-family: 'Atlas Grotesk';
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+  src: url('https://assets.prusa3d.com/cdn/fonts/atlas-grotesk/AtlasGrotesk-Regular-Web.woff2')
+    format('woff2');
+}
+@font-face {
+  font-family: 'Atlas Grotesk';
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+  src: url('https://assets.prusa3d.com/cdn/fonts/atlas-grotesk/AtlasGrotesk-Medium-Web.woff2')
+    format('woff2');
+}
+@font-face {
+  font-family: 'Atlas Grotesk';
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+  src: url('https://assets.prusa3d.com/cdn/fonts/atlas-grotesk/AtlasGrotesk-Bold-Web.woff2')
+    format('woff2');
+}
+
+/* The app's one stylesheet, on prusa-connect's model (frontend-structure.md):
+   Tailwind, the scan of this tree, the theme, and the base layer. */
 
 /* White on the brand orange is 3.3:1, under WCAG AA for button labels. The
    darker step of the same orange (the link colour) keeps white text at 4.5:1.

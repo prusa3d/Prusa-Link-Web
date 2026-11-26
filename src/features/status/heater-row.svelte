@@ -44,7 +44,7 @@
     <span
       data-testid="heater-reading"
       class={[
-        'inline-flex items-center gap-0.5 font-mono text-sm whitespace-nowrap tabular-nums',
+        'inline-flex items-center gap-0.5 text-sm whitespace-nowrap tabular-nums',
         TINT[state],
       ]}
     >
@@ -58,7 +58,7 @@
     </span>
     {#if target}
       <span
-        class="font-mono text-sm whitespace-nowrap text-muted-foreground tabular-nums"
+        class="text-sm whitespace-nowrap text-muted-foreground tabular-nums"
         data-testid="heater-target">/ {degrees(target)}</span
       >
     {/if}

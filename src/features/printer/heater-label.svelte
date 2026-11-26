@@ -22,9 +22,11 @@
     label: Label;
     style: LabelStyle;
     reading: Reading;
+    /// The printer has one tool.
+    single?: boolean;
   }
 
-  let { label, style, reading }: Props = $props();
+  let { label, style, reading, single = false }: Props = $props();
 
   const l = $derived(labelLayout(label, style));
   const text = $derived(labelValue(reading.current));
@@ -53,7 +55,11 @@
     l.textX - (valueWidth + (chevron ? chevronSize + gap : 0)) / 2,
   );
   const bed = $derived(label.heater === 'bed');
-  const name = $derived(bed ? t('status.bed') : label.heater);
+  // A single-tool printer calls its one tool just "Tool".
+  const name = $derived.by(() => {
+    if (bed) return t('status.bed');
+    return single && label.heater === 'T1' ? t('status.tool') : label.heater;
+  });
   const iconWidth = $derived(style.caption * (bed ? 1 : 352 / 512));
   const captionWidth = $derived(name.length * 0.6 * style.caption);
   const captionStart = $derived(
