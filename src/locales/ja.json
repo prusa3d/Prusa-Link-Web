@@ -52,7 +52,7 @@
   "files.printFailed": "プリンターが印刷を開始しませんでした。",
   "files.busy": "プリンターは使用中です",
   "files.confirmTitle": "{name} を印刷しますか?",
-  "upload.dropDesktop": "G-code、フォルダー、ZIP をここにドロップ",
+  "upload.dropDesktop": "G-code をここにドロップ",
   "upload.chooseDesktop": "またはクリックしてファイルを選択",
   "upload.phone": "G-code をアップロード",
   "upload.cancel": "キャンセル",

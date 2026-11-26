@@ -52,7 +52,7 @@
   "files.printFailed": "The printer did not start the print.",
   "files.busy": "The printer is busy",
   "files.confirmTitle": "Print {name}?",
-  "upload.dropDesktop": "Drop G-code, folders or ZIP here",
+  "upload.dropDesktop": "Drop G-code here",
   "upload.chooseDesktop": "or click to choose files",
   "upload.phone": "Upload G-code",
   "upload.cancel": "Cancel",
