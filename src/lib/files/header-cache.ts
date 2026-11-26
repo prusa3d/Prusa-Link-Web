@@ -1,33 +1,33 @@
-import type { PlateObject } from './objects-info';
+import type { Header } from './header';
 
-/// Object outlines by the file's place on the printer (`dir/long name`):
-/// read from the file itself on upload, or downloaded once per job. Kept in
-/// the tab's session too, so a reload does not download them again.
-const STORE = 'prusalink.objects:';
-const memory = new Map<string, PlateObject[]>();
+/// File headers by the file's place on the printer (`dir/long name`): read
+/// from the file itself on upload, or downloaded once. Kept in the tab's
+/// session too, so a reload does not download them again.
+const STORE = 'prusalink.header:';
+const memory = new Map<string, Header>();
 
-export const objectsKey = (dir: string, name: string) =>
+export const fileKey = (dir: string, name: string) =>
   dir ? `${dir}/${name}` : name;
 
-export function rememberObjects(key: string, objects: PlateObject[]) {
-  memory.set(key, objects);
+export function rememberHeader(key: string, header: Header) {
+  memory.set(key, header);
   try {
-    globalThis.sessionStorage.setItem(STORE + key, JSON.stringify(objects));
+    globalThis.sessionStorage.setItem(STORE + key, JSON.stringify(header));
   } catch {
     // Too large for the session, or no storage: kept in memory only.
   }
 }
 
-export function knownObjects(key: string): PlateObject[] | undefined {
-  let objects = memory.get(key);
-  if (!objects) {
+export function knownHeader(key: string): Header | undefined {
+  let header = memory.get(key);
+  if (!header) {
     try {
       const saved = globalThis.sessionStorage.getItem(STORE + key);
-      objects = saved ? (JSON.parse(saved) as PlateObject[]) : undefined;
+      header = saved ? (JSON.parse(saved) as Header) : undefined;
     } catch {
-      objects = undefined;
+      header = undefined;
     }
-    if (objects) memory.set(key, objects);
+    if (header) memory.set(key, header);
   }
-  return objects;
+  return header;
 }

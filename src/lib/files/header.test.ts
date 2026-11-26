@@ -1,7 +1,7 @@
 import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 
-import { parseObjectsInfo, readObjectsInfo } from './objects-info';
+import { parseObjectsInfo, readHeader, readObjectsInfo } from './header';
 
 const fixture = (name: string) =>
   new Uint8Array(
@@ -51,9 +51,9 @@ describe('objects_info', () => {
     const objects = await readObjectsInfo(stream);
     expect(objects?.map((o) => o.name)).toEqual(NAMES);
     const text = new TextDecoder().decode(bytes);
-    const lineEnd = text.indexOf('\n', text.indexOf('objects_info'));
-    // The line, and at most the chunk the stream already queued after it.
-    expect(seen.read).toBeLessThanOrEqual(lineEnd + 2 * 256);
+    const blockEnd = text.indexOf('\n;\n');
+    // The block, and at most the chunk the stream already queued after it.
+    expect(seen.read).toBeLessThanOrEqual(blockEnd + 2 * 256);
     expect(seen.cancelled).toBe(true);
   });
 
@@ -63,6 +63,25 @@ describe('objects_info', () => {
     expect(await readObjectsInfo(stream)).toBeUndefined();
     expect(seen.read).toBeLessThan(64);
     expect(seen.cancelled).toBe(true);
+  });
+
+  it('reads the same printer keys from binary and plain G-code', async () => {
+    const keys = [
+      'filament_type',
+      'extruder_colour',
+      'nozzle_diameter',
+      'nozzle_high_flow',
+      'filament_abrasive',
+    ];
+    const binary = await readHeader(
+      new Blob([fixture('three-shapes.bgcode')]).stream(),
+    );
+    const plain = await readHeader(
+      new Blob([fixture('three-shapes.gcode')]).stream(),
+    );
+    for (const key of keys) expect(plain?.[key]).toBe(binary?.[key]);
+    expect(plain?.extruder_colour).toBe('#F58231;#1F77B4;#2CA02C;#D62728');
+    expect(plain?.['filament used [g]']).toBe('18.55, 0.00, 0.00, 0.00');
   });
 
   it('reads a local File the same way', async () => {

@@ -4,8 +4,8 @@ import { uploadToUsb } from '../../lib/api/upload';
 import { expandZips, type Picked } from '../../lib/files/collect';
 import { rememberThumbnail } from '../../lib/files/local-thumbnails';
 import { readMetadata } from '../../lib/files/metadata';
-import { objectsKey, rememberObjects } from '../../lib/files/objects-cache';
-import { readObjectsInfo } from '../../lib/files/objects-info';
+import { fileKey, rememberHeader } from '../../lib/files/header-cache';
+import { readHeader } from '../../lib/files/header';
 import { type Clash, settleClashes } from './clash';
 import { t, tn } from '../../lib/i18n.svelte';
 import { files, label } from '../files/files.svelte';
@@ -151,10 +151,11 @@ export class Uploads {
         });
         this.#set(i, { state: 'uploading' });
         // Read while it uploads: the printer then need not send the head of
-        // the file back for cancel object.
-        const objects = __CANCEL_OBJECT__
-          ? readObjectsInfo(file.stream())
-          : undefined;
+        // the file back for cancel object or tool mapping.
+        const header =
+          __CANCEL_OBJECT__ || __MULTI_TOOL__
+            ? readHeader(file.stream())
+            : undefined;
         const dir = files.path;
         const ok = await uploadToUsb(
           file,
@@ -171,8 +172,8 @@ export class Uploads {
         else if (cancelled()) state = 'cancelled';
         this.#set(i, { state, fraction: ok ? 1 : 0 });
         if (ok) {
-          const read = await objects;
-          if (read) rememberObjects(objectsKey(dir, file.name), read);
+          const read = await header;
+          if (read) rememberHeader(fileKey(dir, file.name), read);
           // Each file shows in the list as soon as it is on the drive.
           await files.refresh();
           const picture = (await readMetadata(file, file.name)).thumbnail;

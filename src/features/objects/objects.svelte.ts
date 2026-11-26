@@ -1,11 +1,7 @@
 import { api } from '../../lib/api/client';
-import { downloadObjects } from '../../lib/api/download';
-import {
-  knownObjects,
-  objectsKey,
-  rememberObjects,
-} from '../../lib/files/objects-cache';
-import type { PlateObject } from '../../lib/files/objects-info';
+import { fileHeader } from '../../lib/api/download';
+import { fileKey } from '../../lib/files/header-cache';
+import { objectsOf, type PlateObject } from '../../lib/files/header';
 import type { JobFile } from '../../lib/stores/printer.svelte';
 
 /// One object of the print: the printer's id and state, with its outline
@@ -25,7 +21,10 @@ interface Listing {
 }
 
 type FetchList = (job: number) => Promise<Listing | undefined>;
-type FetchShapes = (path: string) => Promise<PlateObject[] | undefined>;
+type FetchShapes = (
+  path: string,
+  key: string,
+) => Promise<PlateObject[] | undefined>;
 type Cancel = (job: number, id: number) => Promise<boolean>;
 
 const fetchList: FetchList = async (job) => {
@@ -42,8 +41,8 @@ const cancelObject: Cancel = async (job, id) =>
     })
   ).response.ok;
 
-const download = (path: string) =>
-  downloadObjects(`/usb/${path.split('/').map(encodeURIComponent).join('/')}`);
+const download: FetchShapes = async (path, key) =>
+  objectsOf(await fileHeader(path, key));
 
 /// The objects of the current print (PrusaLink 2 cancel object). The list
 /// is fetched when the status's `cancel_object_revision` changes; the
@@ -109,17 +108,13 @@ export class PlateObjects {
     }
     if (!file || !this.#list?.objects.length) return;
     const slash = file.path.lastIndexOf('/');
-    const key = objectsKey(
+    const key = fileKey(
       slash < 0 ? '' : file.path.slice(0, slash),
       file.displayName,
     );
     if (key === this.#shapesFor) return;
     this.#shapesFor = key;
-    let shapes = knownObjects(key);
-    if (!shapes) {
-      shapes = await this.#fetchShapes(file.path);
-      if (shapes) rememberObjects(key, shapes);
-    }
+    const shapes = await this.#fetchShapes(file.path, key);
     if (this.#shapesFor === key) this.#shapes = shapes;
   }
 
