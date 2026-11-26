@@ -1,3 +1,4 @@
+import { Resvg } from '@resvg/resvg-js';
 import { readFileSync } from 'node:fs';
 
 import { optimize } from 'svgo';
@@ -50,7 +51,7 @@ export function svgSource(file: string): string {
     multipass: true,
     floatPrecision: 0,
   }).data;
-  const { data } = optimize(halve(flat), {
+  const { data } = optimize(trim(halve(flat)), {
     multipass: true,
     floatPrecision: 0,
   });
@@ -85,6 +86,24 @@ function flattenGradients(svg: string): string {
       (ref: string, id: string) => colors.get(id) ?? ref,
     )
     .replace(/<linearGradient[\s\S]*?<\/linearGradient>/g, '');
+}
+
+/// Frames the picture to what it draws, plus a small margin: the sources sit
+/// in a square canvas with wide empty borders, which would make the printer
+/// small wherever the page scales the picture to a width.
+function trim(svg: string): string {
+  const box = new Resvg(svg).getBBox();
+  if (!box) return svg;
+  const m = 4;
+  const x = Math.floor(box.x - m);
+  const y = Math.floor(box.y - m);
+  const w = Math.ceil(box.width + 2 * m);
+  const h = Math.ceil(box.height + 2 * m);
+  return svg.replace(
+    /<svg([^>]*)>/,
+    (_, attrs: string) =>
+      `<svg${attrs.replace(/ (?:width|height|viewBox)="[^"]*"/g, '')} width="${String(w)}" height="${String(h)}" viewBox="${String(x)} ${String(y)} ${String(w)} ${String(h)}">`,
+  );
 }
 
 /// Draws the 1000-unit picture on a 500-unit grid (paths and the shapes svgo
