@@ -299,6 +299,27 @@ test.describe('while printing', () => {
   });
 });
 
+test.describe('on a phone', () => {
+  test.use({ viewport: { width: 390, height: 844 } });
+
+  test('a print started from far down the file list brings its progress into view', async ({
+    page,
+  }) => {
+    await openApp(page);
+    const file = page
+      .getByRole('button', { name: 'Print calibration cube' })
+      .first();
+    await file.scrollIntoViewIfNeeded();
+    await expect(page.getByTestId('printer-name')).not.toBeInViewport();
+    await file.click();
+    await page
+      .getByRole('dialog')
+      .getByRole('button', { name: 'Print now' })
+      .click();
+    await expect(page.getByTestId('job-percent')).toBeInViewport();
+  });
+});
+
 test.describe('after a print', () => {
   test('the print finishes; full bar first, then ready, with the last print to repeat', async ({
     page,
