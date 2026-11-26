@@ -20,6 +20,7 @@ test.beforeEach(async ({ page, request }) => {
       reset: true,
       firmware: '8.0.1',
       transitionSeconds: 1,
+      apiV2: false,
     },
   });
   // The firmware release check asks GitHub; tests answer for it.
