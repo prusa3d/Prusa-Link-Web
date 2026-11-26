@@ -471,7 +471,7 @@ test.describe('files', () => {
     await expect(details.getByTestId('file-details')).toContainText('0.2mm');
     await expect(details.getByTestId('file-details')).toContainText('0.4 mm');
     await expect(
-      details.getByRole('button', { name: /Print now|Change filament/ }),
+      details.getByRole('button', { name: 'Already printing' }),
     ).toBeDisabled();
   });
 

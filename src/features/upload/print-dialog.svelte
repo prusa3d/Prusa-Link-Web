@@ -21,6 +21,7 @@
   import { Dialog } from '../../lib/ui/dialog';
   import { TelemetryIcon } from '../../lib/ui/telemetry-icon';
   import { MaterialChip } from '../../lib/ui/material';
+  import { groupMaterials } from '../../lib/files/group-materials';
   import { Thumbnail } from '../../lib/ui/thumbnail';
 
   interface Props {
@@ -30,9 +31,11 @@
     onclose: () => void;
     /// The printer takes a job now.
     canStart?: boolean;
+    /// Says why not, on the button, when it does not.
+    blocked?: string | undefined;
   }
 
-  let { file, onprint, onclose, canStart = true }: Props = $props();
+  let { file, onprint, onclose, canStart = true, blocked }: Props = $props();
   let busy = $state(false);
   let failed = $state(false);
   const loaded = $derived(filament.loaded);
@@ -130,7 +133,7 @@
     <div
       class="flex flex-wrap items-center gap-2 text-sm text-muted-foreground"
     >
-      {#each materials as material, i (i)}
+      {#each groupMaterials(materials) as material (material)}
         <MaterialChip name={material} />
       {/each}
       {#if duration !== undefined}
@@ -202,9 +205,9 @@
           loading={busy}
           onclick={() => void start(file.name)}
         >
-          <Icon node={Printer} />{t(
-            mismatch ? 'files.printAnyway' : 'upload.printNow',
-          )}
+          <Icon node={Printer} />{canStart
+            ? t(mismatch ? 'files.printAnyway' : 'upload.printNow')
+            : (blocked ?? t('upload.printNow'))}
         </Button>
       {/if}
     </div>
