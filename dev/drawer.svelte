@@ -1,11 +1,20 @@
 <script lang="ts">
   import { FlaskConical, X } from '@lucide/svelte';
+  import { untrack } from 'svelte';
 
   import Panel from './panel.svelte';
 
   // Dev only: the mock printer's controls beside the app, so a demo can show
   // every state without a printer.
-  let open = $state(new URLSearchParams(location.search).has('panel'));
+  interface Props {
+    open?: boolean;
+  }
+
+  const props: Props = $props();
+  let open = $state(
+    untrack(() => props.open) ??
+      new URLSearchParams(location.search).has('panel'),
+  );
 
   // Make room beside the app instead of covering it.
   $effect(() => {

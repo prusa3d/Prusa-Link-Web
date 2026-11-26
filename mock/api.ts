@@ -19,7 +19,8 @@ export interface MockResponse {
 export interface MockRequest {
   method: string;
   path: string;
-  body?: Buffer;
+  /// A Node Buffer in the dev server, plain bytes in the browser demo.
+  body?: Uint8Array;
   headers: Record<string, string | string[] | undefined>;
 }
 
@@ -245,7 +246,7 @@ export function handleApi(
       const stored = printer.upload(
         name,
         body?.length ?? 0,
-        body && body.length < 1024 ? body.toString() : undefined,
+        body && body.length < 1024 ? new TextDecoder().decode(body) : undefined,
       );
       if (req.headers['print-after-upload'] === '?1')
         printer.startPrint(stored);

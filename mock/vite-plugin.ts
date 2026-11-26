@@ -2,12 +2,8 @@ import type { IncomingMessage, ServerResponse } from 'node:http';
 import type { Connect, Plugin, ProxyOptions } from 'vite';
 
 import { handleApi } from './api.ts';
-import {
-  MockPrinter,
-  PRINTER_CODE,
-  type PrinterModel,
-  type PrinterState,
-} from './printer.ts';
+import { applyPatch, type MockPatch, snapshot } from './control.ts';
+import { MockPrinter } from './printer.ts';
 
 export interface DevPrinterOptions {
   /// A real printer or a MINI404 simulator. Unset: the in-process mock answers.
@@ -15,30 +11,6 @@ export interface DevPrinterOptions {
 }
 
 const API_PREFIXES = ['/api', '/thumb', '/usb'];
-
-export interface MockPatch {
-  /// Back to the seeded state of the current model.
-  reset?: boolean;
-  usb?: boolean;
-  firmware?: string;
-  /// Simulated seconds per real second.
-  timeScale?: number;
-  model?: PrinterModel;
-  state?: PrinterState;
-  startPrint?: string;
-  tool?: { index: number; temp?: number; target?: number; material?: string };
-  /// A toolchanger with no tool picked.
-  parked?: boolean;
-  bed?: { temp?: number; target?: number };
-  /// What the printer asks on its screen; null clears it.
-  question?: string | null;
-  /// The printer stops answering (it lost Wi-Fi, or was switched off).
-  offline?: boolean;
-  /// A person at the printer during a filament change.
-  filament?: 'removed' | 'inserted' | 'cancel';
-  /// Seconds the printer takes to pause, resume or stop.
-  transitionSeconds?: number;
-}
 
 /// Dev-server only. Either proxies the printer API to `printerUrl`, or answers
 /// it from a MockPrinter that the dev panel (/dev/panel.html) drives through
@@ -137,48 +109,6 @@ const serveApi: Handler = async (printer, req, res, next) => {
   });
   send(res, out.status, out.body, out.headers);
 };
-
-function applyPatch(printer: MockPrinter, patch: MockPatch) {
-  if (patch.reset) printer.reset();
-  if (patch.usb !== undefined) printer.usb = patch.usb;
-  if (patch.firmware) printer.firmware = patch.firmware;
-  if (patch.timeScale) printer.timeScale = patch.timeScale;
-  // Only the models the mock has data for; another one would crash reset().
-  if (patch.model && patch.model in PRINTER_CODE) printer.setModel(patch.model);
-  if (patch.state) printer.state = patch.state;
-  if (patch.startPrint) printer.startPrint(patch.startPrint);
-  if (patch.tool) {
-    const tool = printer.tools[patch.tool.index];
-    if (tool) Object.assign(tool, patch.tool);
-  }
-  if (patch.parked !== undefined) printer.parked = patch.parked;
-  if (patch.bed) Object.assign(printer.bed, patch.bed);
-  if (patch.question !== undefined)
-    printer.question = patch.question ?? undefined;
-  if (patch.offline !== undefined) printer.offline = patch.offline;
-  if (patch.filament) printer.answer(patch.filament);
-  if (patch.transitionSeconds !== undefined)
-    printer.transitionSeconds = patch.transitionSeconds;
-}
-
-function snapshot(printer: MockPrinter) {
-  return {
-    apiKey: printer.apiKey,
-    timeScale: printer.timeScale,
-    usb: printer.usb,
-    firmware: printer.firmware,
-    model: printer.model,
-    parked: printer.parked,
-    state: printer.state,
-    bed: printer.bed,
-    tools: printer.tools,
-    activeTool: printer.activeTool,
-    files: printer.files,
-    job: printer.job,
-    question: printer.question,
-    filamentStep: printer.filamentStep,
-  };
-}
 
 function readBody(req: IncomingMessage): Promise<Buffer> {
   return new Promise((resolve, reject) => {
