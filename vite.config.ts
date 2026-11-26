@@ -7,6 +7,7 @@ import { printerImages } from './mock/printer-images.ts';
 import { locales } from './mock/locales.ts';
 import { devPrinter } from './mock/vite-plugin.ts';
 import { demoPage } from './demo/vite-plugin.ts';
+import { pictureEditor } from './dev/picture-editor/vite-plugin.ts';
 
 // The production build is index.html alone, with every script and stylesheet
 // inlined: the firmware embeds that one file. The mock printer and the dev
@@ -34,6 +35,7 @@ export default defineConfig(({ command, mode }) => ({
     command === 'serve' &&
       mode !== 'test' &&
       devPrinter({ printerUrl: process.env.PRINTER_URL }),
+    command === 'serve' && mode !== 'test' && pictureEditor(),
     command === 'build' &&
       mode !== 'demo' &&
       !process.env.PRUSALINK_ANALYZE &&
