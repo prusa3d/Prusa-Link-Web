@@ -217,5 +217,7 @@
   "heating.bedReady": "La base está a la temperatura correcta",
   "heating.bedLabel": "Temperatura de la base",
   "upload.dropInto": "El G-code, las carpetas y los ZIP van a {folder}.",
-  "printer.mmu": "MMU3"
+  "printer.mmu": "MMU3",
+  "status.chamber": "Cámara",
+  "status.active": "En uso"
 }

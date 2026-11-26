@@ -5,6 +5,8 @@
   import HeaterRow from './heater-row.svelte';
   import HeatingProgress from '../heating/heating-progress.svelte';
   import ToolCard from './tool-card.svelte';
+  import ToolList from './tool-list.svelte';
+  import type { ToolRow } from '../../lib/printer/tools';
 
   import { smallThumbnail } from '../../lib/api/thumbnail';
   import { localThumbnail } from '../../lib/files/local-thumbnails';
@@ -49,6 +51,13 @@
     /// A filament change PrusaLink runs as a helper job: shown instead of the
     /// job, which is not the person's print.
     activity?: string | undefined;
+    /// Every tool, on a printer with several that reports them (PrusaLink 2).
+    tools?: ToolRow[] | undefined;
+    ontoolfilament?: ((tool: number) => void) | undefined;
+    /// The chamber's reading, where the printer reports one.
+    chamber?: { temp?: number; target_temp?: number | null } | undefined;
+    /// Under the readings: preheat, babysteps.
+    controls?: Snippet;
   }
 
   let {
@@ -67,7 +76,12 @@
     onfilament,
     onunload,
     activity,
+    tools,
+    ontoolfilament,
+    chamber,
+    controls,
   }: Props = $props();
+  const multi = $derived(__MULTI_TOOL__ && (tools?.length ?? 0) > 1);
 
   /// The action waiting for the person's yes.
   const FINISHED_SHOWN_MS = 5000;
@@ -320,14 +334,18 @@
           </p>
         {/if}
       {/if}
-      <ToolCard
-        label={t('status.tool')}
-        {material}
-        note={materialNote}
-        {nozzle}
-        onchange={onfilament}
-        {onunload}
-      />
+      {#if __MULTI_TOOL__ && multi && tools}
+        <ToolList {tools} onfilament={ontoolfilament} />
+      {:else}
+        <ToolCard
+          label={t('status.tool')}
+          {material}
+          note={materialNote}
+          {nozzle}
+          onchange={onfilament}
+          {onunload}
+        />
+      {/if}
       {#if preheating}
         <!-- A print that is still warming up: how far each heater is, and
              about how long until it starts, in place of the plain rows. -->
@@ -348,20 +366,31 @@
         </div>
       {:else}
         <div class="flex flex-col divide-y">
-          <HeaterRow
-            kind="nozzle"
-            label={t('status.tool')}
-            current={status.temp_nozzle}
-            target={status.target_nozzle}
-          />
+          {#if !multi}
+            <HeaterRow
+              kind="nozzle"
+              label={t('status.tool')}
+              current={status.temp_nozzle}
+              target={status.target_nozzle}
+            />
+          {/if}
           <HeaterRow
             kind="bed"
             label={t('status.bed')}
             current={status.temp_bed}
             target={status.target_bed}
           />
+          {#if chamber?.temp !== undefined}
+            <HeaterRow
+              kind="chamber"
+              label={t('status.chamber')}
+              current={chamber.temp}
+              target={chamber.target_temp ?? undefined}
+            />
+          {/if}
         </div>
       {/if}
+      {@render controls?.()}
     {:else}
       <div
         class="flex flex-col gap-3"

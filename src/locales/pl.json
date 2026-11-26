@@ -223,5 +223,7 @@
   "heating.bedReady": "Stół ma właściwą temperaturę",
   "heating.bedLabel": "Temperatura stołu",
   "upload.dropInto": "G-code, foldery i pliki ZIP trafią do {folder}.",
-  "printer.mmu": "MMU3"
+  "printer.mmu": "MMU3",
+  "status.chamber": "Komora",
+  "status.active": "W użyciu"
 }

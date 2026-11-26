@@ -220,5 +220,7 @@
   "heating.bedReady": "Podložka má správnou teplotu",
   "heating.bedLabel": "Teplota podložky",
   "upload.dropInto": "G-code, složky a ZIP se uloží do {folder}.",
-  "printer.mmu": "MMU3"
+  "printer.mmu": "MMU3",
+  "status.chamber": "Komora",
+  "status.active": "Používá se"
 }

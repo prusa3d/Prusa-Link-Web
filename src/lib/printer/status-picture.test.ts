@@ -93,6 +93,27 @@ describe('heaterReadings', () => {
       heaterReadings({ temp_bed: 30 }, { offline: false, toolPicked: true }),
     ).toEqual({ bed: { current: 30, target: 0 } });
   });
+
+  it('labels every tool and the chamber from the expanded status', () => {
+    expect(
+      heaterReadings(
+        {
+          ...status,
+          tools: {
+            '0': { active: false, nozzle_temp: 24, nozzle_target_temp: null },
+            '1': { active: true, nozzle_temp: 214, nozzle_target_temp: 215 },
+          },
+          chamber: { temp: 38, target_temp: 40 },
+        },
+        { offline: false, toolPicked: false },
+      ),
+    ).toEqual({
+      T1: { current: 24, target: 0 },
+      T2: { current: 214, target: 215, active: true },
+      bed: { current: 59, target: 60 },
+      chamber: { current: 38, target: 40 },
+    });
+  });
 });
 
 describe('shownLabels', () => {

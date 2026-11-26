@@ -65,6 +65,8 @@ export function labelCondition(label: Label): Condition | undefined {
 export interface Reading {
   current: number;
   target: number;
+  /// The tool picked now, on a printer with several.
+  active?: boolean;
 }
 
 /// Within this many degrees of the target, or without one, it is steady.
@@ -96,18 +98,47 @@ interface Telemetry {
   target_nozzle?: number | undefined;
   temp_bed?: number | undefined;
   target_bed?: number | undefined;
+  tools?:
+    | Record<
+        string,
+        {
+          active?: boolean | undefined;
+          nozzle_temp?: number | undefined;
+          nozzle_target_temp?: number | null | undefined;
+        }
+      >
+    | undefined;
+  chamber?:
+    | { temp?: number | undefined; target_temp?: number | null | undefined }
+    | undefined;
 }
 
-/// What each label can show. /api/v1/status reports the active tool as T1
-/// and no chamber, so T2..T8 and the chamber stay unlabelled; a tool changer
-/// with no tool picked has no active tool to report.
+/// What each label can show. The plain /api/v1/status reports the active
+/// tool as T1 and no chamber; a tool changer with no tool picked has no
+/// active tool to report. The expanded one (PrusaLink 2) has every tool,
+/// 0-based, as T1..T8, and the chamber.
 export function heaterReadings(
   status: Telemetry | undefined,
   { offline, toolPicked }: { offline: boolean; toolPicked: boolean },
 ): Partial<Record<Heater, Reading>> {
   if (!status || offline) return {};
   const out: Partial<Record<Heater, Reading>> = {};
-  if (toolPicked && status.temp_nozzle !== undefined)
+  const tools = Object.entries(status.tools ?? {}).filter(([k]) =>
+    /^\d$/.test(k),
+  );
+  for (const [key, tool] of tools)
+    if (tool.nozzle_temp !== undefined)
+      out[`T${String(Number(key) + 1)}` as Heater] = {
+        current: tool.nozzle_temp,
+        target: tool.nozzle_target_temp ?? 0,
+        ...(tools.length > 1 && tool.active && { active: true }),
+      };
+  if (status.chamber?.temp !== undefined)
+    out.chamber = {
+      current: status.chamber.temp,
+      target: status.chamber.target_temp ?? 0,
+    };
+  if (!tools.length && toolPicked && status.temp_nozzle !== undefined)
     out.T1 = {
       current: status.temp_nozzle,
       target: status.target_nozzle ?? 0,

@@ -217,5 +217,7 @@
   "heating.bedReady": "ベッドは適切な温度です",
   "heating.bedLabel": "ベッド温度",
   "upload.dropInto": "G-code、フォルダー、ZIPは{folder}に保存されます。",
-  "printer.mmu": "MMU3"
+  "printer.mmu": "MMU3",
+  "status.chamber": "チャンバー",
+  "status.active": "使用中"
 }

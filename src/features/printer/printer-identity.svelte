@@ -14,6 +14,7 @@
   } from '../../lib/printer/picture';
   import { bedHeat, bedStyle, bedTop } from '../../lib/printer/bed-heat';
   import {
+    type Equipment,
     type Heater,
     type Reading,
     shownLabels,
@@ -24,19 +25,20 @@
     /// Draw the printer with its MMU3, where there is such a picture.
     mmu?: boolean;
     readings?: Partial<Record<Heater, Reading>>;
+    /// What PrusaLink 2 says the printer has besides the MMU.
+    equipment?: Partial<Omit<Equipment, 'mmu'>>;
   }
 
-  let { model, mmu = false, readings = {} }: Props = $props();
+  let { model, mmu = false, readings = {}, equipment = {} }: Props = $props();
+  const has = $derived(equipmentOf(mmu, equipment));
 
   // Until the printer says which it is, the last one this browser saw: the
   // picture is there from the first frame instead of after a round trip.
   const picture = $derived(
-    pictureFor(model?.variant ?? rememberedVariant(), mmu),
+    pictureFor(model?.variant ?? rememberedVariant(), mmu, has),
   );
   const labels = $derived(
-    picture?.status
-      ? shownLabels(picture.status.labels, equipmentOf(mmu), readings)
-      : [],
+    picture?.status ? shownLabels(picture.status.labels, has, readings) : [],
   );
   const bed = $derived(picture?.status?.bed);
   const bedHeatNow = $derived(

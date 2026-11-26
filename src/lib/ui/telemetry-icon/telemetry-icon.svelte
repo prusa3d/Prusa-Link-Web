@@ -4,7 +4,7 @@
   import { BED_HEAT, BED_PLATE, NOZZLE } from './paths';
 
   interface Props {
-    kind: 'nozzle' | 'bed' | 'spool';
+    kind: 'nozzle' | 'bed' | 'chamber' | 'spool';
     class?: string;
     /// A Tailwind size class.
     size?: string;
@@ -19,6 +19,10 @@
     aria-hidden="true"
     class={['shrink-0', size, extra]}
     ><path fill="currentColor" d={NOZZLE} /></svg
+  >
+{:else if kind === 'chamber'}
+  <svg viewBox="0 0 24 24" aria-hidden="true" class={['shrink-0', size, extra]}
+    ><path fill="currentColor" d={BED_HEAT} /></svg
   >
 {:else if kind === 'bed'}
   <svg viewBox="0 0 24 24" aria-hidden="true" class={['shrink-0', size, extra]}

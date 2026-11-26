@@ -223,5 +223,7 @@
   "heating.bedReady": "Стіл має правильну температуру",
   "heating.bedLabel": "Температура столу",
   "upload.dropInto": "G-code, папки та ZIP потраплять до {folder}.",
-  "printer.mmu": "MMU3"
+  "printer.mmu": "MMU3",
+  "status.chamber": "Камера",
+  "status.active": "Використовується"
 }
