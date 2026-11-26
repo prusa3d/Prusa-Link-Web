@@ -5,26 +5,37 @@ import { session } from '../auth/session.svelte';
 import { Priority, queued } from './queue.svelte';
 
 interface Init {
-  params?: { path?: Record<string, string | number> };
+  params?: {
+    path?: Record<string, string | number>;
+    query?: Record<string, string | number | boolean>;
+  };
+  body?: unknown;
 }
 
 /// openapi-fetch's typed surface on a few lines of fetch: the page uses
-/// GET/POST/PUT/DELETE with path parameters only, and the library's 6 KB
-/// runtime does not fit the firmware budget. Path parameters are encoded the
-/// way openapi-fetch does (a folder path's `/` becomes `%2F`). Adds the
-/// PrusaLink key and signs out when the printer refuses it.
+/// GET/POST/PUT/DELETE with path and query parameters and JSON bodies, and
+/// the library's 6 KB runtime does not fit the firmware budget. Path
+/// parameters are encoded the way openapi-fetch does (a folder path's `/`
+/// becomes `%2F`). Adds the PrusaLink key and signs out when the printer
+/// refuses it.
 function method(name: string) {
   return async (path: string, init: Init = {}) => {
-    const url = path.replace(/\{(\w+)\}/g, (_, key: string) =>
-      encodeURIComponent(String(init.params?.path?.[key] ?? '')),
-    );
+    const query = new URLSearchParams(
+      Object.entries(init.params?.query ?? {}).map(([k, v]) => [k, String(v)]),
+    ).toString();
+    const url =
+      path.replace(/\{(\w+)\}/g, (_, key: string) =>
+        encodeURIComponent(String(init.params?.path?.[key] ?? '')),
+      ) + (query && `?${query}`);
     const headers: Record<string, string> = {};
     if (session.key) headers['X-Api-Key'] = session.key;
+    const body = init.body === undefined ? null : JSON.stringify(init.body);
+    if (body) headers['Content-Type'] = 'application/json';
     // Changes are what a person just did; reads are polling and listings.
     // The body is read inside the turn: the printer is busy until it is sent.
     const { response, text } = await queued(
       async () => {
-        const response = await fetch(url, { method: name, headers });
+        const response = await fetch(url, { method: name, headers, body });
         return {
           response,
           text: response.status === 204 ? '' : await response.text(),
