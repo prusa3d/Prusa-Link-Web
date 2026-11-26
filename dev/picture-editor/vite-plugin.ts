@@ -108,8 +108,8 @@ async function readStatus(name: string): Promise<string | null> {
     : null;
 }
 
-/// Variants carry their base's labels resolved, so the app needs no merge;
-/// a saved base refreshes them.
+/// Variants carry their base's labels and bed area resolved, so the app
+/// needs no merge; a saved base refreshes them.
 async function updateVariants(
   base: string,
   variants: string[],
@@ -123,9 +123,11 @@ async function updateVariants(
     const variant = parseStatus(text);
     if (variant.base !== base) continue;
     const resolved = resolveVariant(fresh, variant.overrides ?? { labels: {} });
+    const next = { ...variant, ...resolved };
+    if (!resolved.bed) delete next.bed;
     await writeFile(
       `${STATUS}${name}.json`,
-      await formatJson(serializeStatus({ ...variant, ...resolved })),
+      await formatJson(serializeStatus(next)),
     );
     done.push(name);
   }

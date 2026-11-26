@@ -2,6 +2,12 @@
   import { onMount, tick } from 'svelte';
 
   import {
+    type Bed,
+    bedHeat,
+    bedStyle,
+  } from '../../src/lib/printer/bed-heat.ts';
+
+  import {
     type Affine,
     clientToSvg,
     formatViewBox,
@@ -36,8 +42,10 @@
   } from './label-tools.ts';
   import { LivePicture } from './live.ts';
   import {
+    type BedHandle,
     compareKeys,
     defaultStyle,
+    dragBed,
     exportSvg,
     flipLabel,
     type Heater,
@@ -48,6 +56,7 @@
     labelLength,
     type LabelStyle,
     newLabel,
+    normalizeBed,
     normalizeLabel,
     diffVariant,
     isInherited,
@@ -88,6 +97,7 @@
     conditions: Record<string, Condition>;
     style: LabelStyle;
     labels: Label[];
+    bed?: Bed;
   }
 
   type SelectMode = 'replace' | 'add' | 'toggle';
@@ -98,7 +108,10 @@
 
   /// A variant's base status picture, when it has one.
   let base = $state<
-    | { name: string; status: Pick<StatusPicture, 'labels' | 'style'> }
+    | {
+        name: string;
+        status: Pick<StatusPicture, 'labels' | 'style' | 'bed'>;
+      }
     | undefined
   >();
 
@@ -133,7 +146,11 @@
   let rowCount = $state(2);
   let rowAnchors = $state<Point[]>([]);
   let hover = $state<string | undefined>();
-  let mode = $state<'select' | 'label' | 'row'>('select');
+  let mode = $state<'select' | 'label' | 'row' | 'bed'>('select');
+  let bedSelected = $state(false);
+  /// The bed temperature the editor tints the bed area for, on the app's
+  /// default scale (room temperature to 110 ℃).
+  let bedTemp = $state(25);
   let pendingAnchor = $state<Point | undefined>();
   let cursor = $state<Point | undefined>();
   let newHeater = $state<Heater>('T1');
@@ -266,6 +283,7 @@
     const own = base
       ? resolveVariant(base.status, status?.overrides ?? { labels: {} })
       : undefined;
+    const bed = own ? own.bed : status?.bed;
     doc = {
       hidden: status?.edits.hidden ?? [],
       transforms: status?.edits.transforms ?? {},
@@ -273,6 +291,7 @@
       conditions: status?.edits.conditions ?? {},
       style: own?.style ?? status?.style ?? defaultStyle(viewBox),
       labels: own?.labels ?? status?.labels ?? [],
+      ...(bed && { bed }),
     };
     saved =
       status && data.statusSvg ? { svg: data.statusSvg, status } : undefined;
@@ -280,6 +299,7 @@
     future = [];
     selection = [];
     selectedLabel = undefined;
+    bedSelected = false;
     pendingAnchor = undefined;
     mode = 'select';
     newHeater = 'T1';
@@ -307,7 +327,19 @@
     checkpoint();
     doc.labels = $state.snapshot(base.status.labels);
     doc.style = $state.snapshot(base.status.style);
+    setBedFromBase();
     selectedLabel = undefined;
+  }
+
+  function setBedFromBase() {
+    const from = base?.status.bed;
+    if (from) doc.bed = $state.snapshot(from);
+    else delete doc.bed;
+  }
+
+  function resetBedToBase() {
+    checkpoint();
+    setBedFromBase();
   }
 
   /// Draws `doc` on the picture; a structure change rebuilds it and the tree.
@@ -537,6 +569,13 @@
   let drag:
     | { kind: 'handle'; label: number; handle: Handle; moved: boolean }
     | {
+        kind: 'bed';
+        handle: BedHandle;
+        start: Point;
+        from: Bed | undefined;
+        moved: boolean;
+      }
+    | {
         kind: 'move';
         start: Point;
         from: Record<string, Affine>;
@@ -666,6 +705,28 @@
       addRowPoint(at);
       return;
     }
+    const bedHandle =
+      mode === 'bed'
+        ? 'draw'
+        : (target.closest('[data-bed]')?.getAttribute('data-bed') as
+            BedHandle | null | undefined);
+    bedSelected = bedHandle !== undefined && bedHandle !== null;
+    if (bedHandle) {
+      selection = [];
+      selectedLabel = undefined;
+      labelSel = [];
+      checkpoint();
+      drag = {
+        kind: 'bed',
+        handle: bedHandle,
+        start: at,
+        from: doc.bed && $state.snapshot(doc.bed),
+        moved: false,
+      };
+      svgEl.setPointerCapture(e.pointerId);
+      e.preventDefault();
+      return;
+    }
     const handle = target.closest('[data-handle]');
     const resize = target.closest('[data-resize]');
     const root = content;
@@ -728,7 +789,15 @@
     const at = toSvg(e);
     cursor = at;
     if (!drag) return;
-    if (drag.kind === 'handle') {
+    if (drag.kind === 'bed') {
+      if (
+        !drag.moved &&
+        Math.hypot(at[0] - drag.start[0], at[1] - drag.start[1]) < 3 * px
+      )
+        return;
+      drag.moved = true;
+      doc.bed = dragBed(drag.from, drag.handle, drag.start, at);
+    } else if (drag.kind === 'handle') {
       const l = doc.labels[drag.label];
       if (!l) return;
       drag.moved = true;
@@ -795,6 +864,12 @@
     const root = content;
     if (!d || !root || !svgEl) return;
     guides = {};
+    if (d.kind === 'bed') {
+      if (d.handle === 'draw') mode = 'select';
+      if (!d.moved) past.pop();
+      else message = d.handle === 'draw' ? 'Drew the bed area' : '';
+      return;
+    }
     if (d.kind === 'handle' || d.kind === 'scale') {
       if (!d.moved) past.pop();
       return;
@@ -873,16 +948,39 @@
       selection = [];
       selectedLabel = undefined;
       labelSel = [];
+      bedSelected = false;
     } else if (
       (e.key === 'Delete' || e.key === 'Backspace') &&
       selectedLabel !== undefined
     ) {
       deleteLabel(selectedLabel);
+    } else if ((e.key === 'Delete' || e.key === 'Backspace') && bedSelected) {
+      deleteBed();
     } else if (key === 'h' && !mod) {
       toggleHidden(selection);
     } else if (key === 'l' && !mod) {
       startLabel();
     }
+  }
+
+  function startBed() {
+    mode = mode === 'bed' ? 'select' : 'bed';
+    selection = [];
+    selectedLabel = undefined;
+    labelSel = [];
+  }
+
+  function setBedField(field: keyof Bed, value: number) {
+    if (!doc.bed || !Number.isFinite(value)) return;
+    checkpoint();
+    doc.bed = normalizeBed({ ...$state.snapshot(doc.bed), [field]: value });
+  }
+
+  function deleteBed() {
+    if (!doc.bed) return;
+    checkpoint();
+    delete doc.bed;
+    bedSelected = false;
   }
 
   function startLabel() {
@@ -912,9 +1010,10 @@
       viewBox: formatViewBox(viewBox),
       style: snap.style,
       labels: snap.labels,
+      ...(snap.bed && { bed: snap.bed }),
       ...(base && {
         base: base.name,
-        overrides: diffVariant(base.status, snap.labels, snap.style),
+        overrides: diffVariant(base.status, snap.labels, snap.style, snap.bed),
       }),
       conditional: conditionalParts(),
       edits: {
@@ -1207,7 +1306,7 @@
       <svg
         bind:this={svgEl}
         class="canvas"
-        class:labeling={mode === 'label'}
+        class:labeling={mode === 'label' || mode === 'bed'}
         viewBox={formatViewBox(viewBox)}
         role="application"
         aria-label="Picture"
@@ -1218,6 +1317,18 @@
       >
         <g bind:this={content}></g>
         <g class="overlay">
+          {#if doc.bed}
+            <rect
+              class="bed"
+              class:inherited={base &&
+                JSON.stringify(doc.bed) === JSON.stringify(base.status.bed)}
+              data-bed="move"
+              data-testid="bed-area"
+              {...doc.bed}
+              opacity="0.9"
+              style={bedStyle(bedHeat(bedTemp, 110))}
+            />
+          {/if}
           {#if hoverBox}
             <rect class="hover-box" {...hoverBox} />
           {/if}
@@ -1261,6 +1372,22 @@
               {/if}
             </g>
           {/each}
+          {#if doc.bed && bedSelected}
+            {@const b = doc.bed}
+            <rect class="bed-outline" {...b} stroke-width={2 * px} />
+            {#each RESIZE as h (h)}
+              {@const [x, y] = handlePoint(h, b)}
+              <rect
+                class="resize"
+                data-bed={h}
+                style:cursor="{h}-resize"
+                x={x - 4 * px}
+                y={y - 4 * px}
+                width={8 * px}
+                height={8 * px}
+              />
+            {/each}
+          {/if}
           {#if mode === 'select' && selectionBox && roots.length}
             {@const b = selectionBox}
             {#each RESIZE as h (h)}
@@ -1335,7 +1462,9 @@
         </g>
       </svg>
       <p class="hint">
-        {#if mode === 'row'}
+        {#if mode === 'bed'}
+          Drag a rectangle over the printer's bed. Esc cancels.
+        {:else if mode === 'row'}
           {rowAnchors.length < rowCount
             ? `Click the nozzle of ${toolHeaters[rowAnchors.length] ?? ''} (${String(rowAnchors.length + 1)} of ${String(rowCount)}). Esc cancels.`
             : 'Click the height of the row of lines.'}
@@ -1348,6 +1477,7 @@
           elsewhere to box-select. Drag the selection to move it along one axis
           (Alt: freely), its handles to resize (Shift: keep proportions). Arrows
           move (Shift ×10), H hides, ⌘G groups, ⇧⌘G ungroups, L adds a label.
+          Click the bed area to move or resize it.
         {/if}
         {#if cursor}<span class="coords">{cursor[0]}, {cursor[1]}</span>{/if}
       </p>
@@ -1509,6 +1639,59 @@
           {/each}
         </div>
         <div class="small">Sizes in viewBox units.</div>
+      </section>
+
+      <section>
+        <h2>Bed area</h2>
+        <div class="buttons">
+          <button class:on={mode === 'bed'} onclick={startBed}
+            >{doc.bed ? 'Redraw bed area' : 'Draw bed area'}</button
+          >
+          <button disabled={!doc.bed} onclick={deleteBed}>Delete</button>
+          {#if base && JSON.stringify(doc.bed) !== JSON.stringify(base.status.bed)}
+            <button onclick={resetBedToBase} title="Back to {base.name}'s"
+              >Reset to base</button
+            >
+          {/if}
+        </div>
+        {#if doc.bed}
+          {@const b = doc.bed}
+          <div class="fields box-fields">
+            {#each [['x', 'X'], ['y', 'Y'], ['width', 'W'], ['height', 'H'], ['rx', 'Radius']] as const as [field, name] (field)}
+              <label
+                >{name}
+                <input
+                  type="number"
+                  step="0.1"
+                  min={field === 'x' || field === 'y' ? undefined : 0}
+                  aria-label="Bed {name}"
+                  value={b[field] ?? 0}
+                  onchange={(e) => {
+                    setBedField(field, e.currentTarget.valueAsNumber);
+                  }}
+                /></label
+              >
+            {/each}
+          </div>
+          <label class="bed-temp"
+            >Bed {bedTemp} ℃
+            <input
+              type="range"
+              min="20"
+              max="120"
+              aria-label="Preview bed temperature"
+              bind:value={bedTemp}
+            /></label
+          >
+          <div class="small">
+            The app tints it from dark grey (room temperature) to orange (the
+            bed's target, else 110 ℃), over the picture and under the labels.
+          </div>
+        {:else}
+          <div class="small">
+            None: the app draws the picture's bed as it is.
+          </div>
+        {/if}
       </section>
 
       <section>
@@ -1719,6 +1902,7 @@
       sans-serif;
   }
   .editor {
+    --color-orange-light-9: #fa6831;
     display: flex;
     flex-direction: column;
     height: 100vh;
@@ -1945,6 +2129,25 @@
     stroke: #00a3ff;
     stroke-width: 1;
     fill: rgb(0 163 255 / 10%) !important;
+  }
+  .overlay .bed {
+    pointer-events: all;
+    cursor: move;
+    transition: fill 0.3s;
+  }
+  .overlay .bed.inherited {
+    opacity: 0.6;
+  }
+  .bed-outline {
+    fill: none;
+    stroke: #4da3ff;
+    pointer-events: none;
+  }
+  .bed-temp {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 6px 0;
   }
   .label {
     color: #fa6831;
