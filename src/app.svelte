@@ -28,6 +28,7 @@
   import QueueIndicator from './features/activity/queue-indicator.svelte';
   import UnitToggle from './features/units/unit-toggle.svelte';
   import DropZone from './features/upload/drop-zone.svelte';
+  import UploadPanel from './features/upload/upload-panel.svelte';
   import PrintDialog from './features/upload/print-dialog.svelte';
   import type { PrintCandidate } from './features/upload/uploaded';
   import { uploads } from './features/upload/uploads.svelte';
@@ -206,11 +207,6 @@
       firmware={identity.firmware}
       {activity}
     />
-    <!-- During a filament change the dialog shows the printer's question. -->
-    <PrinterAlert
-      status={printer.offline || filament.busy ? undefined : printer.status}
-    />
-    <Notices />
 
     <div class="grid items-start gap-6 md:grid-cols-2">
       <div class="flex flex-col gap-6 md:sticky md:top-6">
@@ -249,8 +245,21 @@
                   void filament.run('unload');
                 }
               : undefined}
-          />
+          >
+            {#snippet alerts()}
+              <!-- A dialog in front that already shows the printer's
+                   question hides it here. -->
+              <PrinterAlert
+                status={printer.offline ||
+                (filament.busy && (filamentOpen || candidate !== undefined))
+                  ? undefined
+                  : printer.status}
+              />
+              <Notices />
+            {/snippet}
+          </StatusPanel>
         {/if}
+        <UploadPanel />
         {#if printer.last && !isHelper(printer.last.file.displayName) && !(printer.job && (printer.status?.state === 'PRINTING' || printer.status?.state === 'PAUSED'))}
           <LastPrint
             last={printer.last}
