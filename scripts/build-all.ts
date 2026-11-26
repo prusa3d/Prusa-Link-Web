@@ -12,6 +12,7 @@ import { printerFavicon } from '../mock/favicon.ts';
 import { firmwareGzip } from './firmware-gzip.ts';
 import { PRINTER_IMAGES } from '../mock/printer-images.ts';
 import { flattenCssVars, pruneCssVars } from '../mock/prune-css-vars.ts';
+import { releaseVersion } from './version.ts';
 
 // One index.html per printer build: the firmware embeds the one for its
 // PRINTER (dist/<variant>/index.html). The iX has no picture yet.
@@ -29,6 +30,8 @@ const variants = [
   ...minis,
 ];
 const only = process.argv[2];
+// vite.config.ts stamps it into every page.
+process.env.PRUSALINK_VERSION = releaseVersion();
 
 rmSync(new URL('../dist', import.meta.url), { recursive: true, force: true });
 for (const variant of only ? [only] : variants) {

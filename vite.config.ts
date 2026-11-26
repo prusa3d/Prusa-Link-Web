@@ -1,6 +1,6 @@
 import { svelte } from '@sveltejs/vite-plugin-svelte';
 import tailwindcss from '@tailwindcss/vite';
-import { defineConfig } from 'vite';
+import { defineConfig, type Plugin } from 'vite';
 import { viteSingleFile } from 'vite-plugin-singlefile';
 
 import { printerImages } from './mock/printer-images.ts';
@@ -14,9 +14,11 @@ import { devPrinter } from './mock/vite-plugin.ts';
 // locale): its page carries that language only. A mini-<lang> variant shows
 // the MINI's picture.
 const VARIANT = process.env.PRUSALINK_VARIANT;
+const VERSION = process.env.PRUSALINK_VERSION;
 
 export default defineConfig(({ command, mode }) => ({
   plugins: [
+    VERSION !== undefined && version(VERSION),
     printerImages(VARIANT?.startsWith('mini-') ? 'mini' : VARIANT),
     tailwindcss(),
     svelte(),
@@ -39,3 +41,18 @@ export default defineConfig(({ command, mode }) => ({
     copyPublicDir: false,
   },
 }));
+
+/// `<meta name="prusalink-version">`, so a page on a printer says which
+/// release it is.
+function version(value: string): Plugin {
+  return {
+    name: 'prusalink-version',
+    transformIndexHtml: () => [
+      {
+        tag: 'meta',
+        attrs: { name: 'prusalink-version', content: value },
+        injectTo: 'head',
+      },
+    ],
+  };
+}
