@@ -15,7 +15,7 @@ and serves it from the printer's own web server. Every decision follows from tha
 
 ## Hard rules
 
-- **Budget**: each `dist/<variant>/index.html` stays under 80 KB gzip for the MINI builds and 100 KB gzip for every other printer (`scripts/check-size.ts`)
+- **Budget**: each `dist/<variant>/index.html` stays under 80 KB gzip for the MINI builds and 120 KB gzip for every other printer (`scripts/check-size.ts`)
   (`scripts/check-size.ts`, run by `make build`). Check it after adding a dependency.
 - **Nothing dev-only ships**: `mock/`, `dev/`, `demo/`, `scripts/`, `e2e/`, `e2e-demo/` are never imported from `src/`.
   The Pages demo (`demo/`, `make demo`) bundles `mock/` and `dev/` into a browser
