@@ -222,5 +222,7 @@
   "upload.dropInto": "G-code, složky a ZIP se uloží do {folder}.",
   "printer.mmu": "MMU3",
   "status.chamber": "Komora",
-  "status.active": "Používá se"
+  "status.active": "Používá se",
+  "dialog.help": "Nápověda",
+  "dialog.refused": "Tiskárna odpověď nepřijala"
 }

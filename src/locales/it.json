@@ -219,5 +219,7 @@
   "upload.dropInto": "G-code, cartelle e file ZIP vanno in {folder}.",
   "printer.mmu": "MMU3",
   "status.chamber": "Camera",
-  "status.active": "In uso"
+  "status.active": "In uso",
+  "dialog.help": "Aiuto",
+  "dialog.refused": "La stampante non ha accettato la risposta"
 }

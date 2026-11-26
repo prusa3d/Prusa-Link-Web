@@ -225,5 +225,7 @@
   "upload.dropInto": "G-code, foldery i pliki ZIP trafią do {folder}.",
   "printer.mmu": "MMU3",
   "status.chamber": "Komora",
-  "status.active": "W użyciu"
+  "status.active": "W użyciu",
+  "dialog.help": "Pomoc",
+  "dialog.refused": "Drukarka nie przyjęła odpowiedzi"
 }
