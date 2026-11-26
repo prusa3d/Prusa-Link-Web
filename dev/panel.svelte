@@ -1,7 +1,7 @@
 <script lang="ts">
   import { onMount } from 'svelte';
 
-  import type { MockPatch } from '../mock/vite-plugin';
+  import type { MockPatch } from '../mock/control';
   import PrinterAnimation from './printer-animation.svelte';
 
   // Dev only: drives the mock printer the dev server answers /api with.

@@ -6,7 +6,7 @@ export async function mockKey(page: Page) {
   return ((await res.json()) as { apiKey: string }).apiKey;
 }
 
-/// What the dev panel can make the mock printer do (mock/vite-plugin.ts).
+/// What the dev panel can make the mock printer do (mock/control.ts).
 export async function printer(
   request: APIRequestContext,
   patch: Record<string, unknown>,
