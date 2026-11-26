@@ -306,7 +306,7 @@
         {:else}
           <Button
             variant="ghost"
-            class="h-auto px-1 text-lg font-semibold break-all whitespace-normal text-link hover:underline max-sm:min-h-11"
+            class="h-auto px-0.5! text-lg! font-semibold! break-all whitespace-normal text-link! hover:bg-transparent hover:underline max-sm:min-h-11"
             onclick={() => void go(() => files.goTo(crumb.depth))}
           >
             {crumb.label}
