@@ -1,7 +1,12 @@
 import { describe, expect, it } from 'vitest';
 
+import type { Point } from './geometry.ts';
 import {
   comparePaths,
+  diffVariant,
+  emptyEdits,
+  isInherited,
+  resolveVariant,
   defaultStyle,
   flipLabel,
   heatersFor,
@@ -179,5 +184,64 @@ describe('older status files', () => {
       'structure',
       'conditions',
     ]);
+  });
+});
+
+describe('variants', () => {
+  const style = { value: 60, caption: 30, stroke: 4 };
+  const t1 = newLabel('T1', [100, 300], [150, 200], 60);
+  const bed = newLabel('bed', [500, 700], [450, 650], 60);
+  const base = { labels: [t1, bed], style };
+
+  it('inherit the base until changed', () => {
+    expect(resolveVariant(base, { labels: {} })).toEqual(base);
+    expect(diffVariant(base, [t1, bed], style)).toEqual({ labels: {} });
+    expect(isInherited(t1, base.labels)).toBe(true);
+  });
+
+  it('keep moved, dropped and added labels and their own sizes', () => {
+    const moved = { ...t1, anchor: [110, 310] as Point };
+    const chamber = newLabel('chamber', [600, 200], [650, 120], 60);
+    const big = { ...style, value: 80 };
+    const o = diffVariant(base, [moved, chamber], big);
+    expect(o).toEqual({
+      style: big,
+      labels: { T1: moved, bed: null, chamber },
+    });
+    expect(isInherited(moved, base.labels)).toBe(false);
+    expect(resolveVariant(base, o)).toEqual({
+      labels: [moved, chamber],
+      style: big,
+    });
+  });
+
+  it('follow later base changes that they did not override', () => {
+    const o = diffVariant(base, [{ ...t1, anchor: [1, 2] }, bed], style);
+    const newBed = { ...bed, anchor: [520, 720] as Point };
+    expect(resolveVariant({ ...base, labels: [t1, newBed] }, o).labels).toEqual(
+      [{ ...t1, anchor: [1, 2] }, newBed],
+    );
+  });
+
+  it('round-trip through the JSON', () => {
+    const status: StatusPicture = {
+      source: 'mk4s_mmu3.svg',
+      viewBox: '0 0 1000 1000',
+      style,
+      labels: [t1],
+      conditional: [],
+      edits: emptyEdits(),
+      base: 'mk4s',
+      overrides: { labels: { bed: null, T1: { ...t1, end: [300, 200] } } },
+    };
+    const back = parseStatus(serializeStatus(status));
+    expect(back.base).toBe('mk4s');
+    expect(back.overrides).toEqual({
+      labels: { T1: normalizeLabel({ ...t1, end: [300, 200] }), bed: null },
+    });
+    const plain: StatusPicture = { ...status };
+    delete plain.base;
+    delete plain.overrides;
+    expect(parseStatus(serializeStatus(plain)).base).toBeUndefined();
   });
 });

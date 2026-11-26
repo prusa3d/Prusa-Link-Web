@@ -78,6 +78,71 @@ export interface StatusPicture {
   /// For the app: the ids of the saved SVG's conditional parts.
   conditional: { id: string; when: Condition }[];
   edits: Edits;
+  /// A variant picture (`<base>_<suffix>.svg`) takes its labels and style
+  /// from its base's status picture; `labels` and `style` above are that
+  /// result, `overrides` what the variant changed.
+  base?: string;
+  overrides?: VariantOverrides;
+}
+
+/// Per heater: the variant's own label, or null when it drops the base's.
+export interface VariantOverrides {
+  style?: LabelStyle;
+  labels: Partial<Record<Heater, Label | null>>;
+}
+
+function sameLabel(a: Label, b: Label): boolean {
+  return JSON.stringify(labelJson(a)) === JSON.stringify(labelJson(b));
+}
+
+/// The base's labels and style with the variant's overrides applied. Labels
+/// are matched by heater.
+export function resolveVariant(
+  base: Pick<StatusPicture, 'labels' | 'style'>,
+  overrides: VariantOverrides,
+): { labels: Label[]; style: LabelStyle } {
+  const own = overrides.labels;
+  const inherited = base.labels.flatMap((l) => {
+    const o = own[l.heater];
+    if (o === null) return [];
+    return [o ?? l];
+  });
+  const added = HEATERS.flatMap((h) => {
+    const o = own[h];
+    return o && !base.labels.some((l) => l.heater === h) ? [o] : [];
+  });
+  return {
+    labels: [...inherited, ...added],
+    style: overrides.style ?? base.style,
+  };
+}
+
+/// What a variant changed from its base: labels moved, added or dropped,
+/// and its own sizes.
+export function diffVariant(
+  base: Pick<StatusPicture, 'labels' | 'style'>,
+  labels: Label[],
+  style: LabelStyle,
+): VariantOverrides {
+  const out: VariantOverrides['labels'] = {};
+  for (const b of base.labels) {
+    const l = labels.find((x) => x.heater === b.heater);
+    if (!l) out[b.heater] = null;
+    else if (!sameLabel(l, b)) out[b.heater] = normalizeLabel(l);
+  }
+  for (const l of labels)
+    if (!base.labels.some((b) => b.heater === l.heater))
+      out[l.heater] = normalizeLabel(l);
+  return {
+    ...(JSON.stringify(style) !== JSON.stringify(base.style) && { style }),
+    labels: out,
+  };
+}
+
+/// Whether `label` is still exactly the base's label for its heater.
+export function isInherited(label: Label, base: Label[]): boolean {
+  const b = base.find((x) => x.heater === label.heater);
+  return b !== undefined && sameLabel(label, b);
 }
 
 /// Sized for a picture drawn about 600 px wide: the value about 36 px high.
@@ -208,14 +273,8 @@ export function serializeStatus(status: StatusPicture): string {
       source: status.source,
       viewBox: status.viewBox,
       style: status.style,
-      labels: status.labels.map(normalizeLabel).map((l) => ({
-        heater: l.heater,
-        anchor: l.anchor,
-        elbow: l.elbow,
-        end: l.end,
-        side: l.side,
-        ...(l.when && { when: l.when }),
-      })),
+      ...(status.base !== undefined && { base: status.base }),
+      labels: status.labels.map(labelJson),
       conditional: status.conditional,
       edits: {
         hidden: [...status.edits.hidden].sort(compareKeys),
@@ -227,10 +286,78 @@ export function serializeStatus(status: StatusPicture): string {
           ),
         ),
       },
+      ...(status.overrides && {
+        overrides: {
+          ...(status.overrides.style && { style: status.overrides.style }),
+          labels: Object.fromEntries(
+            HEATERS.flatMap((h) => {
+              const o = status.overrides?.labels[h];
+              if (o === undefined) return [];
+              return [[h, o && labelJson(o)]];
+            }),
+          ),
+        },
+      }),
     },
     null,
     2,
   )}\n`;
+}
+
+function labelJson(label: Label) {
+  const l = normalizeLabel(label);
+  return {
+    heater: l.heater,
+    anchor: l.anchor,
+    elbow: l.elbow,
+    end: l.end,
+    side: l.side,
+    ...(l.when && { when: l.when }),
+  };
+}
+
+function parseLabel(value: unknown): Label {
+  const l = record(value, 'label');
+  const heater = HEATERS.find((h) => h === l.heater);
+  if (!heater) throw new Error(`Bad heater ${JSON.stringify(l.heater)}`);
+  const when = parseCondition(l.when);
+  return normalizeLabel({
+    heater,
+    anchor: point(l.anchor),
+    elbow: point(l.elbow),
+    end: point(l.end),
+    side: 'right',
+    ...(when && { when }),
+  });
+}
+
+function parseOverrides(value: unknown): VariantOverrides | undefined {
+  if (value === undefined) return undefined;
+  const o = record(value, 'overrides');
+  const style = o.style === undefined ? undefined : record(o.style, 'style');
+  const size = (k: keyof LabelStyle) => {
+    const v = style?.[k];
+    return typeof v === 'number' && v > 0 ? v : undefined;
+  };
+  const valueSize = size('value');
+  const caption = size('caption');
+  const stroke = size('stroke');
+  return {
+    ...(valueSize &&
+      caption &&
+      stroke && {
+        style: { value: valueSize, caption, stroke },
+      }),
+    labels: Object.fromEntries(
+      Object.entries(record(o.labels ?? {}, 'label overrides')).flatMap(
+        ([h, v]) => {
+          const heater = HEATERS.find((x) => x === h);
+          if (!heater) return [];
+          return [[heater, v === null ? null : parseLabel(v)]];
+        },
+      ),
+    ),
+  };
 }
 
 export function parseStatus(text: string): StatusPicture {
@@ -244,28 +371,18 @@ export function parseStatus(text: string): StatusPicture {
     const v = style[key];
     return typeof v === 'number' && v > 0 ? v : fallback[key];
   };
+  const overrides = parseOverrides(raw.overrides);
   return {
     source: typeof raw.source === 'string' ? raw.source : '',
+    ...(typeof raw.base === 'string' && { base: raw.base }),
+    ...(overrides && { overrides }),
     viewBox,
     style: {
       value: size('value'),
       caption: size('caption'),
       stroke: size('stroke'),
     },
-    labels: labels.map((value) => {
-      const l = record(value, 'label');
-      const heater = HEATERS.find((h) => h === l.heater);
-      if (!heater) throw new Error(`Bad heater ${JSON.stringify(l.heater)}`);
-      const when = parseCondition(l.when);
-      return normalizeLabel({
-        heater,
-        anchor: point(l.anchor),
-        elbow: point(l.elbow),
-        end: point(l.end),
-        side: 'right',
-        ...(when && { when }),
-      });
-    }),
+    labels: labels.map(parseLabel),
     conditional: (Array.isArray(raw.conditional)
       ? raw.conditional
       : []

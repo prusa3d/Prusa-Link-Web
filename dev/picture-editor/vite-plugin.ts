@@ -4,6 +4,10 @@ import type { IncomingMessage, ServerResponse } from 'node:http';
 import { fileURLToPath } from 'node:url';
 import type { Plugin } from 'vite';
 
+import { PRINTER_IMAGES } from '../../mock/printer-images.ts';
+import { listPictures, type PrinterPicture } from './printers.ts';
+import { parseStatus, resolveVariant, serializeStatus } from './status.ts';
+
 const PRINTERS = fileURLToPath(
   new URL('../../assets/printers/', import.meta.url),
 );
@@ -27,17 +31,14 @@ export function pictureEditor(): Plugin {
 async function route(req: IncomingMessage, res: ServerResponse) {
   const [, kind = '', name = ''] =
     (req.url ?? '').split('?')[0]?.split('/') ?? [];
+  const pictures = await pictureList();
   if (kind === 'printers' && req.method === 'GET') {
-    const names = (await readdir(PRINTERS))
-      .filter((f) => f.endsWith('.svg'))
-      .map((f) => f.slice(0, -4))
-      .sort();
     json(
       res,
       200,
-      names.map((n) => ({
-        name: n,
-        hasStatus: existsSync(`${STATUS}${n}.json`),
+      pictures.map((p) => ({
+        ...p,
+        hasStatus: existsSync(`${STATUS}${p.name}.json`),
       })),
     );
     return;
@@ -46,11 +47,12 @@ async function route(req: IncomingMessage, res: ServerResponse) {
     json(res, 404, { error: 'No such printer picture' });
     return;
   }
+  const base = pictures.find((p) => p.name === name)?.base;
   if (kind === 'picture' && req.method === 'GET') {
-    const status = existsSync(`${STATUS}${name}.json`)
-      ? await readFile(`${STATUS}${name}.json`, 'utf8')
-      : null;
+    const status = await readStatus(name);
     json(res, 200, {
+      base: base ?? null,
+      baseStatus: base ? await readStatus(base) : null,
       source: await readFile(`${PRINTERS}${name}.svg`, 'utf8'),
       status,
       statusSvg: existsSync(`${STATUS}${name}.svg`)
@@ -72,13 +74,57 @@ async function route(req: IncomingMessage, res: ServerResponse) {
     await mkdir(STATUS, { recursive: true });
     await writeFile(`${STATUS}${name}.svg`, body.svg);
     await writeFile(`${STATUS}${name}.json`, body.status);
+    const updated = await updateVariants(
+      name,
+      pictures.filter((p) => p.base === name).map((p) => p.name),
+      body.status,
+    );
     json(res, 200, {
+      variants: updated,
       svg: `assets/printers/status/${name}.svg`,
       json: `assets/printers/status/${name}.json`,
     });
     return;
   }
   json(res, 405, { error: 'Unsupported' });
+}
+
+async function pictureList(): Promise<PrinterPicture[]> {
+  const names = (await readdir(PRINTERS))
+    .filter((f) => f.endsWith('.svg'))
+    .map((f) => f.slice(0, -4));
+  const models = Object.values(PRINTER_IMAGES).map((f) => f.slice(0, -4));
+  return listPictures(names, models);
+}
+
+async function readStatus(name: string): Promise<string | null> {
+  return existsSync(`${STATUS}${name}.json`)
+    ? readFile(`${STATUS}${name}.json`, 'utf8')
+    : null;
+}
+
+/// Variants carry their base's labels resolved, so the app needs no merge;
+/// a saved base refreshes them.
+async function updateVariants(
+  base: string,
+  variants: string[],
+  baseText: string,
+): Promise<string[]> {
+  const fresh = parseStatus(baseText);
+  const done: string[] = [];
+  for (const name of variants) {
+    const text = await readStatus(name);
+    if (!text) continue;
+    const variant = parseStatus(text);
+    if (variant.base !== base) continue;
+    const resolved = resolveVariant(fresh, variant.overrides ?? { labels: {} });
+    await writeFile(
+      `${STATUS}${name}.json`,
+      serializeStatus({ ...variant, ...resolved }),
+    );
+    done.push(name);
+  }
+  return done;
 }
 
 function readBody(req: IncomingMessage): Promise<Buffer> {

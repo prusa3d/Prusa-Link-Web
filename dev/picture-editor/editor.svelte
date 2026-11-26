@@ -36,13 +36,17 @@
     type LabelStyle,
     newLabel,
     normalizeLabel,
+    diffVariant,
+    isInherited,
     parseStatus,
     partId,
+    resolveVariant,
     SAMPLE_VALUES,
     serializeStatus,
     type StatusPicture,
     unionBox,
   } from './status.ts';
+  import { pictureLabel, type PrinterPicture } from './printers.ts';
   import StatusPicturePreview from './status-picture-preview.svelte';
   import {
     ancestorKeys,
@@ -75,10 +79,15 @@
 
   type SelectMode = 'replace' | 'add' | 'toggle';
 
-  interface PrinterEntry {
-    name: string;
+  interface PrinterEntry extends PrinterPicture {
     hasStatus: boolean;
   }
+
+  /// A variant's base status picture, when it has one.
+  let base = $state<
+    | { name: string; status: Pick<StatusPicture, 'labels' | 'style'> }
+    | undefined
+  >();
 
   type Handle = 'anchor' | 'elbow' | 'end';
   /// Resize handles by the box edges they move: n, s, e, w and corners.
@@ -216,6 +225,8 @@
       source: string;
       status: string | null;
       statusSvg: string | null;
+      base: string | null;
+      baseStatus: string | null;
     };
     printer = name;
     source = data.source;
@@ -224,13 +235,26 @@
     viewBox = live.mount([]);
 
     const status = data.status ? parseStatus(data.status) : undefined;
+    const baseStatus = data.baseStatus
+      ? parseStatus(data.baseStatus)
+      : undefined;
+    base =
+      data.base && baseStatus
+        ? { name: data.base, status: baseStatus }
+        : undefined;
+    // A variant takes its base's current labels and sizes, with its own
+    // changes on top: hides, moves and groups name the base's elements, so
+    // only the labels carry over.
+    const own = base
+      ? resolveVariant(base.status, status?.overrides ?? { labels: {} })
+      : undefined;
     doc = {
       hidden: status?.edits.hidden ?? [],
       transforms: status?.edits.transforms ?? {},
       structure: status?.edits.structure ?? [],
       conditions: status?.edits.conditions ?? {},
-      style: status?.style ?? defaultStyle(viewBox),
-      labels: status?.labels ?? [],
+      style: own?.style ?? status?.style ?? defaultStyle(viewBox),
+      labels: own?.labels ?? status?.labels ?? [],
     };
     saved =
       status && data.statusSvg ? { svg: data.statusSvg, status } : undefined;
@@ -245,9 +269,27 @@
     anchorKey = undefined;
     dirty = false;
     sync(true);
-    message = status
-      ? `Reopened assets/printers/status/${name}.json`
-      : `Loaded ${name}.svg`;
+    if (status) message = `Reopened assets/printers/status/${name}.json`;
+    else if (base)
+      message = `Loaded ${name}.svg with the labels of ${base.name}`;
+    else message = `Loaded ${name}.svg`;
+  }
+
+  function resetLabelToBase(heater: Heater) {
+    const from = base?.status.labels.find((l) => l.heater === heater);
+    if (!from) return;
+    checkpoint();
+    const i = doc.labels.findIndex((l) => l.heater === heater);
+    if (i < 0) doc.labels.push($state.snapshot(from));
+    else doc.labels[i] = $state.snapshot(from);
+  }
+
+  function resetVariant() {
+    if (!base) return;
+    checkpoint();
+    doc.labels = $state.snapshot(base.status.labels);
+    doc.style = $state.snapshot(base.status.style);
+    selectedLabel = undefined;
   }
 
   /// Draws `doc` on the picture; a structure change rebuilds it and the tree.
@@ -761,6 +803,10 @@
       viewBox: formatViewBox(viewBox),
       style: snap.style,
       labels: snap.labels,
+      ...(base && {
+        base: base.name,
+        overrides: diffVariant(base.status, snap.labels, snap.style),
+      }),
       conditional: conditionalParts(),
       edits: {
         hidden: snap.hidden,
@@ -858,13 +904,21 @@
       message = `Save failed: ${String(res.status)}`;
       return;
     }
-    const where = (await res.json()) as { svg: string; json: string };
+    const where = (await res.json()) as {
+      svg: string;
+      json: string;
+      variants: string[];
+    };
     saved = { svg, status: parseStatus(serializeStatus(status)) };
     dirty = false;
     printers = printers.map((p) =>
       p.name === printer ? { ...p, hasStatus: true } : p,
     );
-    message = `Saved ${where.svg} and ${where.json}`;
+    message = `Saved ${where.svg} and ${where.json}${
+      where.variants.length
+        ? `; updated the labels of ${where.variants.join(', ')}`
+        : ''
+    }`;
   }
 
   /// Made-up readings that heat up to the sample target, hold, cool down and
@@ -928,7 +982,9 @@
       }}
     >
       {#each printers as p (p.name)}
-        <option value={p.name}>{p.name}{p.hasStatus ? ' ✓' : ''}</option>
+        <option value={p.name}
+          >{pictureLabel(p)}{p.hasStatus ? ' ✓' : ''}</option
+        >
       {/each}
     </select>
     <span class="tabs">
@@ -1063,7 +1119,12 @@
             <rect class="marquee" {...marquee} />
           {/if}
           {#each doc.labels as label, i (i)}
-            <g class="label" class:active={selectedLabel === i} data-label={i}>
+            <g
+              class="label"
+              class:active={selectedLabel === i}
+              class:inherited={base && isInherited(label, base.status.labels)}
+              data-label={i}
+            >
               <polyline
                 class="hit"
                 points="{label.anchor.join(',')} {label.elbow.join(
@@ -1300,6 +1361,27 @@
 
       <section>
         <h2>Labels</h2>
+        {#if base}
+          <div class="small">
+            Inherited from {base.name} (dimmed) until changed.
+            <button
+              class="link"
+              onclick={resetVariant}
+              disabled={doc.labels.every((l) =>
+                isInherited(l, base?.status.labels ?? []),
+              ) && doc.labels.length === base.status.labels.length}
+              >Reset all to base</button
+            >
+          </div>
+          {#each base.status.labels.filter((b) => !doc.labels.some((l) => l.heater === b.heater)) as gone (gone.heater)}
+            <div class="small">
+              {heaterName(gone.heater)} removed here
+              <button class="link" onclick={() => resetLabelToBase(gone.heater)}
+                >Restore</button
+              >
+            </div>
+          {/each}
+        {/if}
         <div class="buttons">
           <select bind:value={newHeater} aria-label="Heater of the new label">
             {#each heaters as h (h)}<option value={h}>{heaterName(h)}</option
@@ -1310,7 +1392,13 @@
           >
         </div>
         {#each doc.labels as label, i (i)}
-          <div class="label-row" class:selected={selectedLabel === i}>
+          {@const inherited =
+            base !== undefined && isInherited(label, base.status.labels)}
+          <div
+            class="label-row"
+            class:selected={selectedLabel === i}
+            class:inherited-row={inherited}
+          >
             <button class="link" onclick={() => (selectedLabel = i)}
               >#{i + 1}</button
             >
@@ -1354,6 +1442,14 @@
               title="Line to the other side">⇄</button
             >
             <button onclick={() => deleteLabel(i)} title="Delete">✕</button>
+            {#if base && !inherited && base.status.labels.some((b) => b.heater === label.heater)}
+              <button
+                onclick={() => {
+                  resetLabelToBase(label.heater);
+                }}
+                title="Back to {base.name}'s label">Reset to base</button
+              >
+            {/if}
           </div>
           {#if selectedLabel === i}
             <div class="small">
@@ -1643,6 +1739,12 @@
   .label {
     color: #fa6831;
     cursor: pointer;
+  }
+  .label.inherited {
+    opacity: 0.55;
+  }
+  .label-row.inherited-row select:first-of-type {
+    opacity: 0.6;
   }
   .label.active {
     color: #ff9a3c;
