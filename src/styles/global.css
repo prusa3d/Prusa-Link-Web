@@ -50,6 +50,14 @@
   }
   /* A Home Screen shortcut runs full screen: keep clear of the notch and
      the home indicator. */
+  /* The page fills at least the window, the footer at its bottom: it does
+     not jump down as the file list loads. */
+  #app {
+    display: flex;
+    min-height: 100dvh;
+    flex-direction: column;
+  }
+
   body {
     padding: env(safe-area-inset-top) env(safe-area-inset-right)
       env(safe-area-inset-bottom) env(safe-area-inset-left);

@@ -21,6 +21,11 @@ export const CircleCheck: IconNode = [
   ['circle', { cx: '12', cy: '12', r: '10' }],
   ['path', { d: 'm16 9-5.5 5.5L8 12' }],
 ];
+export const CircleQuestionMark: IconNode = [
+  ['circle', { cx: '12', cy: '12', r: '10' }],
+  ['path', { d: 'M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3' }],
+  ['path', { d: 'M12 17h.01' }],
+];
 export const CircleX: IconNode = [
   ['circle', { cx: '12', cy: '12', r: '10' }],
   ['path', { d: 'm15 9-6 6' }],
@@ -29,6 +34,9 @@ export const CircleX: IconNode = [
 export const Clock: IconNode = [
   ['circle', { cx: '12', cy: '12', r: '10' }],
   ['path', { d: 'M12 6v6l4 2' }],
+];
+export const Cloud: IconNode = [
+  ['path', { d: 'M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z' }],
 ];
 export const CloudOff: IconNode = [
   [
@@ -147,6 +155,16 @@ export const RotateCcw: IconNode = [
 export const Search: IconNode = [
   ['path', { d: 'm21 21-4.34-4.34' }],
   ['circle', { cx: '11', cy: '11', r: '8' }],
+];
+export const ShoppingBag: IconNode = [
+  ['path', { d: 'M16 10a4 4 0 0 1-8 0' }],
+  ['path', { d: 'M3.103 6.034h17.794' }],
+  [
+    'path',
+    {
+      d: 'M3.4 5.467a2 2 0 0 0-.4 1.2V20a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6.667a2 2 0 0 0-.4-1.2l-2-2.667A2 2 0 0 0 17 2H7a2 2 0 0 0-1.6.8z',
+    },
+  ],
 ];
 export const Sparkles: IconNode = [
   [

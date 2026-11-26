@@ -222,7 +222,7 @@
 </header>
 
 {#if session.signedIn}
-  <main class="mx-auto flex max-w-5xl flex-col gap-6 p-4 md:p-6">
+  <main class="mx-auto flex w-full max-w-5xl flex-1 flex-col gap-6 p-4 md:p-6">
     <div class="grid items-start gap-6 md:grid-cols-2">
       <div
         bind:this={printerColumn}
@@ -333,7 +333,7 @@
     onclose={() => (candidate = undefined)}
   />
 {:else}
-  <main class="p-4">
+  <main class="flex-1 p-4">
     <Login />
   </main>
 {/if}
