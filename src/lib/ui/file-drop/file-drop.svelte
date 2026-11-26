@@ -10,16 +10,27 @@
 
   interface Props {
     busy?: boolean;
+    /// What the picker offers, `.gcode` and `.bgcode` unless given.
+    extensions?: readonly string[];
+    multiple?: boolean;
     onfiles: (picked: Picked) => void;
     children: Snippet;
   }
 
-  let { busy = false, onfiles, children }: Props = $props();
+  let {
+    busy = false,
+    extensions,
+    multiple = true,
+    onfiles,
+    children,
+  }: Props = $props();
   let dragging = $state(false);
 
   // A mouse or trackpad means a desktop picker, which filters by extension
   // well. Touch-first pickers do not, so they get no filter (filter.ts).
-  const accept = pickerAccept(globalThis.matchMedia('(pointer: fine)').matches);
+  const accept = $derived(
+    pickerAccept(globalThis.matchMedia('(pointer: fine)').matches, extensions),
+  );
 
   async function ondrop(e: DragEvent) {
     e.preventDefault();
@@ -50,7 +61,7 @@
   {@render children()}
   <input
     type="file"
-    multiple
+    {multiple}
     {accept}
     class="sr-only"
     disabled={busy}

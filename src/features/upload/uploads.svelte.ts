@@ -7,6 +7,7 @@ import { readMetadata } from '../../lib/files/metadata';
 import { type Clash, settleClashes } from './clash';
 import { t, tn } from '../../lib/i18n.svelte';
 import { files, label } from '../files/files.svelte';
+import { firmwareUpdate } from '../firmware/update.svelte';
 
 export interface Notice {
   text: string;
@@ -107,12 +108,16 @@ export class Uploads {
         });
         picked = await expandZips(picked);
       }
-      if (picked.skipped)
+      const [firmware, ...moreFirmware] = picked.firmware;
+      if (firmware) void firmwareUpdate.receive(firmware);
+      const skipped = picked.skipped + moreFirmware.length;
+      if (skipped)
         this.#notice = {
-          text: tn('upload.skipped', picked.skipped),
+          text: tn('upload.skipped', skipped),
           error: false,
         };
       if (!picked.files.length) {
+        if (firmware) return;
         this.#notice = { text: t('upload.nothing'), error: false };
         return;
       }

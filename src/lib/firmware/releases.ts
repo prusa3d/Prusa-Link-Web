@@ -2,8 +2,9 @@ import type { Variant } from '../printer/models';
 
 /// Newer firmware from the public GitHub releases of Prusa-Firmware-Buddy.
 /// The browser asks GitHub directly (the printer may have no internet).
-/// GitHub serves release files without CORS headers, so the app cannot fetch
-/// a .bbf to upload it; it links to the file and says what to do with it.
+/// GitHub serves release files without CORS headers, so the app fetches the
+/// .bbf through a Prusa mirror that sends them; when that fails, the person
+/// downloads the file from GitHub and hands it to the page.
 
 const LATEST =
   'https://api.github.com/repos/prusa3d/Prusa-Firmware-Buddy/releases/latest';
@@ -19,6 +20,78 @@ const ASSET_PREFIX: Partial<Record<Variant, string>> = {
   coreonel: 'COREONEL_COREONEL+',
   coreonel_indx: 'COREONEL_COREONEL+_INDX',
 };
+
+const GITHUB_DOWNLOAD =
+  'https://github.com/prusa3d/Prusa-Firmware-Buddy/releases/download/';
+const MIRROR_DOWNLOAD =
+  'https://assets.prusa3d.com/firmware/Prusa-Firmware-Buddy/releases/download/';
+
+/// Where the page itself can fetch a release file (one with CORS headers), or
+/// undefined when there is no such copy.
+export function fetchableUrl(url: string): string | undefined {
+  return url.startsWith(GITHUB_DOWNLOAD)
+    ? MIRROR_DOWNLOAD + url.slice(GITHUB_DOWNLOAD.length)
+    : undefined;
+}
+
+export function isFirmware(name: string): boolean {
+  return name.toLowerCase().endsWith('.bbf');
+}
+
+/// `XL_XL+_firmware_8.0.3_beta.bbf` → `8.0.3_beta`.
+export function fileVersion(name: string): string | undefined {
+  return /_firmware_(.+)\.bbf$/i.exec(name)?.[1];
+}
+
+export type FileCheck =
+  | { ok: true; version: string | undefined; otherVersion: boolean }
+  | { ok: false; reason: 'notFirmware' | 'otherPrinter' };
+
+/// Whether a picked file can go to this printer: a .bbf of another printer
+/// model is refused by its name; another version of this printer's file is
+/// allowed (`otherVersion`).
+export function checkFile(
+  name: string,
+  variant: Variant | undefined,
+  offered: string | undefined,
+): FileCheck {
+  if (!isFirmware(name)) return { ok: false, reason: 'notFirmware' };
+  const prefix = variant && ASSET_PREFIX[variant];
+  if (prefix && !name.startsWith(`${prefix}_firmware_`))
+    return { ok: false, reason: 'otherPrinter' };
+  const version = fileVersion(name);
+  const a = parseVersion(version);
+  const b = parseVersion(offered);
+  const otherVersion =
+    offered !== undefined && (!a || !b || a.some((n, i) => n !== b[i]));
+  return { ok: true, version: otherVersion ? version : offered, otherVersion };
+}
+
+/// Downloads a release file, reporting progress from 0 to 1 when the size is
+/// known. Throws when it cannot (network, CORS, HTTP error, abort).
+export async function downloadFile(
+  url: string,
+  name: string,
+  onprogress: (fraction: number) => void,
+  signal?: AbortSignal,
+): Promise<File> {
+  const res = await fetch(url, signal ? { signal } : {});
+  if (!res.ok || !res.body) throw new Error(`HTTP ${String(res.status)}`);
+  const total = Number(res.headers.get('content-length')) || 0;
+  const reader = res.body.getReader();
+  const chunks: Uint8Array[] = [];
+  let loaded = 0;
+  for (;;) {
+    const { done, value } = await reader.read();
+    if (done) break;
+    chunks.push(value);
+    loaded += value.length;
+    if (total) onprogress(Math.min(1, loaded / total));
+  }
+  return new File(chunks as BlobPart[], name, {
+    type: 'application/octet-stream',
+  });
+}
 
 export interface Release {
   version: string;

@@ -68,6 +68,7 @@ export function snapshot(printer: MockPrinter) {
     tools: printer.tools,
     activeTool: printer.activeTool,
     files: printer.files,
+    firmwareUploads: printer.firmwareUploads,
     job: printer.job,
     question: printer.question,
     filamentStep: printer.filamentStep,

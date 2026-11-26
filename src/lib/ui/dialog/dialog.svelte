@@ -12,10 +12,12 @@
     open: boolean;
     title: string;
     onclose: () => void;
+    /// `lg` for dialogs whose actions need a wider row.
+    size?: 'md' | 'lg';
     children: Snippet;
   }
 
-  let { open, title, onclose, children }: Props = $props();
+  let { open, title, onclose, size = 'md', children }: Props = $props();
   let element: HTMLDialogElement | undefined = $state();
   const id = $props.id();
 
@@ -31,7 +33,11 @@
   bind:this={element}
   aria-labelledby="{id}-title"
   {onclose}
-  class="rounded-lg m-auto max-h-dvh w-full max-w-md overflow-y-auto border bg-card p-0 text-card-foreground backdrop:bg-black/50 max-sm:mb-0 max-sm:max-w-full max-sm:rounded-b-none"
+  class={[
+    'rounded-lg m-auto max-h-dvh w-full overflow-y-auto',
+    size === 'lg' ? 'max-w-xl' : 'max-w-md',
+    'border bg-card p-0 text-card-foreground backdrop:bg-black/50 max-sm:mb-0 max-sm:max-w-full max-sm:rounded-b-none',
+  ]}
 >
   <div class="flex flex-col gap-4 p-5">
     <div class="flex items-start gap-2">

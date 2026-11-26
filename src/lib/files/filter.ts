@@ -32,6 +32,9 @@ export function isPrintable(name: string): boolean {
 /// The `accept` filter for the file picker. Mobile pickers (iOS, Android)
 /// grey out files whose type they cannot map to `.gcode`/`.bgcode`, so on a
 /// touch-first device the picker shows everything and the app filters.
-export function pickerAccept(finePointer: boolean): string | undefined {
-  return finePointer ? PRINTABLE.join(',') : undefined;
+export function pickerAccept(
+  finePointer: boolean,
+  extensions: readonly string[] = PRINTABLE,
+): string | undefined {
+  return finePointer ? extensions.join(',') : undefined;
 }

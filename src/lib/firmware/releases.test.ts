@@ -1,6 +1,13 @@
 import { describe, expect, it } from 'vitest';
 
-import { isNewer, parseVersion, updateFor, type Release } from './releases';
+import {
+  checkFile,
+  fetchableUrl,
+  isNewer,
+  parseVersion,
+  updateFor,
+  type Release,
+} from './releases';
 
 const release: Release = {
   version: 'v8.0.2',
@@ -33,5 +40,53 @@ describe('firmware releases', () => {
     );
     expect(updateFor(release, '8.0.1', 'mini')?.file).toBeUndefined();
     expect(updateFor(release, '8.0.2', 'xl')).toBeUndefined();
+  });
+
+  it('fetches release files through the Prusa mirror', () => {
+    expect(
+      fetchableUrl(
+        'https://github.com/prusa3d/Prusa-Firmware-Buddy/releases/download/v8.0.3-beta/COREONE_COREONE+GEN2_firmware_8.0.3_beta.bbf',
+      ),
+    ).toBe(
+      'https://assets.prusa3d.com/firmware/Prusa-Firmware-Buddy/releases/download/v8.0.3-beta/COREONE_COREONE+GEN2_firmware_8.0.3_beta.bbf',
+    );
+    expect(fetchableUrl('https://example.invalid/mk4.bbf')).toBeUndefined();
+  });
+
+  it("takes this printer's firmware, by its name", () => {
+    expect(
+      checkFile('COREONE_COREONE+GEN2_firmware_8.0.2.bbf', 'coreone', '8.0.2'),
+    ).toEqual({ ok: true, version: '8.0.2', otherVersion: false });
+    expect(
+      checkFile(
+        'COREONE_COREONE+GEN2_firmware_8.0.2 (1).bbf',
+        'coreone',
+        '8.0.2',
+      ).ok,
+    ).toBe(true);
+    expect(
+      checkFile('COREONE_COREONE+GEN2_firmware_8.0.1.bbf', 'coreone', '8.0.2'),
+    ).toEqual({ ok: true, version: '8.0.1', otherVersion: true });
+    expect(
+      checkFile(
+        'COREONE_COREONE+GEN2_INDX_firmware_8.0.2.bbf',
+        'coreone',
+        '8.0.2',
+      ),
+    ).toEqual({ ok: false, reason: 'otherPrinter' });
+    expect(checkFile('XL_XL+_firmware_8.0.2.bbf', 'mk4', undefined)).toEqual({
+      ok: false,
+      reason: 'otherPrinter',
+    });
+    expect(checkFile('box.gcode', 'mk4', '8.0.2')).toEqual({
+      ok: false,
+      reason: 'notFirmware',
+    });
+    // No known file name for the MINI: any .bbf goes.
+    expect(checkFile('anything.BBF', 'mini', undefined)).toEqual({
+      ok: true,
+      version: undefined,
+      otherVersion: false,
+    });
   });
 });

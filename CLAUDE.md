@@ -46,9 +46,12 @@ and serves it from the printer's own web server. Every decision follows from tha
 - Theme: light, dark or automatic (`src/lib/theme`), stored in localStorage
   (`prusalink.theme`); `index.html` applies it before the first paint.
 - Firmware updates: `src/lib/firmware/releases.ts` asks the public GitHub releases of
-  Prusa-Firmware-Buddy from the browser and links the printer's `.bbf`. GitHub sends no
-  CORS headers for release files, and the firmware refuses `.bbf` uploads (it accepts
-  G-code only), so the user downloads the file and copies it to the USB drive.
+  Prusa-Firmware-Buddy from the browser for the printer's `.bbf`. GitHub sends no CORS
+  headers for release files, so the page fetches it from the Prusa mirror
+  (`fetchableUrl`) and uploads it to the USB root, where the printer finds it on boot
+  and asks to flash it. If the mirror fails, the person downloads the file and drops it
+  in the dialog. Firmware older than the `.bbf` upload support answers 415; then the
+  file has to be copied to the USB drive by hand.
 - Size: `scripts/build-all.ts` drops colour steps no `var()` reads (`mock/prune-css-vars.ts`).
   XL is the largest build because of its picture; watch it first.
 
