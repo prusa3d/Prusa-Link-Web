@@ -254,10 +254,7 @@ test.describe('firmware on the USB drive', () => {
 });
 
 test.describe('tool mapping', () => {
-  test('suggests by material and colour; changing it, then printing sends it', async ({
-    page,
-    request,
-  }) => {
+  async function indx(request: APIRequestContext) {
     await printer(request, { model: 'COREONE_INDX', reset: true });
     await printer(request, {
       tool: { index: 1, material: 'PETG', color: '#1F77B4' },
@@ -265,44 +262,131 @@ test.describe('tool mapping', () => {
     await printer(request, {
       tool: { index: 3, material: 'ASA', color: '#D62728' },
     });
+  }
+  const startedWith = async (request: APIRequestContext) =>
+    (
+      (await (await request.get('/__mock/state')).json()) as {
+        mapping?: unknown;
+      }
+    ).mapping;
+
+  test('suggests by material and colour; changing it, then printing sends it', async ({
+    page,
+    request,
+  }) => {
+    await indx(request);
     await openApp(page);
     await page.getByRole('button', { name: 'Print four colours' }).click();
     const dialog = page.getByRole('dialog');
-    const rows = dialog.getByTestId('mapping-row');
-    const slots = dialog.getByTestId('mapping-slots').getByRole('listitem');
-    await expect(rows).toHaveCount(4);
-    await expect(rows.nth(0).getByTestId('mapping-fit')).toHaveText(
-      'Exact match',
-    );
+    const filament = (n: number) =>
+      dialog.locator(`[data-filament="${String(n)}"]`);
+    const slot = (n: number) => dialog.locator(`[data-slot="${String(n)}"]`);
+    await expect(dialog.getByTestId('mapping-row')).toHaveCount(4);
+    await expect(slot(1).getByTestId('mapping-fit')).toHaveText('Exact match');
     // The second green PLA is not loaded: the blue PLA in T7 comes nearest.
-    await expect(rows.nth(2)).toContainText('7.');
-    await expect(rows.nth(2).getByTestId('mapping-fit')).toHaveText(
+    await expect(slot(7).getByTestId('mapping-fit')).toHaveText(
       'Similar colour',
     );
     // Extruder 1 takes T7: extruder 3 loses it, and printing waits.
-    await rows.nth(0).getByRole('button', { name: 'Assign slot' }).click();
-    await slots.nth(6).getByRole('button', { name: 'Replace' }).click();
-    await expect(rows.nth(2)).toContainText('Unmapped');
+    await filament(1).getByRole('button', { name: 'Assign slot' }).click();
+    await slot(7).getByRole('button', { name: 'Replace' }).click();
+    await expect(filament(3)).toContainText('Unmapped');
     await expect(
       dialog.getByRole('button', { name: 'Print now' }),
     ).toBeDisabled();
-    await rows.nth(2).getByRole('button', { name: 'Assign slot' }).click();
-    await slots.nth(0).getByRole('button', { name: 'Assign slot' }).click();
-    await rows.nth(0).getByRole('button', { name: 'Assign slot' }).click();
-    await slots.nth(5).getByRole('button', { name: 'Spool join' }).click();
-    await rows.nth(0).getByRole('button', { name: 'Cancel' }).click();
+    await filament(3).getByRole('button', { name: 'Assign slot' }).click();
+    await slot(1).getByRole('button', { name: 'Assign slot' }).click();
+    await filament(1).getByRole('button', { name: 'Assign slot' }).click();
+    await slot(6).getByRole('button', { name: 'Spool join' }).click();
+    await filament(1).getByRole('button', { name: 'Cancel' }).click();
     await dialog.getByRole('button', { name: 'Print now' }).click();
+    await expect
+      .poll(() => startedWith(request))
+      .toEqual({ '1': [7, 6], '2': [2], '3': [1], '4': [4] });
+  });
+
+  test('a filament dragged onto a slot takes it, and a slot onto a filament', async ({
+    page,
+    request,
+  }) => {
+    // Both ends of a drag on screen: the dialog does not scroll during one.
+    await page.setViewportSize({ width: 1280, height: 1600 });
+    await indx(request);
+    await openApp(page);
+    await page.getByRole('button', { name: 'Print four colours' }).click();
+    const dialog = page.getByRole('dialog');
+    // By the filament's name, not its Assign slot button.
+    await dialog
+      .locator('[data-filament="2"]')
+      .dragTo(dialog.locator('[data-slot="8"]'), {
+        sourcePosition: { x: 40, y: 15 },
+      });
+    await dialog
+      .locator('[data-slot="1"]')
+      .dragTo(dialog.locator('[data-filament="4"]'));
+    await expect(dialog.locator('[data-filament="1"]')).toContainText(
+      'Unmapped',
+    );
+    await dialog
+      .locator('[data-filament="1"]')
+      .getByRole('button', { name: 'Assign slot' })
+      .click();
+    await dialog
+      .locator('[data-slot="5"]')
+      .getByRole('button', { name: 'Assign slot' })
+      .click();
+    await dialog.getByRole('button', { name: 'Print now' }).click();
+    await expect
+      .poll(() => startedWith(request))
+      .toEqual({ '1': [5], '2': [8], '3': [7], '4': [1] });
+  });
+
+  test('an MMU3 maps to its slots; a slot changes to the file’s filament', async ({
+    page,
+    request,
+  }) => {
+    await printer(request, { model: 'MK4S', reset: true, mmu: true });
+    await openApp(page);
+    await page.getByRole('button', { name: 'Print four colours' }).click();
+    const dialog = page.getByRole('dialog');
+    await expect(dialog.getByTestId('mapping-slot')).toHaveCount(5);
+    await expect(dialog.locator('[data-slot="5"]')).toContainText(
+      'No filament loaded',
+    );
+    await dialog
+      .locator('[data-slot="3"]')
+      .getByRole('button', { name: 'Change filament' })
+      .click();
+    await expect(dialog).toContainText('The printer is changing the filaments');
     await expect
       .poll(
         async () =>
-          (await (await request.get('/__mock/state')).json()) as unknown,
+          (
+            (await (await request.get('/__mock/state')).json()) as {
+              state: string;
+            }
+          ).state,
+        { timeout: 15_000 },
       )
-      .toMatchObject({
-        mapping: { '1': [7, 6], '2': [2], '3': [1], '4': [4] },
-      });
+      .toBe('IDLE');
+    await page.keyboard.press('Escape');
+    await page.getByRole('button', { name: 'Print four colours' }).click();
+    await expect(
+      page
+        .getByRole('dialog')
+        .locator('[data-slot="3"]')
+        .getByTestId('mapping-fit'),
+    ).toHaveText('Exact match');
+    await page
+      .getByRole('dialog')
+      .getByRole('button', { name: 'Print now' })
+      .click();
+    await expect
+      .poll(() => startedWith(request))
+      .toEqual({ '1': [1], '2': [2], '3': [3], '4': [4] });
   });
 
-  test('change all lets the printer load what the print needs', async ({
+  test('change all to match loads what the mapping needs', async ({
     page,
     request,
   }) => {
@@ -319,6 +403,21 @@ test.describe('tool mapping', () => {
         timeout: 15_000,
       })
       .toBe('PETG');
+  });
+
+  test('a single-tool printer offers to change the filament before printing', async ({
+    page,
+  }) => {
+    await openApp(page);
+    await page
+      .getByRole('button', { name: 'Print calibration cube' })
+      .first()
+      .click();
+    await page
+      .getByRole('dialog')
+      .getByRole('button', { name: 'Change filament' })
+      .click();
+    await expect(page.getByRole('dialog', { name: 'Filament' })).toBeVisible();
   });
 
   test('a single-tool printer set to abort on another nozzle refuses the print', async ({

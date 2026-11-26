@@ -20,7 +20,7 @@ export function toolRows(
   info: readonly (ToolInfo | undefined)[],
 ): ToolRow[] {
   return Object.entries(status?.tools ?? {})
-    .filter(([key]) => /^\d+$/.test(key))
+    .flatMap(([key, t]) => (t && /^\d+$/.test(key) ? [[key, t] as const] : []))
     .map(([key, t]) => {
       const index = Number(key);
       const about = info[index];

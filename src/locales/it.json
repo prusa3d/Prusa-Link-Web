@@ -269,5 +269,7 @@
   "mapping.fit.nozzle": "Ugello incompatibile",
   "mapping.fit.refused": "Rifiutato dalla stampante",
   "controls.nozzleWarn": "Slicato per un ugello da {file} mm; la stampante ha {printer} mm. Chiederà prima di stampare.",
-  "controls.nozzleAbort": "Slicato per un ugello da {file} mm; la stampante ha {printer} mm e il suo controllo dell’ugello rifiuta la stampa."
+  "controls.nozzleAbort": "Slicato per un ugello da {file} mm; la stampante ha {printer} mm e il suo controllo dell’ugello rifiuta la stampa.",
+  "filament.change": "Cambia filamento",
+  "mapping.changeFilament": "Cambia filamento"
 }

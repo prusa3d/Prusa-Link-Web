@@ -269,5 +269,7 @@
   "mapping.fit.nozzle": "互換性のないノズル",
   "mapping.fit.refused": "プリンターが拒否",
   "controls.nozzleWarn": "{file} mmノズル用にスライスされています。プリンターは{printer} mmです。印刷前に確認されます。",
-  "controls.nozzleAbort": "{file} mmノズル用にスライスされています。プリンターは{printer} mmで、ノズルチェックにより印刷が拒否されます。"
+  "controls.nozzleAbort": "{file} mmノズル用にスライスされています。プリンターは{printer} mmで、ノズルチェックにより印刷が拒否されます。",
+  "filament.change": "フィラメントを交換",
+  "mapping.changeFilament": "フィラメントを交換"
 }

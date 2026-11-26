@@ -81,7 +81,14 @@
     __MULTI_TOOL__ ? toolRows(printer.status, identity.tools) : [],
   );
   $effect(() => {
-    printer.expanded = __API_V2__ && identity.v2;
+    printer.expanded = __API_V2__ && identity.can('status_expanded');
+  });
+  // The loaded filaments are in /api/v1/info only: read it again when the
+  // printer says it changed.
+  const infoRevision = $derived(printer.status?.info_revision);
+  $effect(() => {
+    if (__API_V2__ && infoRevision !== undefined)
+      void untrack(() => identity.refresh());
   });
   // Why the printer takes no job now, said on every print button.
   const blocked = $derived(
@@ -367,6 +374,7 @@
               {#if __CONTROLS__ && controlMode && !printer.offline}
                 <PrinterControls
                   mode={controlMode}
+                  zOffset={printer.status?.z_offset}
                   preheat={identity.can('preheat')}
                   babystep={identity.can('tune')}
                 />
@@ -438,6 +446,7 @@
   <PrintDialog
     file={candidate}
     dir={files.path}
+    onchangefilament={() => (filamentOpen = true)}
     onprint={print}
     {canStart}
     {blocked}

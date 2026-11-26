@@ -19,6 +19,8 @@ export interface GcodeFilament {
 /// A tool of the printer (a head, or an MMU slot), from /api/v1/info.
 export interface PrinterTool {
   index: number;
+  /// Connect's tool id in /api/v1/info: `"2"`, or `"0.3"` for an MMU slot.
+  id?: string | undefined;
   /// Undefined when nothing is loaded.
   material?: string | undefined;
   color?: string | undefined;
@@ -180,6 +182,43 @@ export function suggest(
     const t = tools[j];
     if (f && t) out[f.index] = [t.index];
   });
+  return out;
+}
+
+export interface ChangeItem {
+  action: 'change';
+  /// A preset or user filament name, as the firmware calls it.
+  filament: string;
+  color?: string;
+}
+
+/// What the printer's change all should load so the mapped slots hold the
+/// file's filaments, by Connect tool id: every slot whose material or
+/// colour differs, or just slot `only`, whatever it holds.
+export function changeItems(
+  filaments: readonly GcodeFilament[],
+  slots: readonly PrinterTool[],
+  mapping: Mapping,
+  only?: number,
+): Record<string, ChangeItem> {
+  const out: Record<string, ChangeItem> = {};
+  for (const f of filaments) {
+    const first = mapping[f.index]?.[0];
+    if (first === undefined || (only !== undefined && first !== only)) continue;
+    const slot = slots.find((s) => s.index === first);
+    if (!slot?.id) continue;
+    const d = colourDistance(f.color, slot.color);
+    const same =
+      !!slot.material &&
+      firmwareFilament(slot.material) === firmwareFilament(f.material) &&
+      !(Number.isFinite(d) && d >= SAME_COLOUR);
+    if (only === undefined && same) continue;
+    out[slot.id] = {
+      action: 'change',
+      filament: firmwareFilament(f.material),
+      ...(f.color && { color: f.color }),
+    };
+  }
   return out;
 }
 
