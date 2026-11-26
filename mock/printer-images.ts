@@ -5,6 +5,7 @@ import { optimize } from 'svgo';
 import svgpath from 'svgpath';
 import type { Plugin } from 'vite';
 
+import type { Bed } from '../src/lib/printer/bed-heat.ts';
 import type { Variant } from '../src/lib/printer/models.ts';
 import type {
   Condition,
@@ -111,9 +112,10 @@ interface SavedStatus {
     when?: Condition;
   }[];
   conditional?: { id: string; when: Condition }[];
+  bed?: Bed;
 }
 
-/// The saved labels on the halved picture's grid (see halve).
+/// The saved labels and bed area on the halved picture's grid (see halve).
 export function halveStatus(saved: SavedStatus): PictureStatus {
   if (
     saved.viewBox
@@ -138,6 +140,18 @@ export function halveStatus(saved: SavedStatus): PictureStatus {
       ...(l.when && { when: l.when }),
     })),
     conditional: saved.conditional ?? [],
+    ...(saved.bed && { bed: halveBed(saved.bed) }),
+  };
+}
+
+function halveBed({ x, y, width, height, rx }: Bed): Bed {
+  const n = (v: number) => Math.round(v * 5) / 10;
+  return {
+    x: n(x),
+    y: n(y),
+    width: n(width),
+    height: n(height),
+    ...(rx && { rx: n(rx) }),
   };
 }
 

@@ -1,4 +1,5 @@
 import { inUnit, unitSign } from '../units.svelte';
+import type { Bed } from './bed-heat';
 
 /// The labels a status picture carries (assets/printers/status, saved by the
 /// picture editor): one leader per heater, from the part it names to the
@@ -34,6 +35,7 @@ export interface PictureStatus {
   labels: Label[];
   /// Parts of the picture shown only under a condition, by element id.
   conditional: { id: string; when: Condition }[];
+  bed?: Bed;
 }
 
 export interface Equipment {
