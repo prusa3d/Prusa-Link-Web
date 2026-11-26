@@ -1,5 +1,6 @@
 @import 'tailwindcss';
 @source '../';
+@source not '../../dev/picture-editor';
 @import './tokens.css';
 
 /* Prusa's typeface from its CDN, when the browser can reach it (the browser

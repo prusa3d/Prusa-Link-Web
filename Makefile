@@ -15,7 +15,7 @@ MOCK_KEY = mockapikey12345
 DEV_PORT ?= 5957
 
 .DEFAULT_GOAL := start
-.PHONY: start help node deps setup spec-sync spec-update spec-check dev dev-sim storybook \
+.PHONY: start help node deps setup spec-sync spec-update spec-check dev dev-sim picture-editor storybook \
         check test e2e demo demo-e2e package serve build fw-web fw-build sim ci all
 
 start: ## Default: install what is missing, open the app on the mock printer
@@ -53,6 +53,9 @@ dev: deps ## App on the mock printer, without opening a browser
 
 dev-sim: deps ## App against the running simulator (make sim in another terminal)
 	PRINTER_URL=http://127.0.0.1:$(PORT) $(PNPM) dev --port $(DEV_PORT) --open '/#key=$(API_KEY)'
+
+picture-editor: deps ## Dev tool: status pictures with temperature labels (assets/printers/status)
+	$(PNPM) dev --port $(DEV_PORT) --open /dev/picture-editor/
 
 storybook: deps ## Component stories
 	$(PNPM) storybook
