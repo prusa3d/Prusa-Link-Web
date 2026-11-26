@@ -304,7 +304,7 @@
         class="flex scroll-mt-4 flex-col gap-6 md:sticky md:top-6 md:scroll-mt-6"
       >
         {#if printer.offline && !printer.status}
-          <div class="rounded-lg border bg-card">
+          <div class="rounded-lg edge border bg-card">
             <EmptyState
               icon={CloudOff}
               tone="fault"

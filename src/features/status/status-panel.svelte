@@ -194,7 +194,7 @@
   {@render alerts?.()}
   <div
     class={[
-      'rounded-lg flex flex-col gap-4 border bg-card p-4 text-card-foreground',
+      'rounded-lg edge flex flex-col gap-4 border bg-card p-4 text-card-foreground',
       offline && 'opacity-60',
     ]}
   >

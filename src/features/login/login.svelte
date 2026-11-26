@@ -40,7 +40,7 @@
 </script>
 
 <form
-  class="rounded-lg mx-auto mt-8 flex max-w-md flex-col gap-4 border bg-card p-6 md:mt-16"
+  class="rounded-lg mt-8 flex max-w-md flex-col gap-4 border bg-card p-6 max-sm:edge sm:mx-auto md:mt-16"
   onsubmit={submit}
 >
   <div class="flex flex-col items-center gap-3 text-center">

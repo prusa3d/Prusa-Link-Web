@@ -23,7 +23,7 @@
 
 <section
   aria-labelledby="last-title"
-  class="rounded-lg flex items-center gap-3 border bg-card p-3"
+  class="rounded-lg edge flex items-center gap-3 border bg-card p-3"
   data-testid="last-print"
 >
   <Thumbnail

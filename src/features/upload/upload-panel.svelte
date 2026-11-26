@@ -14,7 +14,7 @@
   <div class="flex flex-col gap-2" data-testid="upload-status">
     {#if uploads.busy !== undefined || uploads.items.length > 0}
       <div
-        class="rounded-lg relative flex flex-col gap-3 overflow-hidden border bg-card p-4"
+        class="rounded-lg relative edge flex flex-col gap-3 overflow-hidden border bg-card p-4"
         role="status"
         data-testid="upload-panel"
       >

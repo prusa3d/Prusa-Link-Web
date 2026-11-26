@@ -43,7 +43,7 @@
 {#if usbFirmware.files.length}
   <section
     aria-labelledby="usb-firmware-title"
-    class="rounded-lg flex flex-col gap-2 border bg-card p-4"
+    class="rounded-lg edge flex flex-col gap-2 border bg-card p-4"
     data-testid="usb-firmware"
   >
     <h2 id="usb-firmware-title" class="text-sm font-semibold">

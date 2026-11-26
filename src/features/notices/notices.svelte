@@ -8,7 +8,7 @@
 
 {#each notices.list as notice (notice.id)}
   <section
-    class="rounded-lg relative flex items-start gap-3 overflow-hidden border border-state-fault-edge bg-state-fault p-4 text-state-fault-text"
+    class="rounded-lg relative edge flex items-start gap-3 overflow-hidden border border-state-fault-edge bg-state-fault p-4 text-state-fault-text"
     data-testid="notice"
   >
     <Icon node={CircleX} class="mt-0.5 size-5 shrink-0" />

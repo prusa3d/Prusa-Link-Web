@@ -30,6 +30,17 @@
     format('woff2');
 }
 
+/* A card or alert in the page's column. Where the column fills a phone's
+   width, it runs to the screen's edges (past the page's 1rem padding) with
+   only its top and bottom borders. */
+@utility edge {
+  @variant max-md {
+    margin-inline: calc(var(--spacing) * -4);
+    border-inline-width: 0;
+    border-radius: 0;
+  }
+}
+
 /* The app's one stylesheet, on prusa-connect's model (frontend-structure.md):
    Tailwind, the scan of this tree, the theme, and the base layer. */
 
