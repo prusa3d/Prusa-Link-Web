@@ -20,7 +20,7 @@
   let busy = $state(false);
   let error = $state<'rejected' | 'unreachable' | undefined>();
   let input: HTMLInputElement | undefined = $state();
-  const picture = pictureFor(rememberedVariant());
+  const picture = pictureFor(rememberedVariant())?.url;
 
   async function submit(e: SubmitEvent) {
     e.preventDefault();

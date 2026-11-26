@@ -1,0 +1,32 @@
+{
+  "source": "xl.svg",
+  "viewBox": "0 0 1000 1000",
+  "style": {
+    "value": 60,
+    "caption": 30,
+    "stroke": 4
+  },
+  "labels": [
+    {
+      "heater": "T1",
+      "anchor": [282.3, 284],
+      "elbow": [567.8, 148],
+      "end": [747.8, 148],
+      "side": "right"
+    },
+    {
+      "heater": "bed",
+      "anchor": [299.4, 722.1],
+      "elbow": [553.5, 932.2],
+      "end": [733.5, 932.2],
+      "side": "right"
+    }
+  ],
+  "conditional": [],
+  "edits": {
+    "hidden": [],
+    "transforms": {},
+    "structure": [],
+    "conditions": {}
+  }
+}

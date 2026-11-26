@@ -39,6 +39,7 @@
   import { CAN_START } from './lib/printer/state';
   import { identity } from './lib/stores/identity.svelte';
   import { isMultiTool } from './lib/printer/models';
+  import { heaterReadings } from './lib/printer/status-picture';
   import { badgeTabIcon } from './features/printer/tab-icon';
   import { printer, type JobFile } from './lib/stores/printer.svelte';
   import { Button } from './lib/ui/button';
@@ -247,7 +248,14 @@
               : undefined}
           >
             {#snippet top()}
-              <PrinterIdentity model={identity.model} mmu={identity.mmu} />
+              <PrinterIdentity
+                model={identity.model}
+                mmu={identity.mmu}
+                readings={heaterReadings(printer.status, {
+                  offline: printer.offline,
+                  toolPicked: !multiTool || filament.loaded !== undefined,
+                })}
+              />
             {/snippet}
             {#snippet alerts()}
               <!-- A dialog in front that already shows the printer's
