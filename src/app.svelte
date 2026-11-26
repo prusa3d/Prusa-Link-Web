@@ -21,7 +21,8 @@
     type PrinterEntry,
   } from './features/files/files.svelte';
   import Login from './features/login/login.svelte';
-  import PrinterHeader from './features/printer/printer-header.svelte';
+  import PrinterIdentity from './features/printer/printer-identity.svelte';
+  import StateBadge from './features/printer/state-badge.svelte';
   import StatusPanel from './features/status/status-panel.svelte';
   import ThemeToggle from './features/theme/theme-toggle.svelte';
   import LanguagePicker from './features/language/language-picker.svelte';
@@ -172,8 +173,15 @@
     class="mx-auto flex h-14 max-w-5xl items-center justify-between gap-2 px-4 sm:gap-4 md:px-6"
   >
     <!-- The logo gives way on narrow phones; the buttons never wrap. -->
-    <div class="min-w-0 flex-1">
-      <PrusaLinkLogo class="h-auto w-full max-w-40" />
+    <div class="flex min-w-0 flex-1 items-center gap-2 sm:gap-3">
+      <div class="max-w-40 min-w-0 flex-1">
+        <PrusaLinkLogo class="h-auto w-full" />
+      </div>
+      <StateBadge
+        state={printer.status?.state}
+        offline={printer.offline}
+        {activity}
+      />
     </div>
     <div class="flex shrink-0 items-center sm:gap-1">
       <QueueIndicator />
@@ -199,15 +207,6 @@
 
 {#if session.signedIn}
   <main class="mx-auto flex max-w-5xl flex-col gap-6 p-4 md:p-6">
-    <PrinterHeader
-      model={identity.model}
-      hostname={identity.hostname}
-      state={printer.status?.state}
-      offline={printer.offline}
-      firmware={identity.firmware}
-      {activity}
-    />
-
     <div class="grid items-start gap-6 md:grid-cols-2">
       <div class="flex flex-col gap-6 md:sticky md:top-6">
         {#if printer.offline && !printer.status}
@@ -224,6 +223,7 @@
           </div>
         {:else}
           <StatusPanel
+            name={identity.hostname ?? identity.model?.name}
             status={printer.status}
             job={printer.job}
             jobFile={printer.jobFile}
@@ -246,6 +246,9 @@
                 }
               : undefined}
           >
+            {#snippet top()}
+              <PrinterIdentity model={identity.model} />
+            {/snippet}
             {#snippet alerts()}
               <!-- A dialog in front that already shows the printer's
                    question hides it here. -->

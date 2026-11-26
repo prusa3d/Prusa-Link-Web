@@ -5,7 +5,8 @@
 
   interface Props {
     tone?: Tone;
-    size?: 'sm' | 'md';
+    /// `bar`: as tall as the PrusaLink logo in the top bar.
+    size?: 'sm' | 'md' | 'bar';
     children: Snippet;
     testid?: string;
   }
@@ -18,7 +19,9 @@
   data-testid={testid}
   class={[
     'inline-flex w-fit shrink-0 items-center gap-1.5 rounded-sm border border-l-4 font-semibold tracking-wide uppercase',
-    size === 'md' ? 'px-3 py-1.5 text-sm' : 'px-2 py-1 text-xs',
+    size === 'md' && 'px-3 py-1.5 text-sm',
+    size === 'sm' && 'px-2 py-1 text-xs',
+    size === 'bar' && 'h-7 px-2.5 text-xs',
     tones[tone],
   ]}
 >
