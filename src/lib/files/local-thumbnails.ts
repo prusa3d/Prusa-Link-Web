@@ -13,3 +13,25 @@ export function rememberThumbnail(name: string, picture: Blob) {
 export function localThumbnail(name: string | undefined): string | undefined {
   return name === undefined ? undefined : thumbnails.get(name);
 }
+
+/// What files uploaded in this visit say about themselves, by display name:
+/// the printer's listing has no materials or print time for a name that
+/// does not carry them (PrusaSlicer's output template).
+export interface LocalDetails {
+  materials?: string[] | undefined;
+  duration?: number | undefined;
+  grams?: number | undefined;
+  printerModel?: string | undefined;
+}
+
+const details = new Map<string, LocalDetails>();
+
+export function rememberDetails(name: string, about: LocalDetails) {
+  details.set(name, about);
+}
+
+export function localDetails(
+  name: string | undefined,
+): LocalDetails | undefined {
+  return name === undefined ? undefined : details.get(name);
+}

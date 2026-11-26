@@ -16,6 +16,10 @@
   import { identity } from '../../lib/stores/identity.svelte';
   import { thumbnailUrl } from '../../lib/api/thumbnail';
   import { formatDuration, parseFileName } from '../../lib/files/name';
+  import {
+    localDetails,
+    localThumbnail,
+  } from '../../lib/files/local-thumbnails';
   import { filamentGrams } from '../../lib/files/metadata';
   import { language, t } from '../../lib/i18n.svelte';
   import { Alert } from '../../lib/ui/alert';
@@ -75,9 +79,16 @@
   const changing = $derived(filament.busy !== undefined);
 
   const info = $derived(file ? parseFileName(file.displayName) : undefined);
-  const materials = $derived(file?.meta?.materials ?? info?.materials ?? []);
-  const duration = $derived(file?.meta?.duration ?? info?.duration);
-  const sliced = $derived(file?.meta?.printerModel ?? info?.printer);
+  // Read from the file on upload in this visit, when the dialog is opened
+  // from the list.
+  const known = $derived(file?.meta ?? localDetails(file?.displayName));
+  const materials = $derived(
+    known?.materials ??
+      (info?.materials.length ? info.materials : undefined) ??
+      [],
+  );
+  const duration = $derived(known?.duration ?? info?.duration);
+  const sliced = $derived(known?.printerModel ?? info?.printer);
   const local = $derived(
     file?.meta?.thumbnail
       ? URL.createObjectURL(file.meta.thumbnail)
@@ -85,6 +96,7 @@
   );
   const thumbnail = $derived(
     local ??
+      localThumbnail(file?.displayName) ??
       (file?.thumbnailRef || file?.iconRef
         ? thumbnailUrl(file.version, file.thumbnailRef, file.iconRef)
         : undefined),
@@ -173,7 +185,7 @@
     __TOOL_MAPPING__ && mapsTools ? gcodeFilaments(header) : [],
   );
   const grams = $derived(
-    file?.meta?.grams ??
+    known?.grams ??
       (__TOOL_MAPPING__
         ? filamentGrams(header?.['filament used [g]'])
         : undefined),
