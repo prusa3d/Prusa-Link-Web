@@ -68,10 +68,20 @@ export interface Reading {
 /// Within this many degrees of the target, or without one, it is steady.
 const TOLERANCE = 2;
 
+/// Below this a heater with no target counts as cold, not cooling.
+const COLD = 40;
+
 export function trend(r: Reading): 'up' | 'down' | undefined {
   if (r.target > r.current + TOLERANCE) return 'up';
-  if (r.target > 0 && r.current > r.target + TOLERANCE) return 'down';
+  if (r.current > (r.target > 0 ? r.target : COLD) + TOLERANCE) return 'down';
   return undefined;
+}
+
+/// The label's colour: heating or holding a target, cooling down, or off
+/// and cold.
+export function tone(r: Reading): 'heating' | 'cooling' | 'off' {
+  if (trend(r) === 'down') return 'cooling';
+  return r.target > 0 ? 'heating' : 'off';
 }
 
 /// A reading in the chosen unit, in whole degrees: `215℃`.
