@@ -5,7 +5,7 @@
   import { Printer } from '../../lib/ui/icon/icons';
 
   import type { Model } from '../../lib/printer/models';
-  import { pictureFor } from '../../lib/printer/picture';
+  import { pictureFor, rememberedVariant } from '../../lib/printer/picture';
 
   interface Props {
     model: Model | undefined;
@@ -15,7 +15,11 @@
 
   let { model, mmu = false }: Props = $props();
 
-  const image = $derived(pictureFor(model?.variant, mmu));
+  // Until the printer says which it is, the last one this browser saw: the
+  // picture is there from the first frame instead of after a round trip.
+  const image = $derived(
+    pictureFor(model?.variant ?? rememberedVariant(), mmu),
+  );
 </script>
 
 {#if image}
@@ -29,7 +33,7 @@
   </div>
 {:else}
   <div
-    class="rounded-lg mx-auto flex h-32 w-full items-center justify-center bg-muted text-muted-foreground"
+    class="rounded-t-lg -mx-4 -mt-4 flex aspect-square items-center justify-center bg-muted text-muted-foreground"
   >
     <Icon node={Printer} class="size-12" />
   </div>

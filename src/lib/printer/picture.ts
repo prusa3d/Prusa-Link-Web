@@ -14,8 +14,10 @@ export function pictureFor(
 ): string | undefined {
   const all = Object.entries(printerImages.images);
   const [only] = all;
-  const key = all.length === 1 && only ? only[0] : variant;
-  if (!key) return undefined;
+  // Unknown yet (first visit, before the printer answers): the CORE One, the
+  // generic build's picture, so the card never starts empty.
+  const key =
+    all.length === 1 && only ? only[0] : (variant ?? 'coreone');
   return url(
     (mmu ? printerImages.mmu[key as Variant] : undefined) ??
       printerImages.images[key as Variant],
