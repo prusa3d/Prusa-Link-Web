@@ -174,3 +174,53 @@ test.describe('cancel object', () => {
     expect(downloads).toEqual([]);
   });
 });
+
+test.describe('controls', () => {
+  test('preheat for a filament when idle, then cool down', async ({
+    page,
+    request,
+  }) => {
+    await openApp(page);
+    const preheat = page.getByTestId('preheat');
+    await preheat.getByRole('combobox').selectOption('PETG');
+    await preheat.getByRole('button', { name: 'Preheat' }).click();
+    await expect.poll(async () => (await mock(request)).bed.target).toBe(85);
+    await preheat.getByRole('button', { name: 'Cool down' }).click();
+    await expect.poll(async () => (await mock(request)).bed.target).toBe(0);
+  });
+
+  test('babysteps while printing, and no preheat then', async ({
+    page,
+    request,
+  }) => {
+    await openApp(page);
+    await printer(request, { startPrint: '3DBENC~1.BGC' });
+    await expect(page.getByTestId('preheat')).toHaveCount(0);
+    const babystep = page.getByTestId('babystep');
+    await babystep
+      .getByRole('button', { name: 'Nozzle closer to the bed' })
+      .click();
+    await babystep
+      .getByRole('button', { name: 'Nozzle closer to the bed' })
+      .click();
+    await expect(babystep.getByTestId('z-offset')).toHaveText('-0.050 mm');
+    expect((await mock(request)).zOffset).toBe(-0.05);
+  });
+
+  test('a tool of the XL gets its filament from the page', async ({
+    page,
+    request,
+  }) => {
+    await printer(request, { model: 'XL', reset: true });
+    await openApp(page);
+    await page.getByRole('button', { name: 'Filament T3' }).click();
+    const dialog = page.getByRole('dialog');
+    await dialog.getByRole('button', { name: 'PETG' }).click();
+    await expect
+      .poll(async () => (await mock(request)).tools[2]?.material, {
+        timeout: 15_000,
+      })
+      .toBe('PETG');
+    await expect(page.getByTestId('tool-row').nth(2)).toContainText('PETG');
+  });
+});

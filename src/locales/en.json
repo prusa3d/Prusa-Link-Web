@@ -229,5 +229,12 @@
   "objects.cancelBody": "The printer skips it for the rest of the print. The other objects go on.",
   "objects.canceled": "Cancelled",
   "objects.printing": "Printing now",
-  "objects.refused": "The printer did not cancel the object"
+  "objects.refused": "The printer did not cancel the object",
+  "controls.filament": "Filament to preheat for",
+  "controls.preheat": "Preheat",
+  "controls.cooldown": "Cool down",
+  "controls.zOffset": "Z offset",
+  "controls.lower": "Nozzle closer to the bed",
+  "controls.raise": "Nozzle further from the bed",
+  "controls.refused": "The printer did not take it now"
 }

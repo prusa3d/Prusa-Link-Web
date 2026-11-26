@@ -229,5 +229,12 @@
   "objects.cancelBody": "Der Drucker lässt es für den Rest des Drucks aus. Die anderen Objekte werden weitergedruckt.",
   "objects.canceled": "Abgebrochen",
   "objects.printing": "Wird gedruckt",
-  "objects.refused": "Der Drucker hat das Objekt nicht abgebrochen"
+  "objects.refused": "Der Drucker hat das Objekt nicht abgebrochen",
+  "controls.filament": "Filament zum Vorheizen",
+  "controls.preheat": "Vorheizen",
+  "controls.cooldown": "Abkühlen",
+  "controls.zOffset": "Z-Offset",
+  "controls.lower": "Düse näher ans Bett",
+  "controls.raise": "Düse weiter vom Bett",
+  "controls.refused": "Der Drucker hat es gerade nicht angenommen"
 }

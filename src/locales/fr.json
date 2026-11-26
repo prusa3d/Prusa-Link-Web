@@ -229,5 +229,12 @@
   "objects.cancelBody": "L’imprimante l’ignore pour le reste de l’impression. Les autres objets continuent.",
   "objects.canceled": "Annulé",
   "objects.printing": "En impression",
-  "objects.refused": "L’imprimante n’a pas annulé l’objet"
+  "objects.refused": "L’imprimante n’a pas annulé l’objet",
+  "controls.filament": "Filament à préchauffer",
+  "controls.preheat": "Préchauffer",
+  "controls.cooldown": "Refroidir",
+  "controls.zOffset": "Décalage Z",
+  "controls.lower": "Buse plus près du plateau",
+  "controls.raise": "Buse plus loin du plateau",
+  "controls.refused": "L’imprimante ne l’a pas accepté maintenant"
 }
