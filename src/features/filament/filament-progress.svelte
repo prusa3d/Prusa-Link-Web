@@ -8,7 +8,7 @@
   import { printer } from '../../lib/stores/printer.svelte';
   import { Alert } from '../../lib/ui/alert';
   import { Spinner } from '../../lib/ui/spinner';
-  import HeatingProgress from './heating-progress.svelte';
+  import HeatingProgress from '../heating/heating-progress.svelte';
 
   const loaded = $derived(
     filament.loaded ? filamentLabel(filament.loaded) : t('filament.noneShort'),
@@ -29,6 +29,10 @@
       <p class="text-sm text-muted-foreground">{t('filament.follow')}</p>
     </div>
   </div>
+  <HeatingProgress
+    current={printer.status?.temp_nozzle}
+    target={printer.status?.target_nozzle}
+  />
   {#if printer.status?.state === 'ATTENTION'}
     <!-- What the printer asks, here in the dialog that is in front. -->
     <div data-testid="filament-question">
@@ -43,10 +47,6 @@
       </Alert>
     </div>
   {/if}
-  <HeatingProgress
-    current={printer.status?.temp_nozzle}
-    target={printer.status?.target_nozzle}
-  />
 {:else if filament.outcome?.ok}
   <div data-testid="filament-outcome">
     <Alert variant="success">
