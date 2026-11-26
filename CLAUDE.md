@@ -55,3 +55,5 @@ and serves it from the printer's own web server. Every decision follows from tha
 - `/api/v1/status` reports the _active_ tool only. Per-tool data and tool mapping need
   new firmware API (planned for 2.1: OctoPrint-compatible `/api/printer` `tool0..N`, then
   prusa-connect-shaped `tools[]` and `start_print` with `tool_mapping`).
+
+- `pnpm-lock.yaml`: the `@prusa/frontend-standards` resolution must keep `path: packages/standards`. pnpm 11 drops it when it rewrites the lockfile, and a clean `--frozen-lockfile` install (CI) then gets the whole prusa-connect repo instead of the package.
