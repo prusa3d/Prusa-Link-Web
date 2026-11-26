@@ -44,6 +44,12 @@ paths:
     get:
       summary: printer, job and transfer telemetry info
       description: All values except printer are optional
+      parameters:
+        - in: query
+          name: expanded
+          description: Adds per-tool, chamber and enclosure telemetry, live X/Y and change counters (PrusaLink 2.1, capability in /api/v1/info `features`)
+          schema:
+            type: boolean
       responses:
         200:
           description: OK
@@ -172,6 +178,226 @@ paths:
           $ref: "#/components/responses/NotFound"
         409:
           $ref: "#/components/responses/Conflict"
+
+  /api/v1/job/{id}/objects:
+    parameters:
+      - $ref: "#/components/parameters/JobId"
+    get:
+      summary: cancelable objects of the job
+      description: ETag is the objects revision (status `cancel_object_revision`). Shapes are in the job file's `objects_info` metadata.
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/JobObjects"
+        304:
+          $ref: "#/components/responses/NotModified"
+        401:
+          $ref: "#/components/responses/Unauthorized"
+        404:
+          $ref: "#/components/responses/NotFound"
+
+  /api/v1/job/{id}/objects/{object_id}/cancel:
+    parameters:
+      - $ref: "#/components/parameters/JobId"
+      - $ref: "#/components/parameters/ObjectId"
+    put:
+      summary: cancel an object of the job
+      responses:
+        204:
+          description: No Content
+        401:
+          $ref: "#/components/responses/Unauthorized"
+        404:
+          $ref: "#/components/responses/NotFound"
+        409:
+          $ref: "#/components/responses/Conflict"
+
+  /api/v1/job/{id}/objects/{object_id}/uncancel:
+    parameters:
+      - $ref: "#/components/parameters/JobId"
+      - $ref: "#/components/parameters/ObjectId"
+    put:
+      summary: print a cancelled object again
+      responses:
+        204:
+          description: No Content
+        401:
+          $ref: "#/components/responses/Unauthorized"
+        404:
+          $ref: "#/components/responses/NotFound"
+        409:
+          $ref: "#/components/responses/Conflict"
+
+  /api/v1/dialog:
+    get:
+      summary: the dialog the printer shows
+      description: ETag is the dialog id (status `dialog_id`)
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Dialog"
+        204:
+          description: No dialog
+        401:
+          $ref: "#/components/responses/Unauthorized"
+
+  /api/v1/dialog/{dialog_id}:
+    parameters:
+      - in: path
+        name: dialog_id
+        required: true
+        schema:
+          type: integer
+    post:
+      summary: press a button of the dialog
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                button:
+                  type: string
+                  example: Continue
+              required:
+                - button
+      responses:
+        204:
+          description: No Content
+        400:
+          $ref: "#/components/responses/BadRequest"
+        401:
+          $ref: "#/components/responses/Unauthorized"
+        404:
+          $ref: "#/components/responses/NotFound"
+
+  /api/v1/printer:
+    put:
+      summary: tune the printer
+      description: Flat keys, dotted for nested values, as Connect SET_VALUE. All or nothing. `z_offset_delta` is a babystep, only while printing or paused.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Tune"
+      responses:
+        204:
+          description: No Content
+        401:
+          $ref: "#/components/responses/Unauthorized"
+        409:
+          $ref: "#/components/responses/Conflict"
+        422:
+          description: Unknown key or value out of range
+
+  /api/v1/printer/preheat:
+    post:
+      summary: preheat for a filament, or cool down
+      description: Only when idle (IDLE, READY, FINISHED, STOPPED)
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                filament:
+                  type: string
+                  nullable: true
+                  description: Filament name; null cools down
+                  example: PLA
+                tool:
+                  type: integer
+              required:
+                - filament
+      responses:
+        204:
+          description: No Content
+        401:
+          $ref: "#/components/responses/Unauthorized"
+        409:
+          $ref: "#/components/responses/Conflict"
+        422:
+          description: Unknown filament
+
+  /api/v1/filaments:
+    get:
+      summary: filament presets and user filaments
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  filaments:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/FilamentPreset"
+                required:
+                  - filaments
+        401:
+          $ref: "#/components/responses/Unauthorized"
+
+  /api/v1/tools/{tool}/filament:
+    parameters:
+      - in: path
+        name: tool
+        required: true
+        schema:
+          type: integer
+    post:
+      summary: load, change or unload filament
+      description: Load and unload only when idle, change while printing or paused
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                command:
+                  type: string
+                  enum: [ load, change, unload ]
+                material:
+                  $ref: "#/components/schemas/Material"
+              required:
+                - command
+      responses:
+        202:
+          description: Accepted
+        401:
+          $ref: "#/components/responses/Unauthorized"
+        409:
+          $ref: "#/components/responses/Conflict"
+        422:
+          description: Field out of range or incompatible
+    put:
+      summary: update the loaded filament in place
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                material:
+                  $ref: "#/components/schemas/Material"
+              required:
+                - material
+      responses:
+        202:
+          description: Accepted
+        401:
+          $ref: "#/components/responses/Unauthorized"
+        409:
+          $ref: "#/components/responses/Conflict"
+        422:
+          description: Field out of range or incompatible
 
   /api/v1/storage:
     parameters:
@@ -328,12 +554,14 @@ paths:
         409:
           $ref: "#/components/responses/Conflict"
     post:
-      summary: Start print of file if there's no print job running
-      description: Body is ignored
+      summary: Start print of file if there's no print job running, or flash a newer firmware (.bbf)
+      description: Body is ignored. A .bbf in the USB root is flashed only when it is newer and compatible; the printer resets about 1 s after the 202.
       requestBody:
         required: false
         content: {}
       responses:
+        202:
+          description: Firmware accepted, the printer flashes it
         204:
           description: No Content
         401:
@@ -341,7 +569,23 @@ paths:
         404:
           $ref: "#/components/responses/NotFound"
         409:
-          $ref: "#/components/responses/Conflict"
+          description: Busy, or the firmware is not newer
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  reason:
+                    type: string
+                    example: not_newer
+                  installed:
+                    type: string
+                    example: "6.5.0+1234"
+                  file:
+                    type: string
+                    example: "6.4.1+1100"
+        422:
+          description: Firmware for another printer
     head:
       summary: file presence and state check
       responses:
@@ -1184,6 +1428,13 @@ components:
                   type: integer
                 printer_version:
                   type: integer
+                compatible:
+                  type: boolean
+                  description: Printer type and version match this printer
+                relation:
+                  type: string
+                  enum: [ newer, same, older ]
+                  description: Against the installed firmware
 
     FolderInfo:
       description: Info about the folder and its content, except nested children
@@ -1239,6 +1490,29 @@ components:
         network_error_chime:
           type: boolean
           example: true
+        tool_count:
+          type: integer
+          example: 5
+        tools:
+          type: object
+          description: By 0-based tool index as a string; null for a disabled tool
+          additionalProperties:
+            allOf:
+              - $ref: "#/components/schemas/ToolInfo"
+            nullable: true
+        enclosure:
+          type: object
+          properties:
+            enabled:
+              type: boolean
+            printing_filtration:
+              type: boolean
+        features:
+          type: array
+          description: What this firmware's API can do
+          items:
+            type: string
+            enum: [ cancel_object, chamber, dialogs, firmware_update, crash_dump, preheat, tune, filament, pairing, expanded_status ]
 
     StatusJob:
       type: object
@@ -1320,8 +1594,240 @@ components:
             message:
               type: string
               example: "OK"
+        tools:
+          type: object
+          description: Expanded only. By 0-based tool index as a string, "0.N" for MMU slots
+          additionalProperties:
+            $ref: "#/components/schemas/StatusTool"
+        chamber:
+          type: object
+          description: Expanded only
+          properties:
+            temp:
+              type: number
+            target_temp:
+              type: number
+              nullable: true
+            fan_1_rpm:
+              type: integer
+            fan_2_rpm:
+              type: integer
+            fan_pwm_target:
+              type: integer
+            led_intensity:
+              type: integer
+        enclosure:
+          type: object
+          description: Expanded only
+          properties:
+            temp:
+              type: number
+            fan_rpm:
+              type: integer
+            time_in_use:
+              type: integer
+        dialog_id:
+          type: integer
+          description: Expanded only. Changes when the printer's dialog changes; absent without one
+        cancel_object_revision:
+          type: integer
+          description: Expanded only. Changes when an object is cancelled or the list changes
       required:
         - state
+
+    StatusTool:
+      type: object
+      properties:
+        type:
+          type: string
+          example: FFF_PRINT_HEAD
+        active:
+          type: boolean
+        nozzle_temp:
+          type: number
+        nozzle_target_temp:
+          type: number
+          nullable: true
+        heatbreak_fan_rpm:
+          type: integer
+        print_fan_rpm:
+          type: integer
+
+    ToolInfo:
+      type: object
+      properties:
+        type:
+          type: string
+          example: FFF_PRINT_HEAD
+        features:
+          type: object
+          properties:
+            nozzle_diameter:
+              type: number
+            nozzle_hardened:
+              type: boolean
+            nozzle_high_flow:
+              type: boolean
+            nozzle_high_temp:
+              type: boolean
+        material_package_instance:
+          type: object
+          properties:
+            class:
+              type: string
+            uuid:
+              type: string
+            actual_netto_full_weight:
+              type: number
+            package:
+              type: object
+              properties:
+                class:
+                  type: string
+                uuid:
+                  type: string
+                nominal_netto_full_weight:
+                  type: number
+                material:
+                  type: object
+                  properties:
+                    class:
+                      type: string
+                    uuid:
+                      type: string
+                    abbreviation:
+                      type: string
+                      example: PLA
+                    primary_color:
+                      type: object
+                      properties:
+                        color_rgba:
+                          type: string
+                          example: "#ff8000"
+                    tags:
+                      type: array
+                      items:
+                        type: string
+                    properties:
+                      $ref: "#/components/schemas/MaterialTemperatures"
+
+    MaterialTemperatures:
+      type: object
+      properties:
+        min_print_temperature:
+          type: number
+        max_print_temperature:
+          type: number
+        preheat_temperature:
+          type: number
+        min_bed_temperature:
+          type: number
+        max_bed_temperature:
+          type: number
+        chamber_temperature:
+          type: number
+
+    Material:
+      description: Filament data in OpenPrintTag field names
+      allOf:
+        - $ref: "#/components/schemas/MaterialTemperatures"
+        - type: object
+          properties:
+            material_type:
+              type: string
+              example: PLA
+            material_abbreviation:
+              type: string
+              example: PLA
+            primary_color:
+              type: string
+              example: "#ff8000"
+            tags:
+              type: array
+              items:
+                type: string
+                example: abrasive
+
+    FilamentPreset:
+      type: object
+      properties:
+        name:
+          type: string
+          example: PLA
+        properties:
+          $ref: "#/components/schemas/MaterialTemperatures"
+      required:
+        - name
+
+    Dialog:
+      type: object
+      properties:
+        dialog_id:
+          type: integer
+          example: 1234
+        state:
+          type: string
+          example: ATTENTION
+        code:
+          type: string
+          description: Prusa error code (%05u); the help page is https://prusa.io/<code>. Absent on a BSOD
+          example: "12601"
+        title:
+          type: string
+        text:
+          type: string
+        buttons:
+          type: array
+          items:
+            type: string
+          example: [ Continue, Abort ]
+      required:
+        - dialog_id
+        - buttons
+
+    JobObjects:
+      type: object
+      properties:
+        current:
+          type: integer
+          description: The object being printed now
+        objects:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: integer
+              canceled:
+                type: boolean
+              name:
+                type: string
+                description: Kept for the first 16 objects
+            required:
+              - id
+              - canceled
+      required:
+        - objects
+
+    Tune:
+      type: object
+      properties:
+        speed:
+          type: integer
+        flow:
+          type: integer
+        fan_print:
+          type: integer
+        target_bed:
+          type: number
+        chamber.target_temp:
+          type: number
+        z_offset_delta:
+          type: number
+          description: Babystep in mm, while printing or paused
+      additionalProperties:
+        type: number
+        description: "tools.<n>.nozzle_target_temp"
 
     StatusTransfer:
       type: object
@@ -1539,6 +2045,23 @@ components:
       type: string
       default: "Project with same name has been already uploaded."
       description: Prusa error message (raw_message)
+
+  parameters:
+    JobId:
+      in: path
+      name: id
+      description: job id
+      required: true
+      schema:
+        type: integer
+        example: 42
+    ObjectId:
+      in: path
+      name: object_id
+      description: object id, the M486 S number and the index in objects_info
+      required: true
+      schema:
+        type: integer
 
   responses:
     NotModified: # 304
