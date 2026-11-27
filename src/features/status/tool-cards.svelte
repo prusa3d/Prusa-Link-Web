@@ -119,7 +119,7 @@
           <!-- An empty tool: its circle loads it. -->
           <Button
             variant="ghost"
-            class="size-14 rounded-full border-2! border-dashed! border-border! px-0"
+            class="size-14! rounded-full! border-2! border-dashed! border-border! p-0"
             aria-label={`${t('tools.load')} ${label(tool)}`}
             onclick={() => onfilament(tool.index)}
             ><Icon node={ArrowDownToLine} class="size-6" /></Button
