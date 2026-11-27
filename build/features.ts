@@ -76,11 +76,10 @@ export const BUILDS: Record<string, readonly Feature[]> = {
   coreone: MMU,
   coreonel: MMU,
   ix: SINGLE,
-  // 80 KB per language: firmware updates are the printer menu's (and
-  // Connect's), cancel object waits for room. Pairing stays; preheat,
-  // babysteps, the red screen and the dump notice and log toggle do not
-  // fit beside it. Filament load and unload stay (they are not
-  // PrusaLink 2). Its picture has no fans, light or chamber.
+  // One language per build: firmware updates are the printer menu's (and
+  // Connect's), cancel object waits for room. Pairing, preheat and the red
+  // screen stay with babysteps; the dump notice and log toggle do not. Its
+  // picture has no fans, light or chamber.
   mini: without(
     'firmwareUpdate',
     'diagnostics',
@@ -93,9 +92,6 @@ export const BUILDS: Record<string, readonly Feature[]> = {
     'firmwareFlash',
     'cancelObject',
     'pictureParts',
-    'redScreen',
-    'controls',
-    'babystep',
   ),
 };
 
