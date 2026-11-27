@@ -6,10 +6,11 @@ import { firmwareGzip } from './firmware-gzip.ts';
 // The firmware embeds dist/<variant>/index.html gzipped; both sizes are budgets.
 const gzipped = (html: Buffer) => firmwareGzip(html).length;
 // Gzipped is what the firmware stores. The MINI has the least flash and gets
-// lean one-language builds; every other printer has room for 140 KB. The
+// lean one-language builds of 83 KB, which hold pairing, preheat and the red
+// screen; every other printer has room for 140 KB. The
 // raw size only bounds what the browser inflates: the XL's picture is most
 // of it and compresses well.
-const MINI = { raw: 280 * 1024, gzip: 80 * 1024 };
+const MINI = { raw: 280 * 1024, gzip: 83 * 1024 };
 const OTHERS = { raw: 500 * 1024, gzip: 140 * 1024 };
 const budgetOf = (variant: string) =>
   variant.startsWith('mini') ? MINI : OTHERS;
