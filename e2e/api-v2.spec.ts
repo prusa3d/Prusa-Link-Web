@@ -4,6 +4,7 @@ import {
   expect,
   test,
   type APIRequestContext,
+  type Page,
   type Locator,
 } from '@playwright/test';
 
@@ -66,11 +67,11 @@ test.describe('tools', () => {
     await page.getByRole('button', { name: 'Print four colours' }).click();
     const dialog = page.getByRole('dialog');
     const row = dialog.locator('[data-filament="1"]');
-    await row.getByTestId('slot-picker').first().click();
-    const options = row.getByRole('listbox').getByRole('option');
-    // Docks 1, 2, 4, 5 and the empty choice; no dock 3.
-    await expect(options).toHaveCount(5);
-    await expect(row.locator('[data-slot="3"]')).toHaveCount(0);
+    await row.getByTestId('slot-picker').click();
+    const options = page.getByTestId('slot-options').locator('[data-slot]');
+    // Docks 1, 2, 4, 5; no dock 3.
+    await expect(options).toHaveCount(4);
+    await expect(options.and(page.locator('[data-slot="3"]'))).toHaveCount(0);
   });
 
   test('a two-tool XL has two rows', async ({ page, request }) => {
@@ -341,15 +342,17 @@ test.describe('print dialog', () => {
   const row = (dialog: Locator, n: number) =>
     dialog.locator(`[data-filament="${String(n)}"]`);
   const slotOf = (dialog: Locator, n: number) =>
-    row(dialog, n).getByTestId('slot-picker').first();
-  async function choose(dialog: Locator, n: number, slot?: number) {
+    row(dialog, n).getByTestId('slot-picker');
+  /// The picker sheet's options, open over the print dialog.
+  const options = (page: Page) =>
+    page.getByTestId('slot-options').locator('[data-slot]');
+  async function choose(dialog: Locator, n: number, slot: number) {
     await slotOf(dialog, n).click();
-    const list = row(dialog, n).getByRole('listbox');
-    await (
-      slot === undefined
-        ? list.getByRole('option').first()
-        : list.locator(`[data-slot="${String(slot)}"]`)
-    ).click();
+    await dialog
+      .page()
+      .getByTestId('slot-options')
+      .locator(`[data-slot="${String(slot)}"]`)
+      .click();
   }
   const accept = (dialog: Locator) =>
     dialog.getByText('I know; print anyway').click();
@@ -368,26 +371,15 @@ test.describe('print dialog', () => {
     // The second green PLA is not loaded: the blue PLA in T7 comes nearest.
     await expect(slotOf(dialog, 3)).toHaveAttribute('data-value', '7');
     await expect(row(dialog, 3).getByTestId('row-status')).toHaveText(
-      '~ Other colour',
+      'Other colour',
     );
-    await expect(row(dialog, 1).getByTestId('row-status')).toHaveText(
-      '✓ Matches',
-    );
+    await expect(row(dialog, 1).getByTestId('row-status')).toHaveText('Ready');
     // Filament 1 takes T7: filament 3 gets T1 in exchange, and says so.
     await choose(dialog, 1, 7);
     await expect(slotOf(dialog, 3)).toHaveAttribute('data-value', '1');
     await expect(row(dialog, 3).getByTestId('row-moved')).toHaveText(
       'Swapped with filament 1',
     );
-    // Unmapping one blocks the print.
-    await choose(dialog, 4);
-    await expect(dialog.getByTestId('print-issues')).toContainText(
-      'Filament 4 has no slot',
-    );
-    await expect(
-      dialog.getByRole('button', { name: 'Print now' }),
-    ).toBeDisabled();
-    await choose(dialog, 4, 4);
     await dialog.getByRole('button', { name: 'Print now' }).click();
     await expect
       .poll(() => started(request))
@@ -405,6 +397,52 @@ test.describe('print dialog', () => {
     await expect(slotOf(dialog, 3)).toHaveAttribute('data-value', '7');
   });
 
+  test('the picker lists ready slots first, then changes, best first', async ({
+    page,
+    request,
+  }) => {
+    await indx(request);
+    await openApp(page);
+    await page.getByRole('button', { name: 'Print four colours' }).click();
+    const dialog = page.getByRole('dialog');
+    await slotOf(dialog, 2).click();
+    const sheet = page.getByRole('dialog', { name: 'Slot for filament 2' });
+    await expect(sheet.getByTestId('picker-filament')).toContainText('PETG');
+    const group = (g: number) =>
+      sheet.locator(`[data-group="${String(g)}"] [data-slot]`);
+    // The blue PETG, then the green one; the blue PLA leads the changes.
+    await expect(group(0)).toHaveCount(2);
+    await expect(group(0).first()).toHaveAttribute('data-slot', '2');
+    await expect(group(0).first()).toContainText('Ready');
+    await expect(group(0).nth(1)).toContainText('Other colour');
+    await expect(group(1).first()).toHaveAttribute('data-slot', '7');
+    await expect(group(1).first()).toContainText('Change to PETG');
+    await expect(group(1).first()).toContainText('T7 · PLA');
+    await group(0).nth(1).click();
+    await expect(sheet).toBeHidden();
+    await expect(slotOf(dialog, 2)).toHaveAttribute('data-value', '3');
+  });
+
+  test('slots the printer refuses are listed last, with the reason', async ({
+    page,
+    request,
+  }) => {
+    await printer(request, { model: 'XL', reset: true, nozzleCheck: 'abort' });
+    await openApp(page);
+    await page.getByRole('button', { name: 'Print four colours' }).click();
+    const dialog = page.getByRole('dialog');
+    await expect(row(dialog, 1).getByTestId('row-status')).toHaveText(
+      'Choose a slot',
+    );
+    await slotOf(dialog, 1).click();
+    const refused = page.locator('[data-group="2"] [data-slot]');
+    await expect(refused).toHaveCount(5);
+    await expect(refused.first()).toBeDisabled();
+    await expect(refused.first()).toContainText('Not a high-flow nozzle');
+    await page.keyboard.press('Escape');
+    await expect(dialog).toBeVisible();
+  });
+
   test('a backup spool goes with the mapping', async ({ page, request }) => {
     await printer(request, { model: 'XL', reset: true });
     await openApp(page);
@@ -412,10 +450,7 @@ test.describe('print dialog', () => {
     const dialog = page.getByRole('dialog');
     const add = row(dialog, 1).getByRole('button', { name: '+ Backup spool' });
     await add.click();
-    const option = row(dialog, 1)
-      .getByRole('listbox')
-      .locator('[role=option]:not([aria-disabled=true])')
-      .first();
+    const option = options(page).and(page.locator(':enabled')).first();
     const slot = Number(await option.getAttribute('data-slot'));
     await option.click();
     await expect(row(dialog, 1).getByTestId('mapping-backup')).toHaveCount(1);
@@ -441,8 +476,8 @@ test.describe('print dialog', () => {
     await openApp(page);
     await page.getByRole('button', { name: 'Print four colours' }).click();
     const dialog = page.getByRole('dialog');
-    await expect(dialog.getByTestId('print-changes')).toContainText(
-      'T2 PLA → PETG',
+    await expect(row(dialog, 2).getByTestId('row-status')).toHaveText(
+      'Change to PETG',
     );
     await expect(dialog.getByTestId('print-issues')).toContainText(
       'Filament 2 → T2: PLA loaded, PETG needed',
@@ -523,8 +558,8 @@ test.describe('print dialog', () => {
     const dialog = page.getByRole('dialog');
     await expect(dialog.getByTestId('mapping-row')).toHaveCount(4);
     await slotOf(dialog, 1).click();
-    const list = row(dialog, 1).getByRole('listbox');
-    await expect(list.getByRole('option')).toHaveCount(6);
+    const list = page.getByTestId('slot-options');
+    await expect(options(page)).toHaveCount(5);
     await expect(list.locator('[data-slot="5"]')).toContainText('Load');
     await page.keyboard.press('Escape');
     await expect(list).toBeHidden();

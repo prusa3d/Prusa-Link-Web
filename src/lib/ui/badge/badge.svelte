@@ -8,7 +8,7 @@
     /// `bar`: as tall as the PrusaLink logo in the top bar.
     size?: 'sm' | 'md' | 'bar';
     children: Snippet;
-    testid?: string;
+    testid?: string | undefined;
   }
 
   let { tone = 'quiet', size = 'sm', children, testid }: Props = $props();

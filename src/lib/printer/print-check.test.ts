@@ -5,6 +5,7 @@ import {
   joinable,
   type Printer,
   prune,
+  rank,
   resolve,
   type RowStatus,
   type State,
@@ -490,5 +491,49 @@ describe('prune', () => {
     const filaments = [f(1, 'PLA')];
     expect(prune({ 1: [2, 3] }, filaments, slots)).toEqual({ 1: [2] });
     expect(prune({ 1: [1, 3] }, filaments, slots)).toEqual({ 1: [1, 3] });
+  });
+});
+
+describe('rank', () => {
+  const slots = [
+    s(1, 'PLA', RED),
+    s(2, 'PETG', BLUE),
+    s(3, 'PLA', PURPLE),
+    s(4, undefined),
+    s(5, 'PLA', BLUE),
+    s(6, 'PLA', BLUE, { nozzle: 0.6 }),
+    s(7, 'PETG', PURPLE),
+  ];
+  const ids = (groups: ReturnType<typeof rank>) =>
+    groups.map((g) => g.map((o) => o.slot.index));
+
+  it('lists ready slots by colour, then changes by colour, then refusals', () => {
+    expect(ids(rank(f(1, 'PLA', BLUE), slots, 'abort'))).toEqual([
+      [5, 3, 1],
+      // An empty slot (no colour) before a far colour.
+      [2, 4, 7],
+      [6],
+    ]);
+  });
+
+  it('puts nozzle warnings after the slots without them', () => {
+    expect(ids(rank(f(1, 'PLA', BLUE), slots, 'warning'))).toEqual([
+      [5, 3, 1, 6],
+      [2, 4, 7],
+      [],
+    ]);
+  });
+
+  it('breaks a tie by the slot of the filament’s own number', () => {
+    const twins = [s(1, 'PLA', RED), s(2, 'PLA', RED), s(3, 'PLA', RED)];
+    expect(ids(rank(f(2, 'PLA', RED), twins, 'warning'))[0]).toEqual([2, 1, 3]);
+  });
+
+  it('says why a slot is refused', () => {
+    const [, , refused] = rank(f(1, 'PLA', BLUE), slots, 'abort');
+    expect(refused[0]?.issues[0]).toMatchObject({
+      key: 'nozzleDiameter',
+      has: '0.6',
+    });
   });
 });
