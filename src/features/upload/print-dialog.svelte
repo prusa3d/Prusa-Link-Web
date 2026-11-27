@@ -22,7 +22,7 @@
   } from '../../lib/files/local-thumbnails';
   import { filamentGrams } from '../../lib/files/metadata';
   import { fitsPrinter } from '../../lib/printer/compat';
-  import { language, t } from '../../lib/i18n.svelte';
+  import { language, t, type MessageKey } from '../../lib/i18n.svelte';
   import { Alert } from '../../lib/ui/alert';
   import { Button } from '../../lib/ui/button';
   import { Dialog } from '../../lib/ui/dialog';
@@ -38,10 +38,12 @@
   import {
     gcodeFilaments,
     type Mapping,
-    changeItems,
     suggest,
     toApi,
   } from '../../lib/printer/tool-mapping';
+  import { resolve, resolveModel } from '../../lib/printer/print-check';
+  import { printer } from '../../lib/stores/printer.svelte';
+  import { CAN_START } from '../../lib/printer/state';
 
   // A constant the bundler folds: builds without tool mapping drop it.
   const MappingView = __TOOL_MAPPING__ ? ToolMappingView : undefined;
@@ -162,29 +164,29 @@
     busy = false;
   }
 
-  // Tool mapping (PrusaLink 2): the file's extruders from its header, read
-  // on upload or from the head of the file on the printer.
+  // The file's filaments from its header (read on upload, else from the
+  // head of the file on the printer), mapped to the printer's slots, and
+  // what the firmware's checks will make of it (print-check.ts).
   let header = $state<Header | undefined>();
   let mapping = $state<Mapping>({});
-  let changingAll = $state(false);
+  /// Changing filaments before the print: sent, seen working, failed.
+  let changingAll = $state<'sent' | 'working' | 'failed' | undefined>();
   const mapsTools = $derived(
     __TOOL_MAPPING__ &&
       identity.can('tool_mapping') &&
-      identity.slots.length > 1,
+      identity.slots.filter((x) => !x.disabled).length > 1,
   );
   $effect(() => {
     header = undefined;
-    changingAll = false;
-    if (!__TOOL_MAPPING__ || !file || !mapsTools) return;
+    changingAll = undefined;
+    if (!__TOOL_MAPPING__ || !file) return;
     const folder = file.dir ?? dir;
     const path = folder ? `${folder}/${file.name}` : file.name;
     void fileHeader(path, fileKey(folder, file.displayName)).then((h) => {
       header = h;
     });
   });
-  const extruders = $derived(
-    __TOOL_MAPPING__ && mapsTools ? gcodeFilaments(header) : [],
-  );
+  const extruders = $derived(__TOOL_MAPPING__ ? gcodeFilaments(header) : []);
   const grams = $derived(
     known?.grams ??
       (__TOOL_MAPPING__
@@ -197,29 +199,62 @@
     const used = extruders;
     if (!__TOOL_MAPPING__) return;
     mapping = untrack(() =>
-      suggest(used, identity.slots, identity.nozzleCheck),
+      mapsTools ? suggest(used, identity.slots, identity.nozzleCheck) : {},
     );
   });
-  const mapped = $derived(extruders.every((f) => mapping[f.index]?.length));
-
-  // The printer's change all, with what this mapping needs: it suggests
-  // only for a file on its own print preview. It heats the slots' heads and
-  // changes them one by one, asking on its screen (and in the page's alert).
+  const printerFacts = $derived({
+    slots: mapsTools ? identity.slots : [],
+    nozzleCheck: identity.nozzleCheck,
+    modelCheck: identity.modelCheck,
+    modelFits: fitsPrinter(sliced, identity.code),
+  });
+  // Builds without tool mapping (the MINI, the iX) check the model only.
+  const check = $derived(
+    __TOOL_MAPPING__
+      ? resolve(extruders, mapping, printerFacts)
+      : resolveModel(printerFacts),
+  );
   const canChange = $derived(
     __TOOL_MAPPING__ &&
       canStart &&
       (identity.can('change_all') || identity.can('filament_change_all')),
   );
-  const toChange = $derived(
-    __TOOL_MAPPING__ ? changeItems(extruders, identity.slots, mapping) : {},
-  );
-  async function changeAll(only?: number) {
+
+  // Change filaments and print: the printer's change all loads what the
+  // mapping needs, asking on its screen and in the page's alert; once it is
+  // idle again with every slot right, the print starts with the mapping.
+  async function changeAndPrint() {
     if (!__TOOL_MAPPING__) return;
+    const items = Object.fromEntries(
+      check.changes.map(({ slot, to }) => [
+        slot.id ?? String(slot.index - 1),
+        {
+          action: 'change' as const,
+          filament: firmwareFilament(to.material),
+          ...(to.color && { color: to.color }),
+        },
+      ]),
+    );
     const { response } = await api.POST('/api/v1/filament/change-all', {
-      body: { items: changeItems(extruders, identity.slots, mapping, only) },
+      body: { items },
     });
-    changingAll = response.ok;
+    changingAll = response.ok ? 'sent' : 'failed';
   }
+  $effect(() => {
+    const state = printer.status?.state;
+    if (!changingAll || changingAll === 'failed' || !state) return;
+    if (['BUSY', 'ATTENTION'].includes(state)) changingAll = 'working';
+    else if (changingAll === 'working' && CAN_START.has(state))
+      void untrack(async () => {
+        await identity.refresh();
+        if (check.changes.length || check.state === 'abort')
+          changingAll = 'failed';
+        else {
+          changingAll = undefined;
+          if (file) await start(file.name);
+        }
+      });
+  });
 
   // A single-tool printer's nozzle against the file's, by the printer's own
   // nozzle check; a printer with several tools checks each in the mapping.
@@ -231,22 +266,24 @@
       Math.abs(Number(info.nozzle) - identity.nozzle) > 0.001 &&
       identity.nozzleCheck !== 'ignore',
   );
-  // The printer's printer_model check, as printcompat's RulePrinterModel.
-  const otherPrinter = $derived(
-    __CONTROLS__ &&
-      fitsPrinter(sliced, identity.code) === false &&
-      identity.modelCheck !== 'ignore',
-  );
   const refused = $derived(
-    (nozzleMismatch && identity.nozzleCheck === 'abort') ||
-      (otherPrinter && identity.modelCheck === 'abort'),
+    check.state === 'abort' ||
+      (nozzleMismatch && identity.nozzleCheck === 'abort'),
+  );
+  /// Warnings the person prints through; the printer asks again.
+  const warned = $derived(
+    check.state === 'warning' ||
+      check.state === 'change' ||
+      (nozzleMismatch && !refused),
   );
 
   async function start(name: string) {
     busy = true;
     failed = !(await onprint(
       name,
-      __TOOL_MAPPING__ && extruders.length ? toApi(mapping) : undefined,
+      __TOOL_MAPPING__ && mapsTools && extruders.length
+        ? toApi(mapping)
+        : undefined,
     ));
     busy = false;
   }
@@ -292,41 +329,60 @@
         </div>
       {/each}
     </dl>
-    {#if MappingView && extruders.length}
+    {#if MappingView && mapsTools && extruders.length}
       <MappingView
-        filaments={extruders}
+        rows={check.rows}
         slots={identity.slots}
         bind:mapping
         severity={identity.nozzleCheck}
-        onchangefilament={canChange
-          ? (slot: number) => void changeAll(slot)
-          : undefined}
       />
-      {#if canChange && Object.keys(toChange).length && !changingAll}
-        <Button
-          variant="secondary"
-          class="self-start"
-          onclick={() => void changeAll()}>{t('mapping.changeAll')}</Button
-        >
-      {/if}
-      {#if changingAll}
-        <Alert variant="info">{t('mapping.changing')}</Alert>
-      {:else if !mapped}
-        <Alert variant="info">{t('mapping.incomplete')}</Alert>
-      {/if}
     {/if}
-    {#if __CONTROLS__ && otherPrinter}
-      <Alert variant={identity.modelCheck === 'abort' ? 'destructive' : 'info'}>
-        {t(
-          identity.modelCheck === 'abort'
-            ? 'controls.modelAbort'
-            : 'controls.modelWarn',
-          {
-            file: sliced ?? '',
-            printer: identity.model?.name ?? '',
-          },
-        )}
-      </Alert>
+    {#if __TOOL_MAPPING__ && check.changes.length}
+      <div class="text-sm" data-testid="print-changes">
+        <p class="font-medium">
+          {t('mapping.needChange', { count: check.changes.length })}
+        </p>
+        <ul class="text-muted-foreground">
+          {#each check.changes as { slot, to } (slot.index)}
+            <li>
+              T{slot.index}
+              {slot.material ? filamentLabel(slot.material) : '—'} → {filamentLabel(
+                to.material,
+              )}
+            </li>
+          {/each}
+        </ul>
+      </div>
+    {/if}
+    {#if check.issues.length}
+      <ul
+        class={[
+          'rounded-md border px-3 py-2 text-sm',
+          refused
+            ? 'border-state-fault-edge bg-state-fault text-state-fault-text'
+            : 'border-state-attention-edge bg-state-attention text-state-attention-text',
+        ]}
+        data-testid="print-issues"
+      >
+        {#each check.issues as issue, i (i)}
+          <li data-level={issue.level}>
+            {t(
+              issue.key === 'model'
+                ? 'print.model'
+                : (`print.check.${issue.key}` as MessageKey),
+            )}{#if issue.filament}
+              · {issue.filament}{/if}
+          </li>
+        {/each}
+        {#if !refused}<li class="mt-1 text-xs">{t('print.askAgain')}</li>{/if}
+      </ul>
+    {/if}
+    {#if !__TOOL_MAPPING__}
+      <!-- No filament changes here. -->
+    {:else if changingAll === 'failed'}
+      <Alert variant="destructive">{t('mapping.changeFailed')}</Alert>
+    {:else if changingAll}
+      <Alert variant="info">{t('mapping.changing')}</Alert>
     {/if}
     {#if __CONTROLS__ && nozzleMismatch}
       <Alert
@@ -396,16 +452,32 @@
           })}
         </Button>
       {:else}
-        <Button
-          size="lg"
-          disabled={!canStart || !mapped || (__CONTROLS__ && refused)}
-          loading={busy}
-          onclick={() => void start(file.name)}
-        >
-          <Icon node={Printer} />{canStart
-            ? t(mismatch ? 'files.printAnyway' : 'upload.printNow')
-            : (blocked ?? t('upload.printNow'))}
-        </Button>
+        {#if __TOOL_MAPPING__ && check.state === 'change' && canChange && !changingAll}
+          <Button
+            variant="secondary"
+            size="lg"
+            disabled={!canStart}
+            onclick={() => void start(file.name)}
+            >{t('files.printAnyway')}</Button
+          >
+          <Button
+            size="lg"
+            disabled={!canStart}
+            onclick={() => void changeAndPrint()}
+            ><Icon node={Printer} />{t('mapping.changeAndPrint')}</Button
+          >
+        {:else}
+          <Button
+            size="lg"
+            disabled={!canStart || refused || !!changingAll}
+            loading={busy}
+            onclick={() => void start(file.name)}
+          >
+            <Icon node={Printer} />{canStart
+              ? t(mismatch || warned ? 'files.printAnyway' : 'upload.printNow')
+              : (blocked ?? t('upload.printNow'))}
+          </Button>
+        {/if}
       {/if}
     </div>
   {/if}

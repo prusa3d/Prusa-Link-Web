@@ -110,6 +110,16 @@ export const Languages: IconNode = [
   ['path', { d: 'm22 22-5-10-5 10' }],
   ['path', { d: 'M14 18h6' }],
 ];
+export const Link: IconNode = [
+  [
+    'path',
+    { d: 'M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71' },
+  ],
+  [
+    'path',
+    { d: 'M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71' },
+  ],
+];
 export const LoaderCircle: IconNode = [
   ['path', { d: 'M21 12a9 9 0 1 1-6.219-8.56' }],
 ];

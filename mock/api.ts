@@ -182,7 +182,7 @@ function info(printer: MockPrinter): Ok<'/api/v1/info', 'get'> {
       ],
       hw_checks: {
         nozzle: printer.nozzleCheck,
-        model: 'warning',
+        model: printer.modelCheck,
         firmware: 'warning',
         gcode_level: 'warning',
         input_shaper: 'warning',

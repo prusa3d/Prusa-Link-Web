@@ -55,7 +55,8 @@ const BUILD_FEATURES: Record<string, readonly Feature[]> = {
   coreone: MMU,
   coreonel: MMU,
   ix: SINGLE,
-  mini: ['apiV2', 'controls', 'firmwareFlash'],
+  // Firmware flash is the printer menu's on the MINI: no room.
+  mini: ['apiV2', 'controls'],
 };
 /// The messages only some features use, by key prefix: dropped from a build
 /// with none of them.
@@ -64,6 +65,7 @@ const MESSAGES: Record<string, Feature[]> = {
   'status.chamber': ['apiV2'],
   'tools.': ['multiTool', 'toolMapping'],
   'mapping.': ['toolMapping'],
+  'print.check.': ['toolMapping'],
   'objects.': ['cancelObject'],
   'controls.': ['controls'],
   'flash.': ['firmwareFlash'],

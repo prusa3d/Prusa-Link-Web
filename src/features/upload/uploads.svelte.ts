@@ -156,7 +156,7 @@ export class Uploads {
         // Read while it uploads: the printer then need not send the head of
         // the file back for cancel object or tool mapping.
         const header =
-          __CANCEL_OBJECT__ || __MULTI_TOOL__
+          __CANCEL_OBJECT__ || __TOOL_MAPPING__
             ? readHeader(file.stream())
             : undefined;
         const dir = files.path;
@@ -175,8 +175,10 @@ export class Uploads {
         else if (cancelled()) state = 'cancelled';
         this.#set(i, { state, fraction: ok ? 1 : 0 });
         if (ok) {
-          const read = await header;
-          if (read) rememberHeader(fileKey(dir, file.name), read);
+          if (__CANCEL_OBJECT__ || __TOOL_MAPPING__) {
+            const read = await header;
+            if (read) rememberHeader(fileKey(dir, file.name), read);
+          }
           // Each file shows in the list as soon as it is on the drive.
           await files.refresh();
           const meta = await readMetadata(file, file.name);

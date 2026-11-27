@@ -363,7 +363,7 @@
                 }
               : undefined}
             toolSlots={slots.length > 0}
-            heatedHead={!identity.can('per_tool_heating')}
+            heatedHead={!(__MULTI_TOOL__ && identity.can('per_tool_heating'))}
             badges={identity.tools[0]}
             chamber={__API_V2__ ? printer.status?.chamber : undefined}
             material={multiTool
@@ -393,7 +393,7 @@
                 readings={heaterReadings(printer.status, {
                   offline: printer.offline,
                   toolPicked: !multiTool || filament.loaded !== undefined,
-                  perTool: identity.can('per_tool_heating'),
+                  perTool: __MULTI_TOOL__ && identity.can('per_tool_heating'),
                 })}
               />
             {/snippet}
@@ -406,7 +406,7 @@
                   multi={tools.length > 1}
                   {tools}
                   {heating}
-                  perTool={identity.can('per_tool_heating')}
+                  perTool={__MULTI_TOOL__ && identity.can('per_tool_heating')}
                   changeAll={!slots.length &&
                     (identity.can('change_all') ||
                       identity.can('filament_change_all'))}

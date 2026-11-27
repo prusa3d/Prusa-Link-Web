@@ -41,7 +41,8 @@ export function mappingTargets(info: Info | undefined): PrinterTool[] {
   return (slots.length ? slots : entries.filter(([k]) => /^\d+$/.test(k))).map(
     ([key, tool]) => {
       const material = tool?.material_package_instance?.package?.material;
-      const features = tool?.features;
+      // An MMU's slots all feed the head's nozzle.
+      const features = (slots.length ? info?.tools?.['0'] : tool)?.features;
       const loaded = material?.abbreviation;
       return {
         id: key,
@@ -51,6 +52,7 @@ export function mappingTargets(info: Info | undefined): PrinterTool[] {
         nozzle: features?.nozzle_diameter,
         hardened: features?.nozzle_hardened,
         highFlow: features?.nozzle_high_flow,
+        highTemp: features?.nozzle_high_temp,
         disabled: tool === null,
       };
     },
@@ -69,9 +71,12 @@ export function toolsOf(info: Info | undefined): (ToolInfo | undefined)[] {
           material: material?.abbreviation,
           color: material?.primary_color?.color_rgba,
           nozzle: tool.features?.nozzle_diameter,
-          hardened: tool.features?.nozzle_hardened,
-          highFlow: tool.features?.nozzle_high_flow,
-          highTemp: tool.features?.nozzle_high_temp,
+          // Nozzle badges and checks: printers that map tools.
+          ...(__TOOL_MAPPING__ && {
+            hardened: tool.features?.nozzle_hardened,
+            highFlow: tool.features?.nozzle_high_flow,
+            highTemp: tool.features?.nozzle_high_temp,
+          }),
         }
       : undefined;
   }

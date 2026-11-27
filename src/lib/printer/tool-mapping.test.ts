@@ -3,7 +3,6 @@ import { describe, expect, it } from 'vitest';
 
 import { readHeader } from '../files/header';
 import {
-  changeItems,
   ciede2000,
   colourDistance,
   fit,
@@ -169,29 +168,6 @@ describe('suggest', () => {
       filament(3, { material: 'PLA' }),
     ];
     expect(suggest(f, xl)).toEqual({ 1: [4], 2: [5], 3: [3] });
-  });
-});
-
-describe('changeItems', () => {
-  const f = [
-    filament(1, { color: '#ff0000' }),
-    filament(2, { material: 'TPU', color: '#00ff00' }),
-  ];
-  const slots = [
-    tool(1, { id: '0.0', color: '#ff0000' }),
-    tool(2, { id: '0.1', color: '#00ff00' }),
-  ];
-
-  it('changes the slots whose filament is not the file’s, by Connect id and firmware name', () => {
-    expect(changeItems(f, slots, { 1: [1], 2: [2] })).toEqual({
-      '0.1': { action: 'change', filament: 'FLEX', color: '#00ff00' },
-    });
-  });
-
-  it('changes one slot whatever it holds', () => {
-    expect(changeItems(f, slots, { 1: [1], 2: [2] }, 1)).toEqual({
-      '0.0': { action: 'change', filament: 'PLA', color: '#ff0000' },
-    });
   });
 });
 

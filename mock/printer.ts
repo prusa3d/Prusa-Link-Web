@@ -187,6 +187,8 @@ export class MockPrinter {
     | undefined;
   /// The printer's own nozzle check (hw_checks in /info).
   nozzleCheck: 'ignore' | 'warning' | 'abort' = 'warning';
+  /// The printer's model check (hw_checks).
+  modelCheck: 'ignore' | 'warning' | 'abort' = 'warning';
   /// File headers read so far, for change all.
   #headers = new WeakMap<MockFile, Header | null>();
   /// A filament helper job (M701/M702) and the step it is at. Like the real
