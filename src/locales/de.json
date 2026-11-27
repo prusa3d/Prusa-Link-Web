@@ -285,5 +285,15 @@
   "tools.preheat": "{tool} vorheizen",
   "controls.preheatFor": "Für {material} vorheizen",
   "controls.modelWarn": "Für {file} gesliced, nicht für diesen {printer}. Der Drucker fragt vor dem Druck.",
-  "controls.modelAbort": "Für {file} gesliced, nicht für diesen {printer}: seine Druckerprüfung lehnt den Druck ab."
+  "controls.modelAbort": "Für {file} gesliced, nicht für diesen {printer}: seine Druckerprüfung lehnt den Druck ab.",
+  "nozzle.highFlow": "High-Flow-Düse",
+  "nozzle.highTemp": "Hochtemperatur-Hotend",
+  "nozzle.hardened": "Gehärtete Düse",
+  "tools.edit": "Bearbeiten",
+  "tools.slot": "Slot {n}",
+  "tools.changeFilaments": "Filamente wechseln",
+  "tools.change": "Wechseln",
+  "tools.keep": "Behalten",
+  "tools.preheatTitle": "Vorheizen",
+  "tools.preheatBody": "Die gewählten Werkzeuge heizen für ihr Filament, das Bett mit ihnen."
 }

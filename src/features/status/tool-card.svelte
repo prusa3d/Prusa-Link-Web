@@ -3,6 +3,7 @@
 <script lang="ts">
   import { t } from '../../lib/i18n.svelte';
   import { Button } from '../../lib/ui/button';
+  import NozzleBadges from './nozzle-badges.svelte';
 
   interface Props {
     label: string;
@@ -14,9 +15,22 @@
     nozzle?: number | undefined;
     onchange?: (() => void) | undefined;
     onunload?: (() => void) | undefined;
+    hardened?: boolean | undefined;
+    highFlow?: boolean | undefined;
+    highTemp?: boolean | undefined;
   }
 
-  let { label, material, note, nozzle, onchange, onunload }: Props = $props();
+  let {
+    label,
+    material,
+    note,
+    nozzle,
+    onchange,
+    onunload,
+    hardened,
+    highFlow,
+    highTemp,
+  }: Props = $props();
 </script>
 
 <div class="flex items-center gap-3 border-b pb-3" data-testid="tool-card">
@@ -27,7 +41,9 @@
     {material ?? '—'}
   </div>
   <div class="min-w-0 flex-1">
-    <p class="text-sm font-medium">{label}</p>
+    <p class="flex items-center gap-1 text-sm font-medium">
+      {label}<NozzleBadges {hardened} {highFlow} {highTemp} />
+    </p>
     <p class="truncate text-sm text-muted-foreground">
       {note ?? (material ? '' : t('filament.none'))}
       {#if nozzle}{t('tool.nozzle', { size: nozzle })}{/if}

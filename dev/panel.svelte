@@ -49,7 +49,13 @@
     takesMmu: boolean;
     firmware: string;
     bed: { temp: number; target: number };
-    tools: { temp: number; target: number; material: string }[];
+    tools: {
+      temp: number;
+      target: number;
+      material: string;
+      color?: string;
+      absent?: boolean;
+    }[];
     activeTool: number;
     files: { dir: string; name: string; display_name: string }[];
     job?: { progress: number };
@@ -63,6 +69,7 @@
     currentObject?: number;
     zOffset: number;
     nozzleCheck: 'ignore' | 'warning' | 'abort';
+    nozzle: { hardened: boolean; highFlow: boolean; highTemp: boolean };
     speed: number;
     flow: number;
     axis: { x: number; y: number };
@@ -175,6 +182,14 @@
               )[snap?.nozzleCheck ?? 'warning'],
             })}>Nozzle check {snap.nozzleCheck}</button
         >
+        {#each [['hardened', 'Hardened'], ['highFlow', 'HF'], ['highTemp', 'HT']] as const as [key, label] (key)}
+          <button
+            type="button"
+            class={[chip, snap.nozzle[key] && on]}
+            onclick={() => patch({ nozzle: { [key]: !snap?.nozzle[key] } })}
+            >Nozzle {label}</button
+          >
+        {/each}
         <button
           type="button"
           class={chip}
@@ -288,12 +303,23 @@
                     })}
                 /></td
               >
-              <td
-                ><input
+              <td class="flex items-center gap-1"
+                ><select
                   class="rounded w-20 border px-1"
+                  aria-label="T{index + 1} material"
                   value={tool.material}
                   onchange={(e) =>
                     patch({ tool: { index, material: e.currentTarget.value } })}
+                  >{#each ['---', 'PLA', 'PETG', 'ASA', 'ABS', 'PC', 'FLEX', 'PVA'] as m (m)}<option
+                      value={m}>{m === '---' ? 'empty' : m}</option
+                    >{/each}</select
+                ><input
+                  type="color"
+                  class="size-6"
+                  aria-label="T{index + 1} colour"
+                  value={tool.color ?? '#808080'}
+                  onchange={(e) =>
+                    patch({ tool: { index, color: e.currentTarget.value } })}
                 /></td
               >
             </tr>

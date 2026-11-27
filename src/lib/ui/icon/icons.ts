@@ -5,6 +5,11 @@ export const ArrowDown: IconNode = [
   ['path', { d: 'M12 5v14' }],
   ['path', { d: 'm19 12-7 7-7-7' }],
 ];
+export const ArrowDownToLine: IconNode = [
+  ['path', { d: 'M12 17V3' }],
+  ['path', { d: 'm6 11 6 6 6-6' }],
+  ['path', { d: 'M19 21H5' }],
+];
 export const ArrowUp: IconNode = [
   ['path', { d: 'm5 12 7-7 7 7' }],
   ['path', { d: 'M12 19V5' }],
@@ -130,6 +135,15 @@ export const Pause: IconNode = [
   ['rect', { x: '14', y: '3', width: '5', height: '18', rx: '1' }],
   ['rect', { x: '5', y: '3', width: '5', height: '18', rx: '1' }],
 ];
+export const Pencil: IconNode = [
+  [
+    'path',
+    {
+      d: 'M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z',
+    },
+  ],
+  ['path', { d: 'm15 5 4 4' }],
+];
 export const Play: IconNode = [
   [
     'path',
@@ -155,6 +169,14 @@ export const RotateCcw: IconNode = [
 export const Search: IconNode = [
   ['path', { d: 'm21 21-4.34-4.34' }],
   ['circle', { cx: '11', cy: '11', r: '8' }],
+];
+export const Shield: IconNode = [
+  [
+    'path',
+    {
+      d: 'M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z',
+    },
+  ],
 ];
 export const ShoppingBag: IconNode = [
   ['path', { d: 'M16 10a4 4 0 0 1-8 0' }],

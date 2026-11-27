@@ -291,5 +291,15 @@
   "tools.preheat": "Нагріти {tool}",
   "controls.preheatFor": "Нагріти для {material}",
   "controls.modelWarn": "Нарізано для {file}, а не для цього {printer}. Принтер запитає перед друком.",
-  "controls.modelAbort": "Нарізано для {file}, а не для цього {printer}: перевірка принтера відхиляє друк."
+  "controls.modelAbort": "Нарізано для {file}, а не для цього {printer}: перевірка принтера відхиляє друк.",
+  "nozzle.highFlow": "Високопотокове сопло",
+  "nozzle.highTemp": "Високотемпературний хотенд",
+  "nozzle.hardened": "Загартоване сопло",
+  "tools.edit": "Змінити",
+  "tools.slot": "Слот {n}",
+  "tools.changeFilaments": "Замінити філаменти",
+  "tools.change": "Замінити",
+  "tools.keep": "Залишити",
+  "tools.preheatTitle": "Нагріти",
+  "tools.preheatBody": "Вибрані інструменти нагріються для свого філаменту, а з ними стіл."
 }

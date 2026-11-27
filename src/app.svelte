@@ -41,8 +41,7 @@
   import { identity } from './lib/stores/identity.svelte';
   import { isMultiTool } from './lib/printer/models';
   import { heaterReadings } from './lib/printer/status-picture';
-  import { toolRows, type ToolRow } from './lib/printer/tools';
-  import { firmwareFilament } from './lib/printer/filaments';
+  import { slotRows, toolRows } from './lib/printer/tools';
   import { dialog } from './lib/stores/dialog.svelte';
   import BedView from './features/objects/bed-view.svelte';
   import PrinterControls from './features/heating/printer-controls.svelte';
@@ -78,9 +77,26 @@
       ? identity.tools.filter(Boolean).length > 1
       : isMultiTool(identity.model?.variant),
   );
-  const tools = $derived(
-    __MULTI_TOOL__ ? toolRows(printer.status, identity.tools) : [],
+  // An MMU's slots show as cards too, all feeding one nozzle.
+  const slots = $derived(
+    __TOOL_MAPPING__ && identity.mmu
+      ? slotRows(printer.status, identity.slots, identity.tools[0])
+      : [],
   );
+  const tools = $derived(
+    __MULTI_TOOL__ && !slots.length
+      ? toolRows(printer.status, identity.tools)
+      : slots,
+  );
+  const heating = $derived.by(() => {
+    const s = printer.status;
+    return [
+      s?.target_nozzle,
+      s?.target_bed,
+      s?.chamber?.target_temp,
+      ...Object.values(s?.tools ?? {}).map((x) => x?.nozzle_target_temp),
+    ].some((v) => (v ?? 0) > 0);
+  });
   $effect(() => {
     printer.expanded = __API_V2__;
   });
@@ -333,7 +349,7 @@
               printer.control(action)}
             {activity}
             tools={printer.offline ? undefined : tools}
-            ontoolfilament={__CONTROLS__ && canStart
+            ontoolfilament={__CONTROLS__ && canStart && !slots.length
               ? (tool: number) => {
                   filament.tool = tool;
                   filamentOpen = true;
@@ -346,13 +362,9 @@
                   void filament.run('unload');
                 }
               : undefined}
-            ontoolpreheat={__CONTROLS__ && canStart
-              ? (tool: ToolRow) =>
-                  void tuning.preheat(
-                    firmwareFilament(tool.material ?? ''),
-                    tool.index,
-                  )
-              : undefined}
+            toolSlots={slots.length > 0}
+            heatedHead={!identity.can('per_tool_heating')}
+            badges={identity.tools[0]}
             chamber={__API_V2__ ? printer.status?.chamber : undefined}
             material={multiTool
               ? undefined
@@ -391,7 +403,13 @@
                   mode={controlMode}
                   zOffset={printer.status?.z_offset}
                   loaded={filament.loaded}
-                  multi={multiTool}
+                  multi={tools.length > 1}
+                  {tools}
+                  {heating}
+                  perTool={identity.can('per_tool_heating')}
+                  changeAll={!slots.length &&
+                    (identity.can('change_all') ||
+                      identity.can('filament_change_all'))}
                 />
               {/if}
             {/snippet}
