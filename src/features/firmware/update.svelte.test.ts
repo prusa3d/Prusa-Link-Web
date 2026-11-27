@@ -2,6 +2,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 const put = vi.hoisted(() => vi.fn<() => Promise<number>>());
 vi.mock('../../lib/api/upload', () => ({ putToUsb: put }));
+vi.mock('./usb-files.svelte', () => ({ usbFirmware: { refresh: vi.fn() } }));
 
 import { FirmwareUpdate } from './update.svelte';
 
