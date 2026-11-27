@@ -1,6 +1,6 @@
 import { readdirSync, readFileSync } from 'node:fs';
 
-import { buildFeatures } from '../build/features.ts';
+import { API_V2_PATHS, buildApi, buildFeatures } from '../build/features.ts';
 import { firmwareGzip } from './firmware-gzip.ts';
 
 // The firmware embeds dist/<variant>/index.html gzipped; both sizes are budgets.
@@ -26,6 +26,13 @@ for (const variant of readdirSync(dist).sort()) {
   const budget = budgetOf(variant);
   const bad = raw > budget.raw || gzip > budget.gzip;
   over ||= bad;
+  const text = html.toString();
+  const v2 =
+    buildApi() === 'v1' ? API_V2_PATHS.filter((p) => text.includes(p)) : [];
+  if (v2.length) {
+    over = true;
+    console.log(`✗ ${variant} calls the PrusaLink 2 API: ${v2.join(' ')}`);
+  }
   console.log(
     `${bad ? '✗' : '✓'} ${variant.padEnd(14)} ${kb(raw).padStart(9)} raw  ${kb(gzip).padStart(8)} gzip  (budget ${kb(budget.gzip)})  ${buildFeatures(variant).join(' ')}`,
   );

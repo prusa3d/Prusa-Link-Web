@@ -8,6 +8,8 @@ import fourColours from '../mock/fixtures/four-colours.gcode?url';
 // Runs before the app (demo/main.ts imports it first): the page's printer is
 // the mock, answered in the browser, and the visitor is signed in.
 const printer = new MockPrinter();
+// Answers like the firmware the page is built for.
+printer.apiV2 = __API_V2__;
 installMockTransport(printer);
 // The seeded plate with shapes, for cancelling objects; fetched before the
 // transport answers /usb with it.

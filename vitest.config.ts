@@ -32,6 +32,7 @@ export default mergeConfig(
               'src/**/*.test.ts',
               'mock/**/*.test.ts',
               'scripts/**/*.test.ts',
+              'build/**/*.test.ts',
               'demo/**/*.test.ts',
               'dev/**/*.test.ts',
             ],

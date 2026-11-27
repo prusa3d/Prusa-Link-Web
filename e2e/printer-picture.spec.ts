@@ -8,7 +8,7 @@ import {
   markedParts,
   shapesOf,
 } from '../mock/printer-images';
-import { freshPrinter, openApp, printer } from './support';
+import { API, freshPrinter, openApp, printer } from './support';
 
 // The printer's picture carries each heater's reading on the part it heats.
 
@@ -80,6 +80,7 @@ test('an XL labels its first tool whether or not one is picked', async ({
   page,
   request,
 }) => {
+  test.skip(API === 'v1', 'Needs the expanded status of PrusaLink 2');
   await printer(request, { model: 'XL', reset: true });
   await openApp(page);
   await expect(page.getByTestId('heater-label-bed')).toBeVisible();
@@ -293,6 +294,7 @@ test('an XL is drawn with its tools and, when it has one, its enclosure', async 
   page,
   request,
 }) => {
+  test.skip(API === 'v1', 'Needs /api/v1/info tools of PrusaLink 2');
   const hidden = () =>
     page
       .getByTestId('printer-image')
@@ -335,6 +337,7 @@ test("an XL's carriage slides in front of the picked tool's dock", async ({
   page,
   request,
 }) => {
+  test.skip(API === 'v1', 'Needs the expanded status of PrusaLink 2');
   await printer(request, { model: 'XL', reset: true, docks: [1, 2, 4, 5] });
   await openApp(page);
   const carriage = page.getByTestId('printer-carriage');

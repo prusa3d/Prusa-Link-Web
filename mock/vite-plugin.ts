@@ -5,6 +5,7 @@ import type { Connect, Plugin, ProxyOptions } from 'vite';
 import { handleApi } from './api.ts';
 import { applyPatch, type MockPatch, snapshot } from './control.ts';
 import { MockPrinter } from './printer.ts';
+import { buildApi } from '../build/features.ts';
 
 export interface DevPrinterOptions {
   /// A real printer or a MINI404 simulator. Unset: the in-process mock answers.
@@ -19,6 +20,9 @@ const API_PREFIXES = ['/api', '/thumb', '/usb'];
 export function devPrinter(options: DevPrinterOptions = {}): Plugin {
   loadFixtures();
   const printer = new MockPrinter();
+  // Answers like the firmware the page is built for; today's has no pairing.
+  printer.apiV2 = buildApi() === 'v2';
+  printer.pairing.supported = printer.apiV2;
 
   return {
     name: 'prusalink-dev-printer',

@@ -4,8 +4,9 @@
 /// messages (MESSAGES) out of that build. scripts/check-size.ts prints the
 /// features of every build next to its size.
 ///
-/// The dev server, the tests and the demo have every feature;
-/// PRUSALINK_FEATURES (comma-separated) overrides the table, to measure.
+/// The dev server, the tests and the demo have every feature the API
+/// allows; PRUSALINK_FEATURES (comma-separated) overrides the table, to
+/// measure.
 
 export const FEATURES = {
   /// The expanded status (every tool, chamber, change counters) and the
@@ -43,7 +44,9 @@ export const FEATURES = {
   /// The printer picture's fans, status light, chamber and toolchanger
   /// carriage. A picture without them (the MINI's) needs none of it.
   pictureParts: 'picture fans, status light, chamber, carriage',
-  /// Signing in by confirming a code on the printer, besides the password.
+  /// Signing in by confirming a code on the printer, besides the password,
+  /// where the firmware has it: an unknown code's 404 says so, firmware
+  /// without it answers 401 and the page offers the password only.
   pairing: 'sign-in by pairing at the printer',
 } as const;
 
@@ -62,6 +65,51 @@ const SINGLE = without(
   'preheatDialog',
   'changeFilaments',
 );
+
+/// The firmware API a build talks to. `v1` is what the Buddy firmware serves
+/// today; `v2` is PrusaLink 2 (the firmware's prusalink-api-v2 work: the
+/// expanded status, /api/v1/info's tools tree, print checks, the printer
+/// commands and dialogs). PRUSALINK_API overrides it. Pairing is in both:
+/// the page offers it only where the firmware answers its probe.
+export type Api = 'v1' | 'v2';
+export const DEFAULT_API: Api = 'v1';
+
+/// What only the PrusaLink 2 firmware API serves: left out of every build
+/// for `v1`, on top of BUILDS.
+export const NEEDS_API_V2: readonly Feature[] = [
+  'apiV2',
+  'multiTool',
+  'toolMapping',
+  'cancelObject',
+  'controls',
+  'babystep',
+  'firmwareFlash',
+  'nozzleBadges',
+  'preheatDialog',
+  'changeFilaments',
+  'diagnostics',
+  'redScreen',
+];
+
+/// Paths only the PrusaLink 2 firmware API serves. A `v1` build that names
+/// one would call what today's firmware answers 404 (scripts/check-size.ts
+/// refuses it).
+export const API_V2_PATHS: readonly string[] = [
+  '/api/v1/dialog',
+  '/api/v1/print/checks',
+  '/api/v1/printer',
+  '/api/v1/filament',
+  '/api/v1/tools/',
+  '/api/v1/diagnostics',
+  '/objects',
+];
+
+export function buildApi(): Api {
+  const api = process.env.PRUSALINK_API ?? DEFAULT_API;
+  if (api !== 'v1' && api !== 'v2')
+    throw new Error(`PRUSALINK_API is v1 or v2, not ${api}`);
+  return api;
+}
 
 /// By build variant; `mini-<lang>` builds use `mini`.
 export const BUILDS: Record<string, readonly Feature[]> = {
@@ -96,12 +144,16 @@ export const BUILDS: Record<string, readonly Feature[]> = {
 };
 
 /// The features of a build variant; every feature without one (dev server,
-/// tests, demo).
+/// tests, demo). Either way only those the build's API serves.
 export function buildFeatures(variant: string | undefined): readonly Feature[] {
   const forced = process.env.PRUSALINK_FEATURES;
   if (forced !== undefined) return forced.split(',') as Feature[];
-  if (!variant) return ALL;
-  return BUILDS[variant.replace(/-\w+$/, '')] ?? ALL;
+  const features = variant
+    ? (BUILDS[variant.replace(/-\w+$/, '')] ?? ALL)
+    : ALL;
+  return buildApi() === 'v2'
+    ? features
+    : features.filter((f) => !NEEDS_API_V2.includes(f));
 }
 
 /// `nozzleBadges` → `__NOZZLE_BADGES__`.

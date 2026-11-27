@@ -9,6 +9,7 @@ import {
 } from '@playwright/test';
 
 import {
+  API,
   freshPrinter,
   mockKey,
   openApp,
@@ -19,6 +20,8 @@ import {
 // The printer's firmware has the PrusaLink 2 API (doc/prusalink-api-v2.md in
 // Buddy): every tool, dialogs, cancel object, preheat, babysteps, filament
 // and firmware commands.
+
+test.skip(API === 'v1', 'The page is built for the firmware API of today');
 
 test.beforeEach(async ({ page, request }) => {
   await freshPrinter(page, request);

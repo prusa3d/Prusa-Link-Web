@@ -1,5 +1,10 @@
 import { type Page, type APIRequestContext } from '@playwright/test';
 
+import { buildApi } from '../build/features.ts';
+
+/// The firmware API the app and the mock printer speak (build/features.ts).
+export const API = buildApi();
+
 /// The mock printer's password.
 export async function mockKey(page: Page) {
   const res = await page.request.get('/__mock/state');
@@ -22,7 +27,7 @@ export async function freshPrinter(page: Page, request: APIRequestContext) {
     reset: true,
     firmware: '8.0.1',
     transitionSeconds: 1,
-    apiV2: true,
+    apiV2: API === 'v2',
   });
   await page.route(/api\.github\.com/, (route) =>
     route.fulfill({
