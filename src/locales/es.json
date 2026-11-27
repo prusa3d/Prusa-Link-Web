@@ -131,7 +131,6 @@
   "login.menuNetwork": "Red",
   "login.helpRead": "Lee la línea Contraseña: 15 letras y números.",
   "login.helpType": "Escríbela aquí. Distingue mayúsculas; no contiene 0, O, 1, l ni I.",
-  "filament.current": "(cargado)",
   "files.mismatchChange": "Cámbialo primero y luego imprime desde aquí.",
   "files.changingButton": "Cambiando filamento…",
   "language.label": "Idioma",

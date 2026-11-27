@@ -131,7 +131,6 @@
   "login.menuNetwork": "Rete",
   "login.helpRead": "Leggi la riga Password: 15 lettere e cifre.",
   "login.helpType": "Scrivila qui. Maiuscole e minuscole contano; non contiene 0, O, 1, l né I.",
-  "filament.current": "(caricato)",
   "files.mismatchChange": "Prima cambialo, poi stampa da qui.",
   "files.changingButton": "Cambio filamento…",
   "language.label": "Lingua",

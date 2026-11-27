@@ -131,7 +131,6 @@
   "login.menuNetwork": "ネットワーク",
   "login.helpRead": "パスワードの行を読みます(英数字 15 文字)。",
   "login.helpType": "ここに入力します。大文字と小文字は区別され、0、O、1、l、I は含まれません。",
-  "filament.current": "(ロード済み)",
   "files.mismatchChange": "先に交換してから、ここで印刷してください。",
   "files.changingButton": "フィラメント交換中…",
   "language.label": "言語",

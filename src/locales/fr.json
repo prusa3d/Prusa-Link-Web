@@ -131,7 +131,6 @@
   "login.menuNetwork": "Réseau",
   "login.helpRead": "Lisez la ligne Mot de passe : 15 lettres et chiffres.",
   "login.helpType": "Saisissez-le ici. Respectez les majuscules ; il ne contient ni 0, O, 1, l ni I.",
-  "filament.current": "(chargé)",
   "files.mismatchChange": "Changez-le d'abord, puis imprimez d'ici.",
   "files.changingButton": "Changement de filament…",
   "language.label": "Langue",
