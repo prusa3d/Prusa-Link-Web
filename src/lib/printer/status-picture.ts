@@ -1,4 +1,4 @@
-import { inUnit, unitSign } from '../units.svelte';
+import { inUnit, temperatureUnit } from '../units.svelte';
 import type { Shape } from './bed-heat';
 
 /// The labels a status picture carries (assets/printers/status, saved by the
@@ -168,9 +168,10 @@ export function tone(r: Reading): 'heating' | 'cooling' | 'off' {
   return r.target > 0 ? 'heating' : 'off';
 }
 
-/// A reading in the chosen unit, in whole degrees: `215℃`.
+/// A reading in the chosen unit, in whole degrees: `215°C`. The label draws
+/// the unit smaller, at 70 %.
 export function labelValue(celsius: number): string {
-  return `${Math.round(inUnit(celsius)).toString()}${unitSign()}`;
+  return `${Math.round(inUnit(celsius)).toString()}°${temperatureUnit()}`;
 }
 
 interface Telemetry {
@@ -283,6 +284,56 @@ export function labelLayout(label: Label, style: LabelStyle) {
     captionY: label.elbow[1] + style.stroke * 1.5 + style.caption * 0.85,
     dot: style.stroke * 2.2,
   };
+}
+
+/// The widest reading a label must fit: three digits and the unit's sign.
+export const WIDEST_VALUE = '888°C';
+
+/// The value's width, estimated: tabular digits are 0.6 em wide in the app's
+/// font (Atlas Grotesk); the unit (`°C`), drawn at 70 % with its letters
+/// drawn closer, 0.8 em of the value.
+export function valueWidth(text: string, style: LabelStyle): number {
+  return ((text.length - 2) * 0.6 + 0.8) * style.value;
+}
+
+/// The chevron's size and its gap before the value.
+export function chevronWidth(style: LabelStyle): number {
+  return style.value * 0.62;
+}
+
+/// The box the value takes with the widest reading and a chevron, centred
+/// on the label's line as drawn without moving it inward (see fitCentre).
+export function labelFootprint(label: Label, style: LabelStyle) {
+  const l = labelLayout(label, style);
+  const width = valueWidth(WIDEST_VALUE, style) + chevronWidth(style);
+  const y = l.valueY - style.value * 0.75;
+  return {
+    x: l.textX - width / 2,
+    y,
+    width,
+    height: l.captionY + style.caption * 0.25 - y,
+  };
+}
+
+/// Whether a label's widest reading reaches out of `box`.
+export function leavesPicture(
+  label: Label,
+  style: LabelStyle,
+  box: { x: number; y: number; width: number; height: number },
+): boolean {
+  const f = labelFootprint(label, style);
+  return (
+    f.x < box.x ||
+    f.y < box.y ||
+    f.x + f.width > box.x + box.width ||
+    f.y + f.height > box.y + box.height
+  );
+}
+
+/// Where a text `width` wide centres: on `x`, moved inward as far as it
+/// takes to stay within `[0, size]`.
+export function fitCentre(x: number, width: number, size: number): number {
+  return Math.min(Math.max(x, width / 2), size - width / 2);
 }
 
 /// Marks the elements with `ids` display="none" in the build's SVG markup,

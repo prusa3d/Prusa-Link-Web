@@ -54,10 +54,10 @@ describe('labelValue', () => {
 
   it('is whole degrees in the chosen unit', () => {
     setTemperatureUnit('C');
-    expect(labelValue(214.6)).toBe('215℃');
-    expect(labelValue(22.4)).toBe('22℃');
+    expect(labelValue(214.6)).toBe('215°C');
+    expect(labelValue(22.4)).toBe('22°C');
     setTemperatureUnit('F');
-    expect(labelValue(215)).toBe('419℉');
+    expect(labelValue(215)).toBe('419°F');
   });
 });
 

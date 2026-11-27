@@ -33,12 +33,12 @@ test('the nozzle and the bed show their temperatures, and follow them', async ({
   await openApp(page);
   const nozzle = page.getByTestId('heater-label-T1');
   const bed = page.getByTestId('heater-label-bed');
-  await expect(nozzle).toContainText('200℃');
-  await expect(bed).toContainText('55℃');
+  await expect(nozzle).toContainText('200°C');
+  await expect(bed).toContainText('55°C');
   await expect(bed).toContainText('Bed');
 
   await printer(request, { tool: { index: 0, temp: 180, target: 180 } });
-  await expect(nozzle).toContainText('180℃');
+  await expect(nozzle).toContainText('180°C');
 });
 
 test('heating towards a target shows an up chevron; at temperature none', async ({

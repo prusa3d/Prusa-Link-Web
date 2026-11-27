@@ -38,23 +38,10 @@
       none: undefined,
     }[trend(reading) ?? 'none'],
   );
-  // The value's width is measured once drawn (the unit's sign is as wide as
-  // the font makes it); until then, estimated.
-  let value = $state<SVGTextElement>();
-  let measured = $state<number>();
-  const valueWidth = $derived(
-    measured ?? ((text.length - 1) * 0.58 + 1.2) * style.value,
-  );
-  $effect(() => {
-    if (!value || !text) return;
-    const width = value.getComputedTextLength();
-    measured = width > 0 ? width : undefined;
-  });
+  // Estimated, which the app's font (Atlas Grotesk) matches; see valueWidth.
+  const valueWidth = $derived(((text.length - 2) * 0.6 + 0.8) * style.value);
   const chevronSize = $derived(style.value * 0.5);
   const gap = $derived(style.value * 0.12);
-  const valueStart = $derived(
-    l.textX - (valueWidth + (chevron ? chevronSize + gap : 0)) / 2,
-  );
   // The chamber shows the bed's heat waves, without the plate.
   const chamber = $derived(__API_V2__ && label.heater === 'chamber');
   const bed = $derived(label.heater === 'bed' || chamber);
@@ -68,9 +55,16 @@
   });
   const iconWidth = $derived(style.caption * (bed ? 1 : 352 / 512));
   const captionWidth = $derived(name.length * 0.6 * style.caption);
-  const captionStart = $derived(
-    l.textX - (iconWidth + style.caption * 0.25 + captionWidth) / 2,
+  // Centred on the line, moved inward where the text would leave the
+  // picture's 500-unit canvas.
+  const valueBlock = $derived(valueWidth + (chevron ? chevronSize + gap : 0));
+  const captionBlock = $derived(
+    iconWidth + style.caption * 0.25 + captionWidth,
   );
+  const half = $derived(Math.max(valueBlock, captionBlock) / 2);
+  const x = $derived(Math.min(Math.max(l.textX, half), 500 - half));
+  const valueStart = $derived(x - valueBlock / 2);
+  const captionStart = $derived(x - captionBlock / 2);
   const iconY = $derived(l.captionY - style.caption * 0.85);
 </script>
 
@@ -110,13 +104,15 @@
     />
   {/if}
   <text
-    bind:this={value}
     x={valueStart + (chevron ? chevronSize + gap : 0)}
     y={l.valueY}
     font-size={style.value}
     font-weight="600"
     fill="currentColor"
-    class="tabular-nums">{text}</text
+    class="tabular-nums"
+    >{text.slice(0, -2)}<tspan font-size="70%" letter-spacing="-.09em"
+      >{text.slice(-2)}</tspan
+    ></text
   >
   <g
     fill="currentColor"
