@@ -535,7 +535,7 @@ test('the loaded filament can be changed for a new spool of it', async ({
   await page.getByRole('button', { name: 'Change' }).click();
   const dialog = page.getByRole('dialog', { name: 'Filament' });
   await expect(dialog.getByText('Loaded: PLA')).toBeVisible();
-  await dialog.getByRole('button', { name: /^PLA/ }).click();
+  await dialog.getByRole('button', { name: 'PLA', exact: true }).click();
   await expect(page.getByTestId('printer-state')).toHaveText(
     'Changing to PLA',
     { timeout: 10_000 },

@@ -131,7 +131,6 @@
   "login.menuNetwork": "Netzwerk",
   "login.helpRead": "Lesen Sie die Zeile Kennwort: 15 Buchstaben und Ziffern.",
   "login.helpType": "Geben Sie es hier ein. Groß- und Kleinschreibung zählt; 0, O, 1, l und I kommen nicht vor.",
-  "filament.current": "(geladen)",
   "files.mismatchChange": "Erst wechseln, dann von hier drucken.",
   "files.changingButton": "Filamentwechsel…",
   "language.label": "Sprache",

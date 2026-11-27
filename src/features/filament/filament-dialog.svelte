@@ -11,7 +11,7 @@
   import { Button } from '../../lib/ui/button';
   import { Dialog } from '../../lib/ui/dialog';
   import { Icon } from '../../lib/ui/icon';
-  import { Check, ChevronRight } from '../../lib/ui/icon/icons';
+  import { ChevronRight } from '../../lib/ui/icon/icons';
 
   interface Props {
     open: boolean;
@@ -42,26 +42,13 @@
 </script>
 
 {#snippet choice(material: string)}
-  {#if material === filament.loaded}
-    <!-- The same material again is a new spool. -->
-    <Button
-      variant="ghost"
-      class="gap-1 border-2 border-primary! font-mono text-foreground max-sm:h-11"
-      aria-current="true"
-      onclick={() => void run('change', material)}
-    >
-      <Icon node={Check} class="size-4 text-primary" />{filamentLabel(material)}
-      <span class="sr-only">{t('filament.current')}</span>
-    </Button>
-  {:else}
-    <Button
-      variant="secondary"
-      class="font-mono max-sm:h-11"
-      onclick={() => void run(filament.loaded ? 'change' : 'load', material)}
-    >
-      {filamentLabel(material)}
-    </Button>
-  {/if}
+  <Button
+    variant="secondary"
+    class="font-mono max-sm:h-11"
+    onclick={() => void run(filament.loaded ? 'change' : 'load', material)}
+  >
+    {filamentLabel(material)}
+  </Button>
 {/snippet}
 
 <Dialog {open} title={t('filament.title')} {onclose}>

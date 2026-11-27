@@ -135,7 +135,6 @@
   "login.menuNetwork": "Sieć",
   "login.helpRead": "Odczytaj wiersz Hasło: 15 liter i cyfr.",
   "login.helpType": "Wpisz je tutaj. Wielkość liter ma znaczenie; nie ma w nim 0, O, 1, l ani I.",
-  "filament.current": "(załadowany)",
   "files.mismatchChange": "Najpierw go zmień, potem drukuj stąd.",
   "files.changingButton": "Zmiana filamentu…",
   "language.label": "Język",

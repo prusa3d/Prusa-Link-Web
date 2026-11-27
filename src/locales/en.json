@@ -131,7 +131,6 @@
   "login.menuNetwork": "Network",
   "login.helpRead": "Read the Password line: 15 letters and digits.",
   "login.helpType": "Type it here. Capitals matter; it has no 0, O, 1, l or I.",
-  "filament.current": "(loaded)",
   "files.mismatchChange": "Change it first, then print from here.",
   "files.changingButton": "Changing filament…",
   "language.label": "Language",

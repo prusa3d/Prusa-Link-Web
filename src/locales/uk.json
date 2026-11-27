@@ -135,7 +135,6 @@
   "login.menuNetwork": "Мережа",
   "login.helpRead": "Прочитайте рядок Пароль: 15 літер і цифр.",
   "login.helpType": "Введіть його тут. Регістр важливий; у ньому немає 0, O, 1, l та I.",
-  "filament.current": "(завантажено)",
   "files.mismatchChange": "Спершу замініть його, потім друкуйте звідси.",
   "files.changingButton": "Заміна філаменту…",
   "language.label": "Мова",
