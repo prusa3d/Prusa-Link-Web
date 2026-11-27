@@ -186,6 +186,50 @@ export const statusOf = (
 
 const needsChange = (s: RowStatus) => s === 'change' || s === 'empty';
 
+export interface Option {
+  slot: PrinterTool;
+  status: RowStatus;
+  issues: Issue[];
+}
+
+/// The slots a picker offers filament `f`, in three groups, best first:
+/// those that print it as loaded, those that need a filament change, and
+/// those the printer refuses. Within a group: fewer nozzle warnings, a
+/// match before another colour, the nearer colour, the slot of its own
+/// number (the firmware's 1:1).
+export function rank(
+  f: GcodeFilament,
+  slots: readonly PrinterTool[],
+  nozzleCheck: Severity | undefined,
+): [Option[], Option[], Option[]] {
+  const groups: [Option[], Option[], Option[]] = [[], [], []];
+  const key = ({ slot, status, issues }: Option) => {
+    const d = colourDistance(f.color, slot.color);
+    return [
+      issues.length,
+      status === 'colour' ? 1 : 0,
+      Number.isFinite(d) ? d : 25,
+      slot.index === f.index ? 0 : 1,
+      slot.index,
+    ];
+  };
+  for (const slot of slots) {
+    const o = { slot, ...judge(f, slot, nozzleCheck) };
+    let at: 0 | 1 | 2 = 0;
+    if (o.status === 'incompatible') at = 2;
+    else if (needsChange(o.status)) at = 1;
+    groups[at].push(o);
+  }
+  for (const g of groups)
+    g.sort((a, b) => {
+      const x = key(a);
+      const y = key(b);
+      const i = x.findIndex((v, n) => v !== y[n]);
+      return i < 0 ? 0 : (x[i] ?? 0) - (y[i] ?? 0);
+    });
+  return groups;
+}
+
 export function resolve(
   filaments: readonly GcodeFilament[],
   mapping: Mapping,

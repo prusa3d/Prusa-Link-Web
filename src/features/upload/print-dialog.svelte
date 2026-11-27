@@ -588,31 +588,16 @@
         severity={identity.nozzleCheck}
       />
     {/if}
-    {#if __TOOL_MAPPING__ && check.changes.length && !report}
-      <div class="text-sm" data-testid="print-changes">
-        <p class="font-medium">
-          {t('mapping.needChange', { count: check.changes.length })}
+    {#if __TOOL_MAPPING__ && !report}
+      {#each check.unloadable as f (f.index)}
+        <p class="text-xs" data-testid="print-unloadable">
+          {t('mapping.unloadable', {
+            material: f.material
+              ? filamentLabel(f.material)
+              : t('mapping.unknown'),
+          })}
         </p>
-        <ul class="text-muted-foreground">
-          {#each check.changes as { slot, to } (slot.index)}
-            <li>
-              T{slot.index}
-              {slot.material ? filamentLabel(slot.material) : '—'} → {to.material
-                ? filamentLabel(to.material)
-                : t('mapping.unknown')}
-            </li>
-          {/each}
-        </ul>
-        {#each check.unloadable as f (f.index)}
-          <p class="text-xs" data-testid="print-unloadable">
-            {t('mapping.unloadable', {
-              material: f.material
-                ? filamentLabel(f.material)
-                : t('mapping.unknown'),
-            })}
-          </p>
-        {/each}
-      </div>
+      {/each}
     {/if}
     {#if report}
       <!-- The printer's own verdict, in its words. -->
