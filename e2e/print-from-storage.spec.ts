@@ -528,6 +528,20 @@ test('changes the filament through the printer and leaves no file behind', async
   ).toBe(false);
 });
 
+test('the loaded filament can be changed for a new spool of it', async ({
+  page,
+}) => {
+  await page.goto(`/#key=${await mockKey(page)}`);
+  await page.getByRole('button', { name: 'Change' }).click();
+  const dialog = page.getByRole('dialog', { name: 'Filament' });
+  await expect(dialog.getByText('Loaded: PLA')).toBeVisible();
+  await dialog.getByRole('button', { name: /^PLA/ }).click();
+  await expect(page.getByTestId('printer-state')).toHaveText(
+    'Changing to PLA',
+    { timeout: 10_000 },
+  );
+});
+
 test('a file for another nozzle says so before printing', async ({ page }) => {
   await page.goto(`/#key=${await mockKey(page)}`);
   await page.getByTestId('file-input').setInputFiles({
