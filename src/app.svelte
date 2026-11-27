@@ -153,7 +153,11 @@
     if (!session.signedIn) return undefined;
     // Untracked: a first poll reads state (the printer's features) that must
     // not restart every poll when it changes.
-    const stops = untrack(() => [printer.poll(), identity.poll()]);
+    const stops = untrack(() => [
+      printer.poll(),
+      identity.poll(),
+      filament.poll(),
+    ]);
     return () => {
       for (const stop of stops) stop();
     };
