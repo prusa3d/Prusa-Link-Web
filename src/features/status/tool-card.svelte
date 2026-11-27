@@ -3,7 +3,7 @@
 <script lang="ts">
   import { t } from '../../lib/i18n.svelte';
   import { Button } from '../../lib/ui/button';
-  import NozzleBadges from './nozzle-badges.svelte';
+  import NozzleInfo from './nozzle-info.svelte';
 
   interface Props {
     label: string;
@@ -42,15 +42,10 @@
   </div>
   <div class="min-w-0 flex-1">
     <p class="flex items-center gap-1 text-sm font-medium">
-      {label}{#if __NOZZLE_BADGES__}<NozzleBadges
-          {hardened}
-          {highFlow}
-          {highTemp}
-        />{/if}
+      {label}<NozzleInfo diameter={nozzle} {hardened} {highFlow} {highTemp} />
     </p>
     <p class="truncate text-sm text-muted-foreground">
       {note ?? (material ? '' : t('filament.none'))}
-      {#if nozzle}{t('tool.nozzle', { size: nozzle })}{/if}
     </p>
   </div>
   {#if onchange}

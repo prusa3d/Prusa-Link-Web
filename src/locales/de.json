@@ -203,7 +203,6 @@
   "upload.item.cancelled": "Abgebrochen",
   "filament.perTool": "Je Werkzeug, am Drucker",
   "upload.item.saving": "Wird auf USB gespeichert…",
-  "tool.nozzle": "{size}-mm-Düse",
   "footer.api": "REST-API",
   "footer.apiHint": "PrusaLink-REST-API-Referenz (OpenAPI). /api/version, /api/printer und /api/job antworten auch wie OctoPrint, für OctoPrint-kompatible Werkzeuge.",
   "files.storage": "Speicher",

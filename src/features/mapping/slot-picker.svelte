@@ -3,7 +3,7 @@
      filament. A native select cannot show colours. Slots the printer would
      refuse are listed with the reason, not to be picked. -->
 <script lang="ts">
-  import NozzleBadges from '../status/nozzle-badges.svelte';
+  import NozzleInfo from '../status/nozzle-info.svelte';
   import { t, type MessageKey } from '../../lib/i18n.svelte';
   import { filamentLabel } from '../../lib/printer/filaments';
   import { judge, type Issue } from '../../lib/printer/print-check';
@@ -128,16 +128,13 @@
       ? filamentLabel(slot.material)
       : t('mapping.unloaded')}</span
   >
-  {#if slot.nozzle}<span class="text-xs text-muted-foreground"
-      >{slot.nozzle}</span
-    >{/if}
-  {#if __NOZZLE_BADGES__}
-    <NozzleBadges
-      hardened={slot.hardened}
-      highFlow={slot.highFlow}
-      highTemp={slot.highTemp}
-    />
-  {/if}
+  <NozzleInfo
+    class="text-xs"
+    diameter={slot.nozzle}
+    hardened={slot.hardened}
+    highFlow={slot.highFlow}
+    highTemp={slot.highTemp}
+  />
   <span class="ms-auto truncate text-xs text-muted-foreground">{text}</span>
 {/snippet}
 

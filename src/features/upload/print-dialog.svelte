@@ -35,6 +35,7 @@
   import { groupMaterials } from '../../lib/files/group-materials';
   import { Thumbnail } from '../../lib/ui/thumbnail';
   import ToolMappingView from '../mapping/tool-mapping.svelte';
+  import NozzleInfo from '../status/nozzle-info.svelte';
   import { api } from '../../lib/api/client';
   import { fileHeader } from '../../lib/api/download';
   import { fileKey } from '../../lib/files/header-cache';
@@ -521,6 +522,11 @@
           }).format(grams)}</span
         >
       {/if}
+      <NozzleInfo
+        diameter={info.nozzle}
+        hardened={extruders.some((f) => f.abrasive)}
+        highFlow={extruders.some((f) => f.highFlow)}
+      />
       {#if sliced}
         <span>{t('upload.slicedFor', { printer: sliced })}</span>
       {/if}

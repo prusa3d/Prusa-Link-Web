@@ -203,7 +203,6 @@
   "upload.item.cancelled": "Annullato",
   "filament.perTool": "Per utensile, sulla stampante",
   "upload.item.saving": "Salvataggio su USB…",
-  "tool.nozzle": "ugello da {size} mm",
   "footer.api": "API REST",
   "footer.apiHint": "Riferimento API REST di PrusaLink (OpenAPI). /api/version, /api/printer e /api/job rispondono anche come OctoPrint, per gli strumenti compatibili.",
   "files.storage": "Archivio",

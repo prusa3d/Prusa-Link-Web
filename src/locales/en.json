@@ -203,7 +203,6 @@
   "upload.item.cancelled": "Cancelled",
   "filament.perTool": "Per tool, on the printer",
   "upload.item.saving": "Saving to USB…",
-  "tool.nozzle": "{size} mm nozzle",
   "footer.api": "REST API",
   "footer.apiHint": "PrusaLink REST API reference (OpenAPI). /api/version, /api/printer and /api/job also answer like OctoPrint, for OctoPrint-compatible tools.",
   "files.storage": "Storage",
