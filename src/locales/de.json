@@ -319,5 +319,18 @@
   "print.filamentN": "Filament {n}",
   "print.allGood": "Alles in Ordnung",
   "print.printerAsks": "Der Drucker fragt auf seinem Display; antworten Sie dort oder auf der Seite.",
-  "print.accept": "Verstanden; trotzdem drucken"
+  "print.accept": "Verstanden; trotzdem drucken",
+  "redScreen.title": "Der Drucker hat wegen eines Fehlers angehalten",
+  "redScreen.body": "Bis zum Neustart antwortet der Drucker auf nichts anderes.",
+  "redScreen.dump": "Crash-Dump herunterladen",
+  "redScreen.mail": "Support schreiben",
+  "redScreen.restart": "Drucker neu starten",
+  "redScreen.secrets": "Der Dump ist eine Kopie des Druckerspeichers und kann private Daten enthalten: Senden Sie ihn nur an den Prusa-Support.",
+  "redScreen.noDump": "Der Drucker hat keinen Crash-Dump.",
+  "redScreen.restarting": "Der Drucker startet neu…",
+  "dump.title": "Der Drucker ist zuvor abgestürzt",
+  "dump.body": "Er hat einen Crash-Dump gespeichert, der dem Prusa-Support bei der Ursachensuche hilft.",
+  "dump.sent": "Gesendet, ausblenden",
+  "log.off": "Log auf USB: aus",
+  "log.on": "Log auf USB (log.txt): an"
 }

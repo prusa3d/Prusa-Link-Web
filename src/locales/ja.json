@@ -319,5 +319,18 @@
   "print.filamentN": "フィラメント {n}",
   "print.allGood": "問題ありません",
   "print.printerAsks": "プリンターの画面で確認を求めています。そこかこのページで回答してください。",
-  "print.accept": "了解しました。それでも印刷します"
+  "print.accept": "了解しました。それでも印刷します",
+  "redScreen.title": "プリンターがエラーで停止しました",
+  "redScreen.body": "再起動するまで、プリンターは他の操作に応答しません。",
+  "redScreen.dump": "クラッシュダンプをダウンロード",
+  "redScreen.mail": "サポートに連絡",
+  "redScreen.restart": "プリンターを再起動",
+  "redScreen.secrets": "ダンプはプリンターのメモリのコピーで、個人データを含む場合があります。Prusa サポートにのみ送ってください。",
+  "redScreen.noDump": "クラッシュダンプはありません。",
+  "redScreen.restarting": "プリンターを再起動しています…",
+  "dump.title": "プリンターは以前クラッシュしました",
+  "dump.body": "原因の調査に役立つクラッシュダンプが保存されています。",
+  "dump.sent": "送信済み、非表示",
+  "log.off": "USB へのログ: オフ",
+  "log.on": "USB へのログ (log.txt): オン"
 }

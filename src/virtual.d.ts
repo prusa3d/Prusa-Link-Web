@@ -53,3 +53,4 @@ declare const __PREHEAT_DIALOG__: boolean;
 declare const __CHANGE_FILAMENTS__: boolean;
 declare const __DIAGNOSTICS__: boolean;
 declare const __RED_SCREEN__: boolean;
+declare const __LAST_PRINT__: boolean;

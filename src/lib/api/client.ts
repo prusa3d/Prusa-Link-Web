@@ -23,9 +23,14 @@ interface Init {
 /// refuses it.
 function method(name: string) {
   return async (path: string, init: Init = {}) => {
+    // The firmware does not percent-decode a query: `:` and `,` (a tool
+    // mapping's) stay as they are, which a query allows.
     const query = new URLSearchParams(
       Object.entries(init.params?.query ?? {}).map(([k, v]) => [k, String(v)]),
-    ).toString();
+    )
+      .toString()
+      .replace(/%3A/gi, ':')
+      .replace(/%2C/gi, ',');
     const url =
       path.replace(/\{(\w+)\}/g, (_, key: string) =>
         encodeURIComponent(String(init.params?.path?.[key] ?? '')),

@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { fitsPrinter } from './compat';
+import { fitsById, fitsPrinter } from './compat';
 import fixtures from './fixtures/firmware-checks.json';
 import { checkGroup, resolve, TITLES } from './print-check';
 import {
@@ -59,7 +59,10 @@ describe('the page judges a print as the firmware does', () => {
         slots,
         nozzleCheck: c.nozzleCheck as Severity | undefined,
         modelCheck: c.modelCheck as Severity | undefined,
-        modelFits: fitsPrinter(c.header.printer_model, c.printer ?? '3.1.0'),
+        modelFits:
+          c.header['M862.3'] !== undefined
+            ? fitsById(c.header['M862.3'], c.printer ?? '3.1.0')
+            : fitsPrinter(c.header.printer_model, c.printer ?? '3.1.0'),
       },
     );
     const page = new Set(

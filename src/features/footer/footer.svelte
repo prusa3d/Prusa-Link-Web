@@ -1,6 +1,7 @@
 <script lang="ts">
   import { t } from '../../lib/i18n.svelte';
   import { PrusaWordmark } from '../../lib/ui/logo';
+  import { Button } from '../../lib/ui/button';
   import { Icon } from '../../lib/ui/icon';
   import {
     CircleQuestionMark,
@@ -10,6 +11,7 @@
   } from '../../lib/ui/icon/icons';
   import { identity } from '../../lib/stores/identity.svelte';
   import PrinterInfo from '../printer/printer-info.svelte';
+  import { diagnostics } from '../diagnostics/diagnostics.svelte';
 
   // Places beyond this printer's local page: help, the API reference, the
   // cloud, the shop. The API's /api/version, /api/printer and /api/job answer
@@ -51,6 +53,18 @@
         firmware={identity.firmware}
         mmu={identity.mmu}
       />
+      {#if __DIAGNOSTICS__ && diagnostics.logToFile !== undefined}
+        <!-- For support: the printer writes its log to the USB drive. -->
+        <Button
+          variant="ghost"
+          size="sm"
+          class="px-0"
+          aria-pressed={diagnostics.logToFile}
+          data-testid="log-toggle"
+          onclick={() => void diagnostics.setLog(!diagnostics.logToFile)}
+          >{t(diagnostics.logToFile ? 'log.on' : 'log.off')}</Button
+        >
+      {/if}
     </div>
     <nav aria-label={t('footer.label')}>
       <ul class="flex gap-x-4 gap-y-1 max-md:gap-x-1 md:flex-wrap">

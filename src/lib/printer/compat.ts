@@ -27,7 +27,8 @@ const BY_CODE: Readonly<Record<string, Group>> = {
   '1.4.1': 'mk4s',
   '2.1.0': 'mini',
   '3.1.0': 'xl',
-  '5.1.0': 'xls',
+  '3.1.1': 'xls',
+  '5.1.0': 'xl',
   '4.1.0': 'ix',
   '7.1.0': 'coreone',
   '7.2.0': 'coreone',
@@ -64,13 +65,65 @@ export function slicedGroup(model: string): Group | undefined {
   return undefined;
 }
 
+/// The firmware's printer ids (printer_model_data.hpp in Buddy), which the
+/// start G-code's `M862.3 P "<id>"` names, by group; MMU variants belong to
+/// their printer's.
+const BY_ID: Readonly<Record<string, Group>> = {
+  MK3: 'mk3',
+  MK3S: 'mk3',
+  MK3MMU2: 'mk3',
+  MK3SMMU2S: 'mk3',
+  'MK3.5': 'mk3_5',
+  'MK3.5S': 'mk3_5',
+  'MK3.5MMU3': 'mk3_5',
+  'MK3.5SMMU3': 'mk3_5',
+  'MK3.9': 'mk4',
+  'MK3.9MMU3': 'mk4',
+  'MK3.9S': 'mk4s',
+  'MK3.9SMMU3': 'mk4s',
+  MK4: 'mk4',
+  MK4MMU3: 'mk4',
+  MK4S: 'mk4s',
+  MK4SMMU3: 'mk4s',
+  MINI: 'mini',
+  XL: 'xl',
+  XLP: 'xls',
+  iX: 'ix',
+  COREONE: 'coreone',
+  COREONEMMU3: 'coreone',
+  COREONEOAK: 'coreone',
+  COREONEL: 'coreonel',
+  COREONELMMU3: 'coreonel',
+  COREONEINDX: 'coreone_indx',
+  'COREONEL-INDX': 'coreonel_indx',
+};
+
 /// False when the file is for another printer; undefined when either side
-/// is unknown.
+/// is unknown. The start G-code's printer id (`M862.3`) decides, as on the
+/// printer, where the file says it (fitsById); without one (a binary
+/// G-code, whose start G-code is compressed), the slicer's printer_model,
+/// read like printcompat does.
 export function fitsPrinter(
   sliced: string | undefined,
   code: string | undefined,
 ): boolean | undefined {
-  const file = sliced ? slicedGroup(sliced) : undefined;
+  return fits(sliced ? slicedGroup(sliced) : undefined, code);
+}
+
+/// Whether the start G-code's `M862.3 P "<id>"` fits this printer, as the
+/// firmware's model check: an id it does not know is another printer's.
+export function fitsById(
+  id: string,
+  code: string | undefined,
+): boolean | undefined {
+  if (code && BY_CODE[code] && !BY_ID[id]) return false;
+  return fits(BY_ID[id], code);
+}
+
+function fits(
+  file: Group | undefined,
+  code: string | undefined,
+): boolean | undefined {
   const printer = code ? BY_CODE[code] : undefined;
   if (!file || !printer) return undefined;
   for (let g: Group | undefined = printer; g; g = UPGRADE_FROM[g])

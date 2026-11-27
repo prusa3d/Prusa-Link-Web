@@ -322,5 +322,18 @@
   "print.filamentN": "filament {n}",
   "print.allGood": "Vše v pořádku",
   "print.printerAsks": "Tiskárna se ptá na displeji; odpovězte tam nebo na stránce.",
-  "print.accept": "Beru na vědomí; přesto tisknout"
+  "print.accept": "Beru na vědomí; přesto tisknout",
+  "redScreen.title": "Tiskárna se zastavila na chybě",
+  "redScreen.body": "Dokud se nerestartuje, tiskárna nic jiného neodpovídá.",
+  "redScreen.dump": "Stáhnout crash dump",
+  "redScreen.mail": "Napsat podpoře",
+  "redScreen.restart": "Restartovat tiskárnu",
+  "redScreen.secrets": "Dump je kopie paměti tiskárny a může obsahovat soukromá data: posílejte jej jen podpoře Prusa.",
+  "redScreen.noDump": "Tiskárna nemá crash dump.",
+  "redScreen.restarting": "Tiskárna se restartuje…",
+  "dump.title": "Tiskárna dříve spadla",
+  "dump.body": "Uložila crash dump, který podpoře Prusa pomůže najít příčinu.",
+  "dump.sent": "Odesláno, skrýt",
+  "log.off": "Log na USB: vypnuto",
+  "log.on": "Log na USB (log.txt): zapnuto"
 }

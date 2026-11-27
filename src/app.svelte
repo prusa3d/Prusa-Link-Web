@@ -5,8 +5,11 @@
 
   import FileList from './features/files/file-list.svelte';
   import { fileVersion } from './lib/api/thumbnail';
-  import LastPrint from './features/status/last-print.svelte';
+  import LastPrintView from './features/status/last-print.svelte';
   import PrinterAlert from './features/status/printer-alert.svelte';
+  import RedScreenView from './features/diagnostics/red-screen.svelte';
+  import DumpNoticeView from './features/diagnostics/dump-notice.svelte';
+  import { diagnostics } from './features/diagnostics/diagnostics.svelte';
   import Notices from './features/notices/notices.svelte';
   import Footer from './features/footer/footer.svelte';
   import ClashDialog from './features/upload/clash-dialog.svelte';
@@ -60,6 +63,22 @@
   // A build without the feature drops the component: a constant the bundler
   // folds, which a branch of the markup is not.
   const UsbFirmware = __FIRMWARE_FLASH__ ? UsbFirmwareCard : undefined;
+  const RedScreen = __RED_SCREEN__ ? RedScreenView : undefined;
+  const LastPrint = __LAST_PRINT__ ? LastPrintView : undefined;
+  const DumpNotice = __DIAGNOSTICS__ ? DumpNoticeView : undefined;
+  // Once the printer says it keeps dumps, not on every /info read.
+  const keepsDumps = $derived(__DIAGNOSTICS__ && identity.can('crash_dump'));
+  $effect(() => {
+    if (keepsDumps) void diagnostics.refresh();
+  });
+  /// The printer's red screen: an error without buttons.
+  const redScreen = $derived(
+    printer.status?.state === 'ERROR' &&
+      dialog.current?.state === 'ERROR' &&
+      !dialog.current.buttons.length
+      ? dialog.current
+      : undefined,
+  );
   const UpdateNotice = __FIRMWARE_UPDATE__ ? UpdateNoticeView : undefined;
   const UpdateDialog = __FIRMWARE_UPDATE__ ? UpdateDialogView : undefined;
 
@@ -322,150 +341,165 @@
 
 {#if session.signedIn}
   <main class="mx-auto flex w-full max-w-5xl flex-1 flex-col gap-6 p-4 md:p-6">
-    <div class="grid items-start gap-6 md:grid-cols-2">
-      <div
-        bind:this={printerColumn}
-        class="flex scroll-mt-4 flex-col gap-6 md:sticky md:top-6 md:scroll-mt-6"
-      >
-        {#if printer.offline && !printer.status}
-          <div class="rounded-lg edge border bg-card">
-            <EmptyState
-              icon={CloudOff}
-              tone="fault"
-              live
-              title={t('offline.title')}
-              body={t('offline.body')}
+    {#if RedScreen && redScreen}
+      <!-- The printer is in error mode: nothing else answers. -->
+      <RedScreen
+        dialog={redScreen}
+        printer={identity.model?.name}
+        firmware={identity.firmware}
+      />
+    {:else}
+      <div class="grid items-start gap-6 md:grid-cols-2">
+        <div
+          bind:this={printerColumn}
+          class="flex scroll-mt-4 flex-col gap-6 md:sticky md:top-6 md:scroll-mt-6"
+        >
+          {#if printer.offline && !printer.status}
+            <div class="rounded-lg edge border bg-card">
+              <EmptyState
+                icon={CloudOff}
+                tone="fault"
+                live
+                title={t('offline.title')}
+                body={t('offline.body')}
+              >
+                <Spinner class="size-5 text-muted-foreground" />
+              </EmptyState>
+            </div>
+          {:else}
+            <StatusPanel
+              name={identity.hostname ?? identity.model?.name}
+              status={printer.status}
+              job={printer.job}
+              jobFile={printer.jobFile}
+              offline={printer.offline}
+              oncontrol={(action: 'pause' | 'resume' | 'stop') =>
+                printer.control(action)}
+              {activity}
+              tools={printer.offline ? undefined : tools}
+              ontoolfilament={__CONTROLS__ && canStart && !slots.length
+                ? (tool: number) => {
+                    filament.tool = tool;
+                    filamentOpen = true;
+                  }
+                : undefined}
+              ontoolunload={__CONTROLS__ && canStart
+                ? (tool: number) => {
+                    filament.tool = tool;
+                    filamentOpen = true;
+                    void filament.run('unload');
+                  }
+                : undefined}
+              toolSlots={slots.length > 0}
+              heatedHead={!(__MULTI_TOOL__ && identity.can('per_tool_heating'))}
+              badges={identity.tools[0]}
+              chamber={__API_V2__ ? printer.status?.chamber : undefined}
+              material={multiTool
+                ? undefined
+                : filament.loaded && filamentLabel(filament.loaded)}
+              materialNote={multiTool ? t('filament.perTool') : undefined}
+              nozzle={identity.nozzle}
+              onfilament={canStart && !multiTool
+                ? () => (filamentOpen = true)
+                : undefined}
+              onunload={canStart && !multiTool
+                ? () => {
+                    filamentOpen = true;
+                    void filament.run('unload');
+                  }
+                : undefined}
             >
-              <Spinner class="size-5 text-muted-foreground" />
-            </EmptyState>
-          </div>
-        {:else}
-          <StatusPanel
-            name={identity.hostname ?? identity.model?.name}
-            status={printer.status}
-            job={printer.job}
-            jobFile={printer.jobFile}
-            offline={printer.offline}
-            oncontrol={(action: 'pause' | 'resume' | 'stop') =>
-              printer.control(action)}
-            {activity}
-            tools={printer.offline ? undefined : tools}
-            ontoolfilament={__CONTROLS__ && canStart && !slots.length
-              ? (tool: number) => {
-                  filament.tool = tool;
-                  filamentOpen = true;
-                }
-              : undefined}
-            ontoolunload={__CONTROLS__ && canStart
-              ? (tool: number) => {
-                  filament.tool = tool;
-                  filamentOpen = true;
-                  void filament.run('unload');
-                }
-              : undefined}
-            toolSlots={slots.length > 0}
-            heatedHead={!(__MULTI_TOOL__ && identity.can('per_tool_heating'))}
-            badges={identity.tools[0]}
-            chamber={__API_V2__ ? printer.status?.chamber : undefined}
-            material={multiTool
-              ? undefined
-              : filament.loaded && filamentLabel(filament.loaded)}
-            materialNote={multiTool ? t('filament.perTool') : undefined}
-            nozzle={identity.nozzle}
-            onfilament={canStart && !multiTool
-              ? () => (filamentOpen = true)
-              : undefined}
-            onunload={canStart && !multiTool
-              ? () => {
-                  filamentOpen = true;
-                  void filament.run('unload');
-                }
-              : undefined}
-          >
-            {#snippet top()}
-              <PrinterIdentity
-                model={identity.model}
-                mmu={identity.mmu}
-                equipment={{
-                  tools: identity.tools.filter(Boolean).length || 1,
-                  chamber: printer.status?.chamber !== undefined,
-                  enclosure: identity.enclosure,
-                }}
-                readings={heaterReadings(printer.status, {
-                  offline: printer.offline,
-                  toolPicked: !multiTool || filament.loaded !== undefined,
-                  perTool: __MULTI_TOOL__ && identity.can('per_tool_heating'),
-                })}
-              />
-            {/snippet}
-            {#snippet controls()}
-              {#if __CONTROLS__ && controlMode && !printer.offline}
-                <PrinterControls
-                  mode={controlMode}
-                  zOffset={printer.status?.z_offset}
-                  loaded={filament.loaded}
-                  multi={tools.length > 1}
-                  {tools}
-                  {heating}
-                  perTool={__MULTI_TOOL__ && identity.can('per_tool_heating')}
-                  changeAll={!slots.length &&
-                    (identity.can('change_all') ||
-                      identity.can('filament_change_all'))}
+              {#snippet top()}
+                <PrinterIdentity
+                  model={identity.model}
+                  mmu={identity.mmu}
+                  equipment={{
+                    tools: identity.tools.filter(Boolean).length || 1,
+                    chamber: printer.status?.chamber !== undefined,
+                    enclosure: identity.enclosure,
+                  }}
+                  readings={heaterReadings(printer.status, {
+                    offline: printer.offline,
+                    toolPicked: !multiTool || filament.loaded !== undefined,
+                    perTool: __MULTI_TOOL__ && identity.can('per_tool_heating'),
+                  })}
                 />
-              {/if}
-            {/snippet}
-            {#snippet alerts()}
-              <!-- A dialog in front that already shows the printer's
+              {/snippet}
+              {#snippet controls()}
+                {#if __CONTROLS__ && controlMode && !printer.offline}
+                  <PrinterControls
+                    mode={controlMode}
+                    zOffset={printer.status?.z_offset}
+                    loaded={filament.loaded}
+                    multi={tools.length > 1}
+                    {tools}
+                    {heating}
+                    perTool={__MULTI_TOOL__ && identity.can('per_tool_heating')}
+                    changeAll={!slots.length &&
+                      (identity.can('change_all') ||
+                        identity.can('filament_change_all'))}
+                  />
+                {/if}
+              {/snippet}
+              {#snippet alerts()}
+                <!-- A dialog in front that already shows the printer's
                    question hides it here. -->
-              <PrinterAlert
-                status={alertStatus}
-                dialog={__API_V2__ ? alertStatus && dialog.current : undefined}
-                pressing={dialog.pressing}
-                onbutton={(button: string) => void pressDialog(button)}
-              />
-              <Notices />
-            {/snippet}
-          </StatusPanel>
-        {/if}
-        {#if __CANCEL_OBJECT__ && plateObjects.items.length > 1 && (printer.status?.state === 'PRINTING' || printer.status?.state === 'PAUSED')}
-          <BedView
-            items={plateObjects.items}
-            bed={bedOf(identity.code)}
-            x={printer.status.axis_x}
-            y={printer.status.axis_y}
-            cancelling={plateObjects.cancelling}
-            failed={plateObjects.failed}
-            oncancel={cancelObject}
-          />
-        {/if}
-        <UploadPanel />
-        {#if printer.last && !isHelper(printer.last.file.displayName) && !(printer.job && (printer.status?.state === 'PRINTING' || printer.status?.state === 'PAUSED'))}
-          <LastPrint
-            last={printer.last}
-            {canStart}
-            onagain={() => {
-              if (printer.last) candidate = again(printer.last.file);
-            }}
-          />
-        {/if}
-        {#if UpdateNotice}<UpdateNotice as="card" />{/if}
-        {#if UsbFirmware}
-          <UsbFirmware {canStart} />
-        {/if}
+                <PrinterAlert
+                  status={alertStatus}
+                  dialog={__API_V2__
+                    ? alertStatus && dialog.current
+                    : undefined}
+                  pressing={dialog.pressing}
+                  onbutton={(button: string) => void pressDialog(button)}
+                />
+                <Notices />
+              {/snippet}
+            </StatusPanel>
+          {/if}
+          {#if __CANCEL_OBJECT__ && plateObjects.items.length > 1 && (printer.status?.state === 'PRINTING' || printer.status?.state === 'PAUSED')}
+            <BedView
+              items={plateObjects.items}
+              bed={bedOf(identity.code)}
+              x={printer.status.axis_x}
+              y={printer.status.axis_y}
+              cancelling={plateObjects.cancelling}
+              failed={plateObjects.failed}
+              oncancel={cancelObject}
+            />
+          {/if}
+          <UploadPanel />
+          {#if LastPrint && printer.last && !isHelper(printer.last.file.displayName) && !(printer.job && (printer.status?.state === 'PRINTING' || printer.status?.state === 'PAUSED'))}
+            <LastPrint
+              last={printer.last}
+              {canStart}
+              onagain={() => {
+                if (printer.last) candidate = again(printer.last.file);
+              }}
+            />
+          {/if}
+          {#if DumpNotice}<DumpNotice
+              printer={identity.model?.name}
+              firmware={identity.firmware}
+            />{/if}
+          {#if UpdateNotice}<UpdateNotice as="card" />{/if}
+          {#if UsbFirmware}
+            <UsbFirmware {canStart} />
+          {/if}
+        </div>
+        <FileList
+          {canStart}
+          {blocked}
+          printing={printer.job ? printer.jobFile?.path : undefined}
+          printingNote={printer.status?.state
+            ? `${t(`status.state.${printer.status.state}` as MessageKey)} · ${String(Math.floor(printer.job?.progress ?? 0))} %`
+            : undefined}
+          onprint={(entry: PrinterEntry, dir?: string, where?: string) =>
+            (candidate = { ...fromList(entry), dir, where })}
+        >
+          <DropZone />
+        </FileList>
       </div>
-      <FileList
-        {canStart}
-        {blocked}
-        printing={printer.job ? printer.jobFile?.path : undefined}
-        printingNote={printer.status?.state
-          ? `${t(`status.state.${printer.status.state}` as MessageKey)} · ${String(Math.floor(printer.job?.progress ?? 0))} %`
-          : undefined}
-        onprint={(entry: PrinterEntry, dir?: string, where?: string) =>
-          (candidate = { ...fromList(entry), dir, where })}
-      >
-        <DropZone />
-      </FileList>
-    </div>
+    {/if}
   </main>
   <WindowDrop
     model={identity.model}

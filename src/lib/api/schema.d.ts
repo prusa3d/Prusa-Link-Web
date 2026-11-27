@@ -745,57 +745,24 @@ export interface paths {
             query?: never;
             header?: never;
             path: {
-                tool: number;
+                /** @description Connect's tool id, "0".."4", or "0.N" for an MMU slot */
+                tool: string;
             };
             cookie?: never;
         };
         get?: never;
-        /** update the loaded filament in place */
-        put: {
-            parameters: {
-                query?: never;
-                header?: never;
-                path: {
-                    tool: number;
-                };
-                cookie?: never;
-            };
-            requestBody?: {
-                content: {
-                    "application/json": {
-                        material: components["schemas"]["Material"];
-                    };
-                };
-            };
-            responses: {
-                /** @description Accepted */
-                202: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content?: never;
-                };
-                401: components["responses"]["Unauthorized"];
-                409: components["responses"]["Conflict"];
-                /** @description Field out of range or incompatible */
-                422: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content?: never;
-                };
-            };
-        };
+        put?: never;
         /**
          * load, change or unload filament
-         * @description Load and unload only when idle, change while printing or paused
+         * @description The printer then runs its own dialogs, bridged to /api/v1/dialog
          */
         post: {
             parameters: {
                 query?: never;
                 header?: never;
                 path: {
-                    tool: number;
+                    /** @description Connect's tool id, "0".."4", or "0.N" for an MMU slot */
+                    tool: string;
                 };
                 cookie?: never;
             };
@@ -804,12 +771,15 @@ export interface paths {
                     "application/json": {
                         /** @enum {string} */
                         command: "load" | "change" | "unload";
-                        material?: components["schemas"]["Material"];
+                        /** @description A filament preset's or user filament's name; required to load or change */
+                        filament?: string;
+                        /** @description #RRGGBB */
+                        color?: string;
                     };
                 };
             };
             responses: {
-                /** @description Accepted */
+                /** @description Queued */
                 202: {
                     headers: {
                         [name: string]: unknown;
@@ -817,9 +787,36 @@ export interface paths {
                     content?: never;
                 };
                 401: components["responses"]["Unauthorized"];
-                409: components["responses"]["Conflict"];
-                /** @description Field out of range or incompatible */
+                /** @description Unknown or disabled tool */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Not a POST */
+                405: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Not idle, a dialog is open, or the dock is not calibrated */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Bad command, filament or colour */
                 422: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description The command queue is full */
+                503: {
                     headers: {
                         [name: string]: unknown;
                     };
@@ -915,6 +912,195 @@ export interface paths {
                 };
                 /** @description Unknown tool or material */
                 422: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/diagnostics": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** the crash dump and logging */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            crash_dump?: {
+                                present?: boolean;
+                                size?: number;
+                                exported?: boolean;
+                            };
+                            message?: {
+                                code?: string;
+                                title?: string;
+                                text?: string;
+                            };
+                            log_to_file?: boolean;
+                        };
+                    };
+                };
+                401: components["responses"]["Unauthorized"];
+            };
+        };
+        /** log to /usb/log.txt, or stop */
+        put: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": {
+                        log_to_file?: boolean;
+                    };
+                };
+            };
+            responses: {
+                /** @description Done */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description The log file cannot be opened */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description No log_to_file */
+                422: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/diagnostics/dump": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** the crash dump, also on the red screen */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description The dump */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/octet-stream": string;
+                    };
+                };
+                /** @description No dump */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        /** mark the dump sent; it stays on the printer */
+        delete: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Done */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/printer/reset": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** restart the printer, from the red screen */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description The printer restarts in a second */
+                202: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Not on the red screen */
+                404: {
                     headers: {
                         [name: string]: unknown;
                     };
@@ -2315,7 +2501,7 @@ export interface components {
                 printing_filtration?: boolean;
             };
             /** @description What this firmware's API can do */
-            features?: ("status_expanded" | "cancel_object" | "chamber" | "dialogs" | "firmware_update" | "crash_dump" | "preheat" | "tune" | "filament" | "pairing" | "tool_mapping" | "change_all" | "filament_change_all" | "per_tool_heating" | "print_checks")[];
+            features?: ("status_expanded" | "cancel_object" | "chamber" | "dialogs" | "firmware_update" | "crash_dump" | "preheat" | "tune" | "filament" | "pairing" | "tool_mapping" | "change_all" | "filament_change_all" | "per_tool_heating" | "print_checks" | "crash_dump")[];
             /** @description The printer's severity of each check before a print (HWCheckSeverity); read-only */
             hw_checks?: {
                 nozzle?: components["schemas"]["CheckSeverity"];

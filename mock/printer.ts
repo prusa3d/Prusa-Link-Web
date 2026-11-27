@@ -47,7 +47,7 @@ export interface MockDialog {
   buttons: string[];
   /// mismatch: the filament question; preview: the print preview's tools
   /// mapping screen (or its G-code warning on a single-tool printer).
-  kind?: 'mismatch' | 'preview' | undefined;
+  kind?: 'mismatch' | 'preview' | 'question' | undefined;
 }
 
 export interface Change {
@@ -231,6 +231,10 @@ export class MockPrinter {
 
   reset() {
     this.extraCheck = undefined;
+    this.previewQuestion = false;
+    this.redScreen = undefined;
+    this.crashDump = undefined;
+    this.logToFile = false;
     this.nozzleCheck = 'warning';
     this.modelCheck = 'warning';
     this.usb = true;
@@ -294,6 +298,15 @@ export class MockPrinter {
     const d = this.dialog;
     if (d?.id !== id) return 'stale';
     if (!d.buttons.includes(button)) return 'invalid';
+    if (d.kind === 'question' && this.job) {
+      this.dialog = undefined;
+      if (button === 'Ignore') this.#showPreview();
+      else {
+        this.job = undefined;
+        this.state = 'IDLE';
+      }
+      return 'ok';
+    }
     if (d.kind === 'preview' && this.job) {
       if (button === 'Print') {
         // The firmware's tool_mapping_print_blocker: no Print past an abort.
@@ -335,10 +348,12 @@ export class MockPrinter {
   /// A filament load, change or unload by API v2; `material` '---' unloads.
   /// Like the firmware's own, it heats, then asks the person to take the
   /// old filament out and put the new one in.
-  toolFilament(tool: number, material: string, color?: string) {
-    const t = this.tools[tool];
+  toolFilament(tool: number | MockTool, material: string, color?: string) {
+    const t = typeof tool === 'number' ? this.tools[tool] : tool;
     if (!t) return;
-    t.target = 230;
+    // An MMU slot heats the head it feeds.
+    const head = this.slots.includes(t) ? this.tools[0] : t;
+    if (head) head.target = 230;
     this.state = 'BUSY';
     this.#helper = {
       step: 'heating',
@@ -524,6 +539,42 @@ export class MockPrinter {
 
   /// Starts a print; with a tool mapping (extruder to tools, 1-based) the
   /// printer skips its own mapping and filament check, as the firmware does.
+  /// The print preview's next screen: the tools mapping, or the G-code
+  /// warning on a single-tool printer.
+  #showPreview() {
+    const code = this.#errorPrefix;
+    this.showDialog(
+      this.mapsTools
+        ? {
+            state: 'ATTENTION',
+            code: `${code}814`,
+            title: 'Tool mapping',
+            text: 'Changes of mapping available only in the Printer UI. Select Print to start the print with defaults.',
+            buttons: ['Abort', 'Print'],
+            kind: 'preview',
+          }
+        : {
+            state: 'ATTENTION',
+            code: `${code}803`,
+            title: 'Warning',
+            text: "The G-code isn't fully compatible",
+            buttons: ['Abort', 'Print'],
+            kind: 'preview',
+          },
+    );
+  }
+
+  /// The printer's error code prefix.
+  get #errorPrefix() {
+    if (this.model.startsWith('XL')) return '17';
+    if (this.model.startsWith('COREONE')) return '27';
+    return '13';
+  }
+
+  /// The preview asks about calibrations first (the sim's uncalibrated
+  /// XL does).
+  previewQuestion = false;
+
   /// Whether a print's G-code tools map to the printer's tools or slots.
   get mapsTools() {
     return this.mmu || this.tools.length > 1;
@@ -547,8 +598,32 @@ export class MockPrinter {
     return { printable: !abort, level, checks: [...r.checks, extra] };
   }
 
+  /// The red screen the printer booted into (a BSOD has no code); it then
+  /// answers only the error API (error_api.cpp in Buddy).
+  redScreen: { code?: string; title: string; text: string } | undefined;
+  /// The dialog id of the red screen, random per boot.
+  redScreenId = 0;
+  /// A crash dump in the external flash (/api/v1/diagnostics).
+  crashDump: { size: number; exported: boolean } | undefined;
+  /// Logging to /usb/log.txt.
+  logToFile = false;
+
+  /// Boots into the red screen with a dump, as after a BSOD or a fatal
+  /// error; undefined boots normally.
+  crash(screen: { code?: string; title: string; text: string } | undefined) {
+    this.redScreen = screen;
+    this.redScreenId = 1000 + Math.floor(Math.random() * 1e6);
+    if (screen) {
+      this.crashDump = { size: 262_667, exported: false };
+      this.job = undefined;
+      this.dialog = undefined;
+      this.state = 'ERROR';
+    } else this.state = 'IDLE';
+  }
+
   /// A check of the printer's the page does not make (the dev panel's).
-  extraCheck: { check: string; level: 'warning' | 'abort' } | undefined;
+  extraCheck:
+    { check: string; level: 'warning' | 'abort'; tool?: string } | undefined;
 
   startPrint(path: string, mapping?: Record<string, number[]>): boolean {
     const f = this.file(path);
@@ -610,29 +685,17 @@ export class MockPrinter {
       this.cool();
     } else if (this.checks(f, mapping)?.level !== 'ok' && this.apiV2) {
       // Anything but fully compatible stops on the printer's preview, as
-      // PreviewSkipIfAble::all does.
-      let code = '13';
-      if (this.model.startsWith('XL')) code = '17';
-      if (this.model.startsWith('COREONE')) code = '27';
-      this.showDialog(
-        this.mapsTools
-          ? {
-              state: 'ATTENTION',
-              code: `${code}814`,
-              title: 'Tool mapping',
-              text: 'Changes of mapping available only in the Printer UI. Select Print to start the print with defaults.',
-              buttons: ['Abort', 'Print'],
-              kind: 'preview',
-            }
-          : {
-              state: 'ATTENTION',
-              code: `${code}803`,
-              title: 'Warning',
-              text: "The G-code isn't fully compatible",
-              buttons: ['Abort', 'Print'],
-              kind: 'preview',
-            },
-      );
+      // PreviewSkipIfAble::all does; first with its own questions.
+      if (this.previewQuestion)
+        this.showDialog({
+          state: 'ATTENTION',
+          code: `${this.#errorPrefix}801`,
+          title: 'Warning',
+          text: 'Please complete Calibrations & Tests before using the printer.',
+          buttons: ['Ignore', 'Calibrate'],
+          kind: 'question',
+        });
+      else this.#showPreview();
     } else {
       this.state = 'PRINTING';
       this.question = undefined;

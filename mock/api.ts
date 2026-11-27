@@ -39,6 +39,18 @@ export interface MockRequest {
 
 const json = (body: unknown, status = 200): MockResponse => ({ status, body });
 const empty = (status: number): MockResponse => ({ status });
+const REASONS: Record<number, string> = {
+  400: 'Bad Request',
+  404: 'Not Found',
+  409: 'Conflict',
+  422: 'Unprocessable Entity',
+};
+/// The firmware's StatusPage with a message: plain text, not JSON.
+const statusPage = (status: number, message: string): MockResponse => ({
+  status,
+  body: `${String(status)}: ${REASONS[status] ?? ''}\n\n${message}`,
+  headers: { 'content-type': 'text/plain' },
+});
 
 function readJson(req: MockRequest): Record<string, unknown> | undefined {
   try {
@@ -75,6 +87,7 @@ const FEATURES = [
   'tune',
   'filament',
   'print_checks',
+  'crash_dump',
 ] as const;
 
 /// `8.0.2`, `6.4.0-rc1` from a release file name.
@@ -220,6 +233,8 @@ export function handleApi(
   const denied = authorize(printer, req);
   if (denied) return denied;
 
+  if (printer.redScreen) return handleRedScreen(printer, req);
+
   if (method === 'GET' && path === '/api/version') {
     const body: Ok<'/api/version', 'get'> = {
       api: '2.0.0',
@@ -323,9 +338,11 @@ export function handleApi(
               time_in_use: 12345,
             },
           }),
-          ...(printer.dialog && { dialog_id: printer.dialog.id }),
           cancel_object_revision: printer.objectsRevision,
         }),
+        // The plain status has it too, after the v1 fields.
+        ...(printer.apiV2 &&
+          printer.dialog && { dialog_id: printer.dialog.id }),
       },
       ...(printer.job && {
         job: {
@@ -547,7 +564,7 @@ export function handleApi(
         ? (readJson(req)?.tool_mapping as Record<string, unknown> | undefined)
         : undefined;
       const invalid = mapping && invalidMapping(printer, mapping);
-      if (invalid) return json({ message: invalid }, 400);
+      if (invalid) return statusPage(400, invalid);
       return printer.startPrint(
         name,
         mapping as Record<string, number[]> | undefined,
@@ -564,6 +581,55 @@ export function handleApi(
     status: 404,
     body: '404: Not Found',
     headers: { 'content-type': 'text/plain' },
+  };
+}
+
+/// What the firmware answers in error mode (error_api.cpp): version, a
+/// bare status, the red screen as a dialog, the dump and a reset; any other
+/// /api/ path is a 404, /api/v1/info included.
+function handleRedScreen(printer: MockPrinter, req: MockRequest): MockResponse {
+  const { method, path } = req;
+  const screen = printer.redScreen;
+  if (!screen) return empty(404);
+  if (path === '/api/version' && method === 'GET')
+    return json({
+      api: '2.0.0',
+      version: '2.1.2',
+      printer: PRINTER_CODE[printer.model],
+      text: 'PrusaLink',
+      firmware: `${printer.firmware}+mock`,
+    });
+  if (path === '/api/v1/status' && method === 'GET')
+    return json({ printer: { state: 'ERROR' } });
+  if (path === '/api/v1/dialog' && method === 'GET')
+    return json({
+      dialog_id: printer.redScreenId,
+      state: 'ERROR',
+      ...(screen.code && { code: screen.code }),
+      title: screen.title,
+      text: screen.text,
+      buttons: [],
+    });
+  if (path === '/api/v1/diagnostics/dump' && printer.crashDump)
+    return method === 'GET' ? dump(printer) : empty(405);
+  if (path === '/api/v1/printer/reset') {
+    if (method !== 'POST') return empty(405);
+    setTimeout(() => {
+      printer.crash(undefined);
+    }, 1000);
+    return empty(202);
+  }
+  return empty(404);
+}
+
+function dump(printer: MockPrinter): MockResponse {
+  return {
+    status: 200,
+    body: new Uint8Array(printer.crashDump?.size ?? 0),
+    headers: {
+      'content-type': 'application/octet-stream',
+      'content-disposition': `attachment; filename*=UTF-8''dump_MOCK_${printer.firmware}.bin`,
+    },
   };
 }
 
@@ -602,10 +668,37 @@ function handleV2(
   const conflict = (message: string) =>
     json({ title: 'Conflict', text: message }, 409);
 
+  if (path === '/api/v1/diagnostics') {
+    if (method === 'GET')
+      return json({
+        crash_dump: printer.crashDump
+          ? { present: true, ...printer.crashDump }
+          : { present: false },
+        log_to_file: printer.logToFile,
+      });
+    if (method === 'PUT') {
+      const on = readJson(req)?.log_to_file;
+      if (typeof on !== 'boolean') return empty(422);
+      if (on && !printer.usb) return conflict('No USB drive');
+      printer.logToFile = on;
+      return empty(204);
+    }
+  }
+  if (path === '/api/v1/diagnostics/dump') {
+    if (!printer.crashDump) return empty(404);
+    if (method === 'GET') return dump(printer);
+    if (method === 'DELETE') {
+      printer.crashDump.exported = true;
+      return empty(204);
+    }
+  }
+
   if (path === '/api/v1/print/checks') {
     const job = printer.job;
-    if (printer.dialog?.kind !== 'preview' || !job)
-      return json({ message: 'No print in the preview' }, 409);
+    const preview = ['preview', 'question'].includes(
+      printer.dialog?.kind ?? '',
+    );
+    if (!preview || !job) return statusPage(409, 'No print in the preview');
     if (method !== 'GET') return empty(405);
     const query = new URLSearchParams(req.query ?? '').get('tool_mapping');
     let mapping = job.mapping;
@@ -614,7 +707,8 @@ function handleV2(
       const invalid = parsed
         ? invalidMapping(printer, parsed)
         : 'Invalid tools mapping';
-      if (invalid || !parsed) return json({ message: invalid }, 400);
+      if (invalid || !parsed)
+        return statusPage(400, invalid ?? 'Invalid tools mapping');
       mapping = parsed;
     }
     return json(printer.checks(job.file, mapping));
@@ -642,8 +736,7 @@ function handleV2(
     const button = readJson(req)?.button;
     if (typeof button !== 'string') return empty(400);
     const result = printer.press(Number(press[1]), button);
-    if (typeof result === 'object')
-      return json({ message: result.refused }, 409);
+    if (typeof result === 'object') return statusPage(409, result.refused);
     return empty({ ok: 204, stale: 404, invalid: 400 }[result]);
   }
 
@@ -798,39 +891,39 @@ function handleV2(
     }
   }
 
-  const toolFilament = /^\/api\/v1\/tools\/(\d+)\/filament$/.exec(path);
-  if (toolFilament && (method === 'POST' || method === 'PUT')) {
-    const tool = Number(toolFilament[1]);
-    const t = printer.tools[tool];
+  // POST /api/v1/tools/{tool}/filament as filament_api.cpp in Buddy: a
+  // head by its Connect id, an MMU slot "0.N" while the MMU is on.
+  const toolFilament = /^\/api\/v1\/tools\/([\d.]+)\/filament$/.exec(path);
+  if (toolFilament) {
+    if (method !== 'POST') return empty(405);
+    const id = toolFilament[1] ?? '';
+    let t = printer.tools[Number(id)];
+    if (id.includes('.'))
+      t = printer.mmu ? printer.slots[Number(id.split('.')[1])] : undefined;
+    if (!t || t.absent) return empty(404);
     const body = readJson(req);
-    if (!t || t.absent || !body) return empty(t && !t.absent ? 400 : 404);
-    const material = body.material as
-      { material_type?: unknown; primary_color?: unknown } | undefined;
-    const type = material?.material_type;
-    const color =
-      typeof material?.primary_color === 'string'
-        ? material.primary_color
-        : undefined;
-    const known =
-      typeof type === 'string' && FILAMENTS.some((f) => f.name === type);
-    if (method === 'PUT') {
-      if (!known || t.material === '---') return empty(422);
-      t.material = type;
-      t.color = color;
-      return empty(202);
-    }
-    const command = body.command;
-    if (command === 'unload') {
-      if (!idle) return conflict('Printer is busy');
-      printer.toolFilament(tool, '---');
-      return empty(202);
-    }
-    if (command !== 'load' && command !== 'change') return empty(400);
-    if (!known) return empty(422);
-    const printing = printer.state === 'PRINTING' || printer.state === 'PAUSED';
-    if (command === 'load' ? !idle : !printing && !idle)
-      return conflict('Printer is busy');
-    printer.toolFilament(tool, type, color);
+    const command = body?.command;
+    if (command !== 'load' && command !== 'change' && command !== 'unload')
+      return statusPage(422, 'Invalid command');
+    const filament = body?.filament;
+    const color = body?.color;
+    if (
+      color !== undefined &&
+      (typeof color !== 'string' || !/^#[0-9a-f]{6}$/i.test(color))
+    )
+      return statusPage(422, 'Invalid color');
+    if (
+      command !== 'unload' &&
+      (typeof filament !== 'string' ||
+        !FILAMENTS.some((f) => f.name === filament))
+    )
+      return statusPage(422, 'Unknown filament');
+    if (!idle || printer.dialog) return conflict('Printer is busy');
+    printer.toolFilament(
+      t,
+      command === 'unload' ? '---' : (filament as string),
+      color,
+    );
     return empty(202);
   }
 

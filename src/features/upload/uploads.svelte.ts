@@ -113,9 +113,12 @@ export class Uploads {
         });
         picked = await expandZips(picked);
       }
-      const [firmware, ...moreFirmware] = picked.firmware;
-      if (firmware) void firmwareUpdate.receive(firmware);
-      const skipped = picked.skipped + moreFirmware.length;
+      // The update dialog takes one firmware file; without it, none.
+      const firmware = __FIRMWARE_UPDATE__ ? picked.firmware[0] : undefined;
+      if (__FIRMWARE_UPDATE__ && firmware)
+        void firmwareUpdate.receive(firmware);
+      const skipped =
+        picked.skipped + picked.firmware.length - (firmware ? 1 : 0);
       if (skipped)
         this.#notice = {
           text: tn('upload.skipped', skipped),

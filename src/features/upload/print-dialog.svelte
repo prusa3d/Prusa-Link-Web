@@ -25,7 +25,7 @@
     localThumbnail,
   } from '../../lib/files/local-thumbnails';
   import { filamentGrams } from '../../lib/files/metadata';
-  import { fitsPrinter } from '../../lib/printer/compat';
+  import { fitsById, fitsPrinter } from '../../lib/printer/compat';
   import { language, t, type MessageKey } from '../../lib/i18n.svelte';
   import { Alert } from '../../lib/ui/alert';
   import { Button } from '../../lib/ui/button';
@@ -54,6 +54,8 @@
     TITLES,
   } from '../../lib/printer/print-check';
   import { printer } from '../../lib/stores/printer.svelte';
+  import { dialog } from '../../lib/stores/dialog.svelte';
+  import DialogActions from '../status/dialog-actions.svelte';
   import { CAN_START } from '../../lib/printer/state';
 
   // A constant the bundler folds: builds without tool mapping drop it.
@@ -252,7 +254,11 @@
     slots: mapsTools ? identity.slots : [],
     nozzleCheck: identity.nozzleCheck,
     modelCheck: identity.modelCheck,
-    modelFits: fitsPrinter(sliced, identity.code),
+    // The start G-code's model check where the header has it.
+    modelFits:
+      __TOOL_MAPPING__ && header?.['M862.3'] !== undefined
+        ? fitsById(header['M862.3'], identity.code)
+        : fitsPrinter(sliced, identity.code),
   });
   // Builds without tool mapping (the MINI, the iX) check the model only.
   const check = $derived(
@@ -303,7 +309,7 @@
       changeWarnings = [
         ...new Set(error.warnings?.flatMap((w) => w.check ?? []) ?? []),
       ];
-    else changeRefused = (await reason(response)) ?? t('mapping.changeFailed');
+    else changeRefused = reason(error) ?? t('mapping.changeFailed');
   }
   $effect(() => {
     const state = printer.status?.state;
@@ -398,17 +404,27 @@
     await printer.refresh();
   }
 
+  /// The printer's dialog in its print preview: a question (calibrations,
+  /// filament…), its G-code warning or its tools mapping screen.
+  const asked = $derived(starting ? dialog.current : undefined);
+  const offersPrint = $derived(!!asked?.buttons.includes('Print'));
+
   async function press(button: 'Print' | 'Abort') {
-    const id = printer.status?.dialog_id;
-    if (id === undefined) return false;
+    let current = asked;
+    // Just answered, the next dialog is not read yet: read it now.
+    if (!current?.buttons.includes(button)) {
+      const { data, response } = await api.GET('/api/v1/dialog');
+      current = response.status === 200 ? data : undefined;
+    }
+    const id = current?.dialog_id;
+    if (id === undefined || !current?.buttons.includes(button)) return false;
     busy = true;
-    const { response } = await api.POST('/api/v1/dialog/{dialog_id}', {
+    const { response, error } = await api.POST('/api/v1/dialog/{dialog_id}', {
       params: { path: { dialog_id: id } },
       body: { button },
     });
     busy = false;
-    if (!response.ok)
-      refusal = (await reason(response)) ?? t('files.printFailed');
+    if (!response.ok) refusal = reason(error) ?? t('files.printFailed');
     else await printer.refresh();
     return response.ok;
   }
@@ -418,10 +434,20 @@
     const state = printer.status?.state;
     const id = printer.status?.dialog_id;
     if (!starting || !state) return;
-    if (state === 'PRINTING') {
-      starting = undefined;
-      untrack(onstarted);
-    } else if (id !== undefined && starting === 'sent')
+    if (state === 'PRINTING')
+      // The firmware reports PRINTING for a moment as its preview starts:
+      // printing it is once no print is in the preview any more.
+      void untrack(async () => {
+        const r = await readReport();
+        if (r) {
+          report = r;
+          if (starting === 'sent') starting = 'preview';
+        } else {
+          starting = undefined;
+          onstarted();
+        }
+      });
+    else if (id !== undefined && starting === 'sent')
       void untrack(async () => {
         const r = await readReport();
         if (!r) {
@@ -434,14 +460,27 @@
         report = r;
         // Warnings the page did not show are accepted anew.
         if (!shown(r)) accepted = false;
-        else if (r.printable && (r.level === 'ok' || accepted))
-          await press('Print');
       });
     else if (id === undefined && starting !== 'sent' && CAN_START.has(state)) {
       starting = undefined;
       report = undefined;
       refusal = t('print.stopped');
     }
+  });
+
+  // The preview's Print (its G-code warning, then its tools mapping) for
+  // the person, once: the page's Print with what it showed is the answer.
+  let answered: number | undefined;
+  $effect(() => {
+    const r = report;
+    const id = asked?.dialog_id;
+    if (starting !== 'preview' || !r || !offersPrint || id === answered) return;
+    const fine = r.level === 'ok' || r.level === 'reminder';
+    if (!r.printable || !(fine || (accepted && untrack(() => shown(r)))))
+      return;
+    if (mappingSent && wire(mapping) !== sentMapping) return;
+    answered = id;
+    void untrack(() => press('Print'));
   });
 
   async function readReport(proposed?: Mapping) {
@@ -467,6 +506,7 @@
   /// mapping, else the preview is left and the print started again with it.
   async function printFromPreview(name: string) {
     if (!mappingSent || wire(mapping) === sentMapping) {
+      answered = asked?.dialog_id;
       await press('Print');
       return;
     }
@@ -589,11 +629,14 @@
         <ul>
           {#each report.checks as c, i (i)}
             <li data-level={c.level}>
-              {c.check}{#if c.gcode_tool}
-                · {t('print.filamentN', {
-                  n: c.gcode_tool,
-                })}{/if}{#if c.tool !== undefined}
-                · T{Number(c.tool.split('.').pop()) + 1}{/if}
+              {[
+                c.check,
+                c.gcode_tool && t('print.filamentN', { n: c.gcode_tool }),
+                c.tool !== undefined &&
+                  `T${String(Number(c.tool.split('.').pop()) + 1)}`,
+              ]
+                .filter(Boolean)
+                .join(' · ')}
             </li>
           {:else}
             <li>{t('print.allGood')}</li>
@@ -693,7 +736,22 @@
         ><div data-testid="print-refused">{refusal}</div></Alert
       >
     {/if}
-    {#if starting === 'asking'}
+    {#if asked && !offersPrint}
+      <!-- A question of the printer's before its checks: answered here or
+           on its screen. -->
+      <Alert variant="info">
+        <div data-testid="printer-question">
+          <p class="font-semibold">{asked.title ?? t('print.printerAsks')}</p>
+          {#if asked.text}<p>{asked.text}</p>{/if}
+          <DialogActions
+            dialog={asked}
+            fault={false}
+            pressing={dialog.pressing}
+            onbutton={(b: string) => void dialog.press(b)}
+          />
+        </div>
+      </Alert>
+    {:else if starting === 'asking'}
       <Alert variant="info">{t('print.printerAsks')}</Alert>
     {/if}
     {#if warned && !refused && !changing && !wanted}
@@ -736,7 +794,7 @@
       {:else if starting === 'preview'}
         <Button
           size="lg"
-          disabled={refused || (warned && !accepted)}
+          disabled={refused || (warned && !accepted) || !offersPrint}
           loading={busy}
           onclick={() => void printFromPreview(file.name)}
         >

@@ -360,14 +360,14 @@ describe('PrusaLink 2 API', () => {
     );
   });
 
-  it('loads filament into a tool by its OpenPrintTag fields', () => {
+  it('loads filament into a tool by the filament’s name, as the firmware', () => {
     const printer = new MockPrinter('XL');
-    expect(
-      send(printer, 'POST', '/api/v1/tools/2/filament', {
-        command: 'load',
-        material: { material_type: 'PETG', primary_color: '#00ff00' },
-      }).status,
-    ).toBe(202);
+    const load = (body: unknown, tool = '2') =>
+      send(printer, 'POST', `/api/v1/tools/${tool}/filament`, body).status;
+    expect(load({ command: 'load', filament: 'PETG', color: '#00ff00' })).toBe(
+      202,
+    );
+    expect(load({ command: 'load', filament: 'PLA' })).toBe(409);
     // The person at the printer takes the old filament out, puts PETG in.
     for (let i = 0; i < 5; i++) printer.tick();
     printer.answer('removed');
@@ -378,12 +378,64 @@ describe('PrusaLink 2 API', () => {
       color: '#00ff00',
     });
     expect(printer.state).toBe('IDLE');
+    expect(load({ command: 'load', filament: 'UNOBTAINIUM' })).toBe(422);
+    expect(load({ command: 'load' })).toBe(422);
+    expect(load({ command: 'load', filament: 'PLA', color: 'red' })).toBe(422);
+    expect(load({ command: 'eat' })).toBe(422);
+    expect(load({ command: 'unload' }, '9')).toBe(404);
+    expect(load({ command: 'unload' }, '0.1')).toBe(404);
     expect(
-      send(printer, 'POST', '/api/v1/tools/2/filament', {
+      send(printer, 'PUT', '/api/v1/tools/2/filament', { command: 'unload' })
+        .status,
+    ).toBe(405);
+  });
+
+  it('loads an MMU slot by its "0.N" id', () => {
+    const printer = new MockPrinter('MK4S');
+    printer.mmu = true;
+    expect(
+      send(printer, 'POST', '/api/v1/tools/0.2/filament', {
         command: 'load',
-        material: { material_type: 'UNOBTAINIUM' },
+        filament: 'ASA',
       }).status,
-    ).toBe(422);
+    ).toBe(202);
+  });
+
+  it('answers only the error API on the red screen', () => {
+    const printer = new MockPrinter('MK4S');
+    printer.crash({
+      title: 'interrupts_common.cpp:21',
+      text: 'MemManage_Handler',
+    });
+    expect(get(printer, '/api/v1/status').body).toEqual({
+      printer: { state: 'ERROR' },
+    });
+    expect(get(printer, '/api/v1/info').status).toBe(404);
+    expect(get(printer, '/api/v1/dialog').body).toMatchObject({
+      state: 'ERROR',
+      buttons: [],
+      title: 'interrupts_common.cpp:21',
+    });
+    expect(get(printer, '/api/v1/diagnostics/dump').status).toBe(200);
+    expect(send(printer, 'POST', '/api/v1/printer/reset', {}).status).toBe(202);
+  });
+
+  it('keeps a crash dump to download and mark sent, and logs to USB', () => {
+    const printer = new MockPrinter('MK4S');
+    expect(get(printer, '/api/v1/diagnostics/dump').status).toBe(404);
+    printer.crashDump = { size: 10, exported: false };
+    expect(get(printer, '/api/v1/diagnostics').body).toMatchObject({
+      crash_dump: { present: true, exported: false },
+      log_to_file: false,
+    });
+    expect(send(printer, 'DELETE', '/api/v1/diagnostics/dump').status).toBe(
+      204,
+    );
+    expect(printer.crashDump.exported).toBe(true);
+    expect(
+      send(printer, 'PUT', '/api/v1/diagnostics', { log_to_file: true }).status,
+    ).toBe(204);
+    expect(printer.logToFile).toBe(true);
   });
 
   it('lists firmware in the root and flashes only newer ones', () => {
@@ -474,12 +526,32 @@ describe('PrusaLink 2 API', () => {
         'tool_mapping=1:1,2:1',
       ).status,
     ).toBe(400);
+    // A G-code tool named twice is refused.
+    expect(
+      send(
+        printer,
+        'GET',
+        '/api/v1/print/checks',
+        undefined,
+        'tool_mapping=1:1,2:2,1:3',
+      ).status,
+    ).toBe(400);
+    // Percent-encoded or not, as the firmware reads it.
+    expect(
+      send(
+        printer,
+        'GET',
+        '/api/v1/print/checks',
+        undefined,
+        'tool_mapping=1%3A1%2C2%3A2%2C3%3A3%2C4%3A4',
+      ).status,
+    ).toBe(200);
     const id = String(printer.dialog?.id);
     const refused = send(printer, 'POST', `/api/v1/dialog/${id}`, {
       button: 'Print',
     });
     expect(refused.status).toBe(409);
-    expect(refused.body).toEqual({ message: 'Unmapped tool' });
+    expect(refused.body).toBe('409: Conflict\n\nUnmapped tool');
     expect(
       send(printer, 'POST', `/api/v1/dialog/${id}`, { button: 'Abort' }).status,
     ).toBe(204);

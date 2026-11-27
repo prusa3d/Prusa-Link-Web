@@ -319,5 +319,18 @@
   "print.filamentN": "filamento {n}",
   "print.allGood": "Tutto a posto",
   "print.printerAsks": "La stampante chiede sul suo display; rispondi lì o nella pagina.",
-  "print.accept": "Ho capito; stampa comunque"
+  "print.accept": "Ho capito; stampa comunque",
+  "redScreen.title": "La stampante si è fermata per un errore",
+  "redScreen.body": "Finché non si riavvia, la stampante non risponde ad altro.",
+  "redScreen.dump": "Scarica il crash dump",
+  "redScreen.mail": "Scrivi al supporto",
+  "redScreen.restart": "Riavvia la stampante",
+  "redScreen.secrets": "Il dump è una copia della memoria della stampante e può contenere dati privati: invialo solo al supporto Prusa.",
+  "redScreen.noDump": "La stampante non ha un crash dump.",
+  "redScreen.restarting": "La stampante si sta riavviando…",
+  "dump.title": "La stampante si è bloccata in precedenza",
+  "dump.body": "Ha salvato un crash dump che aiuta il supporto Prusa a trovare la causa.",
+  "dump.sent": "Inviato, nascondi",
+  "log.off": "Log su USB: no",
+  "log.on": "Log su USB (log.txt): sì"
 }

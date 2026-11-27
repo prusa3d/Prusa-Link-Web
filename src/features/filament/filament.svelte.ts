@@ -79,11 +79,8 @@ export class Filament {
     this.#target = action === 'unload' ? undefined : material;
     this.#seenRunning = false;
     const { response } = await api.POST('/api/v1/tools/{tool}/filament', {
-      params: { path: { tool: this.#tool } },
-      body: {
-        command: action,
-        ...(material && { material: { material_type: material } }),
-      },
+      params: { path: { tool: String(this.#tool) } },
+      body: { command: action, ...(material && { filament: material }) },
     });
     if (!response.ok) this.#busy = undefined;
     return response.ok;

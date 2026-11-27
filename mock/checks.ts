@@ -1,5 +1,5 @@
 import type { components } from '../src/lib/api/schema';
-import { fitsPrinter } from '../src/lib/printer/compat.ts';
+import { fitsById, fitsPrinter } from '../src/lib/printer/compat.ts';
 import { type Issue, resolve, TITLES } from '../src/lib/printer/print-check.ts';
 import {
   gcodeFilaments,
@@ -71,7 +71,10 @@ export function report(
     slots: maps ? slots : [],
     nozzleCheck: printer.nozzleCheck,
     modelCheck: printer.modelCheck,
-    modelFits: fitsPrinter(header?.printer_model, PRINTER_CODE[printer.model]),
+    modelFits:
+      header?.['M862.3'] !== undefined
+        ? fitsById(header['M862.3'], PRINTER_CODE[printer.model])
+        : fitsPrinter(header?.printer_model, PRINTER_CODE[printer.model]),
   });
   const checks = r.issues.map((i) => {
     const text = TEXTS[i.key];
@@ -112,13 +115,15 @@ export function invalidMapping(
 }
 
 /// `1:3:5,2:1` (the query of /print/checks) as a mapping; undefined when
-/// malformed.
+/// malformed or a G-code tool comes twice.
 export function parseMapping(text: string): Mapping | undefined {
   const out: Mapping = {};
   for (const entry of text.split(',')) {
     const [from, ...to] = entry.split(':').map(Number);
+    // A G-code tool named twice is refused, as the firmware does.
     if (
       from === undefined ||
+      from in out ||
       !to.length ||
       ![from, ...to].every((n) => Number.isInteger(n) && n > 0)
     )
