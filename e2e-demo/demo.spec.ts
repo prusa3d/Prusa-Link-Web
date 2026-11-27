@@ -21,6 +21,7 @@ test('the demo signs in, prints and uploads on the in-page mock printer', async 
     'data-state',
     'PRINTING',
   );
+  await page.getByRole('button', { name: 'Mock printer' }).click();
   await expect(
     page.getByRole('complementary', { name: 'Mock printer' }),
   ).toContainText('PRINTING');

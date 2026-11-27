@@ -53,4 +53,6 @@ link.style.cssText = 'color:inherit;text-decoration:underline';
 banner.append(`Demo — mock printer · password ${printer.apiKey} · `, link);
 document.body.append(banner);
 
-mountDrawer({ open: innerWidth >= 1280 });
+// Open where it leaves the widest dialog (48rem, centred) clear of its
+// 24rem: a dialog's buttons sit at its right edge.
+mountDrawer({ open: innerWidth >= 1536 });
