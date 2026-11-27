@@ -10,7 +10,7 @@ language (`dist/mini-<lang>/`) carrying that language only; every other build
 carries all nine. Each folder also has `index.html.gz` and `favicon.ico.gz`,
 gzipped exactly as the firmware embeds them.
 
-Budget, gzipped as the firmware stores it: 80 KB for the MINI builds, 120 KB for
+Budget, gzipped as the firmware stores it: 80 KB for the MINI builds, 140 KB for
 every other printer, enforced by `pnpm build`.
 
 |                                                                                                                  |                                                                                              |
