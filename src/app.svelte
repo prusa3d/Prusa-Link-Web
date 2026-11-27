@@ -75,11 +75,12 @@
   // Once the printer says it keeps dumps, not on every /info read.
   const keepsDumps = $derived(__DIAGNOSTICS__ && identity.can('crash_dump'));
   $effect(() => {
-    if (keepsDumps) void diagnostics.refresh();
+    if (__DIAGNOSTICS__ && keepsDumps) void diagnostics.refresh();
   });
   /// The printer's red screen: an error without buttons.
   const redScreen = $derived(
-    printer.status?.state === 'ERROR' &&
+    __API_V2__ &&
+      printer.status?.state === 'ERROR' &&
       dialog.current?.state === 'ERROR' &&
       !dialog.current.buttons.length
       ? dialog.current
@@ -474,7 +475,7 @@
                   dialog={__API_V2__
                     ? alertStatus && dialog.current
                     : undefined}
-                  pressing={dialog.pressing}
+                  pressing={__API_V2__ ? dialog.pressing : undefined}
                   onbutton={(button: string) => void pressDialog(button)}
                 />
                 <Notices />

@@ -68,4 +68,4 @@ export class DialogStore {
   }
 }
 
-export const dialog = new DialogStore();
+export const dialog = /* @__PURE__ */ new DialogStore();
