@@ -61,6 +61,8 @@
   const name = $derived.by(() => {
     if (chamber) return t('status.chamber');
     if (bed) return t('status.bed');
+    if (reading.picked !== undefined)
+      return `${t('status.tool')} · T${String(reading.picked)}`;
     return single && label.heater === 'T1' ? t('status.tool') : label.heater;
   });
   const iconWidth = $derived(style.caption * (bed ? 1 : 352 / 512));
