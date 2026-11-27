@@ -442,8 +442,9 @@ describe('resolve', () => {
 describe('choose', () => {
   const mapping: Mapping = { 1: [1, 5], 2: [2], 3: [3] };
 
-  it('swaps when the slot is another filament’s', () => {
-    expect(choose(mapping, 1, 2)).toEqual({ 1: [2, 5], 2: [1], 3: [3] });
+  it('leaves the filament that had the slot without one', () => {
+    expect(choose(mapping, 1, 2)).toEqual({ 1: [2, 5], 3: [3] });
+    expect(choose(mapping, 2, 1)).toEqual({ 2: [1], 3: [3] });
   });
 
   it('takes a backup slot away from its filament', () => {

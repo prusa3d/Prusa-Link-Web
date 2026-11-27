@@ -7,7 +7,6 @@
   import type { Started } from '../files/files.svelte';
   import { reason } from '../../lib/api/reason';
   import type { components } from '../../lib/api/schema';
-  import { Checkbox } from '../../lib/ui/checkbox';
   import FilamentProgress from '../filament/filament-progress.svelte';
   import { filament } from '../filament/filament.svelte';
   import {
@@ -189,8 +188,10 @@
   let reading = $state(false);
   let mapping = $state<Mapping>({});
   let suggested = $state<Mapping>({});
-  /// The person accepts the warnings (the tick before Print anyway).
+  /// The person accepts the warnings: Print anyway, once confirmed.
   let accepted = $state(false);
+  /// Print anyway was pressed: the risk is said and asked once more.
+  let confirming = $state(false);
   /// The filament change before the print: sent, seen working, done, or
   /// failed.
   let changingAll = $state<
@@ -216,6 +217,7 @@
     changeWarnings = undefined;
     changeRefused = undefined;
     accepted = false;
+    confirming = false;
     starting = undefined;
     report = undefined;
     refusal = undefined;
@@ -520,6 +522,8 @@
     await start(name);
   }
 
+  /// Issues a filament change fixes: said as steps.
+  const STEPS: Issue['key'][] = ['filamentNotLoaded', 'wrongFilament'];
   const issueText = (i: Issue) =>
     t(
       i.key === 'model'
@@ -528,7 +532,7 @@
       {
         n: i.filament ?? '',
         slot: i.slot ?? '',
-        has: i.has ?? '',
+        has: i.has ? filamentLabel(i.has) : '',
         needs: i.needs ? filamentLabel(i.needs) : '',
       },
     );
@@ -539,6 +543,7 @@
   title={t('files.confirmTitle', { name: info?.name ?? '' })}
   size="xl"
   {onclose}
+  footer={file && info ? actions : undefined}
 >
   {#if file && info}
     <Thumbnail src={thumbnail} class="aspect-video w-full" />
@@ -618,7 +623,7 @@
                 c.check,
                 c.gcode_tool && t('print.filamentN', { n: c.gcode_tool }),
                 c.tool !== undefined &&
-                  `T${String(Number(c.tool.split('.').pop()) + 1)}`,
+                  t('tools.name', { n: Number(c.tool.split('.').pop()) + 1 }),
               ]
                 .filter(Boolean)
                 .join(' · ')}
@@ -629,19 +634,36 @@
         </ul>
       </div>
     {:else if check.issues.length}
-      <ul
+      <!-- What stands between the person and the print, and what to do:
+           the filaments to put in, step by step, then everything else. -->
+      <div
         class={[
-          'rounded-md border px-3 py-2 text-sm',
+          'flex flex-col gap-1 rounded-md border px-3 py-2 text-sm',
           refused
             ? 'border-state-fault-edge bg-state-fault text-state-fault-text'
             : 'border-state-attention-edge bg-state-attention text-state-attention-text',
         ]}
         data-testid="print-issues"
       >
-        {#each check.issues as issue, i (i)}
-          <li data-level={issue.level}>{issueText(issue)}</li>
-        {/each}
-      </ul>
+        <p class="font-semibold">
+          {check.changes.length ? t('mapping.wrong') : t('print.cantYet')}
+        </p>
+        {#if check.changes.length}
+          <ol class="list-decimal ps-5" data-testid="print-changes">
+            {#each check.issues.filter( (i) => STEPS.includes(i.key) ) as issue, i (i)}
+              <li>{issueText(issue)}</li>
+            {/each}
+          </ol>
+          {#if canChange && !changingAll}
+            <p>{t('mapping.changeHint')}</p>
+          {/if}
+        {/if}
+        <ul class="flex flex-col gap-1">
+          {#each check.issues.filter((i) => !STEPS.includes(i.key)) as issue, i (i)}
+            <li data-level={issue.level}>{issueText(issue)}</li>
+          {/each}
+        </ul>
+      </div>
     {/if}
     {#if !__TOOL_MAPPING__}
       <!-- No filament changes here. -->
@@ -739,20 +761,34 @@
     {:else if starting === 'asking'}
       <Alert variant="info">{t('print.printerAsks')}</Alert>
     {/if}
-    {#if warned && !refused && !changing && !wanted}
-      <Checkbox bind:checked={accepted}
-        ><span data-testid="accept-warnings">{t('print.accept')}</span
-        ></Checkbox
-      >
-    {/if}
+  {/if}
+</Dialog>
+
+{#snippet actions()}
+  {#if file}
     <div class="flex flex-wrap justify-end gap-2 max-sm:[&>*]:flex-1">
+      {#if confirming}
+        <p
+          class="basis-full text-sm font-semibold max-sm:basis-full!"
+          data-testid="print-risk"
+        >
+          {t('print.risk')}
+        </p>
+      {/if}
       <Button
         variant="secondary"
         size="lg"
         onclick={() => {
+          if (confirming) {
+            confirming = false;
+            return;
+          }
           if (starting === 'preview') void press('Abort');
           onclose();
-        }}>{t(file.meta ? 'upload.later' : 'common.close')}</Button
+        }}
+        >{confirming
+          ? t('common.back')
+          : t(file.meta ? 'upload.later' : 'common.close')}</Button
       >
       {#if onchangefilament && !multiTool && extruders.length < 2 && !changing && !wanted && canStart}
         <!-- Another colour or spool of the same filament: the person picks
@@ -776,39 +812,67 @@
             material: filamentLabel(wanted),
           })}
         </Button>
-      {:else if starting === 'preview'}
-        <Button
-          size="lg"
-          disabled={refused || (warned && !accepted) || !offersPrint}
-          loading={busy}
-          onclick={() => void printFromPreview(file.name)}
-        >
-          <Icon node={Printer} />{t(
-            warned ? 'files.printAnyway' : 'upload.printNow',
-          )}
-        </Button>
-      {:else}
-        {#if __TOOL_MAPPING__ && check.state === 'change' && !changingAll}
+      {:else if warned && !accepted && !refused}
+        <!-- Printing through warnings is never the first offer: it is
+             asked once more, with the risk said above. -->
+        {#if confirming}
           <Button
             size="lg"
-            disabled={!canChange}
-            title={check.unloadable.length
-              ? t('mapping.unloadableShort')
-              : undefined}
-            onclick={() => void changeFilaments()}
-            ><TelemetryIcon kind="spool" />{t(
-              'mapping.changeFilaments',
+            variant="destructive"
+            disabled={starting === 'preview'
+              ? !offersPrint
+              : !canStart || !!starting || (mapsTools && reading)}
+            onclick={() => {
+              accepted = true;
+              confirming = false;
+              void (starting === 'preview'
+                ? printFromPreview(file.name)
+                : start(file.name));
+            }}><Icon node={Printer} />{t('files.printAnyway')}</Button
+          >
+        {:else}
+          {#if __TOOL_MAPPING__ && check.state === 'change' && !changingAll && !starting}
+            <Button
+              size="lg"
+              disabled={!canChange}
+              onclick={() => void changeFilaments()}
+              ><TelemetryIcon kind="spool" />{t(
+                'mapping.changeFilaments',
+              )}</Button
+            >
+          {/if}
+          <Button
+            size="lg"
+            variant={__TOOL_MAPPING__ && check.changes.length
+              ? 'ghost'
+              : 'default'}
+            disabled={starting !== 'preview' &&
+              (!canStart ||
+                !!starting ||
+                changingAll === 'sent' ||
+                changingAll === 'working')}
+            onclick={() => (confirming = true)}
+            >{t(
+              __TOOL_MAPPING__ && check.changes.length
+                ? 'mapping.printWithout'
+                : 'files.printAnyway',
             )}</Button
           >
         {/if}
+      {:else if starting === 'preview'}
         <Button
           size="lg"
-          variant={__TOOL_MAPPING__ && check.state === 'change' && !changingAll
-            ? 'secondary'
-            : 'default'}
+          disabled={refused || !offersPrint}
+          loading={busy}
+          onclick={() => void printFromPreview(file.name)}
+        >
+          <Icon node={Printer} />{t('upload.printNow')}
+        </Button>
+      {:else}
+        <Button
+          size="lg"
           disabled={!canStart ||
             refused ||
-            (warned && !accepted) ||
             !!starting ||
             (mapsTools && reading) ||
             changingAll === 'sent' ||
@@ -817,10 +881,10 @@
           onclick={() => void start(file.name)}
         >
           <Icon node={Printer} />{canStart
-            ? t(mismatch || warned ? 'files.printAnyway' : 'upload.printNow')
+            ? t(mismatch ? 'files.printAnyway' : 'upload.printNow')
             : (blocked ?? t('upload.printNow'))}
         </Button>
       {/if}
     </div>
   {/if}
-</Dialog>
+{/snippet}
