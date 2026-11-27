@@ -134,7 +134,7 @@
       onclose={() => (changeOpen = false)}
     />
   {/if}
-{:else}
+{:else if __BABYSTEP__}
   <div class="flex items-center gap-2" data-testid="babystep">
     <span class="flex-1 text-sm font-medium">{t('controls.zOffset')}</span>
     <Button

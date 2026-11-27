@@ -44,6 +44,7 @@ declare const __MULTI_TOOL__: boolean;
 declare const __TOOL_MAPPING__: boolean;
 declare const __CANCEL_OBJECT__: boolean;
 declare const __CONTROLS__: boolean;
+declare const __BABYSTEP__: boolean;
 declare const __FIRMWARE_FLASH__: boolean;
 declare const __FIRMWARE_UPDATE__: boolean;
 declare const __NOZZLE_BADGES__: boolean;

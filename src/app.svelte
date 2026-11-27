@@ -214,12 +214,13 @@
   // every poll.
   const jobId = $derived(printer.job?.id);
   $effect(() => {
-    if (__CONTROLS__ && jobId !== undefined) tuning.forget();
+    if (__BABYSTEP__ && jobId !== undefined) tuning.forget();
   });
   const controlMode = $derived.by(() => {
     const state = printer.status?.state;
-    if (state === 'PRINTING' || state === 'PAUSED') return 'printing';
-    return canStart ? 'idle' : undefined;
+    if (state === 'PRINTING' || state === 'PAUSED')
+      return __BABYSTEP__ ? 'printing' : undefined;
+    return __CONTROLS__ && canStart ? 'idle' : undefined;
   });
 
   async function cancelObject(id: number, cancel: boolean) {
@@ -446,7 +447,7 @@
                 />
               {/snippet}
               {#snippet controls()}
-                {#if __CONTROLS__ && controlMode && !printer.offline}
+                {#if (__CONTROLS__ || __BABYSTEP__) && controlMode && !printer.offline}
                   <PrinterControls
                     mode={controlMode}
                     zOffset={printer.status?.z_offset}
