@@ -16,7 +16,28 @@ export function equipmentOf(
   mmu: boolean,
   more: Partial<Omit<Equipment, 'mmu'>> = {},
 ): Equipment {
-  return { mmu, enclosure: false, chamber: false, tools: 1, ...more };
+  return {
+    mmu,
+    enclosure: false,
+    chamber: false,
+    tools: 1,
+    present: [1],
+    ...more,
+  };
+}
+
+/// The equipment /api/v1/info describes: the tools it lists, by dock (an
+/// empty or disabled dock is null, `tool_count` counts the docks), and the
+/// enclosure.
+export function equipmentFrom(
+  tools: readonly unknown[],
+  enclosure: boolean,
+): Partial<Omit<Equipment, 'mmu'>> {
+  const present = tools.flatMap((t, i) => (t ? [i + 1] : []));
+  return {
+    enclosure,
+    ...(present.length && { tools: present.length, present }),
+  };
 }
 
 export interface Picture {
@@ -42,8 +63,7 @@ export function pictureFor(
   const key = (
     all.length === 1 && only ? only[0] : (variant ?? 'coreone')
   ) as Variant;
-  const picture =
-    (mmu ? printerImages.mmu[key] : undefined) ?? printerImages.images[key];
+  const picture = printerImages.images[key];
   if (!picture) return undefined;
   const hidden = (picture.status?.conditional ?? [])
     .filter((c) => !met(c.when, equipment))

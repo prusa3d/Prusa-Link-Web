@@ -68,7 +68,11 @@ export interface LabelStyle {
   value: number;
   caption: number;
   stroke: number;
+  /// A slight shadow under every label, to lift it off the picture.
+  shadow?: true;
 }
+
+type LabelSize = Exclude<keyof LabelStyle, 'shadow'>;
 
 /// `source` is `<editor source id>/<file>`, the picture the edits apply to.
 export interface StatusPicture {
@@ -80,24 +84,97 @@ export interface StatusPicture {
   conditional: { id: string; when: Condition }[];
   /// The bed area the app tints by the bed's temperature, over the picture
   /// and under the labels.
-  bed?: Bed;
+  bed?: BedArea;
+  /// Tinted by the chamber's temperature, see-through, under the bed.
+  chamber?: BedArea;
+  /// Filled with the colour of the printer's state.
+  status?: BedArea;
+  /// Fans the app turns while they run.
+  fans?: FanParts[];
+  /// A toolchanger's carriage, slid in front of the picked tool's dock.
+  carriage?: CarriageParts;
   edits: Edits;
-  /// A variant picture (`<base>_<suffix>.svg`) takes its labels, style and
-  /// bed area from its base's status picture; those above are that result,
-  /// `overrides` what the variant changed.
+  /// A variant picture (`<base>_<suffix>.svg`) takes its labels, style,
+  /// areas and fans from its base's status picture; those above are that
+  /// result, `overrides` what the variant changed.
   base?: string;
   overrides?: VariantOverrides;
 }
 
 /// Per heater: the variant's own label, or null when it drops the base's.
-/// `bed` null: the variant has no bed area though its base has one.
+/// An area null: the variant has none though its base has one. `fans`: the
+/// variant's own list in place of the base's.
 export interface VariantOverrides {
   style?: LabelStyle;
   labels: Partial<Record<Heater, Label | null>>;
-  bed?: Bed | null;
+  bed?: BedArea | null;
+  chamber?: BedArea | null;
+  status?: BedArea | null;
+  fans?: FanParts[];
 }
 
-type Inheritable = Pick<StatusPicture, 'labels' | 'style' | 'bed'>;
+export const AREAS = ['bed', 'chamber', 'status'] as const;
+export type AreaName = (typeof AREAS)[number];
+
+/// A fan's parts, by key, and what it cools; `center`, where the editor
+/// moved it, is the point it turns around (else the middle of its parts).
+export interface FanParts {
+  parts: string[];
+  kind: 'hotend' | 'print';
+  tool?: number;
+  center?: Point;
+}
+
+export type Areas = Pick<StatusPicture, AreaName | 'fans'>;
+
+/// The carriage's parts, by key, and its offset from where it is drawn per
+/// picked tool ("1"…) and with none picked ("0").
+export interface CarriageParts {
+  parts: string[];
+  positions: Record<string, Point>;
+}
+
+export function normalizeCarriage(c: CarriageParts): CarriageParts {
+  return {
+    parts: [...new Set(c.parts)].sort(compareKeys),
+    positions: Object.fromEntries(
+      Object.entries(c.positions)
+        .filter(([, p]) => p[0] || p[1])
+        .sort(([a], [b]) => Number(a) - Number(b))
+        .map(([k, p]) => [k, roundPoint(p)]),
+    ),
+  };
+}
+
+function parseCarriage(value: unknown): CarriageParts {
+  const c = record(value, 'carriage');
+  if (!Array.isArray(c.parts) || !c.parts.every((k) => typeof k === 'string'))
+    throw new Error('Bad carriage parts');
+  return normalizeCarriage({
+    parts: c.parts,
+    positions: Object.fromEntries(
+      Object.entries(record(c.positions ?? {}, 'carriage positions')).map(
+        ([k, v]) => [k, point(v)],
+      ),
+    ),
+  });
+}
+
+/// The bed as parts of the picture, by key: the app fills them with the
+/// bed's tint and keeps their outline. A variant's inherited keys name parts
+/// of its own picture.
+export interface BedParts {
+  parts: string[];
+}
+
+/// A rectangle drawn over the bed, or the picture's own bed parts.
+export type BedArea = Bed | BedParts;
+
+export function isBedParts(bed: BedArea | undefined): bed is BedParts {
+  return bed !== undefined && 'parts' in bed;
+}
+
+type Inheritable = Pick<StatusPicture, 'labels' | 'style'> & Areas;
 
 function sameLabel(a: Label, b: Label): boolean {
   return JSON.stringify(labelJson(a)) === JSON.stringify(labelJson(b));
@@ -119,12 +196,17 @@ export function resolveVariant(
     const o = own[h];
     return o && !base.labels.some((l) => l.heater === h) ? [o] : [];
   });
-  const bed = overrides.bed === undefined ? base.bed : overrides.bed;
-  return {
+  const out: Inheritable = {
     labels: [...inherited, ...added],
     style: overrides.style ?? base.style,
-    ...(bed && { bed }),
   };
+  for (const a of AREAS) {
+    const area = overrides[a] === undefined ? base[a] : overrides[a];
+    if (area) out[a] = area;
+  }
+  const fans = overrides.fans ?? base.fans;
+  if (fans?.length) out.fans = fans;
+  return out;
 }
 
 /// What a variant changed from its base: labels moved, added or dropped,
@@ -133,7 +215,7 @@ export function diffVariant(
   base: Inheritable,
   labels: Label[],
   style: LabelStyle,
-  bed?: Bed,
+  areas: Areas = {},
 ): VariantOverrides {
   const out: VariantOverrides['labels'] = {};
   for (const b of base.labels) {
@@ -144,15 +226,21 @@ export function diffVariant(
   for (const l of labels)
     if (!base.labels.some((b) => b.heater === l.heater))
       out[l.heater] = normalizeLabel(l);
-  const ownBed = bed && normalizeBed(bed);
-  const baseBed = base.bed && normalizeBed(base.bed);
-  return {
+  const diff: VariantOverrides = {
     ...(JSON.stringify(style) !== JSON.stringify(base.style) && { style }),
     labels: out,
-    ...(JSON.stringify(ownBed) !== JSON.stringify(baseBed) && {
-      bed: ownBed ?? null,
-    }),
   };
+  for (const a of AREAS) {
+    const own = areas[a] && normalizeBedArea(areas[a]);
+    const from = base[a] && normalizeBedArea(base[a]);
+    if (JSON.stringify(own) !== JSON.stringify(from)) diff[a] = own ?? null;
+  }
+  const fans = (areas.fans ?? []).map(normalizeFan);
+  if (
+    JSON.stringify(fans) !== JSON.stringify((base.fans ?? []).map(normalizeFan))
+  )
+    diff.fans = fans;
+  return diff;
 }
 
 /// Rounded to a tenth, with no zero or negative size and no zero radius.
@@ -168,8 +256,61 @@ export function normalizeBed(bed: Bed): Bed {
   };
 }
 
-function parseBed(value: unknown): Bed {
+/// Bed parts in key order, each once.
+export function normalizeBedArea(bed: BedArea): BedArea {
+  if (!isBedParts(bed)) return normalizeBed(bed);
+  return { parts: [...new Set(bed.parts)].sort(compareKeys) };
+}
+
+/// `o` without `key`.
+export function without<T>(o: T, key: keyof T): T {
+  return Object.fromEntries(
+    Object.entries(o as Record<string, unknown>).filter(([k]) => k !== key),
+  ) as T;
+}
+
+/// Parts in key order, each once, the centre rounded to a tenth.
+export function normalizeFan(fan: FanParts): FanParts {
+  return {
+    parts: [...new Set(fan.parts)].sort(compareKeys),
+    kind: fan.kind,
+    ...(fan.tool && { tool: fan.tool }),
+    ...(fan.center && { center: roundPoint(fan.center) }),
+  };
+}
+
+function parseFans(value: unknown): FanParts[] {
+  if (!Array.isArray(value)) throw new Error('Bad fans');
+  return value.map((v: unknown) => {
+    const f = record(v, 'fan');
+    const parts = f.parts;
+    if (
+      !Array.isArray(parts) ||
+      !parts.length ||
+      !parts.every((k) => typeof k === 'string') ||
+      (f.kind !== 'hotend' && f.kind !== 'print')
+    )
+      throw new Error(`Bad fan ${JSON.stringify(v)}`);
+    return normalizeFan({
+      parts,
+      kind: f.kind,
+      ...(typeof f.tool === 'number' && f.tool > 0 && { tool: f.tool }),
+      ...(f.center !== undefined && { center: point(f.center) }),
+    });
+  });
+}
+
+function parseBed(value: unknown): BedArea {
   const b = record(value, 'bed');
+  if (b.parts !== undefined) {
+    if (
+      !Array.isArray(b.parts) ||
+      !b.parts.length ||
+      !b.parts.every((k) => typeof k === 'string')
+    )
+      throw new Error(`Bad bed parts ${JSON.stringify(b.parts)}`);
+    return normalizeBedArea({ parts: b.parts });
+  }
   const n = (k: string) => {
     const v = b[k];
     if (typeof v === 'number' && Number.isFinite(v)) return v;
@@ -320,7 +461,16 @@ export function serializeStatus(status: StatusPicture): string {
       style: status.style,
       ...(status.base !== undefined && { base: status.base }),
       labels: status.labels.map(labelJson),
-      ...(status.bed && { bed: normalizeBed(status.bed) }),
+      ...Object.fromEntries(
+        AREAS.flatMap((a) => {
+          const area = status[a];
+          return area ? [[a, normalizeBedArea(area)]] : [];
+        }),
+      ),
+      ...(status.fans?.length && { fans: status.fans.map(normalizeFan) }),
+      ...(status.carriage?.parts.length && {
+        carriage: normalizeCarriage(status.carriage),
+      }),
       conditional: status.conditional,
       edits: {
         hidden: [...status.edits.hidden].sort(compareKeys),
@@ -342,8 +492,14 @@ export function serializeStatus(status: StatusPicture): string {
               return [[h, o && labelJson(o)]];
             }),
           ),
-          ...(status.overrides.bed !== undefined && {
-            bed: status.overrides.bed && normalizeBed(status.overrides.bed),
+          ...Object.fromEntries(
+            AREAS.flatMap((a) => {
+              const o = status.overrides?.[a];
+              return o === undefined ? [] : [[a, o && normalizeBedArea(o)]];
+            }),
+          ),
+          ...(status.overrides.fans && {
+            fans: status.overrides.fans.map(normalizeFan),
           }),
         },
       }),
@@ -384,7 +540,7 @@ function parseOverrides(value: unknown): VariantOverrides | undefined {
   if (value === undefined) return undefined;
   const o = record(value, 'overrides');
   const style = o.style === undefined ? undefined : record(o.style, 'style');
-  const size = (k: keyof LabelStyle) => {
+  const size = (k: LabelSize) => {
     const v = style?.[k];
     return typeof v === 'number' && v > 0 ? v : undefined;
   };
@@ -395,7 +551,12 @@ function parseOverrides(value: unknown): VariantOverrides | undefined {
     ...(valueSize &&
       caption &&
       stroke && {
-        style: { value: valueSize, caption, stroke },
+        style: {
+          value: valueSize,
+          caption,
+          stroke,
+          ...(style?.shadow === true && { shadow: true }),
+        },
       }),
     labels: Object.fromEntries(
       Object.entries(record(o.labels ?? {}, 'label overrides')).flatMap(
@@ -406,9 +567,12 @@ function parseOverrides(value: unknown): VariantOverrides | undefined {
         },
       ),
     ),
-    ...(o.bed !== undefined && {
-      bed: o.bed === null ? null : parseBed(o.bed),
-    }),
+    ...Object.fromEntries(
+      AREAS.flatMap((a) =>
+        o[a] === undefined ? [] : [[a, o[a] === null ? null : parseBed(o[a])]],
+      ),
+    ),
+    ...(o.fans !== undefined && { fans: parseFans(o.fans) }),
   };
 }
 
@@ -419,7 +583,7 @@ export function parseStatus(text: string): StatusPicture {
   const viewBox = typeof raw.viewBox === 'string' ? raw.viewBox : '';
   const fallback = defaultStyle(parseViewBox(viewBox, null, null));
   const style = record(raw.style ?? {}, 'style');
-  const size = (key: keyof LabelStyle) => {
+  const size = (key: LabelSize) => {
     const v = style[key];
     return typeof v === 'number' && v > 0 ? v : fallback[key];
   };
@@ -433,9 +597,18 @@ export function parseStatus(text: string): StatusPicture {
       value: size('value'),
       caption: size('caption'),
       stroke: size('stroke'),
+      ...(style.shadow === true && { shadow: true }),
     },
     labels: labels.map(parseLabel),
-    ...(raw.bed !== undefined && { bed: parseBed(raw.bed) }),
+    ...Object.fromEntries(
+      AREAS.flatMap((a) =>
+        raw[a] === undefined ? [] : [[a, parseBed(raw[a])]],
+      ),
+    ),
+    ...(raw.fans !== undefined && { fans: parseFans(raw.fans) }),
+    ...(raw.carriage !== undefined && {
+      carriage: parseCarriage(raw.carriage),
+    }),
     conditional: (Array.isArray(raw.conditional)
       ? raw.conditional
       : []
@@ -591,12 +764,24 @@ export function viewBoxOf(svg: Element): ViewBox {
   );
 }
 
+/// Marks a part of an area in the status SVG, for the build to copy it.
+export function partMark(what: AreaName | 'fan' | 'carriage'): string {
+  return `data-${what}-part`;
+}
+
+/// Which parts are what: the areas' and the fans' keys.
+export type PartMarks = Partial<Record<AreaName, readonly string[]>> & {
+  fans?: readonly (readonly string[])[];
+  carriage?: readonly string[];
+};
+
 /// The status SVG: the original with the structure edits replayed,
-/// transforms baked in, hidden parts removed, and an explicit viewBox so it
-/// scales; the canvas stays the original's.
+/// transforms baked in, hidden parts removed, the bed parts marked, and an
+/// explicit viewBox so it scales; the canvas stays the original's.
 export function exportSvg(
   source: string,
   edits: Pick<Edits, 'hidden' | 'transforms' | 'structure' | 'conditions'>,
+  marks: PartMarks = {},
 ): string {
   const doc = new DOMParser().parseFromString(source, 'image/svg+xml');
   const root = doc.documentElement;
@@ -625,10 +810,29 @@ export function exportSvg(
     const el = findKey(root, key);
     if (el && !el.id) el.id = partId(el, key);
   }
+  markParts(root, marks);
   for (const el of edits.hidden.map((k) => findKey(root, k))) el?.remove();
   stripKeys(root);
   root.setAttribute('viewBox', formatViewBox(viewBoxOf(root)));
   return new XMLSerializer().serializeToString(doc);
+}
+
+/// Marks the parts under `root` (keyed) as what they are; a fan's parts with
+/// the fans' indices.
+export function markParts(root: Element, marks: PartMarks) {
+  for (const a of [...AREAS, 'carriage' as const])
+    for (const key of marks[a] ?? [])
+      findKey(root, key)?.setAttribute(partMark(a), '');
+  (marks.fans ?? []).forEach((keys, i) => {
+    for (const key of keys) {
+      const el = findKey(root, key);
+      const was = el?.getAttribute(partMark('fan'));
+      el?.setAttribute(
+        partMark('fan'),
+        was ? `${was} ${String(i)}` : String(i),
+      );
+    }
+  });
 }
 
 /// The id a conditional part goes by in the saved SVG: its own, else one

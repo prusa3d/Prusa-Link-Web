@@ -12,11 +12,22 @@
     pictureFor,
     rememberedVariant,
   } from '../../lib/printer/picture';
-  import { bedHeat, bedStyle, bedTop } from '../../lib/printer/bed-heat';
+  import {
+    bedFill,
+    bedHeat,
+    bedStyle,
+    bedTop,
+    statusStyle,
+    chamberTop,
+    type Shape,
+  } from '../../lib/printer/bed-heat';
+  import { STATE_TONE, type PrinterState } from '../../lib/printer/state';
   import {
     type Equipment,
+    type Fan,
     type Heater,
     type Reading,
+    met,
     shownLabels,
   } from '../../lib/printer/status-picture';
 
@@ -25,11 +36,25 @@
     /// Draw the printer with its MMU3, where there is such a picture.
     mmu?: boolean;
     readings?: Partial<Record<Heater, Reading>>;
+    /// None while the printer is unreachable.
+    state?: PrinterState | undefined;
+    /// Seconds per turn of a fan, or none while it stands.
+    fanTurn?: (fan: Fan) => number | undefined;
     /// What PrusaLink 2 says the printer has besides the MMU.
     equipment?: Partial<Omit<Equipment, 'mmu'>>;
+    /// The picked tool, from 1, on a toolchanger.
+    activeTool?: number | undefined;
   }
 
-  let { model, mmu = false, readings = {}, equipment = {} }: Props = $props();
+  let {
+    model,
+    mmu = false,
+    readings = {},
+    state,
+    fanTurn = () => undefined,
+    equipment = {},
+    activeTool,
+  }: Props = $props();
   const has = $derived(equipmentOf(mmu, equipment));
 
   // Until the printer says which it is, the last one this browser saw: the
@@ -44,7 +69,41 @@
   const bedHeatNow = $derived(
     readings.bed && bedHeat(readings.bed.current, bedTop(readings.bed.target)),
   );
+  const chamber = $derived(readings.chamber && picture?.status?.chamber);
+  const chamberHeat = $derived(
+    readings.chamber &&
+      bedHeat(readings.chamber.current, chamberTop(readings.chamber.target)),
+  );
+  const lit = $derived(picture?.status?.status);
+  const fans = $derived(picture?.status?.fans ?? []);
+  const carriage = $derived(picture?.status?.carriage);
+  const carriageAt = $derived(
+    carriage?.positions[String(activeTool ?? 0)] ?? [0, 0],
+  );
+  const uid = $props.id();
+  const drawn = $derived(
+    labels.length > 0 ||
+      !!(bed && readings.bed) ||
+      !!chamber ||
+      !!lit ||
+      fans.length > 0 ||
+      !!carriage,
+  );
 </script>
+
+{#snippet area(shapes: Shape[], style: string, testid: string, heat?: number)}
+  <g
+    {style}
+    opacity={testid === 'printer-chamber' ? 0.4 : undefined}
+    class="transition-all duration-700 motion-reduce:transition-none"
+    data-testid={testid}
+    data-heat={heat?.toFixed(2)}
+  >
+    {#each shapes.filter((s) => met(s.when, has)) as shape, i (i)}
+      <path {...shape} />
+    {/each}
+  </g>
+{/snippet}
 
 {#if picture}
   <!-- At most 356 px square, so on a phone it does not fill the screen. -->
@@ -58,22 +117,65 @@
         class="block h-auto w-full"
         data-testid="printer-image"
       />
-      {#if picture.status && (labels.length || (bed && readings.bed))}
+      {#if picture.status && drawn}
         <svg
           viewBox="0 0 500 500"
           aria-hidden="true"
           class="absolute inset-0 size-full text-(--color-orange-light-9)"
           data-testid="printer-labels"
         >
+          {#each fans as fan, i (i)}
+            {@const turn = fanTurn(fan)}
+            <g
+              class:turning={turn !== undefined}
+              style:transform-origin="{fan.center[0]}px {fan.center[1]}px"
+              style:animation-duration={turn && `${String(turn)}s`}
+              data-testid="printer-fan"
+              data-turn={turn?.toFixed(2)}
+            >
+              {#each fan.shapes.filter((s) => met(s.when, has)) as shape, k (k)}
+                <path {...shape} />
+              {/each}
+            </g>
+          {/each}
+          {#if carriage}
+            <g
+              style:transform="translate({carriageAt[0]}px, {carriageAt[1]}px)"
+              class="transition-transform duration-700 ease-in-out motion-reduce:transition-none"
+              data-testid="printer-carriage"
+              data-tool={activeTool ?? 0}
+            >
+              {#each carriage.shapes.filter( (s) => met(s.when, has) ) as shape, k (k)}
+                <path {...shape} />
+              {/each}
+            </g>
+          {/if}
           {#if bed && bedHeatNow !== undefined}
-            <rect
-              {...bed}
-              opacity="0.9"
-              style={bedStyle(bedHeatNow)}
-              class="transition-all duration-700 motion-reduce:transition-none"
-              data-testid="printer-bed"
-              data-heat={bedHeatNow.toFixed(2)}
-            />
+            {@render area(bed, bedStyle(bedHeatNow), 'printer-bed', bedHeatNow)}
+          {/if}
+          {#if lit}
+            {@render area(
+              lit,
+              statusStyle(state && `var(--state-${STATE_TONE[state]}-edge)`),
+              'printer-status',
+            )}
+          {/if}
+          {#if chamber && chamberHeat !== undefined}
+            <!-- The chamber's warmth fades out towards its edges. -->
+            <radialGradient id="{uid}-chamber">
+              <stop style:stop-color={bedFill(chamberHeat)} />
+              <stop
+                offset="1"
+                style:stop-color={bedFill(chamberHeat)}
+                stop-opacity="0"
+              />
+            </radialGradient>
+            {@render area(
+              chamber,
+              `fill:url(#${uid}-chamber)`,
+              'printer-chamber',
+              chamberHeat,
+            )}
           {/if}
           {#each labels as label (label.heater)}
             {@const reading = readings[label.heater]}
@@ -97,3 +199,19 @@
     <Icon node={Printer} class="size-12" />
   </div>
 {/if}
+
+<style>
+  .turning {
+    animation: fan-turn linear infinite;
+  }
+  @keyframes fan-turn {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .turning {
+      animation: none;
+    }
+  }
+</style>

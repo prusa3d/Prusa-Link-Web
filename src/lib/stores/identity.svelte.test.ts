@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { IdentityStore } from './identity.svelte';
+import { IdentityStore, toolsOf } from './identity.svelte';
 
 describe('IdentityStore', () => {
   it('names the printer from its model code and hostname', async () => {
@@ -32,5 +32,27 @@ describe('IdentityStore', () => {
     fail = true;
     await identity.refresh();
     expect(identity.title).toBe('mk4s · Original Prusa MK4S');
+  });
+});
+
+describe('tools and enclosure', () => {
+  it('count the tools /api/v1/info lists, MMU slots left out', () => {
+    expect(
+      toolsOf({
+        tool_count: 3,
+        tools: { '0': { type: 'FFF_PRINT_HEAD' }, '0.1': {}, '2': null },
+      }),
+    ).toHaveLength(3);
+    expect(toolsOf(undefined)).toEqual([]);
+  });
+
+  it('keep the enclosure the printer reports', async () => {
+    const identity = new IdentityStore(() =>
+      Promise.resolve({ code: '3.1.0', tools: [{}, {}], enclosure: true }),
+    );
+    expect(identity.enclosure).toBe(false);
+    await identity.refresh();
+    expect(identity.tools).toHaveLength(2);
+    expect(identity.enclosure).toBe(true);
   });
 });

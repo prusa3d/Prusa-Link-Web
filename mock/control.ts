@@ -66,6 +66,10 @@ export interface MockPatch {
   /// An MMU3 on the printer (only where one fits).
   mmu?: boolean;
   bed?: { temp?: number; target?: number };
+  /// The XL's enabled tools by dock, from 1 (`[1, 2, 4, 5]`); null: as seeded.
+  docks?: number[] | null;
+  /// Fan speeds in RPM.
+  fans?: { hotend?: number; print?: number };
   /// What the printer asks on its screen; null clears it.
   question?: string | null;
   /// The printer stops answering (it lost Wi-Fi, or was switched off).
@@ -125,6 +129,8 @@ export function applyPatch(printer: MockPrinter, patch: MockPatch) {
   }
   if (patch.mmu !== undefined) printer.mmu = patch.mmu && printer.takesMmu;
   if (patch.bed) Object.assign(printer.bed, patch.bed);
+  if (patch.fans) Object.assign(printer.fans, patch.fans);
+  if (patch.docks !== undefined) printer.setDocks(patch.docks);
   if (patch.question !== undefined) {
     printer.question = patch.question ?? undefined;
     if (patch.question === null) printer.dialog = undefined;
@@ -175,6 +181,7 @@ export function snapshot(printer: MockPrinter) {
     model: printer.model,
     parked: printer.parked,
     mmu: printer.mmu,
+    docks: printer.docks,
     takesMmu: printer.takesMmu,
     state: printer.state,
     bed: printer.bed,

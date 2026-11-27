@@ -7,7 +7,13 @@ import type { Plugin } from 'vite';
 
 import { PRINTER_IMAGES } from '../../mock/printer-images.ts';
 import { listPictures, type PrinterPicture } from './printers.ts';
-import { parseStatus, resolveVariant, serializeStatus } from './status.ts';
+import {
+  AREAS,
+  parseStatus,
+  without,
+  resolveVariant,
+  serializeStatus,
+} from './status.ts';
 
 const PRINTERS = fileURLToPath(
   new URL('../../assets/printers/', import.meta.url),
@@ -108,7 +114,7 @@ async function readStatus(name: string): Promise<string | null> {
     : null;
 }
 
-/// Variants carry their base's labels and bed area resolved, so the app
+/// Variants carry their base's labels, areas and fans resolved, so the app
 /// needs no merge; a saved base refreshes them.
 async function updateVariants(
   base: string,
@@ -123,8 +129,9 @@ async function updateVariants(
     const variant = parseStatus(text);
     if (variant.base !== base) continue;
     const resolved = resolveVariant(fresh, variant.overrides ?? { labels: {} });
-    const next = { ...variant, ...resolved };
-    if (!resolved.bed) delete next.bed;
+    let next = { ...variant, ...resolved };
+    for (const a of [...AREAS, 'fans' as const])
+      if (!resolved[a]) next = without(next, a);
     await writeFile(
       `${STATUS}${name}.json`,
       await formatJson(serializeStatus(next)),

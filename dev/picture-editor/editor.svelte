@@ -3,9 +3,14 @@
 
   import {
     type Bed,
+    bedFill,
     bedHeat,
     bedStyle,
+    statusStyle,
   } from '../../src/lib/printer/bed-heat.ts';
+  import { STATE_TONE } from '../../src/lib/printer/state.ts';
+  import { partCopies } from './part-copies.ts';
+  import { previewFanTurn, stateColor } from './preview.ts';
 
   import {
     type Affine,
@@ -22,6 +27,7 @@
     type Condition,
     conditionName,
     CONDITIONS,
+    met,
     labelCondition,
     parseCondition,
   } from './conditions.ts';
@@ -42,8 +48,16 @@
   } from './label-tools.ts';
   import { LivePicture } from './live.ts';
   import {
+    AREAS,
+    type AreaName,
+    type BedArea,
     type BedHandle,
     compareKeys,
+    type CarriageParts,
+    type FanParts,
+    markParts,
+    partMark,
+    type PartMarks,
     defaultStyle,
     dragBed,
     exportSvg,
@@ -52,11 +66,13 @@
     heaterName,
     heatersFor,
     HEATERS,
+    isBedParts,
     type Label,
     labelLength,
     type LabelStyle,
     newLabel,
     normalizeBed,
+    normalizeBedArea,
     normalizeLabel,
     diffVariant,
     isInherited,
@@ -65,6 +81,7 @@
     resolveVariant,
     SAMPLE_VALUES,
     serializeStatus,
+    without,
     type StatusPicture,
     unionBox,
   } from './status.ts';
@@ -85,6 +102,7 @@
     boxOf,
     buildTree,
     elementsIn,
+    isDrawn,
     nameOf,
     partOf,
     type TreeNode,
@@ -97,8 +115,14 @@
     conditions: Record<string, Condition>;
     style: LabelStyle;
     labels: Label[];
-    bed?: Bed;
+    bed?: BedArea;
+    chamber?: BedArea;
+    status?: BedArea;
+    fans?: FanParts[];
+    carriage?: CarriageParts;
   }
+
+  type RectArea = AreaName;
 
   type SelectMode = 'replace' | 'add' | 'toggle';
 
@@ -110,12 +134,22 @@
   let base = $state<
     | {
         name: string;
-        status: Pick<StatusPicture, 'labels' | 'style' | 'bed'>;
+        status: Pick<StatusPicture, 'labels' | 'style' | AreaName | 'fans'>;
       }
     | undefined
   >();
 
   type Handle = 'anchor' | 'elbow' | 'end';
+  const CUSTOM = '(custom)';
+  /// What the build can copy as a bed part.
+  const PART_SHAPES = new Set([
+    'path',
+    'rect',
+    'circle',
+    'ellipse',
+    'polygon',
+    'polyline',
+  ]);
   /// Resize handles by the box edges they move: n, s, e, w and corners.
   const RESIZE = ['nw', 'n', 'ne', 'e', 'se', 's', 'sw', 'w'] as const;
   type Resize = (typeof RESIZE)[number];
@@ -146,11 +180,21 @@
   let rowCount = $state(2);
   let rowAnchors = $state<Point[]>([]);
   let hover = $state<string | undefined>();
-  let mode = $state<'select' | 'label' | 'row' | 'bed'>('select');
-  let bedSelected = $state(false);
-  /// The bed temperature the editor tints the bed area for, on the app's
-  /// default scale (room temperature to 110 ℃).
-  let bedTemp = $state(25);
+  let mode = $state<'select' | 'label' | 'row' | AreaName>('select');
+  /// The area whose rectangle shows handles, or whose parts are outlined.
+  let areaSelected = $state<AreaName | undefined>();
+  /// What the editor previews the areas and fans with: temperatures on the
+  /// app's default scales (room temperature to 110 ℃ and 55 ℃), the
+  /// printer's state, and the fans' speed in percent.
+  let bedTemp = $state(60);
+  let chamberTemp = $state(40);
+  /// '' previews a printer that is unreachable.
+  let previewState = $state<keyof typeof STATE_TONE | ''>('FINISHED');
+  let fanSpeed = $state(50);
+  /// The tool the preview has picked, from 1; 0 for none.
+  let previewTool = $state(0);
+  let animateCarriage = $state(true);
+  let fanCenters = $state(true);
   let pendingAnchor = $state<Point | undefined>();
   let cursor = $state<Point | undefined>();
   let newHeater = $state<Heater>('T1');
@@ -160,7 +204,15 @@
   let marquee = $state<Box | undefined>();
   let saved = $state<{ svg: string; status: StatusPicture } | undefined>();
   let clock = $state(0);
-  let equipment = $state({ mmu: false, enclosure: false, tools: 1 });
+  let equipment = $state({
+    mmu: false,
+    enclosure: false,
+    chamber: true,
+    present: [1],
+  });
+  /// The edit view hides the parts whose condition the equipment fails,
+  /// else dims them.
+  let equipmentView = $state<boolean>(false);
   let importing = $state(false);
   let importText = $state('');
   let importName = $state('');
@@ -184,6 +236,67 @@
     hover === undefined ? undefined : boxFor(hover, domVersion),
   );
   const groups = $derived(groupsOf(domVersion));
+  const selectedShapes = $derived(shapeKeys(selection, domVersion));
+  const selectionCondition = $derived(
+    roots.length === 1 ? (doc.conditions[roots[0] ?? ''] ?? '') : '',
+  );
+  const marks = $derived<PartMarks>({
+    ...Object.fromEntries(AREAS.map((a) => [a, partsOf(doc[a])])),
+    fans: (doc.fans ?? []).map((f) => f.parts),
+    carriage: doc.carriage?.parts ?? [],
+  });
+  const areaPartBoxes = $derived(
+    areaSelected
+      ? partsOf(doc[areaSelected]).flatMap((k) => boxFor(k, domVersion) ?? [])
+      : [],
+  );
+  const fanCentersNow = $derived(
+    (doc.fans ?? []).map((f) => f.center ?? autoCenter(f.parts, domVersion)),
+  );
+
+  const fanTurnNow = $derived(previewFanTurn(fanSpeed));
+
+  /// How the app paints the area with the preview's readings.
+  function areaLook(area: AreaName): string {
+    if (area === 'status')
+      return statusStyle(previewState && stateColor(previewState));
+    return area === 'bed'
+      ? bedStyle(bedHeat(bedTemp, 110))
+      : 'fill:url(#editor-chamber)';
+  }
+
+  function rectOf(area: BedArea | undefined): Bed | undefined {
+    return area && !isBedParts(area) ? area : undefined;
+  }
+
+  function partsOf(area: BedArea | undefined): string[] {
+    return isBedParts(area) ? area.parts : [];
+  }
+
+  /// The middle of the parts' box: what the build turns a fan around.
+  function autoCenter(keys: string[], version: number): Point | undefined {
+    const b = unionBox(keys.flatMap((k) => boxFor(k, version) ?? []));
+    return b && [round(b.x + b.width / 2, 1), round(b.y + b.height / 2, 1)];
+  }
+
+  /// The parts for `keys` that the previewed equipment shows: the app
+  /// leaves out the copies of the others.
+  function findParts(keys: readonly string[], version?: unknown): Element[] {
+    const root = content;
+    if (!root || version === null) return [];
+    const shown = (el: Element) => {
+      for (
+        let at: Element | null = el;
+        at && at !== root;
+        at = at.parentElement
+      ) {
+        const when = doc.conditions[keyOf(at) ?? ''];
+        if (when && !met(when, previewEquipment)) return false;
+      }
+      return true;
+    };
+    return keys.flatMap((k) => findKey(root, k) ?? []).filter(shown);
+  }
   /// One screen pixel in picture units, for handles that keep their size.
   const px = $derived(pixel(domVersion));
 
@@ -207,6 +320,33 @@
     if (version < 0 || !content) return [];
     return outermost(content, keys).flatMap((el) => keyOf(el) ?? []);
   }
+
+  /// The shapes a fill can tint among `keys`, a group standing for its own.
+  function shapeKeys(keys: string[], version: number): string[] {
+    const root = content;
+    if (version < 0 || !root) return [];
+    const fillable = (el: Element) =>
+      PART_SHAPES.has(el.tagName) && isDrawn(el, root);
+    return keys
+      .flatMap((k) => {
+        const el = findKey(root, k);
+        if (!el) return [];
+        return fillable(el) ? [el] : [...el.querySelectorAll('*')];
+      })
+      .filter(fillable)
+      .flatMap((el) => keyOf(el) ?? [])
+      .filter((k, i, all) => all.indexOf(k) === i && !hiddenSet.has(k));
+  }
+
+  // The live picture is rebuilt on structure edits, so the marks are redone.
+  $effect(() => {
+    const root = content;
+    if (domVersion < 0 || !root) return;
+    for (const what of [...AREAS, 'fan' as const, 'carriage' as const])
+      for (const el of root.querySelectorAll(`[${partMark(what)}]`))
+        el.removeAttribute(partMark(what));
+    markParts(root, marks);
+  });
 
   function groupsOf(version: number): { key: string; name: string }[] {
     if (version < 0 || !content) return [];
@@ -283,7 +423,7 @@
     const own = base
       ? resolveVariant(base.status, status?.overrides ?? { labels: {} })
       : undefined;
-    const bed = own ? own.bed : status?.bed;
+    const from = own ?? status;
     doc = {
       hidden: status?.edits.hidden ?? [],
       transforms: status?.edits.transforms ?? {},
@@ -291,7 +431,11 @@
       conditions: status?.edits.conditions ?? {},
       style: own?.style ?? status?.style ?? defaultStyle(viewBox),
       labels: own?.labels ?? status?.labels ?? [],
-      ...(bed && { bed }),
+      ...Object.fromEntries(
+        AREAS.flatMap((a) => (from?.[a] ? [[a, from[a]]] : [])),
+      ),
+      ...(from?.fans && { fans: from.fans }),
+      ...(status?.carriage && { carriage: status.carriage }),
     };
     saved =
       status && data.statusSvg ? { svg: data.statusSvg, status } : undefined;
@@ -299,7 +443,7 @@
     future = [];
     selection = [];
     selectedLabel = undefined;
-    bedSelected = false;
+    areaSelected = undefined;
     pendingAnchor = undefined;
     mode = 'select';
     newHeater = 'T1';
@@ -311,6 +455,7 @@
     else if (base)
       message = `Loaded ${name}.svg with the labels of ${base.name}`;
     else message = `Loaded ${name}.svg`;
+    if (!doc.fans?.length) findFans();
   }
 
   function resetLabelToBase(heater: Heater) {
@@ -327,19 +472,46 @@
     checkpoint();
     doc.labels = $state.snapshot(base.status.labels);
     doc.style = $state.snapshot(base.status.style);
-    setBedFromBase();
+    for (const a of AREAS) setAreaFromBase(a);
+    setFansFromBase();
     selectedLabel = undefined;
   }
 
-  function setBedFromBase() {
-    const from = base?.status.bed;
-    if (from) doc.bed = $state.snapshot(from);
-    else delete doc.bed;
+  function setAreaFromBase(area: AreaName) {
+    const from = base?.status[area];
+    if (from) doc[area] = $state.snapshot(from);
+    else doc = without(doc, area);
   }
 
-  function resetBedToBase() {
+  function resetAreaToBase(area: AreaName) {
     checkpoint();
-    setBedFromBase();
+    setAreaFromBase(area);
+  }
+
+  function setFansFromBase() {
+    const from = base?.status.fans;
+    if (from?.length) doc.fans = $state.snapshot(from);
+    else delete doc.fans;
+  }
+
+  /// Groups the picture marks as fans (`<g data-fan="hotend">`), offered as
+  /// the fans of a picture that has none yet.
+  function findFans() {
+    const root = content;
+    if (!root) return;
+    const found = [...root.querySelectorAll('g[data-fan]')].flatMap(
+      (g): FanParts[] => {
+        const key = keyOf(g);
+        const parts = key ? shapeKeys([key], domVersion) : [];
+        const kind =
+          g.getAttribute('data-fan') === 'print' ? 'print' : 'hotend';
+        return parts.length ? [{ parts, kind }] : [];
+      },
+    );
+    if (!found.length) return;
+    doc.fans = found;
+    dirty = true;
+    message = `Found ${String(found.length)} fan${found.length > 1 ? 's' : ''} in the picture; save to keep`;
   }
 
   /// Draws `doc` on the picture; a structure change rebuilds it and the tree.
@@ -570,11 +742,13 @@
     | { kind: 'handle'; label: number; handle: Handle; moved: boolean }
     | {
         kind: 'bed';
+        area: RectArea;
         handle: BedHandle;
         start: Point;
         from: Bed | undefined;
         moved: boolean;
       }
+    | { kind: 'center'; fan: number; moved: boolean }
     | {
         kind: 'move';
         start: Point;
@@ -705,22 +879,39 @@
       addRowPoint(at);
       return;
     }
-    const bedHandle =
-      mode === 'bed'
-        ? 'draw'
-        : (target.closest('[data-bed]')?.getAttribute('data-bed') as
-            BedHandle | null | undefined);
-    bedSelected = bedHandle !== undefined && bedHandle !== null;
-    if (bedHandle) {
+    const center = target.closest('[data-fan-center]');
+    if (center) {
+      checkpoint();
+      drag = {
+        kind: 'center',
+        fan: Number(center.getAttribute('data-fan-center')),
+        moved: false,
+      };
+      svgEl.setPointerCapture(e.pointerId);
+      e.preventDefault();
+      return;
+    }
+    const drawing = AREAS.find((a) => a === mode);
+    const bedHandle = drawing
+      ? 'draw'
+      : (target.closest('[data-bed]')?.getAttribute('data-bed') as
+          BedHandle | null | undefined);
+    const area: RectArea | undefined =
+      drawing ??
+      (target.closest('[data-area]')?.getAttribute('data-area') as
+        RectArea | undefined);
+    areaSelected = bedHandle && area ? area : undefined;
+    if (bedHandle && area) {
       selection = [];
       selectedLabel = undefined;
       labelSel = [];
       checkpoint();
       drag = {
         kind: 'bed',
+        area,
         handle: bedHandle,
         start: at,
-        from: doc.bed && $state.snapshot(doc.bed),
+        from: rectOf($state.snapshot(doc[area])),
         moved: false,
       };
       svgEl.setPointerCapture(e.pointerId);
@@ -796,7 +987,12 @@
       )
         return;
       drag.moved = true;
-      doc.bed = dragBed(drag.from, drag.handle, drag.start, at);
+      doc[drag.area] = dragBed(drag.from, drag.handle, drag.start, at);
+    } else if (drag.kind === 'center') {
+      const fan = doc.fans?.[drag.fan];
+      if (!fan) return;
+      drag.moved = true;
+      fan.center = [round(at[0], 1), round(at[1], 1)];
     } else if (drag.kind === 'handle') {
       const l = doc.labels[drag.label];
       if (!l) return;
@@ -867,7 +1063,11 @@
     if (d.kind === 'bed') {
       if (d.handle === 'draw') mode = 'select';
       if (!d.moved) past.pop();
-      else message = d.handle === 'draw' ? 'Drew the bed area' : '';
+      else message = d.handle === 'draw' ? `Drew the ${d.area} area` : '';
+      return;
+    }
+    if (d.kind === 'center') {
+      if (!d.moved) past.pop();
       return;
     }
     if (d.kind === 'handle' || d.kind === 'scale') {
@@ -948,14 +1148,14 @@
       selection = [];
       selectedLabel = undefined;
       labelSel = [];
-      bedSelected = false;
+      areaSelected = undefined;
     } else if (
       (e.key === 'Delete' || e.key === 'Backspace') &&
       selectedLabel !== undefined
     ) {
       deleteLabel(selectedLabel);
-    } else if ((e.key === 'Delete' || e.key === 'Backspace') && bedSelected) {
-      deleteBed();
+    } else if ((e.key === 'Delete' || e.key === 'Backspace') && areaSelected) {
+      deleteArea(areaSelected);
     } else if (key === 'h' && !mod) {
       toggleHidden(selection);
     } else if (key === 'l' && !mod) {
@@ -963,24 +1163,114 @@
     }
   }
 
-  function startBed() {
-    mode = mode === 'bed' ? 'select' : 'bed';
+  function startArea(area: RectArea) {
+    mode = mode === area ? 'select' : area;
     selection = [];
     selectedLabel = undefined;
     labelSel = [];
   }
 
-  function setBedField(field: keyof Bed, value: number) {
-    if (!doc.bed || !Number.isFinite(value)) return;
+  function setRectField(area: RectArea, field: keyof Bed, value: number) {
+    const rect = rectOf(doc[area]);
+    if (!rect || !Number.isFinite(value)) return;
     checkpoint();
-    doc.bed = normalizeBed({ ...$state.snapshot(doc.bed), [field]: value });
+    doc[area] = normalizeBed({ ...$state.snapshot(rect), [field]: value });
   }
 
-  function deleteBed() {
-    if (!doc.bed) return;
+  /// The selected shapes as the area: in place of it, added or taken out.
+  function setAreaParts(area: AreaName, how: 'use' | 'add' | 'remove') {
+    const picked = selectedShapes;
+    if (!picked.length) return;
+    const now = partsOf(doc[area]);
+    let parts = picked;
+    if (how === 'add') parts = [...now, ...picked];
+    else if (how === 'remove') parts = now.filter((k) => !picked.includes(k));
     checkpoint();
-    delete doc.bed;
-    bedSelected = false;
+    if (parts.length) doc[area] = normalizeBedArea({ parts });
+    else doc = without(doc, area);
+    areaSelected = parts.length ? area : undefined;
+    mode = 'select';
+    message = parts.length
+      ? `The ${area} is ${String(parts.length)} part${parts.length > 1 ? 's' : ''}`
+      : `Removed the ${area}`;
+  }
+
+  function deleteArea(area: AreaName) {
+    if (!doc[area]) return;
+    checkpoint();
+    doc = without(doc, area);
+    areaSelected = undefined;
+  }
+
+  /// The selected shapes, a group's shapes included, as a new fan.
+  function addFan() {
+    const parts = selectedShapes;
+    if (!parts.length) return;
+    checkpoint();
+    doc.fans = [...(doc.fans ?? []), { parts, kind: 'hotend' }];
+    message = `Fan ${String(doc.fans.length)}: ${String(parts.length)} parts`;
+  }
+
+  function updateFan(i: number, change: Partial<FanParts>) {
+    const fan = doc.fans?.[i];
+    if (!fan || !doc.fans) return;
+    checkpoint();
+    const next: FanParts = { ...$state.snapshot(fan), ...change };
+    doc.fans[i] = change.tool === 0 ? without(next, 'tool') : next;
+  }
+
+  function autoFanCenter(i: number) {
+    const fan = doc.fans?.[i];
+    if (!fan?.center || !doc.fans) return;
+    checkpoint();
+    doc.fans[i] = without($state.snapshot(fan), 'center');
+  }
+
+  /// The selected shapes as the toolchanger's carriage, keeping the
+  /// positions recorded for it.
+  function useAsCarriage() {
+    const parts = selectedShapes;
+    if (!parts.length) return;
+    checkpoint();
+    doc.carriage = { parts, positions: doc.carriage?.positions ?? {} };
+    message = `Carriage: ${String(parts.length)} parts`;
+  }
+
+  function setCarriageAt(n: number, axis: 0 | 1, value: number) {
+    const c = doc.carriage;
+    if (!c || !Number.isFinite(value)) return;
+    checkpoint();
+    const at: Point = [...(c.positions[String(n)] ?? [0, 0])];
+    at[axis] = round(value, 1);
+    c.positions[String(n)] = at;
+  }
+
+  /// Where the carriage was dragged to, as its position for tool `n` (0:
+  /// none picked): the drag on top of the position shown, and the drag
+  /// undone, so the picture keeps the carriage where it is drawn.
+  function recordCarriage(n: number) {
+    const c = doc.carriage;
+    if (!c) return;
+    const moved = c.parts.map((k) => doc.transforms[k]).find(Boolean);
+    const shown = c.positions[String(previewTool)] ?? [0, 0];
+    checkpoint();
+    c.positions[String(n)] = [
+      round(shown[0] + (moved?.[2] ?? 0), 1),
+      round(shown[1] + (moved?.[3] ?? 0), 1),
+    ];
+    doc.transforms = Object.fromEntries(
+      Object.entries(doc.transforms).filter(([k]) => !c.parts.includes(k)),
+    );
+    previewTool = n;
+    sync();
+    message = `Recorded the carriage for ${n ? `T${String(n)}` : 'no tool'}`;
+  }
+
+  function deleteFan(i: number) {
+    if (!doc.fans?.[i]) return;
+    checkpoint();
+    doc.fans = doc.fans.filter((_, k) => k !== i);
+    if (!doc.fans.length) delete doc.fans;
   }
 
   function startLabel() {
@@ -1003,6 +1293,13 @@
     selectedLabel = undefined;
   }
 
+  function areasOf(d: Doc): Pick<Doc, AreaName | 'fans'> {
+    return {
+      ...Object.fromEntries(AREAS.flatMap((a) => (d[a] ? [[a, d[a]]] : []))),
+      ...(d.fans?.length && { fans: d.fans }),
+    };
+  }
+
   function currentStatus(): StatusPicture {
     const snap = $state.snapshot(doc);
     return {
@@ -1010,10 +1307,16 @@
       viewBox: formatViewBox(viewBox),
       style: snap.style,
       labels: snap.labels,
-      ...(snap.bed && { bed: snap.bed }),
+      ...areasOf(snap),
+      ...(snap.carriage && { carriage: snap.carriage }),
       ...(base && {
         base: base.name,
-        overrides: diffVariant(base.status, snap.labels, snap.style, snap.bed),
+        overrides: diffVariant(
+          base.status,
+          snap.labels,
+          snap.style,
+          areasOf(snap),
+        ),
       }),
       conditional: conditionalParts(),
       edits: {
@@ -1033,6 +1336,23 @@
       const el = findKey(root, key);
       return el && !hiddenSet.has(key) ? [{ id: partId(el, key), when }] : [];
     });
+  }
+
+  /// The condition picked in `select`, typed in for "Custom…"; null when
+  /// cancelled or not in the syntax (`select` then shows `current` again).
+  function pickCondition(
+    select: HTMLSelectElement,
+    current: string,
+  ): Condition | undefined | null {
+    if (select.value !== CUSTOM) return parseCondition(select.value);
+    const typed = prompt(
+      'Show when (mmu, enclosure, chamber, tools>=N, tools<=N, tools=N; ! not, & and, | or)',
+      current,
+    );
+    const when = typed === null ? null : parseCondition(typed.trim());
+    if (typed?.trim() && !when) message = `Not a condition: ${typed}`;
+    select.value = current;
+    return typed?.trim() === '' ? undefined : (when ?? null);
   }
 
   function setCondition(keys: string[], when: Condition | undefined) {
@@ -1093,7 +1413,7 @@
     message = `Imported ${name}`;
   }
 
-  function setStyle(key: keyof LabelStyle, value: number) {
+  function setStyle(key: 'value' | 'caption' | 'stroke', value: number) {
     if (!(value > 0) || doc.style[key] === value) return;
     checkpoint();
     doc.style[key] = value;
@@ -1102,7 +1422,7 @@
   async function save() {
     if (!printer) return;
     const status = currentStatus();
-    const svg = exportSvg(source, status.edits);
+    const svg = exportSvg(source, status.edits, marks);
     const res = await fetch(`/__picture-editor/picture/${printer}`, {
       method: 'PUT',
       headers: { 'content-type': 'application/json' },
@@ -1146,8 +1466,32 @@
 
   const previewEquipment = $derived({
     ...equipment,
-    chamber: equipment.enclosure || printer.startsWith('coreone'),
+    tools: equipment.present.length,
   });
+  const toolCount = $derived(heaters.filter((h) => /^T\d$/.test(h)).length);
+
+  $effect(() => {
+    const root = content;
+    if (domVersion < 0 || !root) return;
+    for (const el of root.querySelectorAll<SVGElement>('[data-unmet]')) {
+      el.removeAttribute('data-unmet');
+      el.style.visibility = '';
+      el.style.opacity = '';
+    }
+    for (const [key, when] of Object.entries(doc.conditions)) {
+      const el = findKey(root, key);
+      if (el instanceof SVGElement && !met(when, previewEquipment)) {
+        el.setAttribute('data-unmet', '');
+        if (equipmentView) el.style.visibility = 'hidden';
+        else el.style.opacity = '0.4';
+      }
+    }
+  });
+
+  function setTool(n: number, on: boolean) {
+    const rest = equipment.present.filter((t) => t !== n);
+    equipment.present = on ? [...rest, n].sort((a, b) => a - b) : rest;
+  }
 
   const editorReadings = $derived(
     Object.fromEntries(
@@ -1213,6 +1557,40 @@
     >
     <span class="message" data-testid="message">{message}</span>
   </header>
+
+  {#snippet equipmentBar()}
+    <div class="buttons equipment" data-testid="equipment">
+      <label><input type="checkbox" bind:checked={equipment.mmu} /> MMU</label>
+      <label
+        ><input type="checkbox" bind:checked={equipment.enclosure} /> Enclosure</label
+      >
+      <label
+        ><input type="checkbox" bind:checked={equipment.chamber} /> Chamber reading</label
+      >
+      <span class="tools" aria-label="Preview tools"
+        >Tools
+        {#each Array.from({ length: Math.max(toolCount, 1) }, (_, i) => i + 1) as n (n)}
+          <label
+            ><input
+              type="checkbox"
+              aria-label="Tool {n}"
+              checked={equipment.present.includes(n)}
+              onchange={(e) => {
+                setTool(n, e.currentTarget.checked);
+              }}
+            />T{n}</label
+          >
+        {/each}
+      </span>
+      {#if tab === 'edit'}
+        <label title="Hide the parts whose condition does not hold"
+          ><input type="checkbox" bind:checked={equipmentView} /> Only what this equipment
+          shows</label
+        >
+      {/if}
+    </div>
+  {/snippet}
+  {#if tab === 'edit'}{@render equipmentBar()}{/if}
 
   <div class="body" hidden={tab !== 'edit'}>
     <nav class="tree" aria-label="Elements">
@@ -1306,7 +1684,7 @@
       <svg
         bind:this={svgEl}
         class="canvas"
-        class:labeling={mode === 'label' || mode === 'bed'}
+        class:labeling={mode !== 'select' && mode !== 'row'}
         viewBox={formatViewBox(viewBox)}
         role="application"
         aria-label="Picture"
@@ -1317,18 +1695,84 @@
       >
         <g bind:this={content}></g>
         <g class="overlay">
-          {#if doc.bed}
-            <rect
-              class="bed"
-              class:inherited={base &&
-                JSON.stringify(doc.bed) === JSON.stringify(base.status.bed)}
-              data-bed="move"
-              data-testid="bed-area"
-              {...doc.bed}
-              opacity="0.9"
-              style={bedStyle(bedHeat(bedTemp, 110))}
-            />
+          {#each doc.fans ?? [] as fan, i (i)}
+            {@const c = fanCentersNow[i]}
+            {#if c}
+              <g
+                class="copies fan-copy"
+                class:turning={fanTurnNow !== undefined}
+                style:transform-origin="{c[0] - viewBox.x}px {c[1] -
+                  viewBox.y}px"
+                style:animation-duration="{fanTurnNow ?? 1}s"
+                data-testid="fan-copy"
+                use:partCopies={{
+                  find: () => findParts(fan.parts),
+                  filled: true,
+                  version: [domVersion, fan.parts, previewEquipment],
+                }}
+              ></g>
+            {/if}
+          {/each}
+          {#if doc.carriage}
+            {@const at = doc.carriage.positions[String(previewTool)] ?? [0, 0]}
+            <g
+              class="copies carriage-copy"
+              class:animate={animateCarriage}
+              style:transform="translate({at[0]}px, {at[1]}px)"
+              data-testid="carriage-copy"
+              use:partCopies={{
+                find: () => findParts(doc.carriage?.parts ?? []),
+                filled: true,
+                version: [domVersion, doc.carriage.parts, previewEquipment],
+              }}
+            ></g>
           {/if}
+          <radialGradient id="editor-chamber">
+            <stop style:stop-color={bedFill(bedHeat(chamberTemp, 55))} />
+            <stop
+              offset="1"
+              style:stop-color={bedFill(bedHeat(chamberTemp, 55))}
+              stop-opacity="0"
+            />
+          </radialGradient>
+          {#each ['bed', 'status', 'chamber'] as const as area (area)}
+            {@const rect = rectOf(doc[area])}
+            <g
+              class="copies"
+              opacity={area === 'chamber' ? 0.4 : undefined}
+              style={areaLook(area)}
+              data-testid="{area}-copies"
+              use:partCopies={{
+                find: () => findParts(partsOf(doc[area])),
+                outlined: area === 'bed',
+                version: [domVersion, marks, previewEquipment],
+              }}
+            ></g>
+            {#if rect}
+              <rect
+                class="area-rect"
+                class:inherited={base &&
+                  JSON.stringify(doc[area]) ===
+                    JSON.stringify(base.status[area])}
+                data-testid="{area}-area"
+                {...rect}
+                opacity={area === 'bed' ? 0.9 : 0.4}
+                style={areaLook(area)}
+              />
+            {/if}
+          {/each}
+          <!-- What a click picks: the bed over the chamber that covers it. -->
+          {#each ['chamber', 'status', 'bed'] as const as area (area)}
+            {@const rect = rectOf(doc[area])}
+            {#if rect}
+              <rect
+                class="area-hit"
+                data-bed="move"
+                data-area={area}
+                {...rect}
+              />
+            {/if}
+          {/each}
           {#if hoverBox}
             <rect class="hover-box" {...hoverBox} />
           {/if}
@@ -1341,6 +1785,10 @@
           {#each doc.labels as label, i (i)}
             <g
               class="label"
+              class:unmet={!met(
+                labelCondition(label.heater, label.when),
+                previewEquipment,
+              )}
               class:active={selectedLabel === i}
               class:picked={labelSel.includes(i) && selectedLabel !== i}
               class:inherited={base && isInherited(label, base.status.labels)}
@@ -1372,13 +1820,41 @@
               {/if}
             </g>
           {/each}
-          {#if doc.bed && bedSelected}
-            {@const b = doc.bed}
+          {#each areaPartBoxes as b, i (i)}
+            <rect class="bed-outline" {...b} stroke-width={2 * px} />
+          {/each}
+          {#if fanCenters}
+            {#each fanCentersNow as c, i (i)}
+              {#if c}
+                <g
+                  class="fan-center"
+                  data-fan-center={i}
+                  data-testid="fan-center"
+                  transform="translate({c[0]} {c[1]})"
+                >
+                  <circle r={9 * px} stroke-width={1.5 * px} />
+                  <path
+                    d="M{-14 * px} 0H{14 * px}M0 {-14 * px}V{14 * px}"
+                    stroke-width={1.5 * px}
+                  />
+                </g>
+              {/if}
+            {/each}
+          {/if}
+          {#if areaSelected && rectOf(doc[areaSelected])}
+            {@const area = areaSelected}
+            {@const b = rectOf(doc[area]) ?? {
+              x: 0,
+              y: 0,
+              width: 0,
+              height: 0,
+            }}
             <rect class="bed-outline" {...b} stroke-width={2 * px} />
             {#each RESIZE as h (h)}
               {@const [x, y] = handlePoint(h, b)}
               <rect
                 class="resize"
+                data-area={area}
                 data-bed={h}
                 style:cursor="{h}-resize"
                 x={x - 4 * px}
@@ -1462,8 +1938,8 @@
         </g>
       </svg>
       <p class="hint">
-        {#if mode === 'bed'}
-          Drag a rectangle over the printer's bed. Esc cancels.
+        {#if mode === 'bed' || mode === 'chamber' || mode === 'status'}
+          Drag a rectangle over the printer's {mode}. Esc cancels.
         {:else if mode === 'row'}
           {rowAnchors.length < rowCount
             ? `Click the nozzle of ${toolHeaters[rowAnchors.length] ?? ''} (${String(rowAnchors.length + 1)} of ${String(rowCount)}). Esc cancels.`
@@ -1477,7 +1953,8 @@
           elsewhere to box-select. Drag the selection to move it along one axis
           (Alt: freely), its handles to resize (Shift: keep proportions). Arrows
           move (Shift ×10), H hides, ⌘G groups, ⇧⌘G ungroups, L adds a label.
-          Click the bed area to move or resize it.
+          Click a bed or chamber rectangle to move or resize it; drag a fan's
+          crosshair to move the point it turns around.
         {/if}
         {#if cursor}<span class="coords">{cursor[0]}, {cursor[1]}</span>{/if}
       </p>
@@ -1570,17 +2047,14 @@
           <select
             disabled={!roots.length}
             aria-label="Show selection when"
-            value={roots.length === 1
-              ? (doc.conditions[roots[0] ?? ''] ?? '')
-              : ''}
+            value={selectionCondition}
             onchange={(e) => {
-              setCondition(roots, parseCondition(e.currentTarget.value));
+              const when = pickCondition(e.currentTarget, selectionCondition);
+              if (when !== null) setCondition(roots, when);
             }}
           >
             <option value="">always</option>
-            {#each CONDITIONS as c (c)}
-              <option value={c}>{conditionName(c)}</option>
-            {/each}
+            {@render conditionOptions(selectionCondition)}
           </select></label
         >
         <div class="buttons">
@@ -1638,60 +2112,357 @@
             >
           {/each}
         </div>
+        <label class="bed-temp"
+          ><input
+            type="checkbox"
+            checked={doc.style.shadow === true}
+            onchange={(e) => {
+              checkpoint();
+              if (e.currentTarget.checked) doc.style.shadow = true;
+              else delete doc.style.shadow;
+            }}
+          /> Label shadow</label
+        >
         <div class="small">Sizes in viewBox units.</div>
       </section>
 
+      {#snippet conditionOptions(current: string)}
+        {#each CONDITIONS as c (c)}
+          <option value={c}>{conditionName(c)}</option>
+        {/each}
+        {#if current && !CONDITIONS.includes(current)}
+          <option value={current}>{conditionName(current)}</option>
+        {/if}
+        <option value={CUSTOM}>Custom…</option>
+      {/snippet}
+      {#snippet areaSection(area: AreaName, title: string, note: string)}
+        {@const parts = partsOf(doc[area])}
+        {@const rect = rectOf(doc[area])}
+        {@const missing = parts.filter((k) => !findParts([k]).length)}
+        <section>
+          <h2>{title}</h2>
+          <div class="buttons">
+            <button
+              class:on={mode === area}
+              onclick={() => {
+                startArea(area);
+              }}>{rect ? 'Redraw rectangle' : 'Draw rectangle'}</button
+            >
+            <button
+              disabled={!selectedShapes.length}
+              onclick={() => {
+                setAreaParts(area, 'use');
+              }}
+              title="The selected shapes, a group's shapes included"
+              >Use selected parts as {area}</button
+            >
+            {#if parts.length}
+              <button
+                disabled={!selectedShapes.some((k) => !parts.includes(k))}
+                onclick={() => {
+                  setAreaParts(area, 'add');
+                }}>Add selected</button
+              >
+              <button
+                disabled={!selectedShapes.some((k) => parts.includes(k))}
+                onclick={() => {
+                  setAreaParts(area, 'remove');
+                }}>Remove selected</button
+              >
+            {/if}
+            <button
+              disabled={!doc[area]}
+              onclick={() => {
+                deleteArea(area);
+              }}>Delete</button
+            >
+            {#if base && JSON.stringify(doc[area]) !== JSON.stringify(base.status[area])}
+              <button
+                onclick={() => {
+                  resetAreaToBase(area);
+                }}
+                title="Back to {base.name}'s">Reset to base</button
+              >
+            {/if}
+          </div>
+          {#if parts.length}
+            <div class="small" data-testid="{area}-parts">
+              Parts: {parts.join(', ')}
+              <button
+                class="link"
+                onclick={() => {
+                  selectKeys(parts, 'replace');
+                  areaSelected = area;
+                }}>Select</button
+              >
+            </div>
+            {#if missing.length}
+              <div class="small warning">
+                Not in this picture: {missing.join(', ')}. Pick its own parts.
+              </div>
+            {/if}
+          {/if}
+          {#if rect}
+            <div class="fields box-fields">
+              {#each [['x', 'X'], ['y', 'Y'], ['width', 'W'], ['height', 'H'], ['rx', 'Radius']] as const as [field, name] (field)}
+                <label
+                  >{name}
+                  <input
+                    type="number"
+                    step="0.1"
+                    min={field === 'x' || field === 'y' ? undefined : 0}
+                    aria-label="{title} {name}"
+                    value={rect[field] ?? 0}
+                    onchange={(e) => {
+                      setRectField(area, field, e.currentTarget.valueAsNumber);
+                    }}
+                  /></label
+                >
+              {/each}
+            </div>
+          {/if}
+          {#if area === 'bed'}
+            <label class="bed-temp"
+              >Bed {bedTemp} ℃
+              <input
+                type="range"
+                min="20"
+                max="120"
+                aria-label="Preview bed temperature"
+                bind:value={bedTemp}
+              /></label
+            >
+          {:else if area === 'chamber'}
+            <label class="bed-temp"
+              >Chamber {chamberTemp} ℃
+              <input
+                type="range"
+                min="20"
+                max="60"
+                aria-label="Preview chamber temperature"
+                bind:value={chamberTemp}
+              /></label
+            >
+          {:else}
+            <label class="bed-temp"
+              >State
+              <select aria-label="Preview state" bind:value={previewState}>
+                <option value="">none (offline)</option>
+                {#each Object.keys(STATE_TONE) as s (s)}
+                  <option value={s}>{s}</option>
+                {/each}
+              </select></label
+            >
+          {/if}
+          <div class="small">{doc[area] ? note : 'None.'}</div>
+        </section>
+      {/snippet}
+      {@render areaSection(
+        'bed',
+        'Bed',
+        "Tinted from dark grey (room temperature) to orange (the bed's target, else 110 ℃), over the picture and under the labels; parts keep their outline.",
+      )}
+      {@render areaSection(
+        'chamber',
+        'Chamber',
+        "Tinted like the bed by the chamber's temperature (its target, else 55 ℃), at 40 % under the bed, where the printer reports one.",
+      )}
+      {@render areaSection(
+        'status',
+        'Status',
+        "Filled with the colour of the printer's state, as its state badge shows it, over the bed.",
+      )}
+
+      {#if toolCount > 1}
+        <section>
+          <h2>Carriage</h2>
+          <div class="buttons">
+            <button disabled={!selectedShapes.length} onclick={useAsCarriage}
+              >Use selection as carriage</button
+            >
+            {#if doc.carriage}
+              <button
+                onclick={() => {
+                  checkpoint();
+                  doc = without(doc, 'carriage');
+                }}>Delete</button
+              >
+            {/if}
+          </div>
+          {#if doc.carriage}
+            {@const c = doc.carriage}
+            <div class="small">
+              Parts: {c.parts.join(', ')}
+              <button
+                class="link"
+                onclick={() => {
+                  selectKeys(c.parts, 'replace');
+                }}>Select</button
+              >
+            </div>
+            <table class="carriage-positions">
+              <tbody>
+                {#each Array.from({ length: toolCount + 1 }, (_, i) => i) as n (n)}
+                  {@const at = c.positions[String(n)] ?? [0, 0]}
+                  <tr class:on={previewTool === n}>
+                    <td>{n ? `T${String(n)}` : 'Parked'}</td>
+                    {#each [0, 1] as const as axis (axis)}
+                      <td
+                        ><input
+                          type="number"
+                          step="0.1"
+                          aria-label="Carriage {n
+                            ? `T${String(n)}`
+                            : 'parked'} {axis ? 'dy' : 'dx'}"
+                          value={at[axis]}
+                          onchange={(e) => {
+                            setCarriageAt(
+                              n,
+                              axis,
+                              e.currentTarget.valueAsNumber,
+                            );
+                          }}
+                        /></td
+                      >
+                    {/each}
+                    <td
+                      ><button
+                        onclick={() => {
+                          recordCarriage(n);
+                        }}>Record</button
+                      ></td
+                    >
+                  </tr>
+                {/each}
+              </tbody>
+            </table>
+            <label class="bed-temp"
+              >Picked
+              <select aria-label="Preview picked tool" bind:value={previewTool}>
+                <option value={0}>none</option>
+                {#each Array.from({ length: toolCount }, (_, i) => i + 1) as n (n)}
+                  <option value={n}>T{n}</option>
+                {/each}
+              </select>
+              <input type="checkbox" bind:checked={animateCarriage} /> Animate</label
+            >
+            <div class="small">
+              Offsets from where the carriage is drawn. To set one, Select the
+              carriage, drag it in front of the dock and Record.
+            </div>
+          {:else}
+            <div class="small">
+              None. Select the carriage block on the rail and use it.
+            </div>
+          {/if}
+        </section>
+      {/if}
+
       <section>
-        <h2>Bed area</h2>
+        <h2>Fans</h2>
         <div class="buttons">
-          <button class:on={mode === 'bed'} onclick={startBed}
-            >{doc.bed ? 'Redraw bed area' : 'Draw bed area'}</button
+          <button disabled={!selectedShapes.length} onclick={addFan}
+            >Use selection as fan</button
           >
-          <button disabled={!doc.bed} onclick={deleteBed}>Delete</button>
-          {#if base && JSON.stringify(doc.bed) !== JSON.stringify(base.status.bed)}
-            <button onclick={resetBedToBase} title="Back to {base.name}'s"
-              >Reset to base</button
+          {#if base && JSON.stringify(doc.fans ?? []) !== JSON.stringify(base.status.fans ?? [])}
+            <button
+              onclick={() => {
+                checkpoint();
+                setFansFromBase();
+              }}
+              title="Back to {base.name}'s">Reset to base</button
             >
           {/if}
         </div>
-        {#if doc.bed}
-          {@const b = doc.bed}
-          <div class="fields box-fields">
-            {#each [['x', 'X'], ['y', 'Y'], ['width', 'W'], ['height', 'H'], ['rx', 'Radius']] as const as [field, name] (field)}
-              <label
-                >{name}
-                <input
-                  type="number"
-                  step="0.1"
-                  min={field === 'x' || field === 'y' ? undefined : 0}
-                  aria-label="Bed {name}"
-                  value={b[field] ?? 0}
-                  onchange={(e) => {
-                    setBedField(field, e.currentTarget.valueAsNumber);
-                  }}
-                /></label
+        {#each doc.fans ?? [] as fan, i (i)}
+          {@const c = fanCentersNow[i]}
+          <div class="fan-row" data-testid="fan-row">
+            <div class="fields">
+              <select
+                aria-label="Fan {i + 1} kind"
+                value={fan.kind}
+                onchange={(e) => {
+                  updateFan(i, {
+                    kind:
+                      e.currentTarget.value === 'print' ? 'print' : 'hotend',
+                  });
+                }}
               >
-            {/each}
+                <option value="hotend">Hotend fan</option>
+                <option value="print">Print fan</option>
+              </select>
+              {#if heaters.filter((h) => h.startsWith('T')).length > 1}
+                <select
+                  aria-label="Fan {i + 1} tool"
+                  value={fan.tool ?? 0}
+                  onchange={(e) => {
+                    updateFan(i, { tool: Number(e.currentTarget.value) });
+                  }}
+                >
+                  <option value={0}>Any tool</option>
+                  {#each heaters.filter((h) => h.startsWith('T')) as h, k (h)}
+                    <option value={k + 1}>{h}</option>
+                  {/each}
+                </select>
+              {/if}
+              <button
+                onclick={() => {
+                  deleteFan(i);
+                }}>Delete</button
+              >
+            </div>
+            <div class="small">
+              Parts: {fan.parts.join(', ')}
+              <button
+                class="link"
+                onclick={() => {
+                  selectKeys(fan.parts, 'replace');
+                }}>Select</button
+              >
+            </div>
+            <div class="fields box-fields">
+              {#each [0, 1] as const as axis (axis)}
+                <label
+                  >{axis ? 'Centre Y' : 'Centre X'}
+                  <input
+                    type="number"
+                    step="0.1"
+                    aria-label="Fan {i + 1} centre {axis ? 'Y' : 'X'}"
+                    value={c?.[axis] ?? 0}
+                    onchange={(e) => {
+                      const v = e.currentTarget.valueAsNumber;
+                      if (!c || !Number.isFinite(v)) return;
+                      const next: Point = [c[0], c[1]];
+                      next[axis] = v;
+                      updateFan(i, { center: next });
+                    }}
+                  /></label
+                >
+              {/each}
+              <button disabled={!fan.center} onclick={() => autoFanCenter(i)}
+                >Auto</button
+              >
+            </div>
           </div>
-          <label class="bed-temp"
-            >Bed {bedTemp} ℃
-            <input
-              type="range"
-              min="20"
-              max="120"
-              aria-label="Preview bed temperature"
-              bind:value={bedTemp}
-            /></label
-          >
-          <div class="small">
-            The app tints it from dark grey (room temperature) to orange (the
-            bed's target, else 110 ℃), over the picture and under the labels.
-          </div>
-        {:else}
-          <div class="small">
-            None: the app draws the picture's bed as it is.
-          </div>
-        {/if}
+        {/each}
+        <label class="bed-temp"
+          >Speed {fanSpeed} %
+          <input
+            type="range"
+            min="0"
+            max="100"
+            aria-label="Preview fan speed"
+            bind:value={fanSpeed}
+          /></label
+        >
+        <label class="bed-temp"
+          ><input type="checkbox" bind:checked={fanCenters} /> Show the centres</label
+        >
+        <div class="small">
+          {doc.fans?.length
+            ? "Drawn in their own colours in place of the picture's, turning around the crosshair with the fan's reported speed. Drag the crosshair to centre a fan that wobbles."
+            : 'None. Select a fan (a group counts as its shapes) and use it.'}
+        </div>
       </section>
 
       <section>
@@ -1812,7 +2583,8 @@
               aria-label="Show label when"
               title="Show when"
               onchange={(e) => {
-                const when = parseCondition(e.currentTarget.value);
+                const when = pickCondition(e.currentTarget, label.when ?? '');
+                if (when === null) return;
                 updateLabel(i, (l) => {
                   const next: Label = { ...l };
                   if (when) next.when = when;
@@ -1826,9 +2598,7 @@
                   labelCondition(label.heater, undefined),
                 )}</option
               >
-              {#each CONDITIONS as c (c)}
-                <option value={c}>{conditionName(c)}</option>
-              {/each}
+              {@render conditionOptions(label.when ?? '')}
             </select>
             <button
               onclick={() => updateLabel(i, flipLabel)}
@@ -1858,29 +2628,18 @@
 
   {#if tab === 'preview' && saved}
     <div class="preview">
-      <div class="buttons equipment">
-        <label><input type="checkbox" bind:checked={equipment.mmu} /> MMU</label
-        >
-        <label
-          ><input type="checkbox" bind:checked={equipment.enclosure} /> Enclosure</label
-        >
-        <label
-          >Tools <select bind:value={equipment.tools}>
-            {#each [1, 2, 3, 4, 5, 6, 7, 8] as n (n)}<option value={n}
-                >{n}</option
-              >{/each}
-          </select></label
-        >
-        <span class="small"
-          >Chamber reading: {previewEquipment.chamber ? 'yes' : 'no'}</span
-        >
-      </div>
+      {@render equipmentBar()}
       <div class="preview-picture">
         <StatusPicturePreview
           svg={saved.svg}
           status={saved.status}
           readings={previewReadings}
           equipment={previewEquipment}
+          printerState={previewState}
+          fanTurn={fanTurnNow}
+          pickedTool={previewTool}
+          animate={animateCarriage}
+          showCenters={fanCenters}
         />
       </div>
       <p class="small">
@@ -2098,8 +2857,23 @@
     border: 1px solid #44444a;
     border-radius: 4px;
   }
-  .equipment {
+  .buttons.equipment {
     align-items: center;
+    gap: 6px 20px;
+    padding: 0 12px;
+  }
+  .equipment .tools {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .label.unmet {
+    opacity: 0.4;
+  }
+  .equipment label {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
   }
   .move-to {
     display: block;
@@ -2130,13 +2904,62 @@
     stroke-width: 1;
     fill: rgb(0 163 255 / 10%) !important;
   }
-  .overlay .bed {
+  .overlay .area-hit {
+    fill: transparent;
     pointer-events: all;
     cursor: move;
+  }
+  .overlay .area-rect {
+    pointer-events: none;
     transition: fill 0.3s;
   }
-  .overlay .bed.inherited {
+  .overlay .area-rect.inherited {
     opacity: 0.6;
+  }
+  /* The app draws the fans and the status light in place of the picture's. */
+  .canvas :global([data-fan-part]),
+  .canvas :global([data-carriage-part]),
+  .canvas :global([data-status-part]) {
+    opacity: 0;
+  }
+  .copies {
+    pointer-events: none;
+    transition: fill 0.3s;
+  }
+  .fan-copy {
+    transform-box: view-box;
+  }
+  .fan-copy.turning {
+    animation: fan-turn linear infinite;
+  }
+  @keyframes fan-turn {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+  .fan-center {
+    cursor: move;
+    fill: rgb(0 163 255 / 15%);
+    stroke: #00a3ff;
+  }
+  .carriage-copy.animate {
+    transition: transform 0.8s ease-in-out;
+  }
+  .carriage-positions input {
+    width: 52px;
+  }
+  .carriage-positions button {
+    padding: 3px 6px;
+  }
+  .carriage-positions tr.on td:first-child {
+    color: #fa6831;
+  }
+  .fan-row {
+    border-top: 1px solid #333;
+    padding: 6px 0;
+  }
+  .small.warning {
+    color: #c0392b;
   }
   .bed-outline {
     fill: none;
@@ -2219,6 +3042,10 @@
   }
   label input {
     width: 70px;
+  }
+  label input[type='checkbox'] {
+    width: auto;
+    margin: 0;
   }
   .small {
     font-size: 11px;

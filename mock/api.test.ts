@@ -109,6 +109,39 @@ describe('mock printer API', () => {
   });
 });
 
+describe('/api/v1/info equipment', () => {
+  it('reports the tools and, when on, the enclosure', () => {
+    const printer = new MockPrinter('XL_2');
+    const info = () =>
+      get(printer, '/api/v1/info').body as {
+        tool_count?: number;
+        tools?: Record<string, unknown>;
+        enclosure?: { enabled: boolean };
+      };
+    expect(info().tool_count).toBe(5);
+    expect(Object.values(info().tools ?? {}).map(Boolean)).toEqual([
+      true,
+      true,
+      false,
+      false,
+      false,
+    ]);
+    printer.setDocks([1, 2, 4, 5]);
+    expect(Object.values(info().tools ?? {}).map(Boolean)).toEqual([
+      true,
+      true,
+      false,
+      true,
+      true,
+    ]);
+    expect(info()).not.toHaveProperty('enclosure');
+    printer.enclosure = { temp: 26 };
+    expect(info().enclosure?.enabled).toBe(true);
+    printer.reset();
+    expect(info()).not.toHaveProperty('enclosure');
+  });
+});
+
 describe('seeded printer', () => {
   it.each([
     'MK4S',

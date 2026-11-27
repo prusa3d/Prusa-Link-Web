@@ -65,14 +65,13 @@ export function mappingTargets(info: Info | undefined): PrinterTool[] {
     .map(({ toolId, tool }) => target(String(toolId), tool, tool));
 }
 
-/// Tools by index from the `"0"`, `"1"`… keys; MMU slots (`"0.N"`) are left
-/// out.
+/// Tools by dock, from the printer's tool tree; undefined for an empty or
+/// disabled one. `tool_count` counts the docks.
 export function toolsOf(info: Info | undefined): (ToolInfo | undefined)[] {
   const out: (ToolInfo | undefined)[] = [];
-  for (const [key, tool] of Object.entries(info?.tools ?? {})) {
-    if (!/^\d+$/.test(key)) continue;
+  for (const { toolId, tool } of printerTools(info?.tools).tools()) {
     const material = tool?.material_package_instance?.package?.material;
-    out[Number(key)] = tool
+    out[toolId] = tool
       ? {
           material: material?.abbreviation,
           color: material?.primary_color?.color_rgba,
@@ -101,7 +100,9 @@ const fetchIdentity: FetchIdentity = async () => {
     hostname: info.data?.hostname,
     firmware: version.data?.firmware,
     nozzle: info.data?.nozzle_diameter,
-    mmu: info.data?.mmu,
+    mmu:
+      printerTools(info.data?.tools).isMultiMaterial() ||
+      info.data?.mmu === true,
     features: info.data?.features,
     tools: toolsOf(info.data),
     enclosure: info.data?.enclosure?.enabled,

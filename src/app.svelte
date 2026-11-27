@@ -43,7 +43,13 @@
   import { CAN_START } from './lib/printer/state';
   import { identity } from './lib/stores/identity.svelte';
   import { isMultiTool } from './lib/printer/models';
-  import { heaterReadings } from './lib/printer/status-picture';
+  import { equipmentFrom } from './lib/printer/picture';
+  import {
+    activeToolOf,
+    type Fan,
+    fanTurn,
+    heaterReadings,
+  } from './lib/printer/status-picture';
   import { slotRows, toolRows } from './lib/printer/tools';
   import { dialog } from './lib/stores/dialog.svelte';
   import BedView from './features/objects/bed-view.svelte';
@@ -414,15 +420,24 @@
                   model={identity.model}
                   mmu={identity.mmu}
                   equipment={{
-                    tools: identity.tools.filter(Boolean).length || 1,
+                    ...equipmentFrom(identity.tools, identity.enclosure),
                     chamber: printer.status?.chamber !== undefined,
-                    enclosure: identity.enclosure,
                   }}
+                  activeTool={printer.offline
+                    ? undefined
+                    : activeToolOf(printer.status)}
                   readings={heaterReadings(printer.status, {
                     offline: printer.offline,
                     toolPicked: !multiTool || filament.loaded !== undefined,
                     perTool: __MULTI_TOOL__ && identity.can('per_tool_heating'),
                   })}
+                  state={printer.offline ? undefined : printer.status?.state}
+                  fanTurn={(fan: Fan) =>
+                    fanTurn(fan, printer.status, {
+                      offline: printer.offline,
+                      toolPicked: !multiTool || filament.loaded !== undefined,
+                      mini: identity.model?.variant === 'mini',
+                    })}
                 />
               {/snippet}
               {#snippet controls()}

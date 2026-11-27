@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { bedHeat, bedStyle, bedTop } from './bed-heat';
+import { bedHeat, bedStyle, bedTop, chamberTop, statusStyle } from './bed-heat';
 
 describe('bedHeat', () => {
   it.each([
@@ -29,6 +29,27 @@ describe('bedTop', () => {
     expect(bedTop(0)).toBe(60);
     expect(bedTop(undefined)).toBe(60);
     expect(bedTop(90)).toBe(90);
+  });
+});
+
+describe('statusStyle', () => {
+  it('is an unlit grey without a state', () => {
+    expect(statusStyle()).toBe('fill:#3a3a3c');
+  });
+
+  it('is see-through and glows in its colour', () => {
+    expect(statusStyle('red')).toBe(
+      'fill:red;fill-opacity:.6;filter:drop-shadow(0 0 1.5px red) drop-shadow(0 0 3.5px red)',
+    );
+  });
+});
+
+describe('chamberTop', () => {
+  it('keeps its own last target, else the CORE One limit', () => {
+    expect(chamberTop(0)).toBe(55);
+    expect(chamberTop(45)).toBe(45);
+    expect(chamberTop(undefined)).toBe(45);
+    expect(bedTop(0)).not.toBe(45);
   });
 });
 
