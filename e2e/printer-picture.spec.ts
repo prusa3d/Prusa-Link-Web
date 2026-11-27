@@ -198,7 +198,7 @@ test('the bed area glows from grey to orange as the bed heats', async ({
   // not the 110 ℃ default, so still fully orange at 100 ℃.
   await printer(request, { bed: { temp: 100, target: 0 } });
   await expect(page.getByTestId('heater-label-bed')).toContainText(
-    /(100|9\d)℃/,
+    /(100|9\d)°C/,
   );
   await expect(bed).toHaveAttribute('data-heat', '1.00');
 });
