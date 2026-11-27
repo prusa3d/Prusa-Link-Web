@@ -71,7 +71,7 @@
   "firmware.download": "Stáhnout firmware",
   "firmware.notes": "Poznámky k vydání",
   "firmware.dismiss": "Skrýt do dalšího vydání",
-  "firmware.version": "Firmware {version}",
+  "printer.firmware": "Firmware {version}",
   "firmware.install": "Stáhnout a nahrát",
   "firmware.howToInstall": "Stránka soubor stáhne a nahraje na USB disk tiskárny; potom tiskárnu restartujte.",
   "firmware.howToUpload": "Stáhněte soubor a pak ho přetáhněte sem, nahraje se na USB disk tiskárny.",

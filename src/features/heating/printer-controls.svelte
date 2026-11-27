@@ -47,9 +47,8 @@
   let preheatOpen = $state(false);
   let changeOpen = $state(false);
   // Builds without several tools leave the dialogs out.
-  const Preheat =
-    __MULTI_TOOL__ || __TOOL_MAPPING__ ? PreheatDialog : undefined;
-  const Change = __MULTI_TOOL__ || __TOOL_MAPPING__ ? ChangeDialog : undefined;
+  const Preheat = __PREHEAT_DIALOG__ ? PreheatDialog : undefined;
+  const Change = __CHANGE_FILAMENTS__ ? ChangeDialog : undefined;
   const shown = $derived(
     zOffset !== undefined && zOffset !== 0 ? zOffset : controls.zOffset,
   );

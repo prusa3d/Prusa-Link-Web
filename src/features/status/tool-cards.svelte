@@ -92,11 +92,13 @@
     >
       <div class="flex w-full min-w-0 items-center gap-1 text-xs">
         <span class="min-w-0 flex-1 truncate font-semibold">{label(tool)}</span>
-        <NozzleBadges
-          hardened={tool.hardened}
-          highFlow={tool.highFlow}
-          highTemp={tool.highTemp}
-        />
+        {#if __NOZZLE_BADGES__}
+          <NozzleBadges
+            hardened={tool.hardened}
+            highFlow={tool.highFlow}
+            highTemp={tool.highTemp}
+          />
+        {/if}
         {#if tool.nozzle}
           <span class="text-muted-foreground">{tool.nozzle}</span>
           <TelemetryIcon

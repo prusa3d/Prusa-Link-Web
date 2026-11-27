@@ -69,7 +69,7 @@
   "firmware.download": "Télécharger le firmware",
   "firmware.notes": "Notes de version",
   "firmware.dismiss": "Masquer jusqu'à la prochaine version",
-  "firmware.version": "Firmware {version}",
+  "printer.firmware": "Firmware {version}",
   "firmware.install": "Télécharger et envoyer",
   "firmware.howToInstall": "La page télécharge le fichier et le place sur la clé USB de l'imprimante ; redémarrez ensuite l'imprimante.",
   "firmware.howToUpload": "Téléchargez le fichier, puis déposez-le ici pour le placer sur la clé USB de l'imprimante.",

@@ -69,7 +69,7 @@
   "firmware.download": "Download firmware",
   "firmware.notes": "Release notes",
   "firmware.dismiss": "Hide until the next release",
-  "firmware.version": "Firmware {version}",
+  "printer.firmware": "Firmware {version}",
   "firmware.install": "Download and upload",
   "firmware.howToInstall": "The page downloads the file and puts it on the printer's USB drive; then restart the printer.",
   "firmware.howToUpload": "Download the file, then drop it here to put it on the printer's USB drive.",

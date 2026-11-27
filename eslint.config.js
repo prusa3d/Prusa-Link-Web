@@ -1,6 +1,7 @@
 import { applicationConfig } from '@prusa/frontend-standards/eslint/application';
 
 import svelteConfig from './svelte.config.js';
+import { FLAGS } from './build/features.ts';
 
 export default [
   ...applicationConfig({ tsconfigRootDir: import.meta.dirname, svelteConfig }),
@@ -15,17 +16,10 @@ export default [
       'src/lib/api/schema.d.ts',
     ],
   },
-  // Build-time constants (vite.config.ts `define`).
+  // Build-time constants: the feature flags of build/features.ts.
   {
     languageOptions: {
-      globals: {
-        __API_V2__: 'readonly',
-        __MULTI_TOOL__: 'readonly',
-        __TOOL_MAPPING__: 'readonly',
-        __CANCEL_OBJECT__: 'readonly',
-        __CONTROLS__: 'readonly',
-        __FIRMWARE_FLASH__: 'readonly',
-      },
+      globals: Object.fromEntries(FLAGS.map((f) => [f, 'readonly'])),
     },
   },
   // prusa-connect bans fetch because its SDK owns the transport. Here the

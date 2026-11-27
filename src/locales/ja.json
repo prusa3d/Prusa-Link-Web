@@ -69,7 +69,7 @@
   "firmware.download": "ファームウェアをダウンロード",
   "firmware.notes": "リリースノート",
   "firmware.dismiss": "次のリリースまで非表示",
-  "firmware.version": "ファームウェア {version}",
+  "printer.firmware": "ファームウェア {version}",
   "firmware.install": "ダウンロードしてアップロード",
   "firmware.howToInstall": "ページがファイルをダウンロードしてプリンターの USB ドライブに保存します。その後プリンターを再起動してください。",
   "firmware.howToUpload": "ファイルをダウンロードし、ここにドロップするとプリンターの USB ドライブに保存されます。",
