@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
 import { apply, parseTransform } from './geometry.ts';
-import { type Edits, exportSvg } from './status.ts';
+import { type Edits, exportSvg, partMark } from './status.ts';
 import {
   applyStructure,
   findKey,
@@ -100,6 +100,30 @@ describe('structure edits', () => {
 });
 
 describe('exportSvg', () => {
+  it('marks the parts of the areas and fans that are shown', () => {
+    const out = parse(
+      exportSvg(
+        SOURCE,
+        { ...NONE, hidden: ['3'] },
+        {
+          bed: ['2.0', '2.1', '3'],
+          status: ['1'],
+          fans: [['2.1'], ['2.1']],
+          carriage: ['2.0'],
+        },
+      ),
+    );
+    const ids = (what: Parameters<typeof partMark>[0]) =>
+      [...out.querySelectorAll(`[${partMark(what)}]`)].map((e) => e.id);
+    expect(ids('bed')).toEqual(['glass', 'handle']);
+    expect(ids('status')).toEqual(['body']);
+    expect(ids('chamber')).toEqual([]);
+    expect(ids('carriage')).toEqual(['glass']);
+    expect(out.querySelector('#handle')?.getAttribute(partMark('fan'))).toBe(
+      '0 1',
+    );
+  });
+
   it('removes hidden parts and adds a viewBox', () => {
     const out = parse(exportSvg(SOURCE, { ...NONE, hidden: ['2'] }));
     expect(out.querySelector('#door')).toBeNull();

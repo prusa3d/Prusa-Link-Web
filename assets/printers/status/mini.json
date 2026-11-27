@@ -17,15 +17,23 @@
     {
       "heater": "bed",
       "anchor": [454.4, 747.6],
-      "elbow": [279.9, 655.6],
-      "end": [99.9, 655.6],
+      "elbow": [265.7, 657.9],
+      "end": [85.7, 657.9],
       "side": "left"
     }
   ],
+  "bed": {
+    "x": 252.6,
+    "y": 747.1,
+    "width": 349.5,
+    "height": 7.3
+  },
   "conditional": [],
   "edits": {
     "hidden": [],
-    "transforms": {},
+    "transforms": {
+      "0.43": [1, 1, 0, 4]
+    },
     "structure": [],
     "conditions": {}
   }

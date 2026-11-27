@@ -15,6 +15,7 @@ import {
   labelLength,
   newLabel,
   normalizeBed,
+  normalizeBedArea,
   normalizeLabel,
   parseStatus,
   scopeIds,
@@ -318,13 +319,15 @@ describe('bed area', () => {
 
   it('is inherited by a variant until it draws its own or drops it', () => {
     const base = { labels: [], style: plain.style, bed };
-    expect(diffVariant(base, [], plain.style, bed)).toEqual({ labels: {} });
+    expect(diffVariant(base, [], plain.style, { bed: bed })).toEqual({
+      labels: {},
+    });
     expect(resolveVariant(base, { labels: {} }).bed).toEqual(bed);
     const own = { ...bed, y: 650 };
-    const moved = diffVariant(base, [], plain.style, own);
+    const moved = diffVariant(base, [], plain.style, { bed: own });
     expect(moved.bed).toEqual(own);
     expect(resolveVariant(base, moved).bed).toEqual(own);
-    const dropped = diffVariant(base, [], plain.style, undefined);
+    const dropped = diffVariant(base, [], plain.style);
     expect(dropped.bed).toBeNull();
     expect(resolveVariant(base, dropped)).not.toHaveProperty('bed');
 
@@ -338,5 +341,186 @@ describe('bed area', () => {
       parseStatus(serializeStatus({ ...variant, overrides: moved })).overrides
         ?.bed,
     ).toEqual(own);
+  });
+});
+
+describe('bed parts', () => {
+  const plain: StatusPicture = {
+    source: 'coreone.svg',
+    viewBox: '0 0 1000 1000',
+    style: { value: 60, caption: 30, stroke: 4 },
+    labels: [],
+    conditional: [],
+    edits: emptyEdits(),
+  };
+  const parts = { parts: ['0.47', '0.46'] };
+
+  it('round-trip in key order, each once, in place of a rectangle', () => {
+    const text = serializeStatus({
+      ...plain,
+      bed: { parts: ['0.47', '0.46', '0.47'] },
+    });
+    expect((JSON.parse(text) as { bed: unknown }).bed).toEqual({
+      parts: ['0.46', '0.47'],
+    });
+    expect(parseStatus(text).bed).toEqual({ parts: ['0.46', '0.47'] });
+    expect(normalizeBedArea({ parts: ['0.10', '0.9'] })).toEqual({
+      parts: ['0.9', '0.10'],
+    });
+  });
+
+  it('rejects an empty or broken list', () => {
+    expect(() => parseStatus('{"bed":{"parts":[]}}')).toThrow();
+    expect(() => parseStatus('{"bed":{"parts":[46]}}')).toThrow();
+  });
+
+  it('are inherited by a variant until it picks its own or drops them', () => {
+    const base = { labels: [], style: plain.style, bed: parts };
+    expect(
+      diffVariant(base, [], plain.style, { bed: { parts: ['0.46', '0.47'] } }),
+    ).toEqual({
+      labels: {},
+    });
+    expect(resolveVariant(base, { labels: {} }).bed).toEqual(parts);
+    const own = { parts: ['0.50'] };
+    const changed = diffVariant(base, [], plain.style, { bed: own });
+    expect(changed.bed).toEqual(own);
+    const rect = { x: 1, y: 2, width: 3, height: 4 };
+    expect(diffVariant(base, [], plain.style, { bed: rect }).bed).toEqual(rect);
+    expect(diffVariant(base, [], plain.style).bed).toBeNull();
+    const variant: StatusPicture = {
+      ...plain,
+      base: 'coreone',
+      overrides: changed,
+    };
+    expect(parseStatus(serializeStatus(variant)).overrides?.bed).toEqual(own);
+  });
+});
+
+describe('chamber, status and fans', () => {
+  const plain: StatusPicture = {
+    source: 'coreone.svg',
+    viewBox: '0 0 1000 1000',
+    style: { value: 60, caption: 30, stroke: 4 },
+    labels: [],
+    conditional: [],
+    edits: emptyEdits(),
+  };
+  const fan = {
+    parts: ['141.1', '141.0'],
+    kind: 'hotend' as const,
+    center: [420.04, 273] as Point,
+  };
+
+  it('round-trip after the bed, in their own forms', () => {
+    const text = serializeStatus({
+      ...plain,
+      bed: { parts: ['46'] },
+      chamber: { x: 100, y: 100, width: 800, height: 600 },
+      status: { parts: ['60', '59'] },
+      fans: [fan, { parts: ['7'], kind: 'print', tool: 2 }],
+    });
+    const json = JSON.parse(text) as Record<string, unknown>;
+    expect(Object.keys(json).slice(4, 8)).toEqual([
+      'bed',
+      'chamber',
+      'status',
+      'fans',
+    ]);
+    expect(json.fans).toEqual([
+      { parts: ['141.0', '141.1'], kind: 'hotend', center: [420, 273] },
+      { parts: ['7'], kind: 'print', tool: 2 },
+    ]);
+    const back = parseStatus(text);
+    expect(back.status).toEqual({ parts: ['59', '60'] });
+    expect(back.chamber).toEqual({ x: 100, y: 100, width: 800, height: 600 });
+    expect(back.fans?.[1]).toEqual({ parts: ['7'], kind: 'print', tool: 2 });
+  });
+
+  it('rejects a fan of no kind or no parts', () => {
+    expect(() =>
+      parseStatus('{"fans":[{"parts":["1"],"kind":"x"}]}'),
+    ).toThrow();
+    expect(() =>
+      parseStatus('{"fans":[{"parts":[],"kind":"print"}]}'),
+    ).toThrow();
+  });
+
+  it('are inherited by a variant, each area on its own, the fans as a list', () => {
+    const base = {
+      labels: [],
+      style: plain.style,
+      status: { parts: ['60'] },
+      fans: [fan],
+    };
+    expect(diffVariant(base, [], plain.style, base)).toEqual({ labels: {} });
+    const own = diffVariant(base, [], plain.style, {
+      status: { parts: ['61'] },
+      chamber: { x: 1, y: 2, width: 3, height: 4 },
+    });
+    expect(own).toEqual({
+      labels: {},
+      status: { parts: ['61'] },
+      chamber: { x: 1, y: 2, width: 3, height: 4 },
+      fans: [],
+    });
+    expect(resolveVariant(base, own)).not.toHaveProperty('fans');
+    expect(resolveVariant(base, { labels: {} }).fans).toEqual([fan]);
+    const variant: StatusPicture = {
+      ...plain,
+      base: 'coreone',
+      overrides: own,
+    };
+    expect(parseStatus(serializeStatus(variant)).overrides).toEqual(own);
+  });
+});
+
+describe('label shadow', () => {
+  it('is saved in the style only when on, and a variant can turn it on', () => {
+    const plain: StatusPicture = {
+      source: 'coreone.svg',
+      viewBox: '0 0 1000 1000',
+      style: { value: 60, caption: 30, stroke: 4 },
+      labels: [],
+      conditional: [],
+      edits: emptyEdits(),
+    };
+    expect(serializeStatus(plain)).not.toContain('shadow');
+    const on = { ...plain.style, shadow: true as const };
+    expect(parseStatus(serializeStatus({ ...plain, style: on })).style).toEqual(
+      on,
+    );
+    const overrides = diffVariant(plain, [], on);
+    expect(overrides.style).toEqual(on);
+    expect(
+      parseStatus(serializeStatus({ ...plain, base: 'coreone', overrides }))
+        .overrides?.style,
+    ).toEqual(on);
+    expect(resolveVariant(plain, { labels: {} }).style).toEqual(plain.style);
+  });
+});
+
+describe('carriage', () => {
+  it('round-trips its parts and positions, dropping zero offsets', () => {
+    const plain: StatusPicture = {
+      source: 'xl.svg',
+      viewBox: '0 0 1000 1000',
+      style: { value: 60, caption: 30, stroke: 4 },
+      labels: [],
+      conditional: [],
+      edits: emptyEdits(),
+    };
+    const text = serializeStatus({
+      ...plain,
+      carriage: {
+        parts: ['0.12', '0.3'],
+        positions: { '3': [192.64, 0], '0': [0, 0], '2': [103.2, 0] },
+      },
+    });
+    expect((JSON.parse(text) as { carriage: unknown }).carriage).toEqual({
+      parts: ['0.3', '0.12'],
+      positions: { '2': [103.2, 0], '3': [192.6, 0] },
+    });
+    expect(parseStatus(text).carriage?.positions['3']).toEqual([192.6, 0]);
   });
 });

@@ -3,7 +3,11 @@ import { afterEach, describe, expect, it } from 'vitest';
 import { setTemperatureUnit } from '../units.svelte';
 import {
   type Equipment,
+  activeToolOf,
+  fanTurn,
   heaterReadings,
+  labelShadow,
+  met,
   hideIds,
   type Label,
   labelValue,
@@ -25,6 +29,7 @@ const plain: Equipment = {
   enclosure: false,
   chamber: false,
   tools: 1,
+  present: [1],
 };
 
 describe('trend', () => {
@@ -171,10 +176,22 @@ describe('shownLabels', () => {
       'bed',
     ]);
     expect(
-      shownLabels(labels, { ...plain, tools: 2, chamber: true }, all).map(
-        (l) => l.heater,
-      ),
+      shownLabels(
+        labels,
+        { ...plain, tools: 2, present: [1, 2], chamber: true },
+        all,
+      ).map((l) => l.heater),
     ).toEqual(['T1', 'T2', 'bed', 'chamber']);
+  });
+
+  it("hides a tool's label while its dock is empty", () => {
+    const labels = [at('T2'), at('T3'), at('T4')];
+    const xl = { ...plain, tools: 3, present: [1, 2, 4] };
+    const readings = { T2: reading, T3: reading, T4: reading };
+    expect(shownLabels(labels, xl, readings).map((l) => l.heater)).toEqual([
+      'T2',
+      'T4',
+    ]);
   });
 
   it("follows a label's own condition", () => {
@@ -201,5 +218,97 @@ describe('tone', () => {
     [{ current: 25, target: 0 }, 'off'],
   ] as const)('%o: %s', (reading, expected) => {
     expect(tone(reading)).toBe(expected);
+  });
+});
+
+describe('fanTurn', () => {
+  const on = { offline: false, toolPicked: true, mini: false };
+  const hotend = { kind: 'hotend' as const };
+
+  it('turns as fast as the fan reports, and stands at 0 RPM', () => {
+    expect(fanTurn(hotend, { fan_hotend: 5000 }, on)).toBe(1);
+    expect(fanTurn(hotend, { fan_hotend: 10000 }, on)).toBe(0.5);
+    expect(fanTurn(hotend, { fan_hotend: 0, temp_nozzle: 200 }, on)).toBe(
+      undefined,
+    );
+    expect(fanTurn({ kind: 'print' }, { fan_print: 2500 }, on)).toBe(2);
+  });
+
+  it('without a reading, runs the hotend fan above the auto-fan temperature', () => {
+    expect(fanTurn(hotend, { temp_nozzle: 51 }, on)).toBe(1);
+    expect(fanTurn(hotend, { temp_nozzle: 50 }, on)).toBe(undefined);
+    expect(fanTurn(hotend, { temp_nozzle: 46 }, { ...on, mini: true })).toBe(1);
+    expect(fanTurn({ kind: 'print' }, { temp_nozzle: 200 }, on)).toBe(
+      undefined,
+    );
+  });
+
+  it("stands offline, with no tool picked, or for another tool's fan", () => {
+    const s = { fan_hotend: 5000 };
+    expect(fanTurn(hotend, s, { ...on, offline: true })).toBe(undefined);
+    expect(fanTurn(hotend, s, { ...on, toolPicked: false })).toBe(undefined);
+    expect(fanTurn({ ...hotend, tool: 2 }, s, on)).toBe(undefined);
+    expect(fanTurn({ ...hotend, tool: 1 }, s, on)).toBe(1);
+  });
+});
+
+describe('labelShadow', () => {
+  it('is off unless the picture asks for it, and scales with the lines', () => {
+    expect(labelShadow({ value: 30, caption: 15, stroke: 2 })).toBeUndefined();
+    expect(
+      labelShadow({ value: 30, caption: 15, stroke: 2, shadow: true }),
+    ).toBe('drop-shadow(0 0.5px 1px #0007)');
+  });
+});
+
+describe('met', () => {
+  const xl = (
+    tools: number,
+    enclosure: boolean,
+    present = Array.from({ length: tools }, (_, i) => i + 1),
+  ): Equipment => ({
+    mmu: false,
+    enclosure,
+    chamber: false,
+    tools,
+    present,
+  });
+
+  it('holds for a tool that is there, whatever the count', () => {
+    const gap = xl(4, false, [1, 2, 4, 5]);
+    expect(met('T4', gap)).toBe(true);
+    expect(met('T3', gap)).toBe(false);
+    expect(met('T5&!T3', gap)).toBe(true);
+    expect(met('tools=4', gap)).toBe(true);
+  });
+
+  it('holds for single conditions as before', () => {
+    expect(met(undefined, xl(1, false))).toBe(true);
+    expect(met('tools>=2', xl(1, false))).toBe(false);
+    expect(met('enclosure', xl(1, true))).toBe(true);
+  });
+
+  it('joins with &, separates with | and negates with !', () => {
+    const c = 'enclosure&tools>=4|!enclosure&tools<=2|tools=3';
+    expect(met(c, xl(5, true))).toBe(true);
+    expect(met(c, xl(5, false))).toBe(false);
+    expect(met(c, xl(2, false))).toBe(true);
+    expect(met(c, xl(2, true))).toBe(false);
+    expect(met(c, xl(3, true))).toBe(true);
+    expect(met('!mmu', xl(1, false))).toBe(true);
+  });
+});
+
+describe('activeToolOf', () => {
+  it('is the tool the status marks active, from 1, MMU slots aside', () => {
+    expect(
+      activeToolOf({
+        tools: { '0': { active: false }, '2': { active: true }, '0.1': null },
+      }),
+    ).toBe(3);
+    expect(activeToolOf({ tools: { '0.0': { active: true } } })).toBe(
+      undefined,
+    );
+    expect(activeToolOf({})).toBe(undefined);
   });
 });

@@ -47,6 +47,7 @@
     parked: boolean;
     mmu: boolean;
     takesMmu: boolean;
+    docks: boolean[];
     firmware: string;
     bed: { temp: number; target: number };
     tools: {
@@ -196,6 +197,21 @@
           onclick={() => patch({ firmwareFiles: true })}
           >.bbf files on USB</button
         >
+        {#if snap.model.startsWith('XL')}
+          {#each snap.docks as enabled, i (i)}
+            <button
+              type="button"
+              class={[chip, enabled && on]}
+              title="Tool in dock {i + 1}"
+              onclick={() =>
+                patch({
+                  docks: (snap?.docks ?? []).flatMap((d, k) =>
+                    (k === i ? !d : d) ? [k + 1] : [],
+                  ),
+                })}>T{i + 1}</button
+            >
+          {/each}
+        {/if}
         {#each ['8.0.1', '8.0.2'] as firmware (firmware)}
           <button
             class={[chip, snap.firmware === firmware && on]}

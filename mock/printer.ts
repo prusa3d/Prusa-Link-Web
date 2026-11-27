@@ -143,6 +143,9 @@ export class MockPrinter {
   model: PrinterModel = 'MK4S';
   state: PrinterState = 'IDLE';
   bed = { temp: 22, target: 0 };
+  /// Fan speeds in RPM the dev panel set; else the hotend fan runs above
+  /// Marlin's EXTRUDER_AUTO_FAN_TEMPERATURE and the print fan while printing.
+  fans: { hotend?: number; print?: number } = {};
   tools: MockTool[] = [];
   activeTool = 0;
   /// No tool picked: a toolchanger parks them all when idle, and PrusaLink
@@ -218,6 +221,27 @@ export class MockPrinter {
   job: MockJob | undefined;
   #nextJobId = 1;
 
+  /// Which docks hold a tool, by dock.
+  get docks(): boolean[] {
+    return this.tools.map((t) => !t.absent);
+  }
+
+  /// Puts tools in an XL's docks (from 1, `[1, 2, 4, 5]`) and empties the
+  /// others; null puts back the model's seeded tools.
+  setDocks(docks: number[] | null) {
+    const seeded = seedTools(this.model.startsWith('XL') ? 'XL' : this.model);
+    if (!docks) {
+      this.tools = seedTools(this.model);
+      return;
+    }
+    this.tools = seeded.map((seed, i) => {
+      const old = this.tools[i];
+      if (!docks.includes(i + 1)) return { ...seed, absent: true };
+      return old && !old.absent ? old : seed;
+    });
+    if (this.tools[this.activeTool]?.absent) this.parked = true;
+  }
+
   constructor(model: PrinterModel = 'MK4S') {
     this.setModel(model);
   }
@@ -244,6 +268,7 @@ export class MockPrinter {
     this.state = 'IDLE';
     this.job = undefined;
     this.bed = { temp: ambient(9), target: 0 };
+    this.fans = {};
     this.tools = seedTools(this.model);
     this.activeTool = 0;
     this.parked = this.model.startsWith('XL') && this.toolCount > 1;

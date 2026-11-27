@@ -19,8 +19,6 @@ declare module 'virtual:printer-images' {
 
   const printerImages: {
     images: Pictures;
-    /// The same printers with an MMU3, where the build has one.
-    mmu: Pictures;
   };
   export default printerImages;
 }

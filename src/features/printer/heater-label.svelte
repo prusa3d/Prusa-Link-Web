@@ -6,6 +6,7 @@
   import {
     type Label,
     labelLayout,
+    labelShadow,
     type LabelStyle,
     labelValue,
     type Reading,
@@ -74,6 +75,7 @@
 </script>
 
 <g
+  style:filter={labelShadow(style)}
   data-testid="heater-label-{label.heater}"
   data-tone={tone(reading)}
   class={{

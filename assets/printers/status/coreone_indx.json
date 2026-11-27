@@ -29,6 +29,18 @@
       "side": "right"
     }
   ],
+  "bed": {
+    "parts": ["0.41"]
+  },
+  "chamber": {
+    "x": 263.9,
+    "y": 321.1,
+    "width": 440.3,
+    "height": 436.1
+  },
+  "status": {
+    "parts": ["0.42"]
+  },
   "conditional": [],
   "edits": {
     "hidden": ["0.43"],

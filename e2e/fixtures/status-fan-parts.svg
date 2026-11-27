@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000" fill="none">
+  <rect data-status-part="" x="300" y="120" width="400" height="10" rx="5" fill="#555"/>
+  <g data-fan="hotend" transform="translate(500 400)">
+    <circle data-fan-part="0" r="40" fill="#555" stroke="#222" stroke-width="2"/>
+    <path data-fan-part="0" d="M0-36 12-4H-12ZM31 18 4 6 16-14ZM-31 18-16-14-4 6Z" fill="#ddd"/>
+  </g>
+</svg>

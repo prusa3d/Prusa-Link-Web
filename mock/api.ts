@@ -277,8 +277,8 @@ export function handleApi(
         axis_z: printer.axis.z,
         flow: printer.flow,
         speed: printer.speed,
-        fan_hotend: 0,
-        fan_print: printer.fanPrint,
+        fan_hotend: printer.fans.hotend ?? (tool.temp > 50 ? 7000 : 0),
+        fan_print: printer.fans.print ?? printer.fanPrint,
         ...(printer.state === 'ATTENTION' &&
           printer.question && {
             status_printer: { ok: false, message: printer.question },

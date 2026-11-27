@@ -1,5 +1,5 @@
 import { inUnit, unitSign } from '../units.svelte';
-import type { Bed } from './bed-heat';
+import type { Shape } from './bed-heat';
 
 /// The labels a status picture carries (assets/printers/status, saved by the
 /// picture editor): one leader per heater, from the part it names to the
@@ -9,8 +9,11 @@ export type Heater =
   'T1' | 'T2' | 'T3' | 'T4' | 'T5' | 'T6' | 'T7' | 'T8' | 'bed' | 'chamber';
 
 /// When a part or a label shows: with an MMU, with an enclosure, when the
-/// printer reports a chamber temperature, or with at least N tools.
-export type Condition = 'mmu' | 'enclosure' | 'chamber' | `tools>=${number}`;
+/// printer reports a chamber temperature, with at least, at most or exactly
+/// N tools, with tool N (`T3`); `!` negates one, `&` joins them, `|`
+/// separates alternatives (`!enclosure&tools<=3|T5`). The picture editor
+/// checks the syntax.
+export type Condition = string;
 
 export type Point = [number, number];
 
@@ -28,6 +31,16 @@ export interface LabelStyle {
   value: number;
   caption: number;
   stroke: number;
+  shadow?: true;
+}
+
+/// A slight shadow under a label, sized by its line width so it reads the
+/// same on any picture.
+export function labelShadow(style: LabelStyle): string | undefined {
+  const s = style.stroke;
+  return (
+    style.shadow && `drop-shadow(0 ${String(s / 4)}px ${String(s / 2)}px #0007)`
+  );
 }
 
 export interface PictureStatus {
@@ -35,31 +48,95 @@ export interface PictureStatus {
   labels: Label[];
   /// Parts of the picture shown only under a condition, by element id.
   conditional: { id: string; when: Condition }[];
-  bed?: Bed;
+  bed?: Shape[];
+  /// Drawn at a lower opacity, under the bed.
+  chamber?: Shape[];
+  /// Filled with the colour of the printer's state.
+  status?: Shape[];
+  fans?: Fan[];
+  carriage?: Carriage;
+}
+
+/// A toolchanger's carriage, drawn in place of the picture's and slid in
+/// front of the picked tool's dock.
+export interface Carriage {
+  shapes: Shape[];
+  /// Its offset per picked tool, from 1, and with none picked ("0"); as
+  /// drawn where one is missing.
+  positions: Record<string, Point>;
+}
+
+/// A fan drawn in its own colours, in place of the picture's, turning around
+/// `center` while it runs.
+export interface Fan {
+  kind: 'hotend' | 'print';
+  /// The tool it cools on a multi-tool printer.
+  tool?: number;
+  center: Point;
+  shapes: Shape[];
+}
+
+/// The fan's RPM at which the picture turns once a second: a real fan turns
+/// far faster than a picture can show.
+const RPM_PER_TURN = 5000;
+
+/// Seconds per turn of the picture's fan, or none while it stands. The API
+/// reports the active tool's fans only, the way it does its temperature.
+/// Without a reading, the hotend fan runs above Marlin's
+/// EXTRUDER_AUTO_FAN_TEMPERATURE (45 ℃ on the MINI, else 50 ℃).
+export function fanTurn(
+  fan: Pick<Fan, 'kind' | 'tool'>,
+  status: Telemetry | undefined,
+  {
+    offline,
+    toolPicked,
+    mini,
+  }: { offline: boolean; toolPicked: boolean; mini: boolean },
+): number | undefined {
+  if (!status || offline || !toolPicked || (fan.tool ?? 1) > 1)
+    return undefined;
+  let rpm = fan.kind === 'hotend' ? status.fan_hotend : status.fan_print;
+  if (rpm === undefined && fan.kind === 'hotend')
+    rpm = (status.temp_nozzle ?? 0) > (mini ? 45 : 50) ? RPM_PER_TURN : 0;
+  return rpm ? RPM_PER_TURN / rpm : undefined;
 }
 
 export interface Equipment {
   mmu: boolean;
   enclosure: boolean;
   chamber: boolean;
+  /// How many tools are enabled.
   tools: number;
+  /// Which, from 1: an XL may leave docks empty (1, 2, 4 and 5).
+  present: readonly number[];
 }
 
 export function met(c: Condition | undefined, e: Equipment): boolean {
-  if (!c) return true;
-  if (c === 'mmu') return e.mmu;
-  if (c === 'enclosure') return e.enclosure;
-  if (c === 'chamber') return e.chamber;
-  return e.tools >= Number(c.slice('tools>='.length));
+  return (
+    !c ||
+    c.split('|').some((alt) =>
+      alt.split('&').every((atom) => {
+        const not = atom.startsWith('!');
+        const [, op = '', n] = /tools(.?=)(\d+)/.exec(atom) ?? [];
+        const tool = /T(\d)/.exec(atom)?.[1];
+        const d = e.tools - Number(n);
+        let has = op
+          ? { '>=': d >= 0, '<=': d <= 0, '=': !d }[op]
+          : e[atom.slice(not ? 1 : 0) as 'mmu' | 'enclosure' | 'chamber'];
+        if (tool) has = e.present.includes(Number(tool));
+        return has !== not;
+      }),
+    )
+  );
 }
 
-/// A label's own condition, else what its heater needs: tool n needs n
-/// tools, the chamber a chamber.
+/// A label's own condition, else what its heater needs: tool n needs tool
+/// n, the chamber a chamber.
 export function labelCondition(label: Label): Condition | undefined {
   if (label.when) return label.when;
   if (label.heater === 'chamber') return 'chamber';
   const tool = /^T([2-8])$/.exec(label.heater)?.[1];
-  return tool ? (`tools>=${tool}` as Condition) : undefined;
+  return tool ? `T${tool}` : undefined;
 }
 
 export interface Reading {
@@ -97,10 +174,13 @@ export function labelValue(celsius: number): string {
 }
 
 interface Telemetry {
+  fan_hotend?: number | undefined;
+  fan_print?: number | undefined;
   temp_nozzle?: number | undefined;
   target_nozzle?: number | undefined;
   temp_bed?: number | undefined;
   target_bed?: number | undefined;
+  /// PrusaLink 2's expanded status: every tool, the picked one `active`.
   tools?:
     | Record<
         string,
@@ -114,6 +194,18 @@ interface Telemetry {
   chamber?:
     | { temp?: number | undefined; target_temp?: number | null | undefined }
     | undefined;
+}
+
+/// The picked tool, from 1, where the status lists the tools; MMU slots
+/// (`"0.N"`) are not tools.
+export function activeToolOf(
+  status: Telemetry | undefined,
+): number | undefined {
+  const [key] =
+    Object.entries(status?.tools ?? {}).find(
+      ([k, t]) => /^\d+$/.test(k) && t?.active,
+    ) ?? [];
+  return key === undefined ? undefined : Number(key) + 1;
 }
 
 /// What each label can show. The plain /api/v1/status reports the active

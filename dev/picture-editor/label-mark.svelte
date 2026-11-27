@@ -13,6 +13,7 @@
     labelLayout,
     type LabelStyle,
   } from './status.ts';
+  import { labelShadow } from '../../src/lib/printer/status-picture.ts';
 
   // One label as the app would draw it: the leader with a dot on the part,
   // the reading above the line with a heating or cooling chevron, and the
@@ -62,49 +63,51 @@
   </g>
 {/snippet}
 
-<polyline
-  points="{label.anchor.join(',')} {label.elbow.join(',')} {label.end.join(
-    ',',
-  )}"
-  fill="none"
-  stroke="currentColor"
-  stroke-width={style.stroke}
-  stroke-linejoin="round"
-/>
-<circle
-  cx={label.anchor[0]}
-  cy={label.anchor[1]}
-  r={l.dot}
-  fill="currentColor"
-/>
-{#if chevron}
+<g style:filter={labelShadow(style)}>
+  <polyline
+    points="{label.anchor.join(',')} {label.elbow.join(',')} {label.end.join(
+      ',',
+    )}"
+    fill="none"
+    stroke="currentColor"
+    stroke-width={style.stroke}
+    stroke-linejoin="round"
+  />
+  <circle
+    cx={label.anchor[0]}
+    cy={label.anchor[1]}
+    r={l.dot}
+    fill="currentColor"
+  />
+  {#if chevron}
+    {@render glyph(
+      chevron,
+      valueStart,
+      l.valueY - style.value * 0.36 - chevronSize / 2,
+      chevronSize,
+    )}
+  {/if}
+  <text
+    x={valueStart + (chevron ? chevronSize + style.value * 0.12 : 0)}
+    y={l.valueY}
+    font-size={style.value}
+    font-weight="600"
+    fill="currentColor"
+    font-family="system-ui, sans-serif"
+    style="font-variant-numeric: tabular-nums">{text}</text
+  >
   {@render glyph(
-    chevron,
-    valueStart,
-    l.valueY - style.value * 0.36 - chevronSize / 2,
-    chevronSize,
+    icon,
+    captionStart,
+    l.captionY - style.caption * 0.85,
+    style.caption,
   )}
-{/if}
-<text
-  x={valueStart + (chevron ? chevronSize + style.value * 0.12 : 0)}
-  y={l.valueY}
-  font-size={style.value}
-  font-weight="600"
-  fill="currentColor"
-  font-family="system-ui, sans-serif"
-  style="font-variant-numeric: tabular-nums">{text}</text
->
-{@render glyph(
-  icon,
-  captionStart,
-  l.captionY - style.caption * 0.85,
-  style.caption,
-)}
-<text
-  x={captionStart + iconWidth + style.caption * 0.25}
-  y={l.captionY}
-  font-size={style.caption}
-  font-weight="500"
-  fill="currentColor"
-  font-family="system-ui, sans-serif">{name}</text
->
+  <text
+    x={captionStart + iconWidth + style.caption * 0.25}
+    y={l.captionY}
+    font-size={style.caption}
+    font-weight="500"
+    fill="currentColor"
+    font-family="system-ui, sans-serif">{name}</text
+  >
+</g>

@@ -9,24 +9,1272 @@
   "labels": [
     {
       "heater": "T1",
-      "anchor": [282.3, 284],
-      "elbow": [567.8, 148],
-      "end": [747.8, 148],
-      "side": "right"
+      "anchor": [
+        282.2,
+        288
+      ],
+      "elbow": [
+        156.4,
+        98
+      ],
+      "end": [
+        -23.6,
+        98
+      ],
+      "side": "left"
     },
     {
       "heater": "bed",
-      "anchor": [299.4, 722.1],
-      "elbow": [553.5, 932.2],
-      "end": [733.5, 932.2],
+      "anchor": [
+        299.4,
+        722.1
+      ],
+      "elbow": [
+        162.9,
+        951.9
+      ],
+      "end": [
+        -17.1,
+        951.9
+      ],
+      "side": "left"
+    },
+    {
+      "heater": "T2",
+      "anchor": [
+        386.1,
+        289.7
+      ],
+      "elbow": [
+        156.4,
+        404.2
+      ],
+      "end": [
+        -23.6,
+        404.2
+      ],
+      "side": "left"
+    },
+    {
+      "heater": "T3",
+      "anchor": [
+        479.3,
+        289.7
+      ],
+      "elbow": [
+        832.9,
+        98
+      ],
+      "end": [
+        1012.9,
+        98
+      ],
       "side": "right"
+    },
+    {
+      "heater": "T4",
+      "anchor": [
+        565.2,
+        289.7
+      ],
+      "elbow": [
+        832.9,
+        235.5
+      ],
+      "end": [
+        1012.9,
+        235.5
+      ],
+      "side": "right"
+    },
+    {
+      "heater": "T5",
+      "anchor": [
+        655.6,
+        289.7
+      ],
+      "elbow": [
+        832.9,
+        404.2
+      ],
+      "end": [
+        1012.9,
+        404.2
+      ],
+      "side": "right"
+    },
+    {
+      "heater": "chamber",
+      "anchor": [
+        417.5,
+        544.5
+      ],
+      "elbow": [
+        162.9,
+        753.7
+      ],
+      "end": [
+        -17.1,
+        753.7
+      ],
+      "side": "left"
     }
   ],
-  "conditional": [],
+  "bed": {
+    "x": 278.1,
+    "y": 717.2,
+    "width": 432.9,
+    "height": 5.2
+  },
+  "status": {
+    "x": 413.8,
+    "y": 824.7,
+    "width": 159,
+    "height": 5.8
+  },
+  "conditional": [
+    {
+      "id": "v0",
+      "when": "T5"
+    },
+    {
+      "id": "v1",
+      "when": "enclosure&T2|enclosure&T3|enclosure&T4|enclosure&T5"
+    },
+    {
+      "id": "v2",
+      "when": "enclosure"
+    },
+    {
+      "id": "v3",
+      "when": "enclosure&T4|enclosure&T5"
+    },
+    {
+      "id": "v4",
+      "when": "T1"
+    },
+    {
+      "id": "v5",
+      "when": "enclosure&T2&T4|enclosure&T2&T5"
+    },
+    {
+      "id": "v6",
+      "when": "T3"
+    },
+    {
+      "id": "v7",
+      "when": "enclosure&T3&T4|enclosure&T3&T5"
+    },
+    {
+      "id": "v8",
+      "when": "T4"
+    },
+    {
+      "id": "v9",
+      "when": "T5"
+    },
+    {
+      "id": "v10",
+      "when": "!enclosure"
+    },
+    {
+      "id": "v11",
+      "when": "enclosure&T2&!T4&!T5|!enclosure&T2"
+    },
+    {
+      "id": "v12",
+      "when": "!enclosure&T2&T4|!enclosure&T2&T5"
+    },
+    {
+      "id": "v13",
+      "when": "enclosure&T3&!T4&!T5|!enclosure&T3"
+    },
+    {
+      "id": "v14",
+      "when": "!T5"
+    },
+    {
+      "id": "v15",
+      "when": "T4|T5"
+    },
+    {
+      "id": "v16",
+      "when": "enclosure"
+    },
+    {
+      "id": "v17",
+      "when": "enclosure&T1&T4|enclosure&T1&T5"
+    },
+    {
+      "id": "v18",
+      "when": "!T2&!T3&!T4&!T5|T3|T4|T5"
+    },
+    {
+      "id": "v19",
+      "when": "enclosure&T4&!T5"
+    },
+    {
+      "id": "v20",
+      "when": "!T4&!T5"
+    },
+    {
+      "id": "v21",
+      "when": "T4|T5"
+    },
+    {
+      "id": "v22",
+      "when": "!T4&!T5"
+    },
+    {
+      "id": "v23",
+      "when": "!T2&!T3&!T4&!T5|T3|T4|T5"
+    },
+    {
+      "id": "v24",
+      "when": "enclosure&T1&!T4&!T5"
+    },
+    {
+      "id": "v25",
+      "when": "enclosure&T2&!T4&!T5|enclosure&T3&!T4&!T5"
+    },
+    {
+      "id": "v26",
+      "when": "!enclosure&T5"
+    },
+    {
+      "id": "v27",
+      "when": "!enclosure&T4&!T5"
+    },
+    {
+      "id": "v28",
+      "when": "T4|T5"
+    },
+    {
+      "id": "v29",
+      "when": "enclosure&!T4&!T5|!enclosure&!T2&!T3&!T4&!T5"
+    },
+    {
+      "id": "v30",
+      "when": "T2&T3&!T4&!T5"
+    },
+    {
+      "id": "v31",
+      "when": "!enclosure&T3&!T4&!T5"
+    },
+    {
+      "id": "v32",
+      "when": "T2&!T3&!T4&!T5"
+    },
+    {
+      "id": "v33",
+      "when": "T4|T5"
+    },
+    {
+      "id": "v34",
+      "when": "!T4&!T5"
+    },
+    {
+      "id": "v35",
+      "when": "!enclosure&T2&!T3&!T4&!T5"
+    },
+    {
+      "id": "v36",
+      "when": "T2&!T3&!T4&!T5"
+    },
+    {
+      "id": "v37",
+      "when": "T2&!T3&!T4&!T5|T4|T5"
+    },
+    {
+      "id": "v38",
+      "when": "enclosure&T4|enclosure&T5|!enclosure&T5"
+    },
+    {
+      "id": "v39",
+      "when": "!enclosure&T5"
+    },
+    {
+      "id": "v40",
+      "when": "!enclosure&T4&!T5"
+    },
+    {
+      "id": "v41",
+      "when": "T2&!T3&!T4&!T5"
+    },
+    {
+      "id": "v42",
+      "when": "!enclosure&T2&!T3&!T4&!T5"
+    },
+    {
+      "id": "v43",
+      "when": "!T2&!T3&!T4&!T5"
+    },
+    {
+      "id": "v44",
+      "when": "!enclosure&!T2&!T3&!T4&!T5"
+    },
+    {
+      "id": "v45",
+      "when": "!enclosure&T5"
+    },
+    {
+      "id": "v46",
+      "when": "!enclosure&T4&!T5"
+    },
+    {
+      "id": "v47",
+      "when": "!T4&!T5"
+    },
+    {
+      "id": "v48",
+      "when": "enclosure"
+    },
+    {
+      "id": "v49",
+      "when": "enclosure|!enclosure&!T2&!T3&!T4&!T5"
+    },
+    {
+      "id": "v50",
+      "when": "enclosure&T2|enclosure&T3|enclosure&T4|enclosure&T5"
+    },
+    {
+      "id": "v51",
+      "when": "enclosure&T4|enclosure&T5"
+    },
+    {
+      "id": "v52",
+      "when": "!enclosure&T2|!enclosure&T3|!enclosure&T4|!enclosure&T5"
+    },
+    {
+      "id": "v53",
+      "when": "T2|T3|T4|T5"
+    },
+    {
+      "id": "v54",
+      "when": "T4|T5"
+    },
+    {
+      "id": "v55",
+      "when": "!enclosure"
+    },
+    {
+      "id": "v56",
+      "when": "!enclosure&T5"
+    },
+    {
+      "id": "v57",
+      "when": "!enclosure&T1&T5"
+    },
+    {
+      "id": "v58",
+      "when": "!enclosure&T4&!T5"
+    },
+    {
+      "id": "v59",
+      "when": "T4|T5"
+    },
+    {
+      "id": "v60",
+      "when": "!enclosure&T2&T4|!enclosure&T2&T5"
+    },
+    {
+      "id": "v61",
+      "when": "!enclosure&T1&T4&!T5"
+    },
+    {
+      "id": "v62",
+      "when": "enclosure&T2&!T4&!T5|enclosure&T3&!T4&!T5"
+    },
+    {
+      "id": "v63",
+      "when": "!T2&!T3&!T4&!T5|T3&!T4&!T5"
+    },
+    {
+      "id": "v64",
+      "when": "!T2&!T3&!T4&!T5|T3|T4|T5"
+    },
+    {
+      "id": "v65",
+      "when": "T4|T5"
+    },
+    {
+      "id": "v66",
+      "when": "enclosure|!enclosure&!T2&!T3&!T4&!T5"
+    },
+    {
+      "id": "v67",
+      "when": "enclosure&!T4&!T5|!enclosure&!T2&!T3&!T4&!T5"
+    },
+    {
+      "id": "v68",
+      "when": "!T4&!T5"
+    },
+    {
+      "id": "v69",
+      "when": "!T2&!T3&!T4&!T5|T3|T4|T5"
+    },
+    {
+      "id": "v70",
+      "when": "T4|T5"
+    },
+    {
+      "id": "v71",
+      "when": "!T2&!T3&!T4&!T5|T3&!T4&!T5"
+    },
+    {
+      "id": "v72",
+      "when": "!enclosure&T3&!T4&!T5"
+    },
+    {
+      "id": "v73",
+      "when": "T4|T5"
+    },
+    {
+      "id": "v74",
+      "when": "!T4&!T5"
+    },
+    {
+      "id": "v75",
+      "when": "!enclosure&T1&T3&!T4&!T5"
+    },
+    {
+      "id": "v76",
+      "when": "T2&!T3&!T4&!T5"
+    },
+    {
+      "id": "v77",
+      "when": "T4|T5"
+    },
+    {
+      "id": "v78",
+      "when": "!T4&!T5"
+    },
+    {
+      "id": "v79",
+      "when": "!T2&!T3&!T4&!T5|T3|T4|T5"
+    },
+    {
+      "id": "v80",
+      "when": "T4|T5"
+    },
+    {
+      "id": "v81",
+      "when": "T2&!T3&!T4&!T5"
+    },
+    {
+      "id": "v82",
+      "when": "!T4&!T5"
+    },
+    {
+      "id": "v83",
+      "when": "!enclosure&T2&!T3&!T4&!T5"
+    },
+    {
+      "id": "v84",
+      "when": "!enclosure&T1&T2&!T3&!T4&!T5"
+    },
+    {
+      "id": "v85",
+      "when": "!T2&!T3&!T4&!T5"
+    },
+    {
+      "id": "v86",
+      "when": "!T4&!T5"
+    },
+    {
+      "id": "v87",
+      "when": "T2&!T3&!T4&!T5|T4|T5"
+    },
+    {
+      "id": "v88",
+      "when": "!T2&!T3&!T4&!T5|T3&!T4&!T5"
+    },
+    {
+      "id": "v89",
+      "when": "!enclosure&!T2&!T3&!T4&!T5"
+    },
+    {
+      "id": "v90",
+      "when": "!T4&!T5"
+    },
+    {
+      "id": "v91",
+      "when": "enclosure|!enclosure&!T2&!T3&!T4&!T5"
+    },
+    {
+      "id": "v92",
+      "when": "enclosure&T2|enclosure&T3|enclosure&T4|enclosure&T5"
+    },
+    {
+      "id": "v93",
+      "when": "T2|T3|T4|T5"
+    },
+    {
+      "id": "v94",
+      "when": "enclosure&T4|enclosure&T5"
+    },
+    {
+      "id": "v95",
+      "when": "T4"
+    },
+    {
+      "id": "v96",
+      "when": "T5"
+    },
+    {
+      "id": "v97",
+      "when": "!enclosure&T2|!enclosure&T3|!enclosure&T4|!enclosure&T5"
+    },
+    {
+      "id": "v98",
+      "when": "T4|T5"
+    },
+    {
+      "id": "v99",
+      "when": "!T4&!T5"
+    },
+    {
+      "id": "v100",
+      "when": "T4|T5"
+    },
+    {
+      "id": "v101",
+      "when": "!T4&!T5"
+    },
+    {
+      "id": "v102",
+      "when": "enclosure&T2&!T4&!T5|enclosure&T3&!T4&!T5"
+    },
+    {
+      "id": "v103",
+      "when": "T2"
+    },
+    {
+      "id": "v104",
+      "when": "enclosure&T2|!enclosure&T2&!T4&!T5"
+    },
+    {
+      "id": "v105",
+      "when": "T2"
+    },
+    {
+      "id": "v106",
+      "when": "T2&T4|T2&T5"
+    },
+    {
+      "id": "v107",
+      "when": "T3"
+    },
+    {
+      "id": "v108",
+      "when": "enclosure&T3|!enclosure&T3&!T4&!T5"
+    },
+    {
+      "id": "v109",
+      "when": "!enclosure&T2&T4|!enclosure&T2&T5"
+    },
+    {
+      "id": "v110",
+      "when": "T2"
+    },
+    {
+      "id": "v111",
+      "when": "enclosure&T2&T4|enclosure&T2&T5"
+    },
+    {
+      "id": "v112",
+      "when": "enclosure&T2|!enclosure&T2&!T4&!T5"
+    },
+    {
+      "id": "v113",
+      "when": "!enclosure&T2|!enclosure&T3|!enclosure&T4|!enclosure&T5"
+    },
+    {
+      "id": "v114",
+      "when": "enclosure&T2|enclosure&T3|enclosure&T4|enclosure&T5"
+    },
+    {
+      "id": "v115",
+      "when": "enclosure&T4|enclosure&T5"
+    },
+    {
+      "id": "v116",
+      "when": "T1"
+    },
+    {
+      "id": "v117",
+      "when": "T1&!T2&!T3&!T4&!T5|T1&T4|T1&T5"
+    },
+    {
+      "id": "v118",
+      "when": "T1&T4|T1&T5"
+    },
+    {
+      "id": "v119",
+      "when": "T2"
+    },
+    {
+      "id": "v120",
+      "when": "T2&T3|T2&T4|T2&T5"
+    },
+    {
+      "id": "v121",
+      "when": "enclosure&T3|!enclosure&T3&!T4&!T5"
+    },
+    {
+      "id": "v122",
+      "when": "enclosure&T3&T4|enclosure&T3&T5"
+    },
+    {
+      "id": "v123",
+      "when": "T4"
+    },
+    {
+      "id": "v124",
+      "when": "T5"
+    },
+    {
+      "id": "v125",
+      "when": "enclosure&T5"
+    },
+    {
+      "id": "v126",
+      "when": "!enclosure&T5"
+    },
+    {
+      "id": "v127",
+      "when": "T5"
+    },
+    {
+      "id": "v128",
+      "when": "enclosure&T5"
+    },
+    {
+      "id": "v129",
+      "when": "enclosure&T2&!T4&!T5|!enclosure&T2"
+    },
+    {
+      "id": "v130",
+      "when": "!enclosure&T3&T4|!enclosure&T3&T5"
+    },
+    {
+      "id": "v131",
+      "when": "T3"
+    },
+    {
+      "id": "v132",
+      "when": "enclosure&T3&!T4&!T5|!enclosure&T3"
+    },
+    {
+      "id": "v133",
+      "when": "T3"
+    },
+    {
+      "id": "v134",
+      "when": "enclosure&T3&T4|enclosure&T3&T5"
+    },
+    {
+      "id": "v135",
+      "when": "enclosure&T3&!T4&!T5|!enclosure&T3"
+    },
+    {
+      "id": "v136",
+      "when": "T3"
+    },
+    {
+      "id": "v137",
+      "when": "enclosure&T3&T4|enclosure&T3&T5"
+    },
+    {
+      "id": "v138",
+      "when": "enclosure&T3|!enclosure&T3&!T4&!T5"
+    },
+    {
+      "id": "v139",
+      "when": "enclosure&T3&!T4&!T5|!enclosure&T3"
+    },
+    {
+      "id": "v140",
+      "when": "T3"
+    },
+    {
+      "id": "v141",
+      "when": "T3&T4|T3&T5"
+    },
+    {
+      "id": "v142",
+      "when": "!enclosure&T3&T4|!enclosure&T3&T5"
+    },
+    {
+      "id": "v143",
+      "when": "!enclosure&T5"
+    },
+    {
+      "id": "v144",
+      "when": "T5"
+    },
+    {
+      "id": "v145",
+      "when": "!enclosure&T2&T4|!enclosure&T2&T5"
+    },
+    {
+      "id": "v146",
+      "when": "!enclosure&T4&!T5"
+    },
+    {
+      "id": "v147",
+      "when": "enclosure&T2&!T4&!T5|enclosure&T3&!T4&!T5"
+    },
+    {
+      "id": "v148",
+      "when": "T1&T2&!T4&!T5|T1&T3&!T4&!T5"
+    },
+    {
+      "id": "v149",
+      "when": "T1"
+    },
+    {
+      "id": "v150",
+      "when": "T1&T2|T1&T3|T1&T4|T1&T5"
+    },
+    {
+      "id": "v151",
+      "when": "T1&!T4&!T5"
+    },
+    {
+      "id": "v152",
+      "when": "T1"
+    },
+    {
+      "id": "v153",
+      "when": "T1&T4|T1&T5"
+    },
+    {
+      "id": "v154",
+      "when": "T1&!T2&!T3&!T4&!T5|T1&T3&!T4&!T5"
+    },
+    {
+      "id": "v155",
+      "when": "T2&T3&!T4&!T5"
+    },
+    {
+      "id": "v156",
+      "when": "T3&!T4&!T5"
+    },
+    {
+      "id": "v157",
+      "when": "T3"
+    },
+    {
+      "id": "v158",
+      "when": "enclosure&T3&T4|enclosure&T3&T5"
+    },
+    {
+      "id": "v159",
+      "when": "enclosure&T3&!T4&!T5|!enclosure&T3"
+    },
+    {
+      "id": "v160",
+      "when": "enclosure&T3|!enclosure&T3&!T4&!T5"
+    },
+    {
+      "id": "v161",
+      "when": "!enclosure&T3&T4|!enclosure&T3&T5"
+    },
+    {
+      "id": "v162",
+      "when": "T3"
+    },
+    {
+      "id": "v163",
+      "when": "enclosure&T3&T4|enclosure&T3&T5"
+    },
+    {
+      "id": "v164",
+      "when": "!enclosure&T3&T4|!enclosure&T3&T5"
+    },
+    {
+      "id": "v165",
+      "when": "T3&!T4&!T5"
+    },
+    {
+      "id": "v166",
+      "when": "enclosure&T3|!enclosure&T3&!T4&!T5"
+    },
+    {
+      "id": "v167",
+      "when": "!enclosure&T3&!T4&!T5"
+    },
+    {
+      "id": "v168",
+      "when": "T1&T2&!T3&!T4&!T5"
+    },
+    {
+      "id": "v169",
+      "when": "T2&!T3&!T4&!T5"
+    },
+    {
+      "id": "v170",
+      "when": "T2"
+    },
+    {
+      "id": "v171",
+      "when": "T2&T3|T2&T4|T2&T5"
+    },
+    {
+      "id": "v172",
+      "when": "enclosure&T2&T4|enclosure&T2&T5"
+    },
+    {
+      "id": "v173",
+      "when": "!enclosure&T2&T4|!enclosure&T2&T5"
+    },
+    {
+      "id": "v174",
+      "when": "T2&T3&!T4&!T5"
+    },
+    {
+      "id": "v175",
+      "when": "enclosure&T2&T3|enclosure&T2&T4|enclosure&T2&T5|!enclosure&T2&T3&!T4&!T5"
+    },
+    {
+      "id": "v176",
+      "when": "enclosure&T2&T4|enclosure&T2&T5"
+    },
+    {
+      "id": "v177",
+      "when": "T2&!T3&!T4&!T5"
+    },
+    {
+      "id": "v178",
+      "when": "T2"
+    },
+    {
+      "id": "v179",
+      "when": "T2&!T4&!T5"
+    },
+    {
+      "id": "v180",
+      "when": "enclosure&T2&!T4&!T5|!enclosure&T2"
+    },
+    {
+      "id": "v181",
+      "when": "!enclosure&T2&!T3&!T4&!T5"
+    },
+    {
+      "id": "v182",
+      "when": "enclosure&!T2&!T3&!T4&!T5"
+    },
+    {
+      "id": "v183",
+      "when": "enclosure&T1&!T2&!T3&!T4&!T5"
+    },
+    {
+      "id": "v184",
+      "when": "!enclosure&T1&!T2&!T3&!T4&!T5"
+    },
+    {
+      "id": "v185",
+      "when": "!enclosure&!T2&!T3&!T4&!T5"
+    },
+    {
+      "id": "v186",
+      "when": "T1"
+    },
+    {
+      "id": "v187",
+      "when": "!T2&!T3&!T4&!T5|T3|T4|T5"
+    },
+    {
+      "id": "v188",
+      "when": "T2&!T3&!T4&!T5|T2&T4|T2&T5"
+    },
+    {
+      "id": "v189",
+      "when": "T4"
+    },
+    {
+      "id": "v190",
+      "when": "!T2&!T3&!T4&!T5|T3&!T4&!T5"
+    },
+    {
+      "id": "v191",
+      "when": "!T4&!T5"
+    },
+    {
+      "id": "v192",
+      "when": "T2&!T3&!T4&!T5"
+    },
+    {
+      "id": "v193",
+      "when": "enclosure&T1&T2|enclosure&T1&T3|enclosure&T1&T4|enclosure&T1&T5"
+    },
+    {
+      "id": "v194",
+      "when": "T1&T2|T1&T3|T1&T4|T1&T5"
+    },
+    {
+      "id": "v195",
+      "when": "T1&T4|T1&T5"
+    },
+    {
+      "id": "v196",
+      "when": "enclosure&T1&!T2&!T3&!T4&!T5|!enclosure&T1"
+    },
+    {
+      "id": "v197",
+      "when": "T1&T2&!T4&!T5|T1&T3&!T4&!T5"
+    },
+    {
+      "id": "v198",
+      "when": "T1&T2|T1&T3|T1&T4|T1&T5"
+    },
+    {
+      "id": "v199",
+      "when": "T1&T4|T1&T5"
+    },
+    {
+      "id": "v200",
+      "when": "T1&T3&!T4&!T5"
+    },
+    {
+      "id": "v201",
+      "when": "T1&T2&!T3&!T4&!T5"
+    },
+    {
+      "id": "v202",
+      "when": "T1&T2&!T4&!T5|T1&T3&!T4&!T5"
+    },
+    {
+      "id": "v203",
+      "when": "T1&T2|T1&T3|T1&T4|T1&T5"
+    },
+    {
+      "id": "v204",
+      "when": "T1&!T2&!T3&!T4&!T5"
+    },
+    {
+      "id": "v205",
+      "when": "!T2&!T3&!T4&!T5"
+    },
+    {
+      "id": "v206",
+      "when": "T4|T5"
+    },
+    {
+      "id": "v207",
+      "when": "!T4&!T5"
+    },
+    {
+      "id": "v208",
+      "when": "enclosure"
+    },
+    {
+      "id": "v209",
+      "when": "!enclosure"
+    },
+    {
+      "id": "v210",
+      "when": "T1&!T2&!T3&!T4&!T5"
+    },
+    {
+      "id": "v211",
+      "when": "enclosure"
+    },
+    {
+      "id": "v212",
+      "when": "enclosure&!T2&!T3&!T4&!T5"
+    },
+    {
+      "id": "v213",
+      "when": "enclosure"
+    },
+    {
+      "id": "v214",
+      "when": "enclosure&T4|enclosure&T5"
+    },
+    {
+      "id": "v215",
+      "when": "enclosure&!T4&!T5"
+    },
+    {
+      "id": "v216",
+      "when": "enclosure"
+    },
+    {
+      "id": "v217",
+      "when": "enclosure&T2&!T4&!T5|enclosure&T3&!T4&!T5"
+    },
+    {
+      "id": "v218",
+      "when": "enclosure&!T2&!T3&!T4&!T5"
+    },
+    {
+      "id": "v219",
+      "when": "!enclosure&!T2&!T3&!T4&!T5"
+    }
+  ],
   "edits": {
     "hidden": [],
     "transforms": {},
     "structure": [],
-    "conditions": {}
+    "conditions": {
+      "0.0": "T5",
+      "0.4": "enclosure&T2|enclosure&T3|enclosure&T4|enclosure&T5",
+      "0.5": "enclosure",
+      "0.6": "enclosure&T4|enclosure&T5",
+      "0.7": "T1",
+      "0.8": "enclosure&T2&T4|enclosure&T2&T5",
+      "0.9": "T3",
+      "0.10": "enclosure&T3&T4|enclosure&T3&T5",
+      "0.11": "T4",
+      "0.12": "T5",
+      "0.13": "!enclosure",
+      "0.14": "enclosure&T2&!T4&!T5|!enclosure&T2",
+      "0.15": "!enclosure&T2&T4|!enclosure&T2&T5",
+      "0.16": "enclosure&T3&!T4&!T5|!enclosure&T3",
+      "0.17": "!T5",
+      "0.59": "T4|T5",
+      "0.60": "enclosure",
+      "0.61": "enclosure&T1&T4|enclosure&T1&T5",
+      "0.62": "!T2&!T3&!T4&!T5|T3|T4|T5",
+      "0.63": "enclosure&T4&!T5",
+      "0.64": "!T4&!T5",
+      "0.71": "T4|T5",
+      "0.72": "!T4&!T5",
+      "0.74": "!T2&!T3&!T4&!T5|T3|T4|T5",
+      "0.75": "enclosure&T1&!T4&!T5",
+      "0.76": "enclosure&T2&!T4&!T5|enclosure&T3&!T4&!T5",
+      "0.79": "!enclosure&T5",
+      "0.80": "!enclosure&T4&!T5",
+      "0.81": "T4|T5",
+      "0.82": "enclosure&!T4&!T5|!enclosure&!T2&!T3&!T4&!T5",
+      "0.83": "T2&T3&!T4&!T5",
+      "0.84": "!enclosure&T3&!T4&!T5",
+      "0.85": "T2&!T3&!T4&!T5",
+      "0.89": "T4|T5",
+      "0.90": "!T4&!T5",
+      "0.91": "!enclosure&T2&!T3&!T4&!T5",
+      "0.92": "T2&!T3&!T4&!T5",
+      "0.93": "T2&!T3&!T4&!T5|T4|T5",
+      "0.94": "enclosure&T4|enclosure&T5|!enclosure&T5",
+      "0.95": "!enclosure&T5",
+      "0.96": "!enclosure&T4&!T5",
+      "0.97": "T2&!T3&!T4&!T5",
+      "0.98": "!enclosure&T2&!T3&!T4&!T5",
+      "0.99": "!T2&!T3&!T4&!T5",
+      "0.100": "!enclosure&!T2&!T3&!T4&!T5",
+      "0.121": "!enclosure&T5",
+      "0.122": "!enclosure&T4&!T5",
+      "0.123": "!T4&!T5",
+      "0.126": "enclosure",
+      "0.134": "enclosure|!enclosure&!T2&!T3&!T4&!T5",
+      "0.135": "enclosure&T2|enclosure&T3|enclosure&T4|enclosure&T5",
+      "0.136": "enclosure&T4|enclosure&T5",
+      "0.137": "!enclosure&T2|!enclosure&T3|!enclosure&T4|!enclosure&T5",
+      "0.139": "T2|T3|T4|T5",
+      "0.140": "T4|T5",
+      "0.141": "!enclosure",
+      "0.142": "!enclosure&T5",
+      "0.143": "!enclosure&T1&T5",
+      "0.144": "!enclosure&T4&!T5",
+      "0.145": "T4|T5",
+      "0.146": "!enclosure&T2&T4|!enclosure&T2&T5",
+      "0.147": "!enclosure&T1&T4&!T5",
+      "0.148": "enclosure&T2&!T4&!T5|enclosure&T3&!T4&!T5",
+      "0.149": "!T2&!T3&!T4&!T5|T3&!T4&!T5",
+      "0.157": "!T2&!T3&!T4&!T5|T3|T4|T5",
+      "0.158": "T4|T5",
+      "0.159": "enclosure|!enclosure&!T2&!T3&!T4&!T5",
+      "0.161": "enclosure&!T4&!T5|!enclosure&!T2&!T3&!T4&!T5",
+      "0.162": "!T4&!T5",
+      "0.163": "!T2&!T3&!T4&!T5|T3|T4|T5",
+      "0.167": "T4|T5",
+      "0.168": "!T2&!T3&!T4&!T5|T3&!T4&!T5",
+      "0.169": "!enclosure&T3&!T4&!T5",
+      "0.172": "T4|T5",
+      "0.173": "!T4&!T5",
+      "0.174": "!enclosure&T1&T3&!T4&!T5",
+      "0.175": "T2&!T3&!T4&!T5",
+      "0.179": "T4|T5",
+      "0.180": "!T4&!T5",
+      "0.186": "!T2&!T3&!T4&!T5|T3|T4|T5",
+      "0.187": "T4|T5",
+      "0.188": "T2&!T3&!T4&!T5",
+      "0.189": "!T4&!T5",
+      "0.192": "!enclosure&T2&!T3&!T4&!T5",
+      "0.193": "!enclosure&T1&T2&!T3&!T4&!T5",
+      "0.194": "!T2&!T3&!T4&!T5",
+      "0.195": "!T4&!T5",
+      "0.196": "T2&!T3&!T4&!T5|T4|T5",
+      "0.197": "!T2&!T3&!T4&!T5|T3&!T4&!T5",
+      "0.198": "!enclosure&!T2&!T3&!T4&!T5",
+      "0.199": "!T4&!T5",
+      "0.205": "enclosure|!enclosure&!T2&!T3&!T4&!T5",
+      "0.206": "enclosure&T2|enclosure&T3|enclosure&T4|enclosure&T5",
+      "0.207": "T2|T3|T4|T5",
+      "0.208": "enclosure&T4|enclosure&T5",
+      "0.209": "T4",
+      "0.210": "T5",
+      "0.211": "!enclosure&T2|!enclosure&T3|!enclosure&T4|!enclosure&T5",
+      "0.212": "T4|T5",
+      "0.213": "!T4&!T5",
+      "0.220": "T4|T5",
+      "0.221": "!T4&!T5",
+      "0.222": "enclosure&T2&!T4&!T5|enclosure&T3&!T4&!T5",
+      "0.223": "T2",
+      "0.224": "enclosure&T2|!enclosure&T2&!T4&!T5",
+      "0.225": "T2",
+      "0.229": "T2&T4|T2&T5",
+      "0.230": "T3",
+      "0.231": "enclosure&T3|!enclosure&T3&!T4&!T5",
+      "0.232": "!enclosure&T2&T4|!enclosure&T2&T5",
+      "0.233": "T2",
+      "0.234": "enclosure&T2&T4|enclosure&T2&T5",
+      "0.235": "enclosure&T2|!enclosure&T2&!T4&!T5",
+      "0.236": "!enclosure&T2|!enclosure&T3|!enclosure&T4|!enclosure&T5",
+      "0.239": "enclosure&T2|enclosure&T3|enclosure&T4|enclosure&T5",
+      "0.240": "enclosure&T4|enclosure&T5",
+      "0.241": "T1",
+      "0.242": "T1&!T2&!T3&!T4&!T5|T1&T4|T1&T5",
+      "0.243": "T1&T4|T1&T5",
+      "0.244": "T2",
+      "0.245": "T2&T3|T2&T4|T2&T5",
+      "0.246": "enclosure&T3|!enclosure&T3&!T4&!T5",
+      "0.247": "enclosure&T3&T4|enclosure&T3&T5",
+      "0.248": "T4",
+      "0.249": "T5",
+      "0.250": "enclosure&T5",
+      "0.251": "!enclosure&T5",
+      "0.252": "T5",
+      "0.253": "enclosure&T5",
+      "0.254": "enclosure&T2&!T4&!T5|!enclosure&T2",
+      "0.255": "!enclosure&T3&T4|!enclosure&T3&T5",
+      "0.256": "T3",
+      "0.257": "enclosure&T3&!T4&!T5|!enclosure&T3",
+      "0.258": "T3",
+      "0.259": "enclosure&T3&T4|enclosure&T3&T5",
+      "0.260": "enclosure&T3&!T4&!T5|!enclosure&T3",
+      "0.261": "T3",
+      "0.262": "enclosure&T3&T4|enclosure&T3&T5",
+      "0.263": "enclosure&T3|!enclosure&T3&!T4&!T5",
+      "0.264": "enclosure&T3&!T4&!T5|!enclosure&T3",
+      "0.265": "T3",
+      "0.266": "T3&T4|T3&T5",
+      "0.267": "!enclosure&T3&T4|!enclosure&T3&T5",
+      "0.268": "!enclosure&T5",
+      "0.269": "T5",
+      "0.270": "!enclosure&T2&T4|!enclosure&T2&T5",
+      "0.271": "!enclosure&T4&!T5",
+      "0.272": "enclosure&T2&!T4&!T5|enclosure&T3&!T4&!T5",
+      "0.273": "T1&T2&!T4&!T5|T1&T3&!T4&!T5",
+      "0.274": "T1",
+      "0.275": "T1&T2|T1&T3|T1&T4|T1&T5",
+      "0.276": "T1&!T4&!T5",
+      "0.277": "T1",
+      "0.278": "T1&T4|T1&T5",
+      "0.279": "T1&!T2&!T3&!T4&!T5|T1&T3&!T4&!T5",
+      "0.280": "T2&T3&!T4&!T5",
+      "0.281": "T3&!T4&!T5",
+      "0.282": "T3",
+      "0.283": "enclosure&T3&T4|enclosure&T3&T5",
+      "0.284": "enclosure&T3&!T4&!T5|!enclosure&T3",
+      "0.285": "enclosure&T3|!enclosure&T3&!T4&!T5",
+      "0.286": "!enclosure&T3&T4|!enclosure&T3&T5",
+      "0.287": "T3",
+      "0.288": "enclosure&T3&T4|enclosure&T3&T5",
+      "0.289": "!enclosure&T3&T4|!enclosure&T3&T5",
+      "0.290": "T3&!T4&!T5",
+      "0.291": "enclosure&T3|!enclosure&T3&!T4&!T5",
+      "0.292": "!enclosure&T3&!T4&!T5",
+      "0.293": "T1&T2&!T3&!T4&!T5",
+      "0.294": "T2&!T3&!T4&!T5",
+      "0.295": "T2",
+      "0.296": "T2&T3|T2&T4|T2&T5",
+      "0.297": "enclosure&T2&T4|enclosure&T2&T5",
+      "0.298": "!enclosure&T2&T4|!enclosure&T2&T5",
+      "0.299": "T2&T3&!T4&!T5",
+      "0.300": "enclosure&T2&T3|enclosure&T2&T4|enclosure&T2&T5|!enclosure&T2&T3&!T4&!T5",
+      "0.301": "enclosure&T2&T4|enclosure&T2&T5",
+      "0.302": "T2&!T3&!T4&!T5",
+      "0.303": "T2",
+      "0.304": "T2&!T4&!T5",
+      "0.305": "enclosure&T2&!T4&!T5|!enclosure&T2",
+      "0.306": "!enclosure&T2&!T3&!T4&!T5",
+      "0.307": "enclosure&!T2&!T3&!T4&!T5",
+      "0.308": "enclosure&T1&!T2&!T3&!T4&!T5",
+      "0.309": "!enclosure&T1&!T2&!T3&!T4&!T5",
+      "0.310": "!enclosure&!T2&!T3&!T4&!T5",
+      "0.332": "T1",
+      "0.333": "!T2&!T3&!T4&!T5|T3|T4|T5",
+      "0.334": "T2&!T3&!T4&!T5|T2&T4|T2&T5",
+      "0.335": "T4",
+      "0.336": "!T2&!T3&!T4&!T5|T3&!T4&!T5",
+      "0.337": "!T4&!T5",
+      "0.340": "T2&!T3&!T4&!T5",
+      "0.344": "enclosure&T1&T2|enclosure&T1&T3|enclosure&T1&T4|enclosure&T1&T5",
+      "0.345": "T1&T2|T1&T3|T1&T4|T1&T5",
+      "0.346": "T1&T4|T1&T5",
+      "0.347": "enclosure&T1&!T2&!T3&!T4&!T5|!enclosure&T1",
+      "0.348": "T1&T2&!T4&!T5|T1&T3&!T4&!T5",
+      "0.349": "T1&T2|T1&T3|T1&T4|T1&T5",
+      "0.350": "T1&T4|T1&T5",
+      "0.351": "T1&T3&!T4&!T5",
+      "0.352": "T1&T2&!T3&!T4&!T5",
+      "0.353": "T1&T2&!T4&!T5|T1&T3&!T4&!T5",
+      "0.354": "T1&T2|T1&T3|T1&T4|T1&T5",
+      "0.355": "T1&!T2&!T3&!T4&!T5",
+      "0.356": "!T2&!T3&!T4&!T5",
+      "0.359": "T4|T5",
+      "0.360": "!T4&!T5",
+      "0.361": "enclosure",
+      "0.362": "!enclosure",
+      "0.363": "T1&!T2&!T3&!T4&!T5",
+      "0.364": "enclosure",
+      "0.365": "enclosure&!T2&!T3&!T4&!T5",
+      "0.366": "enclosure",
+      "0.367": "enclosure&T4|enclosure&T5",
+      "0.368": "enclosure&!T4&!T5",
+      "0.369": "enclosure",
+      "0.370": "enclosure&T2&!T4&!T5|enclosure&T3&!T4&!T5",
+      "0.371": "enclosure&!T2&!T3&!T4&!T5",
+      "0.372": "!enclosure&!T2&!T3&!T4&!T5"
+    }
+  },
+  "carriage": {
+    "parts": [
+      "0.226",
+      "0.227",
+      "0.228",
+      "0.237",
+      "0.238",
+      "0.343",
+      "0.357",
+      "0.358",
+      "0.359.0",
+      "0.359.1",
+      "0.360.0",
+      "0.360.1",
+      "0.361.0",
+      "0.362.0"
+    ],
+    "positions": {
+      "2": [
+        103.2,
+        0
+      ],
+      "3": [
+        192.6,
+        0
+      ],
+      "4": [
+        281.6,
+        0
+      ],
+      "5": [
+        371.5,
+        0
+      ]
+    }
   }
 }
