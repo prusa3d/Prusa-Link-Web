@@ -19,8 +19,7 @@ export const FEATURES = {
   toolMapping: 'tool mapping at print start',
   /// Cancel object, with the bed map of the objects.
   cancelObject: 'cancel object',
-  /// Preheat for a filament and cool down while idle; the nozzle warning
-  /// of the print dialog.
+  /// Preheat for a filament and cool down while idle.
   controls: 'preheat, cool down',
   /// Babysteps of the first layer (Z offset) while printing.
   babystep: 'Z offset while printing',

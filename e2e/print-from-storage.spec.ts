@@ -528,6 +528,21 @@ test('changes the filament through the printer and leaves no file behind', async
   ).toBe(false);
 });
 
+test('a file for another nozzle says so before printing', async ({ page }) => {
+  await page.goto(`/#key=${await mockKey(page)}`);
+  await page.getByTestId('file-input').setInputFiles({
+    name: 'lid_0.6n_0.2mm_PLA_MK4S_10m.gcode',
+    mimeType: 'application/octet-stream',
+    buffer: Buffer.from('G28'),
+  });
+  const dialog = page.getByRole('dialog', { name: 'Print lid?' });
+  await expect(
+    dialog.getByText('Sliced for a 0.6 mm nozzle; the printer has 0.4 mm.', {
+      exact: false,
+    }),
+  ).toBeVisible();
+});
+
 test('the list asks only for small thumbnails', async ({ page }) => {
   const asked: string[] = [];
   page.on('request', (r) => {
