@@ -354,8 +354,12 @@ test.describe('print dialog', () => {
       .locator(`[data-slot="${String(slot)}"]`)
       .click();
   }
-  const accept = (dialog: Locator) =>
-    dialog.getByText('I know; print anyway').click();
+  /// Print anyway asks once more, saying the risk; the same button then
+  /// prints.
+  async function accept(dialog: Locator) {
+    await dialog.getByRole('button', { name: 'Print anyway' }).click();
+    await expect(dialog.getByTestId('print-risk')).toBeVisible();
+  }
 
   test('suggests by material and colour; an override is what the print gets', async ({
     page,
@@ -374,12 +378,24 @@ test.describe('print dialog', () => {
       'Other colour',
     );
     await expect(row(dialog, 1).getByTestId('row-status')).toHaveText('Ready');
-    // Filament 1 takes T7: filament 3 gets T1 in exchange, and says so.
+    // Filament 1 takes T7 from filament 3, which is left without a tool,
+    // listed last, and blocks the print until it gets one.
     await choose(dialog, 1, 7);
-    await expect(slotOf(dialog, 3)).toHaveAttribute('data-value', '1');
-    await expect(row(dialog, 3).getByTestId('row-moved')).toHaveText(
-      'Swapped with filament 1',
+    await expect(slotOf(dialog, 3)).toHaveAttribute('data-value', '');
+    await expect(row(dialog, 3).getByTestId('row-status')).toHaveText(
+      'No tool yet — pick one',
     );
+    await expect(dialog.getByTestId('mapping-row').last()).toHaveAttribute(
+      'data-filament',
+      '3',
+    );
+    await expect(dialog.getByTestId('print-issues')).toContainText(
+      'Filament 3 has no tool. Pick one above.',
+    );
+    await expect(
+      dialog.getByRole('button', { name: 'Print now' }),
+    ).toBeDisabled();
+    await choose(dialog, 3, 1);
     await dialog.getByRole('button', { name: 'Print now' }).click();
     await expect
       .poll(() => started(request))
@@ -406,7 +422,9 @@ test.describe('print dialog', () => {
     await page.getByRole('button', { name: 'Print four colours' }).click();
     const dialog = page.getByRole('dialog');
     await slotOf(dialog, 2).click();
-    const sheet = page.getByRole('dialog', { name: 'Slot for filament 2' });
+    const sheet = page.getByRole('dialog', {
+      name: 'Which tool prints filament 2?',
+    });
     await expect(sheet.getByTestId('picker-filament')).toContainText('PETG');
     const group = (g: number) =>
       sheet.locator(`[data-group="${String(g)}"] [data-slot]`);
@@ -416,8 +434,13 @@ test.describe('print dialog', () => {
     await expect(group(0).first()).toContainText('Ready');
     await expect(group(0).nth(1)).toContainText('Other colour');
     await expect(group(1).first()).toHaveAttribute('data-slot', '7');
-    await expect(group(1).first()).toContainText('Change to PETG');
-    await expect(group(1).first()).toContainText('T7 · PLA');
+    await expect(group(1).first()).toContainText('Load PETG first');
+    await expect(group(1).first()).toContainText('Tool 7 · PLA');
+    // T1 prints filament 1: taking it says what happens to that filament.
+    await expect(
+      sheet.locator('[data-slot="1"]').getByTestId('taken-by'),
+    ).toHaveText('Filament 1 loses this tool.');
+    await expect(group(0).first()).toHaveAttribute('aria-pressed', 'true');
     await group(0).nth(1).click();
     await expect(sheet).toBeHidden();
     await expect(slotOf(dialog, 2)).toHaveAttribute('data-value', '3');
@@ -432,15 +455,33 @@ test.describe('print dialog', () => {
     await page.getByRole('button', { name: 'Print four colours' }).click();
     const dialog = page.getByRole('dialog');
     await expect(row(dialog, 1).getByTestId('row-status')).toHaveText(
-      'Choose a slot',
+      'No tool yet — pick one',
     );
     await slotOf(dialog, 1).click();
     const refused = page.locator('[data-group="2"] [data-slot]');
     await expect(refused).toHaveCount(5);
-    await expect(refused.first()).toBeDisabled();
-    await expect(refused.first()).toContainText('Not a high-flow nozzle');
+    await expect(refused.first()).toHaveAttribute('aria-disabled', 'true');
+    await expect(refused.first()).toContainText('Can’t use: not high-flow');
     await page.keyboard.press('Escape');
     await expect(dialog).toBeVisible();
+  });
+
+  test('the title and the actions stay in view while the dialog scrolls', async ({
+    page,
+    request,
+  }) => {
+    await page.setViewportSize({ width: 390, height: 700 });
+    await indx(request);
+    await openApp(page);
+    await page.getByRole('button', { name: 'Print four colours' }).click();
+    const dialog = page.getByRole('dialog');
+    await row(dialog, 4).scrollIntoViewIfNeeded();
+    await expect(
+      dialog.getByRole('heading', { name: /four colours/ }),
+    ).toBeInViewport();
+    await expect(
+      dialog.getByRole('button', { name: 'Print now' }),
+    ).toBeInViewport();
   });
 
   test('a backup spool goes with the mapping', async ({ page, request }) => {
@@ -448,14 +489,21 @@ test.describe('print dialog', () => {
     await openApp(page);
     await page.getByRole('button', { name: 'Print four colours' }).click();
     const dialog = page.getByRole('dialog');
-    const add = row(dialog, 1).getByRole('button', { name: '+ Backup spool' });
+    const add = row(dialog, 1).getByRole('button', {
+      name: 'Add backup spool',
+    });
     await add.click();
     const option = options(page).and(page.locator(':enabled')).first();
     const slot = Number(await option.getAttribute('data-slot'));
     await option.click();
     await expect(row(dialog, 1).getByTestId('mapping-backup')).toHaveCount(1);
-    const anyway = dialog.getByText('I know; print anyway');
-    if (await anyway.isVisible()) await anyway.click();
+    await expect(row(dialog, 1).getByTestId('mapping-backup')).toContainText(
+      `then Tool ${String(slot)}`,
+    );
+    const quiet = dialog.getByRole('button', {
+      name: /^(Print anyway|Print without changing)$/,
+    });
+    if (await quiet.isVisible()) await quiet.click();
     await dialog.getByRole('button', { name: /^Print (now|anyway)$/ }).click();
     await expect
       .poll(
@@ -477,15 +525,21 @@ test.describe('print dialog', () => {
     await page.getByRole('button', { name: 'Print four colours' }).click();
     const dialog = page.getByRole('dialog');
     await expect(row(dialog, 2).getByTestId('row-status')).toHaveText(
-      'Change to PETG',
+      'Load PETG first',
     );
-    await expect(dialog.getByTestId('print-issues')).toContainText(
-      'Filament 2 → T2: PLA loaded, PETG needed',
+    const issues = dialog.getByTestId('print-issues');
+    await expect(issues).toContainText('Change filaments first:');
+    await expect(issues.getByTestId('print-changes')).toHaveText(
+      'Put PETG into Tool 2 (now PLA).',
     );
-    // Print anyway waits for the tick.
-    await expect(
-      dialog.getByRole('button', { name: 'Print anyway' }),
-    ).toBeDisabled();
+    await expect(dialog.getByRole('checkbox')).toHaveCount(0);
+    // Printing without the change is the quiet offer, asked once more.
+    await dialog
+      .getByRole('button', { name: 'Print without changing' })
+      .click();
+    await expect(dialog.getByTestId('print-risk')).toBeVisible();
+    await dialog.getByRole('button', { name: 'Back', exact: true }).click();
+    await expect(dialog.getByTestId('print-risk')).toBeHidden();
     await dialog.getByRole('button', { name: 'Change filaments' }).click();
     await expect(dialog.getByTestId('change-done')).toBeVisible({
       timeout: 20_000,
@@ -509,7 +563,7 @@ test.describe('print dialog', () => {
     await page.getByRole('button', { name: 'Print four colours' }).click();
     const dialog = page.getByRole('dialog');
     await expect(dialog.getByTestId('print-issues')).toContainText(
-      'The file uses 4 filaments; the printer has 1 tools',
+      '4 filaments, 1 tools: some filaments share a tool.',
     );
     await expect(dialog.getByTestId('mapping-row')).toHaveCount(0);
     await accept(dialog);
@@ -530,7 +584,7 @@ test.describe('print dialog', () => {
       .click();
     const dialog = page.getByRole('dialog');
     await expect(dialog.getByTestId('print-issues')).toContainText(
-      'Incompatible printer model',
+      'Made for another printer model.',
     );
     await expect(
       dialog.getByRole('button', { name: /Print/ }).last(),
@@ -566,10 +620,10 @@ test.describe('print dialog', () => {
     await expect(dialog).toBeVisible();
     // Sliced for the INDX's high-flow nozzles; the MK4S has a standard one.
     await expect(dialog.getByTestId('print-issues')).toContainText(
-      'sliced for a high-flow nozzle',
+      'needs a high-flow nozzle',
     );
     await expect(dialog.getByTestId('print-issues')).toContainText(
-      'Incompatible printer model',
+      'Made for another printer model.',
     );
     await accept(dialog);
     await dialog.getByRole('button', { name: 'Print anyway' }).click();
@@ -598,7 +652,7 @@ test.describe('print dialog', () => {
     const question = dialog.getByTestId('printer-question');
     await expect(question).toContainText('Please complete Calibrations');
     await expect(dialog.getByTestId('printer-report')).toContainText(
-      'Dock position not calibrated · T1',
+      'Dock position not calibrated · Tool 1',
     );
     await question.getByRole('button', { name: 'Ignore' }).click();
     await expect(question).toBeHidden();
@@ -626,9 +680,6 @@ test.describe('print dialog', () => {
       'Dock position not calibrated',
     );
     expect((await mock(request)).state).toBe('ATTENTION');
-    await expect(
-      dialog.getByRole('button', { name: 'Print anyway' }),
-    ).toBeDisabled();
     await accept(dialog);
     await dialog.getByRole('button', { name: 'Print anyway' }).click();
     // Printing: the dialog gives way to the printer's status.

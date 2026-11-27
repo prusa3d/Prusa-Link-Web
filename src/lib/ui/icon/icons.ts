@@ -15,7 +15,6 @@ export const ArrowUp: IconNode = [
   ['path', { d: 'M12 19V5' }],
 ];
 export const Check: IconNode = [['path', { d: 'M20 6 9 17l-5-5' }]];
-export const ChevronDown: IconNode = [['path', { d: 'm6 9 6 6 6-6' }]];
 export const ChevronLeft: IconNode = [['path', { d: 'm15 18-6-6 6-6' }]];
 export const ChevronRight: IconNode = [['path', { d: 'm9 18 6-6-6-6' }]];
 export const CircleArrowUp: IconNode = [
@@ -120,16 +119,6 @@ export const Languages: IconNode = [
   ['path', { d: 'm22 22-5-10-5 10' }],
   ['path', { d: 'M14 18h6' }],
 ];
-export const Link: IconNode = [
-  [
-    'path',
-    { d: 'M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71' },
-  ],
-  [
-    'path',
-    { d: 'M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71' },
-  ],
-];
 export const LoaderCircle: IconNode = [
   ['path', { d: 'M21 12a9 9 0 1 1-6.219-8.56' }],
 ];
@@ -232,6 +221,12 @@ export const Sparkles: IconNode = [
   ['path', { d: 'M20 2v4' }],
   ['path', { d: 'M22 4h-4' }],
   ['circle', { cx: '4', cy: '20', r: '2' }],
+];
+export const Split: IconNode = [
+  ['path', { d: 'M16 3h5v5' }],
+  ['path', { d: 'M8 3H3v5' }],
+  ['path', { d: 'M12 22v-8.3a4 4 0 0 0-1.172-2.872L3 3' }],
+  ['path', { d: 'm15 9 6-6' }],
 ];
 export const Square: IconNode = [
   ['rect', { width: '18', height: '18', x: '3', y: '3', rx: '2' }],

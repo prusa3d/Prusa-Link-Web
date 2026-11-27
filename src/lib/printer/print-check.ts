@@ -344,25 +344,19 @@ export function prune(
 }
 
 /// Puts `slot` first for filament `from` (undefined unmaps it). A filament
-/// that printed from `slot` takes `from`'s old slot instead: a swap. A
-/// backup on `slot` is dropped.
+/// that printed from `slot` loses it and is left without a slot, its
+/// backups with it: the person picks again for it, nothing moves on its
+/// own. A backup on `slot` is dropped.
 export function choose(
   mapping: Mapping,
   from: number,
   slot: number | undefined,
 ): Mapping {
-  const old = mapping[from]?.[0];
   const next: Mapping = {};
-  for (const [key, to] of Object.entries(mapping)) {
+  for (const [key, [first, ...backups]] of Object.entries(mapping)) {
     const f = Number(key);
-    if (f === from) continue;
-    const [first, ...backups] = to;
-    const head = first === slot ? old : first;
-    const list = [
-      ...(head === undefined ? [] : [head]),
-      ...backups.filter((x) => x !== slot),
-    ];
-    if (list.length) next[f] = list;
+    if (f === from || first === undefined || first === slot) continue;
+    next[f] = [first, ...backups.filter((x) => x !== slot)];
   }
   if (slot !== undefined)
     next[from] = [
