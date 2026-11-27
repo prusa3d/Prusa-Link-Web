@@ -16,6 +16,7 @@ import {
   seedTools,
   shortName,
 } from './seed.ts';
+import { MockPairing } from './pairing.ts';
 
 type Schemas = components['schemas'];
 export type PrinterState = Schemas['StatusPrinter']['state'];
@@ -140,6 +141,7 @@ export class MockPrinter {
   offline = false;
   /// The PrusaLink password; the dev panel shows it.
   apiKey = 'mockapikey12345';
+  readonly pairing = new MockPairing();
   model: PrinterModel = 'MK4S';
   state: PrinterState = 'IDLE';
   bed = { temp: 22, target: 0 };
@@ -261,6 +263,7 @@ export class MockPrinter {
     this.logToFile = false;
     this.nozzleCheck = 'warning';
     this.modelCheck = 'warning';
+    this.pairing.reset();
     this.usb = true;
     this.offline = false;
     this.#transition = undefined;

@@ -2093,6 +2093,156 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/pairing": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * ask the person at the printer to pair this client
+         * @description Unauthenticated. The printer shows the code with Pair and Cancel for
+         *     60 s, only when it is idle and shows no other dialog. One request is
+         *     pending at a time. After Cancel, a timeout, or 3 requests within
+         *     5 minutes, requests are refused with 429 for 5 minutes. Firmware
+         *     without pairing checks the key first and answers 401.
+         */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": components["schemas"]["PairingRequest"];
+                };
+            };
+            responses: {
+                /** @description Accepted, the printer shows the code */
+                202: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                400: components["responses"]["BadRequest"];
+                /** @description Another request is pending, or the printer is not idle */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["PairingRefusal"];
+                    };
+                };
+                /** @description The name is longer than 20 bytes, or the Prusa Connect host does not fit the printer */
+                422: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Locked out after Cancel, a timeout or too many requests; `disabled` until the printer restarts */
+                429: {
+                    headers: {
+                        /** @description Seconds, with `locked_out` */
+                        "Retry-After"?: number;
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["PairingRefusal"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/pairing/{code}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                code: string;
+            };
+            cookie?: never;
+        };
+        /**
+         * result of a pairing request
+         * @description Unauthenticated. Polled every second. The result is kept for 20 s
+         *     after the decision and the key is returned once.
+         */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    code: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Paired */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["PairingResult"];
+                    };
+                };
+                /** @description Waiting for the person at the printer */
+                202: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                403: components["responses"]["Forbidden"];
+                404: components["responses"]["NotFound"];
+            };
+        };
+        put?: never;
+        post?: never;
+        /**
+         * withdraw a pending pairing request
+         * @description Unauthenticated. Closes the printer's dialog.
+         */
+        delete: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    code: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Withdrawn */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                404: components["responses"]["NotFound"];
+            };
+        };
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -2917,6 +3067,40 @@ export interface components {
              * @example https://help.prusa3d.com/en/10108/LHE3Q0I1
              */
             url?: string;
+        };
+        PairingRequest: {
+            /**
+             * @description 8 characters of Crockford base32 (0-9 A-Z without I, L, O, U) as XXXX-XXXX, made by the client; 400 otherwise
+             * @example K7QX-29FM
+             */
+            code: string;
+            /** @enum {string} */
+            client: "PrusaLink" | "Prusa Connect";
+            /**
+             * @description What the printer shows as the client's name, up to 20 bytes
+             * @example Chrome
+             */
+            name?: string;
+            connect?: {
+                host: string;
+                port: number;
+                tls: boolean;
+            };
+        };
+        PairingRefusal: {
+            /** @enum {string} */
+            reason: "pending" | "busy" | "locked_out" | "disabled";
+        };
+        PairingResult: {
+            /** @description The PrusaLink password, also the Digest password */
+            api_key?: string;
+            /**
+             * @description The Digest user
+             * @example maker
+             */
+            user?: string;
+            /** @description Only for Prusa Connect with PrusaLink off, without api_key */
+            paired?: boolean;
         };
         /**
          * @description Prusa error message (raw_message)

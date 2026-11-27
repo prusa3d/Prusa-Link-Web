@@ -2,6 +2,9 @@
   import { onMount } from 'svelte';
 
   import { DIALOGS, type MockPatch } from '../mock/control';
+  import { PRINTER_CODE, type PrinterModel } from '../mock/printer';
+  import { rememberVariant } from '../src/lib/printer/picture';
+  import { MODELS as PRINTER_MODELS } from '../src/lib/printer/models';
   import PrinterAnimation from './printer-animation.svelte';
 
   // Dev only: drives the mock printer the dev server answers /api with.
@@ -74,6 +77,12 @@
     speed: number;
     flow: number;
     axis: { x: number; y: number };
+    pairing: {
+      supported: boolean;
+      disabled: boolean;
+      lockedSeconds: number;
+      dialog?: { code: string; client: string; name: string; seconds: number };
+    };
   }
 
   let snap = $state<Snapshot | undefined>();
@@ -93,8 +102,13 @@
       body.mmu !== undefined ||
       body.apiV2 !== undefined ||
       body.chamber !== undefined ||
-      body.enclosure !== undefined
+      body.enclosure !== undefined ||
+      body.docks !== undefined
     ) {
+      // The sign-in page can't ask the printer, so it shows the remembered one.
+      const variant =
+        PRINTER_MODELS[PRINTER_CODE[snap.model as PrinterModel]]?.variant;
+      if (variant) rememberVariant(variant);
       dispatchEvent(new Event('prusalink:identity'));
     }
   }
@@ -280,6 +294,61 @@
         {/if}
       </section>
     {/if}
+    {#if snap.pairing.dialog}
+      {@const dialog = snap.pairing.dialog}
+      <section
+        class="flex flex-col gap-2 rounded-md border-2 border-primary bg-black p-3 text-white"
+        aria-label="Printer screen"
+      >
+        <p class="font-mono">
+          {dialog.client} wants to pair with this printer.<br />Code:
+          <strong class="text-lg tracking-widest">{dialog.code}</strong>
+        </p>
+        <div class="flex flex-wrap items-center gap-1.5">
+          <button
+            class="rounded-md bg-primary px-2.5 py-1"
+            onclick={() => patch({ pairing: 'pair' })}>Yes</button
+          >
+          <button
+            class="rounded-md border border-white/40 px-2.5 py-1"
+            onclick={() => patch({ pairing: 'cancel' })}>Cancel</button
+          >
+          <button
+            class="rounded-md border border-white/40 px-2.5 py-1"
+            onclick={() => patch({ pairing: 'timeout' })}>Time out</button
+          >
+          <span class="ms-auto tabular-nums">{dialog.seconds} s</span>
+        </div>
+      </section>
+    {/if}
+    <fieldset class="flex min-w-0 flex-col gap-2">
+      <legend class="mb-1 font-semibold">Pairing</legend>
+      <div class="flex flex-wrap items-center gap-1.5">
+        <button
+          type="button"
+          class={[chip, snap.pairing.supported && on]}
+          onclick={() => patch({ pairingSupported: !snap?.pairing.supported })}
+          >{snap.pairing.supported
+            ? 'Firmware pairs'
+            : 'Older firmware'}</button
+        >
+        {#if snap.pairing.supported}
+          {@const locked =
+            snap.pairing.disabled || snap.pairing.lockedSeconds > 0}
+          <button
+            type="button"
+            class={[chip, locked && on]}
+            onclick={() => patch({ pairing: locked ? 'unlock' : 'lock' })}
+            >{#if snap.pairing.disabled}Off until restart{:else if locked}Locked
+              {Math.ceil(snap.pairing.lockedSeconds / 60)} min{:else}Not locked{/if}</button
+          >
+        {/if}
+      </div>
+      <p class="text-muted-foreground">
+        Pairing needs an idle printer: set PRINTING or ATTENTION below to see it
+        refused.
+      </p>
+    </fieldset>
     <fieldset class="flex min-w-0 flex-col gap-2">
       <legend class="mb-1 font-semibold">Tools</legend>
       <table class="w-full">

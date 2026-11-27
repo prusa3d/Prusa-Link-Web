@@ -88,7 +88,7 @@
         <img
           src={picture}
           alt=""
-          class="dark:rounded-lg h-36 w-auto object-contain dark:bg-white/90 dark:p-2"
+          class="dark:rounded-lg h-36 w-auto object-contain dark:bg-white/90"
         />
       {:else}
         <Icon node={Printer} class="size-20 text-muted-foreground" />
