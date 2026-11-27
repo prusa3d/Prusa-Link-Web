@@ -329,8 +329,7 @@
   // A single-tool printer's nozzle against the file's, by the printer's own
   // nozzle check; a printer with several tools checks each in the mapping.
   const nozzleMismatch = $derived(
-    __CONTROLS__ &&
-      !multiTool &&
+    !multiTool &&
       info?.nozzle !== undefined &&
       identity.nozzle !== undefined &&
       Math.abs(Number(info.nozzle) - identity.nozzle) > 0.001 &&
@@ -699,7 +698,7 @@
         </div></Alert
       >
     {/if}
-    {#if __CONTROLS__ && nozzleMismatch}
+    {#if nozzleMismatch}
       <Alert
         variant={identity.nozzleCheck === 'abort' ? 'destructive' : 'info'}
       >
