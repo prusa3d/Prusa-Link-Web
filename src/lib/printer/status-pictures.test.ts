@@ -30,17 +30,7 @@ const pictures = readdirSync(DIR)
 /// Labels still to be moved inward in the picture editor, as
 /// `<file>#<index>`. They are expected to fail; one that fits fails the
 /// suite until it leaves this list.
-const NOT_YET_FITTING = new Set<string>([
-  'coreone_indx.json#0',
-  'coreone_indx.json#2',
-  'xl.json#0',
-  'xl.json#1',
-  'xl.json#2',
-  'xl.json#3',
-  'xl.json#4',
-  'xl.json#5',
-  'xl.json#6',
-]);
+const NOT_YET_FITTING = new Set<string>([]);
 
 describe(`every status picture's labels fit ${WIDEST_VALUE}`, () => {
   it('finds the pictures', () => {
