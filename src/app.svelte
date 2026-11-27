@@ -423,21 +423,26 @@
                     ...equipmentFrom(identity.tools, identity.enclosure),
                     chamber: printer.status?.chamber !== undefined,
                   }}
-                  activeTool={printer.offline
-                    ? undefined
-                    : activeToolOf(printer.status)}
+                  activeTool={__PICTURE_PARTS__ && !printer.offline
+                    ? activeToolOf(printer.status)
+                    : undefined}
                   readings={heaterReadings(printer.status, {
                     offline: printer.offline,
                     toolPicked: !multiTool || filament.loaded !== undefined,
                     perTool: __MULTI_TOOL__ && identity.can('per_tool_heating'),
                   })}
-                  state={printer.offline ? undefined : printer.status?.state}
-                  fanTurn={(fan: Fan) =>
-                    fanTurn(fan, printer.status, {
-                      offline: printer.offline,
-                      toolPicked: !multiTool || filament.loaded !== undefined,
-                      mini: identity.model?.variant === 'mini',
-                    })}
+                  state={__PICTURE_PARTS__ && !printer.offline
+                    ? printer.status?.state
+                    : undefined}
+                  fanTurn={__PICTURE_PARTS__
+                    ? (fan: Fan) =>
+                        fanTurn(fan, printer.status, {
+                          offline: printer.offline,
+                          toolPicked:
+                            !multiTool || filament.loaded !== undefined,
+                          mini: identity.model?.variant === 'mini',
+                        })
+                    : undefined}
                 />
               {/snippet}
               {#snippet controls()}

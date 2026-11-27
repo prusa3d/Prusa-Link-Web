@@ -62,16 +62,17 @@
       removeEventListener('prusalink:identity', refresh);
     };
   });
-  const pairing = new Pairing();
+  const pairing = __PAIRING__ ? new Pairing() : undefined;
 
   $effect(() => {
-    void pairing.probe();
+    void pairing?.probe();
     return () => {
-      pairing.cancel();
+      pairing?.cancel();
     };
   });
 
   async function pair() {
+    if (!pairing) return;
     error = undefined;
     const paired = await pairing.start();
     const { state } = pairing;
@@ -119,7 +120,7 @@
   {#if error}
     <Alert variant="destructive">{t(error)}</Alert>
   {/if}
-  {#if pairing.code}
+  {#if pairing?.code}
     <div class="flex flex-col gap-4" data-testid="pairing">
       <p
         class="text-center font-mono text-4xl font-semibold tracking-widest"
@@ -137,7 +138,7 @@
         }}>{t('upload.cancel')}</Button
       >
     </div>
-  {:else if pairing.supported && !withPassword}
+  {:else if pairing?.supported && !withPassword}
     <p class="text-center text-sm text-muted-foreground">
       {t('login.subtitle')}
     </p>
@@ -154,7 +155,7 @@
         </Button>
       {/each}
     </div>
-  {:else if pairing.supported !== undefined}
+  {:else if pairing?.supported !== undefined || !pairing}
     <form class="flex flex-col gap-4" onsubmit={submit}>
       <!-- Password managers file the password under a user: the firmware's
        fixed Digest user. -->
@@ -240,7 +241,7 @@
         {t('login.helpType')}
       </p>
     </section>
-    {#if pairing.supported}
+    {#if pairing?.supported}
       <Button
         variant="ghost"
         class="self-start"
