@@ -1,6 +1,6 @@
 import { expect, test, type Page } from '@playwright/test';
 
-import { swapAtPrinter } from './support';
+import { API, swapAtPrinter } from './support';
 
 async function mockKey(page: Page) {
   const res = await page.request.get('/__mock/state');
@@ -21,7 +21,7 @@ test.beforeEach(async ({ page, request }) => {
       reset: true,
       firmware: '8.0.1',
       transitionSeconds: 1,
-      apiV2: true,
+      apiV2: API === 'v2',
       pairingSupported: true,
     },
   });
@@ -512,9 +512,12 @@ test('changes the filament through the printer and leaves no file behind', async
   });
   await expect(state).toHaveText('Changing to PETG', { timeout: 10_000 });
   await swapAtPrinter(request);
-  await expect(state).toHaveAttribute('data-state', 'IDLE', {
-    timeout: 15_000,
-  });
+  // Today's firmware runs the change as a G-code job, which finishes.
+  await expect(state).toHaveAttribute(
+    'data-state',
+    API === 'v2' ? 'IDLE' : 'FINISHED',
+    { timeout: 15_000 },
+  );
   await expect(page.getByText('PETG', { exact: true }).first()).toBeVisible({
     timeout: 15_000,
   });

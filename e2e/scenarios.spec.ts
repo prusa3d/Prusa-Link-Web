@@ -1,6 +1,7 @@
 import { expect, test, type Page } from '@playwright/test';
 
 import {
+  API,
   atPrinter,
   freshPrinter,
   mockKey,
@@ -23,6 +24,7 @@ test.describe('filament before a print', () => {
     page,
     request,
   }) => {
+    test.skip(API === 'v1', 'Needs /api/v1/info tools of PrusaLink 2');
     await printer(request, { model: 'XL_SINGLE', reset: true });
     await openApp(page);
     await expect(page.getByTestId('tool-material')).toHaveText('PLA');
@@ -33,6 +35,7 @@ test.describe('filament before a print', () => {
     page,
     request,
   }) => {
+    test.skip(API === 'v1', 'Needs /api/v1/info tools of PrusaLink 2');
     await printer(request, { model: 'XL', reset: true });
     await openApp(page);
     await expect(page.getByTestId('tool-row')).toHaveCount(5);

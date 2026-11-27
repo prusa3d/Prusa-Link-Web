@@ -18,6 +18,16 @@ To change what a printer's page includes, edit the table in
 so a feature that is off leaves its code and its messages out. The size check
 prints every build's features next to its size.
 
+The same file says which firmware API the builds talk to (`DEFAULT_API`):
+`v1` is what the Buddy firmware serves today, `v2` the PrusaLink 2 API
+(expanded status, tools in `/api/v1/info`, print checks, printer commands and
+dialogs). A `v1` build leaves out every feature in `NEEDS_API_V2`, and the dev
+server's mock printer then answers like today's firmware. `PRUSALINK_API=v2
+make build` (or `make dev`, `make e2e`) builds and tests the other one.
+Pairing is in both: the sign-in page offers it only when the printer answers
+its probe (`GET /api/v1/pairing/<code>`) with 404; firmware without it
+answers 401 and only the password is offered.
+
 |                                                                                                                  |                                                                                              |
 | ---------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------- |
 | ![The page and the printer's own screen swap PLA for PETG in sync](docs/media/simulator-filament-swap.gif)       | ![Ten files upload with their own progress, then a search](docs/media/upload-and-search.gif) |
