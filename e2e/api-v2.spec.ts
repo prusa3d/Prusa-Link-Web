@@ -58,14 +58,12 @@ test.describe('tools', () => {
     await expect(cards.nth(2)).toContainText('Tool 4');
     await page.getByRole('button', { name: 'Print four colours' }).click();
     const dialog = page.getByRole('dialog');
-    const options = dialog
-      .locator('[data-filament="1"]')
-      .getByRole('combobox')
-      .first()
-      .locator('option');
+    const row = dialog.locator('[data-filament="1"]');
+    await row.getByTestId('slot-picker').first().click();
+    const options = row.getByRole('listbox').getByRole('option');
     // Docks 1, 2, 4, 5 and the empty choice; no dock 3.
     await expect(options).toHaveCount(5);
-    await expect(options.filter({ hasText: 'T3 ' })).toHaveCount(0);
+    await expect(row.locator('[data-slot="3"]')).toHaveCount(0);
   });
 
   test('a two-tool XL has two rows', async ({ page, request }) => {
@@ -337,16 +335,28 @@ test.describe('print dialog', () => {
       tool: { index: 3, material: 'ASA', color: '#D62728' },
     });
   }
-  const started = async (request: APIRequestContext) =>
-    (
-      (await (await request.get('/__mock/state')).json()) as {
-        mapping?: unknown;
-      }
-    ).mapping;
+  const started = async (request: APIRequestContext) => {
+    const m = (await (await request.get('/__mock/state')).json()) as {
+      mapping?: unknown;
+      state: string;
+    };
+    return m.state === 'PRINTING' ? m.mapping : undefined;
+  };
   const row = (dialog: Locator, n: number) =>
     dialog.locator(`[data-filament="${String(n)}"]`);
   const slotOf = (dialog: Locator, n: number) =>
-    row(dialog, n).getByRole('combobox').first();
+    row(dialog, n).getByTestId('slot-picker').first();
+  async function choose(dialog: Locator, n: number, slot?: number) {
+    await slotOf(dialog, n).click();
+    const list = row(dialog, n).getByRole('listbox');
+    await (
+      slot === undefined
+        ? list.getByRole('option').first()
+        : list.locator(`[data-slot="${String(slot)}"]`)
+    ).click();
+  }
+  const accept = (dialog: Locator) =>
+    dialog.getByText('I know; print anyway').click();
 
   test('suggests by material and colour; an override is what the print gets', async ({
     page,
@@ -357,35 +367,76 @@ test.describe('print dialog', () => {
     await page.getByRole('button', { name: 'Print four colours' }).click();
     const dialog = page.getByRole('dialog');
     await expect(dialog.getByTestId('mapping-row')).toHaveCount(4);
-    await expect(slotOf(dialog, 1)).toHaveValue('1');
-    await expect(slotOf(dialog, 2)).toHaveValue('2');
+    await expect(slotOf(dialog, 1)).toHaveAttribute('data-value', '1');
+    await expect(slotOf(dialog, 2)).toHaveAttribute('data-value', '2');
     // The second green PLA is not loaded: the blue PLA in T7 comes nearest.
-    await expect(slotOf(dialog, 3)).toHaveValue('7');
+    await expect(slotOf(dialog, 3)).toHaveAttribute('data-value', '7');
     await expect(row(dialog, 3).getByTestId('row-status')).toHaveText(
       '~ Other colour',
     );
     await expect(row(dialog, 1).getByTestId('row-status')).toHaveText(
       '✓ Matches',
     );
-    // Filament 1 takes T7: filament 3 gets T1 in exchange.
-    await slotOf(dialog, 1).selectOption('7');
-    await expect(slotOf(dialog, 3)).toHaveValue('1');
+    // Filament 1 takes T7: filament 3 gets T1 in exchange, and says so.
+    await choose(dialog, 1, 7);
+    await expect(slotOf(dialog, 3)).toHaveAttribute('data-value', '1');
+    await expect(row(dialog, 3).getByTestId('row-moved')).toHaveText(
+      'Swapped with filament 1',
+    );
     // Unmapping one blocks the print.
-    await slotOf(dialog, 4).selectOption('');
+    await choose(dialog, 4);
     await expect(dialog.getByTestId('print-issues')).toContainText(
-      'Unmapped tool',
+      'Filament 4 has no slot',
     );
     await expect(
       dialog.getByRole('button', { name: 'Print now' }),
     ).toBeDisabled();
-    await slotOf(dialog, 4).selectOption('4');
+    await choose(dialog, 4, 4);
     await dialog.getByRole('button', { name: 'Print now' }).click();
     await expect
       .poll(() => started(request))
       .toEqual({ '1': [7], '2': [2], '3': [1], '4': [4] });
   });
 
-  test('change filaments and print: the printer changes, then prints with the mapping', async ({
+  test('reset to suggestion and 1:1', async ({ page, request }) => {
+    await indx(request);
+    await openApp(page);
+    await page.getByRole('button', { name: 'Print four colours' }).click();
+    const dialog = page.getByRole('dialog');
+    await dialog.getByRole('button', { name: '1:1' }).click();
+    await expect(slotOf(dialog, 3)).toHaveAttribute('data-value', '3');
+    await dialog.getByRole('button', { name: 'Reset to suggestion' }).click();
+    await expect(slotOf(dialog, 3)).toHaveAttribute('data-value', '7');
+  });
+
+  test('a backup spool goes with the mapping', async ({ page, request }) => {
+    await printer(request, { model: 'XL', reset: true });
+    await openApp(page);
+    await page.getByRole('button', { name: 'Print four colours' }).click();
+    const dialog = page.getByRole('dialog');
+    const add = row(dialog, 1).getByRole('button', { name: '+ Backup spool' });
+    await add.click();
+    const option = row(dialog, 1)
+      .getByRole('listbox')
+      .locator('[role=option]:not([aria-disabled=true])')
+      .first();
+    const slot = Number(await option.getAttribute('data-slot'));
+    await option.click();
+    await expect(row(dialog, 1).getByTestId('mapping-backup')).toHaveCount(1);
+    const anyway = dialog.getByText('I know; print anyway');
+    if (await anyway.isVisible()) await anyway.click();
+    await dialog.getByRole('button', { name: /^Print (now|anyway)$/ }).click();
+    await expect
+      .poll(
+        async () =>
+          ((await started(request)) as Record<string, number[]> | undefined)?.[
+            '1'
+          ],
+      )
+      .toEqual([1, slot]);
+  });
+
+  test('change filaments, then print: the printer changes, the person starts', async ({
     page,
     request,
   }) => {
@@ -397,16 +448,25 @@ test.describe('print dialog', () => {
     await expect(dialog.getByTestId('print-changes')).toContainText(
       'T2 PLA → PETG',
     );
+    await expect(dialog.getByTestId('print-issues')).toContainText(
+      'Filament 2 → T2: PLA loaded, PETG needed',
+    );
+    // Print anyway waits for the tick.
     await expect(
       dialog.getByRole('button', { name: 'Print anyway' }),
-    ).toBeEnabled();
-    await dialog
-      .getByRole('button', { name: 'Change filaments and print' })
-      .click();
-    await expect
-      .poll(() => started(request), { timeout: 20_000 })
-      .toEqual({ '1': [1], '2': [2], '3': [3], '4': [4] });
+    ).toBeDisabled();
+    await dialog.getByRole('button', { name: 'Change filaments' }).click();
+    await expect(dialog.getByTestId('change-done')).toBeVisible({
+      timeout: 20_000,
+    });
     expect((await mock(request)).tools[1]?.material).toBe('PETG');
+    expect((await mock(request)).state).not.toBe('PRINTING');
+    // Sliced for the INDX: the model warning stays.
+    await accept(dialog);
+    await dialog.getByRole('button', { name: 'Print anyway' }).click();
+    await expect
+      .poll(() => started(request))
+      .toEqual({ '1': [1], '2': [2], '3': [3], '4': [4] });
   });
 
   test('a single-tool printer with a four-filament file: print anyway', async ({
@@ -418,11 +478,13 @@ test.describe('print dialog', () => {
     await page.getByRole('button', { name: 'Print four colours' }).click();
     const dialog = page.getByRole('dialog');
     await expect(dialog.getByTestId('print-issues')).toContainText(
-      'Not enough tools',
+      'The file uses 4 filaments; the printer has 1 tools',
     );
     await expect(dialog.getByTestId('mapping-row')).toHaveCount(0);
+    await accept(dialog);
     await dialog.getByRole('button', { name: 'Print anyway' }).click();
-    await expect.poll(async () => (await mock(request)).state).not.toBe('IDLE');
+    // The printer previews it with the same warnings, and the page answers.
+    await expect.poll(async () => (await mock(request)).state).toBe('PRINTING');
   });
 
   test('a file for another printer: the printer’s model check decides', async ({
@@ -449,6 +511,7 @@ test.describe('print dialog', () => {
       .getByRole('button', { name: 'Print three shapes' })
       .first()
       .click();
+    await accept(page.getByRole('dialog'));
     await expect(
       page.getByRole('dialog').getByRole('button', { name: 'Print anyway' }),
     ).toBeEnabled();
@@ -463,21 +526,51 @@ test.describe('print dialog', () => {
     await page.getByRole('button', { name: 'Print four colours' }).click();
     const dialog = page.getByRole('dialog');
     await expect(dialog.getByTestId('mapping-row')).toHaveCount(4);
-    await expect(slotOf(dialog, 1).locator('option')).toHaveCount(6);
-    await expect(slotOf(dialog, 1).locator('option[value="5"]')).toContainText(
-      'Load',
-    );
+    await slotOf(dialog, 1).click();
+    const list = row(dialog, 1).getByRole('listbox');
+    await expect(list.getByRole('option')).toHaveCount(6);
+    await expect(list.locator('[data-slot="5"]')).toContainText('Load');
+    await page.keyboard.press('Escape');
+    await expect(list).toBeHidden();
+    await expect(dialog).toBeVisible();
     // Sliced for the INDX's high-flow nozzles; the MK4S has a standard one.
     await expect(dialog.getByTestId('print-issues')).toContainText(
-      'Nozzle not high-flow',
+      'sliced for a high-flow nozzle',
     );
     await expect(dialog.getByTestId('print-issues')).toContainText(
       'Incompatible printer model',
     );
+    await accept(dialog);
     await dialog.getByRole('button', { name: 'Print anyway' }).click();
     await expect
       .poll(() => started(request))
       .toEqual({ '1': [1], '2': [2], '3': [3], '4': [4] });
+  });
+
+  test('a warning only the printer knows is shown before it prints', async ({
+    page,
+    request,
+  }) => {
+    await indx(request);
+    await openApp(page);
+    await page.getByRole('button', { name: 'Print four colours' }).click();
+    const dialog = page.getByRole('dialog');
+    await printer(request, {
+      extraCheck: { check: 'Dock position not calibrated', level: 'warning' },
+    });
+    await dialog.getByRole('button', { name: 'Print now' }).click();
+    await expect(dialog.getByTestId('printer-report')).toContainText(
+      'Dock position not calibrated',
+    );
+    expect((await mock(request)).state).toBe('ATTENTION');
+    await expect(
+      dialog.getByRole('button', { name: 'Print anyway' }),
+    ).toBeDisabled();
+    await accept(dialog);
+    await dialog.getByRole('button', { name: 'Print anyway' }).click();
+    // Printing: the dialog gives way to the printer's status.
+    await expect(dialog).toBeHidden();
+    expect((await mock(request)).state).not.toBe('IDLE');
   });
 
   test('a single-tool printer set to abort on another nozzle refuses the print', async ({

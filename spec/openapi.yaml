@@ -430,15 +430,63 @@ paths:
               properties:
                 items:
                   $ref: "#/components/schemas/ChangeAllItems"
+                confirm:
+                  type: boolean
+                  description: Change despite the printer's warnings about the filaments
       responses:
         202:
           description: Accepted
         401:
           $ref: "#/components/responses/Unauthorized"
         409:
-          $ref: "#/components/responses/Conflict"
+          description: Busy, or the filaments fail the printer's checks
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  reason:
+                    type: string
+                    enum: [incompatible, needs_confirm]
+                  tool:
+                    type: string
+                    description: 0-based tool of a fatal check
+                  check:
+                    type: string
+                  warnings:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        tool:
+                          type: string
+                        check:
+                          type: string
         422:
           description: Unknown tool or material
+
+  /api/v1/print/checks:
+    get:
+      summary: the printer's compatibility report of the print in its preview
+      parameters:
+        - in: query
+          name: tool_mapping
+          description: A proposed mapping, 1-based "gcode:tool:backup,…", checked without applying it
+          schema:
+            type: string
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PrintChecks"
+        400:
+          description: Malformed or invalid tool mapping
+        401:
+          $ref: "#/components/responses/Unauthorized"
+        409:
+          description: No print in the preview
 
   /api/v1/storage:
     parameters:
@@ -1565,7 +1613,7 @@ components:
           description: What this firmware's API can do
           items:
             type: string
-            enum: [ status_expanded, cancel_object, chamber, dialogs, firmware_update, crash_dump, preheat, tune, filament, pairing, tool_mapping, change_all, filament_change_all, per_tool_heating ]
+            enum: [ status_expanded, cancel_object, chamber, dialogs, firmware_update, crash_dump, preheat, tune, filament, pairing, tool_mapping, change_all, filament_change_all, per_tool_heating, print_checks ]
         hw_checks:
           type: object
           description: The printer's severity of each check before a print (HWCheckSeverity); read-only
@@ -1716,6 +1764,36 @@ components:
       type: string
       enum: [ ignore, warning, abort ]
 
+    PrintChecks:
+      type: object
+      required: [printable, level, checks]
+      properties:
+        printable:
+          type: boolean
+        level:
+          $ref: "#/components/schemas/CheckLevel"
+        checks:
+          type: array
+          items:
+            type: object
+            required: [check, level]
+            properties:
+              check:
+                type: string
+                description: The check's title, in English
+              level:
+                $ref: "#/components/schemas/CheckLevel"
+              tool:
+                type: string
+                description: Connect tool id
+              gcode_tool:
+                type: integer
+                description: 1-based G-code tool
+              text:
+                type: string
+    CheckLevel:
+      type: string
+      enum: [ok, reminder, warning, abort]
     ChangeAllItems:
       type: object
       description: By 0-based Connect tool id of /api/v1/info ("0".."4", "0.N" for MMU slots)

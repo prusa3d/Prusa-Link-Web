@@ -418,15 +418,92 @@ describe('PrusaLink 2 API', () => {
     expect(get(printer, '/api/version').status).toBe(503);
   });
 
-  it('starts a print with a tool mapping the printer accepts', () => {
+  it('refuses a tool mapping that uses a tool twice, as the firmware', () => {
     const printer = new MockPrinter('XL');
     const file = printer.files[0]?.name ?? '';
     const start = (tool_mapping: unknown) =>
       send(printer, 'POST', `/api/v1/files/usb/${file}`, { tool_mapping });
-    expect(start({ '1': [1, 1] }).status).toBe(422);
-    expect(start({ '1': [9] }).status).toBe(422);
+    expect(start({ '1': [1, 1] }).status).toBe(400);
+    expect(start({ '1': [3], '2': [3] }).status).toBe(400);
+    expect(start({ '1': [1, 2], '2': [2] }).status).toBe(400);
+    expect(start({ '1': [9] }).status).toBe(400);
     expect(start({ '1': [3, 5], '2': [1] }).status).toBe(204);
     expect(printer.job?.mapping).toEqual({ '1': [3, 5], '2': [1] });
+  });
+
+  it('stops on its print preview with a report, and refuses Print past an abort', async () => {
+    MockPrinter.fixtures['four-colours.gcode'] = new Uint8Array(
+      readFileSync(new URL('./fixtures/four-colours.gcode', import.meta.url)),
+    );
+    const printer = new MockPrinter('COREONE_INDX');
+    const four = printer.files.find((f) => f.fixture === 'four-colours.gcode');
+    if (!four) throw new Error('no fixture file');
+    printer.header(four);
+    await expect.poll(() => printer.header(four)).toBeDefined();
+    expect(get(printer, '/api/v1/print/checks').status).toBe(409);
+    const path = `/api/v1/files/usb/${four.name}`;
+    // Filament 4 unmapped: the printer previews, and Print is refused.
+    expect(
+      send(printer, 'POST', path, {
+        tool_mapping: { '1': [1], '2': [2], '3': [3] },
+      }).status,
+    ).toBe(204);
+    expect(printer.state).toBe('ATTENTION');
+    const report = get(printer, '/api/v1/print/checks').body as {
+      printable: boolean;
+      checks: { check: string; level: string; gcode_tool?: number }[];
+    };
+    expect(report.printable).toBe(false);
+    expect(report.checks).toContainEqual(
+      expect.objectContaining({ check: 'Unmapped tool', gcode_tool: 4 }),
+    );
+    const proposed = send(
+      printer,
+      'GET',
+      '/api/v1/print/checks',
+      undefined,
+      'tool_mapping=1:1,2:2,3:3,4:4',
+    ).body as { checks: { level: string }[] };
+    expect(proposed.checks.every((c) => c.level !== 'abort')).toBe(true);
+    expect(
+      send(
+        printer,
+        'GET',
+        '/api/v1/print/checks',
+        undefined,
+        'tool_mapping=1:1,2:1',
+      ).status,
+    ).toBe(400);
+    const id = String(printer.dialog?.id);
+    const refused = send(printer, 'POST', `/api/v1/dialog/${id}`, {
+      button: 'Print',
+    });
+    expect(refused.status).toBe(409);
+    expect(refused.body).toEqual({ message: 'Unmapped tool' });
+    expect(
+      send(printer, 'POST', `/api/v1/dialog/${id}`, { button: 'Abort' }).status,
+    ).toBe(204);
+    expect(printer.state).toBe('IDLE');
+    expect(printer.job).toBeUndefined();
+  });
+
+  it('asks to confirm a change all the printer warns about', () => {
+    const printer = new MockPrinter('XL');
+    const items = { '0': { action: 'change', filament: 'PA' } };
+    const warned = send(printer, 'POST', '/api/v1/filament/change-all', {
+      items,
+    });
+    expect(warned.status).toBe(409);
+    expect(warned.body).toEqual({
+      reason: 'needs_confirm',
+      warnings: [{ tool: '0', check: 'Nozzle not hardened' }],
+    });
+    expect(
+      send(printer, 'POST', '/api/v1/filament/change-all', {
+        items,
+        confirm: true,
+      }).status,
+    ).toBe(202);
   });
 
   it('changes the filaments of several tools by Connect id, as the firmware', () => {
@@ -486,12 +563,12 @@ describe('PrusaLink 2 API', () => {
     };
     expect(status.printer.tools['0.4']?.type).toBe('FFF_FEEDER_SLOT');
     const file = printer.files[0]?.name ?? '';
-    // Slot 5 is empty.
+    // Slot 5 is empty: the printer takes it and says so in its preview.
     expect(
       send(printer, 'POST', `/api/v1/files/usb/${file}`, {
-        tool_mapping: { '1': [5] },
+        tool_mapping: { '1': [6] },
       }).status,
-    ).toBe(422);
+    ).toBe(400);
     expect(
       send(printer, 'POST', `/api/v1/files/usb/${file}`, {
         tool_mapping: { '1': [2] },

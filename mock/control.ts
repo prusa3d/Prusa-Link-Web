@@ -89,6 +89,9 @@ export interface MockPatch {
   modelCheck?: 'ignore' | 'warning' | 'abort';
   /// Every tool's nozzle: hardened, high flow, high temperature.
   nozzle?: { hardened?: boolean; highFlow?: boolean; highTemp?: boolean };
+  /// A check of the printer's the page does not make (a dock not
+  /// calibrated, not enough filament…), added to its reports; null drops it.
+  extraCheck?: { check: string; level: 'warning' | 'abort' } | null;
 }
 
 export function applyPatch(printer: MockPrinter, patch: MockPatch) {
@@ -133,6 +136,8 @@ export function applyPatch(printer: MockPrinter, patch: MockPatch) {
   if (patch.nozzleCheck) printer.nozzleCheck = patch.nozzleCheck;
   if (patch.modelCheck) printer.modelCheck = patch.modelCheck;
   if (patch.nozzle) Object.assign(printer.nozzle, patch.nozzle);
+  if (patch.extraCheck !== undefined)
+    printer.extraCheck = patch.extraCheck ?? undefined;
   if (patch.firmwareFiles)
     printer.firmwareUploads = seedFirmware(printer.model);
   if (patch.press && printer.dialog)

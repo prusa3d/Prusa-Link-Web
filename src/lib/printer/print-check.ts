@@ -1,10 +1,12 @@
-import { firmwareFilament } from './filaments';
+import { BASIC_FILAMENTS, OTHER_FILAMENTS } from './filaments';
 import {
   checks,
   colourDistance,
   type GcodeFilament,
   type Mapping,
   type PrinterTool,
+  SAME_COLOUR,
+  sameFilament,
   type Severity,
 } from './tool-mapping';
 
@@ -13,11 +15,13 @@ import {
 /// gcode_compatibility.cpp in Buddy): each check is a warning the person
 /// may print through, or an abort; HW checks take the level the printer is
 /// set to (hw_checks in /api/v1/info). Every rule is here, to be adjusted
-/// in one place.
+/// in one place. The page's verdict is advice: the printer's own report
+/// (GET /api/v1/print/checks) decides.
 
 export type Level = 'warning' | 'abort';
 
-/// A firmware check that fails, by its name (the message key `check.<key>`).
+/// A firmware check that fails, by its name (the message key
+/// `print.check.<key>`), with what the message says about it.
 export interface Issue {
   key:
     | 'model'
@@ -32,16 +36,29 @@ export interface Issue {
   level: Level;
   /// The G-code filament (1-based) it is about.
   filament?: number;
+  /// The slot it is about, its number.
+  slot?: number;
+  /// What the slot has: its filament, or its nozzle in mm.
+  has?: string;
+  /// What the file needs.
+  needs?: string;
 }
 
 /// How a mapped slot suits its G-code filament.
 export type RowStatus =
   'match' | 'colour' | 'change' | 'empty' | 'incompatible' | 'unmapped';
 
+export interface Backup {
+  slot: PrinterTool;
+  status: RowStatus;
+}
+
 export interface Row {
   filament: GcodeFilament;
   slot?: PrinterTool | undefined;
   status: RowStatus;
+  /// Spool join backups, judged against the same G-code filament.
+  backups: Backup[];
 }
 
 /// What to do: print, change filaments first (or print anyway, all being
@@ -51,49 +68,123 @@ export type State = 'ok' | 'change' | 'warning' | 'abort';
 export interface Resolution {
   rows: Row[];
   issues: Issue[];
-  /// The slots whose filament must change for the print: by slot number,
-  /// to the G-code filament.
+  /// The slots, primaries and backups, whose filament must change for the
+  /// print, to the G-code filament.
   changes: { slot: PrinterTool; to: GcodeFilament }[];
+  /// G-code filaments a change cannot load: the printer has no such
+  /// filament (another slicer's name, or none in the file).
+  unloadable: GcodeFilament[];
   state: State;
 }
 
 export interface Printer {
   slots: readonly PrinterTool[];
   /// hw_checks; a firmware that does not say warns.
-  nozzleCheck?: Severity;
-  modelCheck?: Severity;
+  nozzleCheck?: Severity | undefined;
+  modelCheck?: Severity | undefined;
   /// The file is for this printer (false), or unknown (undefined).
   modelFits?: boolean | undefined;
 }
 
-/// Below this CIEDE2000 distance two colours count as the same.
-export const SAME_COLOUR = 10;
+export { SAME_COLOUR };
+
+/// The firmware's title of each check, as /api/v1/print/checks names them.
+export const TITLES: Readonly<Record<Issue['key'], string>> = {
+  model: 'Incompatible printer model',
+  notEnoughTools: 'Not enough tools',
+  unmapped: 'Unmapped tool',
+  wrongTool: 'Wrong tool',
+  nozzleDiameter: 'Wrong nozzle diameter',
+  nozzleHardened: 'Nozzle not hardened',
+  nozzleHighFlow: 'Nozzle not high-flow',
+  filamentNotLoaded: 'Filament not loaded',
+  wrongFilament: 'Wrong filament type',
+};
+
+/// Firmware checks that say what another one says for the same tool: an
+/// empty tool also has "another filament type"; an MMU's head fails its
+/// own high-flow check with the per-tool one.
+const ALIKE: Readonly<Record<string, string>> = {
+  'Wrong filament type': 'Filament not loaded',
+  'Nozzle high-flow mismatch': 'Nozzle not high-flow',
+};
+
+/// A check's title, or the title of the check it repeats.
+export const checkGroup = (title: string) => ALIKE[title] ?? title;
+
+const PRESETS: readonly string[] = [...BASIC_FILAMENTS, ...OTHER_FILAMENTS];
 
 const level = (s: Severity | undefined): Level | undefined => {
   if (s === 'ignore') return undefined;
   return s === 'abort' ? 'abort' : 'warning';
 };
 
-/// What `slot` is to filament `f` on its own: a match, another colour, a
-/// filament to change or load, or impossible by the printer's rules.
-export function statusOf(
+/// One slot for one G-code filament: its status and the checks it fails.
+export function judge(
   f: GcodeFilament,
   slot: PrinterTool,
   nozzleCheck: Severity | undefined,
-): RowStatus {
-  if (slot.disabled) return 'incompatible';
+): { status: RowStatus; issues: Issue[] } {
+  const about = { filament: f.index, slot: slot.index };
+  if (slot.disabled)
+    return {
+      status: 'incompatible',
+      issues: [{ key: 'wrongTool', level: 'abort', ...about }],
+    };
+  const issues: Issue[] = [];
+  const nozzle = level(nozzleCheck);
   const failed = checks(f, slot, nozzleCheck ?? 'warning').rules;
-  if (
-    level(nozzleCheck) === 'abort' &&
-    failed.some((r) => r.startsWith('nozzle'))
-  )
-    return 'incompatible';
-  if (!slot.material) return 'empty';
-  if (firmwareFilament(slot.material) !== firmwareFilament(f.material))
-    return 'change';
+  if (nozzle) {
+    if (failed.includes('nozzle_diameter'))
+      issues.push({
+        key: 'nozzleDiameter',
+        level: nozzle,
+        ...about,
+        has: String(slot.nozzle),
+        needs: String(f.nozzle),
+      });
+    if (failed.includes('nozzle_hardened'))
+      issues.push({ key: 'nozzleHardened', level: nozzle, ...about });
+    if (failed.includes('nozzle_high_flow'))
+      issues.push({ key: 'nozzleHighFlow', level: nozzle, ...about });
+  }
+  if (nozzle === 'abort' && issues.length)
+    return { status: 'incompatible', issues };
+  if (!slot.material) {
+    issues.push({
+      key: 'filamentNotLoaded',
+      level: 'warning',
+      ...about,
+      needs: f.material,
+    });
+    return { status: 'empty', issues };
+  }
+  if (!sameFilament(f.material, slot.material)) {
+    issues.push({
+      key: 'wrongFilament',
+      level: 'warning',
+      ...about,
+      has: slot.material,
+      needs: f.material,
+    });
+    return { status: 'change', issues };
+  }
   const d = colourDistance(f.color, slot.color);
-  return Number.isFinite(d) && d > SAME_COLOUR ? 'colour' : 'match';
+  return {
+    status: Number.isFinite(d) && d > SAME_COLOUR ? 'colour' : 'match',
+    issues,
+  };
 }
+
+/// What `slot` is to filament `f` on its own: a match, another colour, a
+/// filament to change or load, or impossible by the printer's rules.
+export const statusOf = (
+  f: GcodeFilament,
+  slot: PrinterTool,
+  nozzleCheck: Severity | undefined,
+): RowStatus => judge(f, slot, nozzleCheck).status;
+
+const needsChange = (s: RowStatus) => s === 'change' || s === 'empty';
 
 export function resolve(
   filaments: readonly GcodeFilament[],
@@ -101,83 +192,111 @@ export function resolve(
   printer: Printer,
 ): Resolution {
   const issues: Issue[] = [];
-  const add = (key: Issue['key'], l: Level | undefined, filament?: number) => {
-    if (l) issues.push({ key, level: l, ...(filament && { filament }) });
-  };
   const present = printer.slots.filter((s) => !s.disabled);
 
-  if (printer.modelFits === false) add('model', level(printer.modelCheck));
+  const model = printer.modelFits === false && level(printer.modelCheck);
+  if (model) issues.push({ key: 'model', level: model });
   // A fixed warning: a single-nozzle print may change filament with M600.
   if (filaments.length > Math.max(present.length, 1))
-    add('notEnoughTools', 'warning');
+    issues.push({
+      key: 'notEnoughTools',
+      level: 'warning',
+      has: String(Math.max(present.length, 1)),
+      needs: String(filaments.length),
+    });
 
   const changes: Resolution['changes'] = [];
+  const slotOf = (n: number) => printer.slots.find((s) => s.index === n);
   const rows: Row[] = filaments.map((f) => {
-    const slot = printer.slots.find((s) => s.index === mapping[f.index]?.[0]);
     // A single-tool printer maps nothing.
-    if (!printer.slots.length) return { filament: f, status: 'match' };
+    if (!printer.slots.length)
+      return { filament: f, status: 'match', backups: [] };
+    const [first, ...rest] = mapping[f.index] ?? [];
+    const slot = first === undefined ? undefined : slotOf(first);
     if (!slot) {
-      add('unmapped', 'abort', f.index);
-      return { filament: f, status: 'unmapped' };
+      issues.push({ key: 'unmapped', level: 'abort', filament: f.index });
+      return { filament: f, status: 'unmapped', backups: [] };
     }
-    if (slot.disabled) {
-      add('wrongTool', 'abort', f.index);
-      return { filament: f, slot, status: 'incompatible' };
-    }
-    const nozzle = level(printer.nozzleCheck);
-    const failed = checks(f, slot, printer.nozzleCheck ?? 'warning').rules;
-    for (const rule of failed) {
-      if (rule === 'nozzle_diameter') add('nozzleDiameter', nozzle, f.index);
-      if (rule === 'nozzle_hardened') add('nozzleHardened', nozzle, f.index);
-      if (rule === 'nozzle_high_flow') add('nozzleHighFlow', nozzle, f.index);
-    }
-    if (nozzle === 'abort' && failed.some((r) => r.startsWith('nozzle')))
-      return { filament: f, slot, status: 'incompatible' };
-    if (!slot.material) {
-      changes.push({ slot, to: f });
-      add('filamentNotLoaded', 'warning', f.index);
-      return { filament: f, slot, status: 'empty' };
-    }
-    if (firmwareFilament(slot.material) !== firmwareFilament(f.material)) {
-      changes.push({ slot, to: f });
-      add('wrongFilament', 'warning', f.index);
-      return { filament: f, slot, status: 'change' };
-    }
-    const d = colourDistance(f.color, slot.color);
+    const backups = rest.flatMap((n) => {
+      const b = slotOf(n);
+      return b ? [b] : [];
+    });
+    const judged = [slot, ...backups].map((s) => {
+      const j = judge(f, s, printer.nozzleCheck);
+      issues.push(...j.issues);
+      if (needsChange(j.status)) changes.push({ slot: s, to: f });
+      return { slot: s, status: j.status };
+    });
+    const [own, ...joins] = judged;
     return {
       filament: f,
       slot,
-      status: Number.isFinite(d) && d > SAME_COLOUR ? 'colour' : 'match',
+      status: own?.status ?? 'unmapped',
+      backups: joins,
     };
   });
 
+  const unloadable = [
+    ...new Map(
+      changes
+        .filter(({ to }) => !PRESETS.includes(to.material))
+        .map(({ to }) => [to.index, to]),
+    ).values(),
+  ];
   let state: State = 'ok';
   if (issues.some((i) => i.level === 'abort')) state = 'abort';
   else if (changes.length) state = 'change';
   else if (issues.length) state = 'warning';
-  return { rows, issues, changes, state };
+  return { rows, issues, changes, unloadable, state };
 }
 
-/// Slots a filament's spool may join to: the same filament type, nozzle
-/// and nozzle flags as its slot; only the colour may differ.
+/// Slots a filament's spool may join to after `primary`: the nozzle and
+/// nozzle flags of the primary, none another filament prints from or
+/// joins to, and one the printer would take for this G-code filament.
 export function joinable(
-  slot: PrinterTool,
+  f: GcodeFilament,
+  primary: PrinterTool,
   slots: readonly PrinterTool[],
-  used: readonly number[],
+  mapping: Mapping,
+  nozzleCheck?: Severity,
 ): PrinterTool[] {
+  const used = new Set(Object.values(mapping).flat());
   return slots.filter(
     (s) =>
       !s.disabled &&
-      s.index !== slot.index &&
-      !used.includes(s.index) &&
-      !!s.material &&
-      !!slot.material &&
-      firmwareFilament(s.material) === firmwareFilament(slot.material) &&
-      s.nozzle === slot.nozzle &&
-      !!s.hardened === !!slot.hardened &&
-      !!s.highFlow === !!slot.highFlow &&
-      !!s.highTemp === !!slot.highTemp,
+      s.index !== primary.index &&
+      !used.has(s.index) &&
+      s.nozzle === primary.nozzle &&
+      !!s.hardened === !!primary.hardened &&
+      !!s.highFlow === !!primary.highFlow &&
+      !!s.highTemp === !!primary.highTemp &&
+      statusOf(f, s, nozzleCheck) !== 'incompatible',
   );
+}
+
+/// The mapping without backups that no longer suit their filament's
+/// primary (after the primary changed).
+export function prune(
+  mapping: Mapping,
+  filaments: readonly GcodeFilament[],
+  slots: readonly PrinterTool[],
+  nozzleCheck?: Severity,
+): Mapping {
+  const out: Mapping = {};
+  for (const [key, [first, ...rest]] of Object.entries(mapping)) {
+    if (first === undefined) continue;
+    const f = filaments.find((x) => x.index === Number(key));
+    const primary = slots.find((s) => s.index === first);
+    const kept = rest.filter((n) => {
+      if (!f || !primary) return false;
+      const others = { ...mapping, [key]: [first] };
+      return joinable(f, primary, slots, others, nozzleCheck).some(
+        (s) => s.index === n,
+      );
+    });
+    out[Number(key)] = [first, ...kept];
+  }
+  return out;
 }
 
 /// Puts `slot` first for filament `from` (undefined unmaps it). A filament
@@ -216,5 +335,5 @@ export function resolveModel(printer: Printer): Resolution {
   const issues: Issue[] = l ? [{ key: 'model', level: l }] : [];
   let state: State = 'ok';
   if (l) state = l === 'abort' ? 'abort' : 'warning';
-  return { rows: [], issues, changes: [], state };
+  return { rows: [], issues, changes: [], unloadable: [], state };
 }

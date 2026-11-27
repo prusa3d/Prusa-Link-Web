@@ -273,14 +273,13 @@
     });
   }
 
-  async function print(name: string, mapping?: Record<string, number[]>) {
-    const ok = await files.print(name, candidate?.dir ?? files.path, mapping);
-    if (ok) {
-      candidate = undefined;
-      await printer.refresh();
-      showPrinter();
-    }
-    return ok;
+  const print = (name: string, mapping?: Record<string, number[]>) =>
+    files.print(name, candidate?.dir ?? files.path, mapping);
+
+  async function started() {
+    candidate = undefined;
+    await printer.refresh();
+    showPrinter();
   }
 </script>
 
@@ -484,6 +483,7 @@
     dir={files.path}
     onchangefilament={() => (filamentOpen = true)}
     onprint={print}
+    onstarted={() => void started()}
     {canStart}
     {blocked}
     onclose={() => (candidate = undefined)}

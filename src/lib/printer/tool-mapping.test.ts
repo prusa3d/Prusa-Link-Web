@@ -5,7 +5,6 @@ import { readHeader } from '../files/header';
 import {
   ciede2000,
   colourDistance,
-  fit,
   gcodeFilaments,
   type GcodeFilament,
   type PrinterTool,
@@ -43,7 +42,7 @@ const filament = (
 ): GcodeFilament => ({ index, material: 'PLA', nozzle: 0.4, ...more });
 
 describe('gcodeFilaments', () => {
-  it('reads the used extruders as Connect does; under 0.03 g is unused', async () => {
+  it('reads the used extruders; over 0.0003 g is used, as the firmware counts', async () => {
     const header = await readHeader(fixture('three-shapes.bgcode'));
     expect(gcodeFilaments(header)).toEqual([
       {
@@ -59,8 +58,31 @@ describe('gcodeFilaments', () => {
     expect(gcodeFilaments(INDX).map((f) => f.index)).toEqual([1, 2, 3, 4]);
   });
 
-  it('has nothing to map in a single-extruder file', () => {
-    expect(gcodeFilaments({ 'filament used [g]': '12.5' })).toEqual([]);
+  it('maps a single-extruder file too: the printer may pick its tool', () => {
+    expect(
+      gcodeFilaments({ 'filament used [g]': '12.5', filament_type: 'PETG' }),
+    ).toEqual([
+      expect.objectContaining({ index: 1, material: 'PETG', grams: 12.5 }),
+    ]);
+  });
+
+  it('keeps an extruder of 0.02 g and leaves out 0.0002 g', () => {
+    const used = gcodeFilaments({
+      'filament used [g]': '5, 0.02, 0.0002',
+      filament_type: 'PLA;PLA;PLA',
+    });
+    expect(used.map((f) => f.index)).toEqual([1, 2]);
+  });
+
+  it('keeps the filaments of a file with a short filament_type, of unknown type', () => {
+    const used = gcodeFilaments({
+      'filament used [g]': '5, 3',
+      filament_type: 'PLA',
+    });
+    expect(used.map((f) => [f.index, f.material])).toEqual([
+      [1, ''],
+      [2, ''],
+    ]);
   });
 
   it('does not trust a per-extruder value with too few items', () => {
@@ -139,17 +161,31 @@ describe('suggest', () => {
     expect(suggest(f, tools)).toEqual({ 1: [2] });
     expect(suggest(f, [tool(1, { nozzle: 0.6 })])).toEqual({ 1: [1] });
     expect(suggest(f, [tool(1, { nozzle: 0.6 })], 'abort')).toEqual({});
-    expect(fit(f[0]!, tool(1, { nozzle: 0.6 }))).toBe('nozzle');
-    expect(fit(f[0]!, tool(1, { nozzle: 0.6 }), 'ignore')).toBe('exact');
   });
 
   it('wants a hardened nozzle for an abrasive filament and high flow for a high-flow file', () => {
     const abrasive = filament(1, { abrasive: true, highFlow: true });
-    expect(fit(abrasive, tool(1))).toBe('nozzle');
-    expect(fit(abrasive, tool(1, { hardened: true }))).toBe('exact');
-    expect(fit(abrasive, tool(1, { hardened: true, highFlow: false }))).toBe(
-      'nozzle',
+    expect(suggest([abrasive], [tool(1), tool(2, { hardened: true })])).toEqual(
+      { 1: [2] },
     );
+    expect(
+      suggest(
+        [abrasive],
+        [
+          tool(1, { hardened: true, highFlow: false }),
+          tool(2, { hardened: true }),
+        ],
+      ),
+    ).toEqual({ 1: [2] });
+  });
+
+  it('weighs a nozzle warning over any material and colour', () => {
+    const f = [filament(1, { color: '#ff0000' })];
+    const tools = [
+      tool(1, { nozzle: 0.6, color: '#ff0000' }),
+      tool(2, { material: 'PETG', color: '#0000ff' }),
+    ];
+    expect(suggest(f, tools)).toEqual({ 1: [2] });
   });
 
   it('leaves an extruder unmapped when no tool is left for it', () => {
@@ -158,7 +194,7 @@ describe('suggest', () => {
     expect(suggest(f, tools)).toEqual({ 1: [1] });
   });
 
-  it('suggests the five-tool XL with different materials by type', () => {
+  it('takes TPU for another filament than FLEX, as the firmware compares names', () => {
     const xl = ['PLA', 'PETG', 'PLA', 'ASA', 'FLEX'].map((material, i) =>
       tool(i + 1, { material, highFlow: false }),
     );
@@ -167,7 +203,7 @@ describe('suggest', () => {
       filament(2, { material: 'TPU' }),
       filament(3, { material: 'PLA' }),
     ];
-    expect(suggest(f, xl)).toEqual({ 1: [4], 2: [5], 3: [3] });
+    expect(suggest(f, xl)).toEqual({ 1: [4], 2: [2], 3: [3] });
   });
 });
 

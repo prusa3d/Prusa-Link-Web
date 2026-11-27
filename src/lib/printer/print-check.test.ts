@@ -4,6 +4,7 @@ import {
   choose,
   joinable,
   type Printer,
+  prune,
   resolve,
   type RowStatus,
   type State,
@@ -55,6 +56,9 @@ interface Case {
   rows: RowStatus[];
   issues?: string[];
   changes?: number[];
+  /// Backups' statuses, per row.
+  backups?: RowStatus[][];
+  unloadable?: number[];
   state: State;
 }
 
@@ -262,6 +266,114 @@ const CASES: Case[] = [
     issues: ['unmapped:1'],
     state: 'abort',
   },
+  {
+    name: 'a TPU file on a FLEX slot is the wrong filament (exact names)',
+    filaments: [f(1, 'TPU')],
+    printer: { slots: [s(1, 'FLEX'), s(2, 'PLA')] },
+    mapping: { 1: [1] },
+    rows: ['change'],
+    issues: ['wrongFilament:1'],
+    changes: [1],
+    unloadable: [1],
+    state: 'change',
+  },
+  {
+    name: 'a filament the printer has no preset for cannot be loaded',
+    filaments: [f(1, 'PLA+')],
+    printer: { slots: [s(1, 'PLA'), s(2, 'PLA')] },
+    mapping: { 1: [1] },
+    rows: ['change'],
+    unloadable: [1],
+    state: 'change',
+  },
+  {
+    name: 'a file without filament types: any loaded slot fits',
+    filaments: [f(1, ''), f(2, '')],
+    printer: { slots: [s(1, 'PLA'), s(2, 'PETG')] },
+    suggested: { 1: [1], 2: [2] },
+    rows: ['match', 'match'],
+    state: 'ok',
+  },
+  {
+    name: 'a file without filament types on an empty slot: nothing to load',
+    filaments: [f(1, '')],
+    printer: { slots: [s(1, undefined), s(2, undefined)] },
+    mapping: { 1: [1] },
+    rows: ['empty'],
+    unloadable: [1],
+    state: 'change',
+  },
+  {
+    name: 'XL, single-extruder file: mapped to the best tool',
+    filaments: [f(1, 'PETG', BLUE)],
+    printer: { slots: XL5 },
+    suggested: { 1: [2] },
+    rows: ['match'],
+    state: 'ok',
+  },
+  {
+    name: 'XL with only dock 3 enabled maps there',
+    filaments: [f(1, 'PLA')],
+    printer: {
+      slots: [
+        s(1, undefined, undefined, { disabled: true }),
+        s(2, undefined, undefined, { disabled: true }),
+        s(3, 'PLA'),
+      ],
+    },
+    suggested: { 1: [3] },
+    rows: ['match'],
+    state: 'ok',
+  },
+  {
+    name: 'MMU3: a 0.6 file on the 0.4 head is refused at abort',
+    filaments: [
+      f(1, 'PLA', undefined, { nozzle: 0.6 }),
+      f(2, 'PLA', undefined, { nozzle: 0.6 }),
+    ],
+    printer: {
+      slots: [1, 2, 3, 4, 5].map((n) => s(n, 'PLA')),
+      nozzleCheck: 'abort',
+    },
+    mapping: { 1: [1], 2: [2] },
+    rows: ['incompatible', 'incompatible'],
+    issues: ['nozzleDiameter:1', 'nozzleDiameter:2'],
+    state: 'abort',
+  },
+  {
+    name: 'backup of another material: changed with the primary',
+    filaments: [f(1, 'PLA')],
+    printer: { slots: [s(1, 'PLA'), s(2, 'PETG')] },
+    mapping: { 1: [1, 2] },
+    rows: ['match'],
+    backups: [['change']],
+    issues: ['wrongFilament:1'],
+    changes: [2],
+    state: 'change',
+  },
+  {
+    name: 'backup on another nozzle aborts like a primary would',
+    filaments: [f(1, 'PLA')],
+    printer: {
+      slots: [s(1, 'PLA'), s(2, 'PLA', undefined, { nozzle: 0.6 })],
+      nozzleCheck: 'abort',
+    },
+    mapping: { 1: [1, 2] },
+    rows: ['match'],
+    backups: [['incompatible']],
+    issues: ['nozzleDiameter:1'],
+    state: 'abort',
+  },
+  {
+    name: 'a primary to change and an empty backup: both in the change',
+    filaments: [f(1, 'ASA', RED)],
+    printer: { slots: [s(1, 'PLA'), s(2, undefined)] },
+    mapping: { 1: [1, 2] },
+    rows: ['change'],
+    backups: [['empty']],
+    changes: [1, 2],
+    state: 'change',
+  },
 ];
 
 describe('resolve', () => {
@@ -280,7 +392,41 @@ describe('resolve', () => {
       ).toEqual(c.issues);
     if (c.changes)
       expect(r.changes.map((x) => x.slot.index)).toEqual(c.changes);
+    if (c.backups)
+      expect(r.rows.map((row) => row.backups.map((b) => b.status))).toEqual(
+        c.backups,
+      );
+    if (c.unloadable)
+      expect(r.unloadable.map((x) => x.index)).toEqual(c.unloadable);
     expect(r.state).toBe(c.state);
+  });
+
+  it('says what each issue is about', () => {
+    const r = resolve(
+      [f(4, 'ASA')],
+      { 4: [4] },
+      {
+        slots: [s(4, 'PETG', undefined, { nozzle: 0.6 })],
+      },
+    );
+    expect(r.issues).toEqual([
+      {
+        key: 'nozzleDiameter',
+        level: 'warning',
+        filament: 4,
+        slot: 4,
+        has: '0.6',
+        needs: '0.4',
+      },
+      {
+        key: 'wrongFilament',
+        level: 'warning',
+        filament: 4,
+        slot: 4,
+        has: 'PETG',
+        needs: 'ASA',
+      },
+    ]);
   });
 
   it('leaves out a filament the file does not use (0 g)', () => {
@@ -309,17 +455,40 @@ describe('choose', () => {
 });
 
 describe('joinable', () => {
-  const slot = s(1, 'PLA', RED);
-  it('offers only the same material, nozzle and flags', () => {
+  const pla = f(1, 'PLA', RED);
+  it('offers free slots of the primary’s nozzle and flags the printer takes', () => {
     const slots = [
-      slot,
+      s(1, 'PLA', RED),
       s(2, 'PLA', BLUE),
       s(3, 'PETG', RED),
       s(4, 'PLA', RED, { highFlow: true }),
       s(5, 'PLA', RED, { nozzle: 0.6 }),
       s(6, 'PLA', GREEN),
       s(7, 'PLA', RED, { disabled: true }),
+      s(8, undefined),
     ];
-    expect(joinable(slot, slots, [6]).map((x) => x.index)).toEqual([2]);
+    expect(
+      joinable(pla, slots[0]!, slots, { 1: [1], 2: [6] }).map((x) => x.index),
+    ).toEqual([2, 3, 8]);
+  });
+
+  it('judges against the G-code filament, not the primary’s', () => {
+    const slots = [s(1, 'PETG'), s(2, 'PLA'), s(3, 'PETG')];
+    expect(
+      joinable(pla, slots[0]!, slots, { 1: [1] }).map((x) => x.index),
+    ).toEqual([2, 3]);
+  });
+});
+
+describe('prune', () => {
+  it('drops backups that no longer suit a changed primary', () => {
+    const slots = [
+      s(1, 'PLA'),
+      s(2, 'PLA', undefined, { nozzle: 0.6 }),
+      s(3, 'PLA'),
+    ];
+    const filaments = [f(1, 'PLA')];
+    expect(prune({ 1: [2, 3] }, filaments, slots)).toEqual({ 1: [2] });
+    expect(prune({ 1: [1, 3] }, filaments, slots)).toEqual({ 1: [1, 3] });
   });
 });
