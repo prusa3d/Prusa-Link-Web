@@ -880,6 +880,8 @@ export interface paths {
                 content: {
                     "application/json": {
                         items?: components["schemas"]["ChangeAllItems"];
+                        /** @description Change despite the printer's warnings about the filaments */
+                        confirm?: boolean;
                     };
                 };
             };
@@ -892,7 +894,25 @@ export interface paths {
                     content?: never;
                 };
                 401: components["responses"]["Unauthorized"];
-                409: components["responses"]["Conflict"];
+                /** @description Busy, or the filaments fail the printer's checks */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            /** @enum {string} */
+                            reason?: "incompatible" | "needs_confirm";
+                            /** @description 0-based tool of a fatal check */
+                            tool?: string;
+                            check?: string;
+                            warnings?: {
+                                tool?: string;
+                                check?: string;
+                            }[];
+                        };
+                    };
+                };
                 /** @description Unknown tool or material */
                 422: {
                     headers: {
@@ -902,6 +922,60 @@ export interface paths {
                 };
             };
         };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/print/checks": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** the printer's compatibility report of the print in its preview */
+        get: {
+            parameters: {
+                query?: {
+                    /** @description A proposed mapping, 1-based "gcode:tool:backup,…", checked without applying it */
+                    tool_mapping?: string;
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["PrintChecks"];
+                    };
+                };
+                /** @description Malformed or invalid tool mapping */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                401: components["responses"]["Unauthorized"];
+                /** @description No print in the preview */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        put?: never;
+        post?: never;
         delete?: never;
         options?: never;
         head?: never;
@@ -2241,7 +2315,7 @@ export interface components {
                 printing_filtration?: boolean;
             };
             /** @description What this firmware's API can do */
-            features?: ("status_expanded" | "cancel_object" | "chamber" | "dialogs" | "firmware_update" | "crash_dump" | "preheat" | "tune" | "filament" | "pairing" | "tool_mapping" | "change_all" | "filament_change_all" | "per_tool_heating")[];
+            features?: ("status_expanded" | "cancel_object" | "chamber" | "dialogs" | "firmware_update" | "crash_dump" | "preheat" | "tune" | "filament" | "pairing" | "tool_mapping" | "change_all" | "filament_change_all" | "per_tool_heating" | "print_checks")[];
             /** @description The printer's severity of each check before a print (HWCheckSeverity); read-only */
             hw_checks?: {
                 nozzle?: components["schemas"]["CheckSeverity"];
@@ -2346,6 +2420,22 @@ export interface components {
         };
         /** @enum {string} */
         CheckSeverity: "ignore" | "warning" | "abort";
+        PrintChecks: {
+            printable: boolean;
+            level: components["schemas"]["CheckLevel"];
+            checks: {
+                /** @description The check's title, in English */
+                check: string;
+                level: components["schemas"]["CheckLevel"];
+                /** @description Connect tool id */
+                tool?: string;
+                /** @description 1-based G-code tool */
+                gcode_tool?: number;
+                text?: string;
+            }[];
+        };
+        /** @enum {string} */
+        CheckLevel: "ok" | "reminder" | "warning" | "abort";
         /** @description By 0-based Connect tool id of /api/v1/info ("0".."4", "0.N" for MMU slots) */
         ChangeAllItems: {
             [key: string]: {

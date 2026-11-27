@@ -15,6 +15,7 @@ export const ArrowUp: IconNode = [
   ['path', { d: 'M12 19V5' }],
 ];
 export const Check: IconNode = [['path', { d: 'M20 6 9 17l-5-5' }]];
+export const ChevronDown: IconNode = [['path', { d: 'm6 9 6 6 6-6' }]];
 export const ChevronLeft: IconNode = [['path', { d: 'm15 18-6-6 6-6' }]];
 export const ChevronRight: IconNode = [['path', { d: 'm9 18 6-6-6-6' }]];
 export const CircleArrowUp: IconNode = [

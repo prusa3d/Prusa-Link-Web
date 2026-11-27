@@ -1,5 +1,4 @@
 import type { Header } from '../files/header';
-import { firmwareFilament } from './filaments';
 
 /// Which printer tool prints which G-code extruder, as Prusa Connect's
 /// start-print tool mapping: extruders and tools are 1-based, the first tool
@@ -8,6 +7,7 @@ import { firmwareFilament } from './filaments';
 /// An extruder the file uses, from its header.
 export interface GcodeFilament {
   index: number;
+  /// The slicer's filament_type; '' when the file does not say.
   material: string;
   color?: string | undefined;
   grams?: number | undefined;
@@ -38,25 +38,22 @@ export type Severity = 'ignore' | 'warning' | 'abort';
 
 export type Mapping = Record<number, number[]>;
 
-/// How well a tool suits an extruder, for the row's badge.
-export type Fit = 'exact' | 'similar' | 'material' | 'nozzle' | 'refused';
-
-/// An extruder printing less than this is unused, as Buddy and Connect count.
-const UNUSED_GRAMS = 0.03;
+/// A G-code tool using more than this is used (GCodeInfo in Buddy).
+const USED_GRAMS = 0.0003;
 /// printcompat's nozzleTolerance, mm.
 const NOZZLE_TOLERANCE = 0.001;
-/// Below this ΔE00 two colours pass for the same.
-const SAME_COLOUR = 10;
+/// Above this CIEDE2000 distance two colours are other colours.
+export const SAME_COLOUR = 10;
 
-/// The extruders a file uses, as Connect's gcodeSlots builds them: a
-/// per-extruder value with fewer items than extruders is not trusted, and a
-/// single-extruder file has none to map.
+/// The extruders a file uses: a per-extruder value with fewer items than
+/// extruders is not trusted, and a filament of unknown type stays, as the
+/// printer still maps it.
 export function gcodeFilaments(header: Header | undefined): GcodeFilament[] {
   if (!header) return [];
   const perTool = (value = '') =>
     value.split(/[,;]/).map((v) => v.trim().replace(/^"(.*)"$/, '$1'));
   const used = perTool(header['filament used [g]']).map(Number);
-  if (used.length < 2) return [];
+  if (!used.length) return [];
   const complete = (key: string) => {
     const values = perTool(header[key]);
     return values.length < used.length ? [] : values;
@@ -68,11 +65,11 @@ export function gcodeFilaments(header: Header | undefined): GcodeFilament[] {
   const abrasive = complete('filament_abrasive');
   const flag = (v: string | undefined) => (v === undefined ? v : v === '1');
   return used.flatMap((grams, i) =>
-    grams >= UNUSED_GRAMS && types[i]
+    grams > USED_GRAMS
       ? [
           {
             index: i + 1,
-            material: types[i],
+            material: types[i] ?? '',
             color: colours[i]?.startsWith('#') ? colours[i] : undefined,
             grams,
             nozzle: nozzles[i] ? Number(nozzles[i]) : undefined,
@@ -104,10 +101,7 @@ export function checks(
   if (f.abrasive && t.hardened === false) nozzle.push('nozzle_hardened');
   if (f.highFlow && t.highFlow === false) nozzle.push('nozzle_high_flow');
   if (nozzleSeverity !== 'ignore') rules.push(...nozzle);
-  if (
-    !t.material ||
-    firmwareFilament(t.material) !== firmwareFilament(f.material)
-  )
+  if (!t.material || !sameFilament(f.material, t.material))
     rules.push('material');
   return {
     rules,
@@ -115,36 +109,43 @@ export function checks(
   };
 }
 
-export function fit(
+/// The firmware compares filament names exactly: a TPU file on a FLEX
+/// spool is the wrong filament. A file that names none fits any.
+export const sameFilament = (gcode: string, loaded: string) =>
+  !gcode || gcode === loaded;
+
+/// What a tool costs for an extruder, compared in order: tools left
+/// unmapped, nozzle warnings, other materials, the colour distance, tools
+/// off their own number (1:1, the firmware's default, breaks ties).
+type Cost = [number, number, number, number, number];
+
+const UNMAPPED: Cost = [1, 0, 0, 0, 0];
+
+function cost(
   f: GcodeFilament,
   t: PrinterTool,
   severity?: Severity,
-): Fit {
+): Cost | undefined {
   const { rules, refused } = checks(f, t, severity);
-  if (refused || rules.includes('tool_enabled')) return 'refused';
-  if (rules.some((r) => r.startsWith('nozzle'))) return 'nozzle';
-  if (rules.includes('material')) return 'material';
-  // Without both colours the material is all there is to match.
+  if (refused || rules.includes('tool_enabled')) return undefined;
   const d = colourDistance(f.color, t.color);
-  return Number.isFinite(d) && d >= SAME_COLOUR ? 'similar' : 'exact';
+  return [
+    0,
+    rules.some((r) => r.startsWith('nozzle')) ? 1 : 0,
+    rules.includes('material') ? 1 : 0,
+    Number.isFinite(d) ? d : 25,
+    f.index === t.index ? 0 : 1,
+  ];
 }
 
-/// What a tool costs for an extruder: firmware refusals rule it out, nozzle
-/// warnings come after every compatible tool, another material after the
-/// same one, then the nearer colour; a tool's own number breaks ties (1:1,
-/// the firmware's default).
-function cost(f: GcodeFilament, t: PrinterTool, severity?: Severity) {
-  const { rules, refused } = checks(f, t, severity);
-  if (refused || rules.includes('tool_enabled')) return Infinity;
-  let c = rules.some((r) => r.startsWith('nozzle')) ? 1000 : 0;
-  if (rules.includes('material')) c += 100;
-  const d = colourDistance(f.color, t.color);
-  c += Number.isFinite(d) ? Math.min(d, 99) : 25;
-  return c + (f.index === t.index ? 0 : 0.001);
-}
-
-/// Leaving an extruder for the person to map costs more than any tool.
-const UNMAPPED = 1e6;
+const plus = (a: Cost, b: Cost) => a.map((x, i) => x + (b[i] ?? 0)) as Cost;
+const below = (a: Cost, b: Cost) => {
+  for (const [i, x] of a.entries()) {
+    const y = b[i] ?? 0;
+    if (x !== y) return x < y;
+  }
+  return false;
+};
 
 /// The mapping with the lowest total cost, every tool used at most once:
 /// an exhaustive search, which a printer's few tools allow. Extruders no
@@ -155,28 +156,29 @@ export function suggest(
   severity?: Severity,
 ): Mapping {
   const costs = filaments.map((f) => tools.map((t) => cost(f, t, severity)));
-  let best = { total: Infinity, picks: [] as number[] };
+  const worst: Cost = [Infinity, 0, 0, 0, 0];
+  let best = { total: worst, picks: [] as number[] };
   const taken = new Set<number>();
   const picks: number[] = [];
-  const walk = (i: number, total: number) => {
-    if (total >= best.total) return;
+  const walk = (i: number, total: Cost) => {
+    if (!below(total, best.total)) return;
     if (i === filaments.length) {
       best = { total, picks: [...picks] };
       return;
     }
     for (const [j, c] of (costs[i] ?? []).entries()) {
-      if (taken.has(j) || !Number.isFinite(c)) continue;
+      if (taken.has(j) || !c) continue;
       taken.add(j);
       picks.push(j);
-      walk(i + 1, total + c);
+      walk(i + 1, plus(total, c));
       picks.pop();
       taken.delete(j);
     }
     picks.push(-1);
-    walk(i + 1, total + UNMAPPED);
+    walk(i + 1, plus(total, UNMAPPED));
     picks.pop();
   };
-  walk(0, 0);
+  walk(0, [0, 0, 0, 0, 0]);
   const out: Mapping = {};
   best.picks.forEach((j, i) => {
     const f = filaments[i];

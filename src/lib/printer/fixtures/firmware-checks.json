@@ -1,0 +1,194 @@
+{
+  "source": "Buddy prusalink-api-v2, src/feature/compatibility_checks/gcode_compatibility.cpp: the checks GCodeToolCheck/VirtualToolCheck fail per G-code and printer tool, their CheckMetadata severity, and hw_checks. Each case is what the firmware's report lists for the input.",
+  "cases": [
+    {
+      "name": "XL, all loaded as sliced",
+      "header": {
+        "filament used [g]": "5, 3",
+        "filament_type": "PLA;PETG",
+        "nozzle_diameter": "0.4,0.4"
+      },
+      "tools": [{ "material": "PLA" }, { "material": "PETG" }],
+      "mapping": { "1": [1], "2": [2] },
+      "checks": []
+    },
+    {
+      "name": "wrong filament type is a fixed warning",
+      "header": { "filament used [g]": "5, 3", "filament_type": "PLA;ASA" },
+      "tools": [{ "material": "PLA" }, { "material": "PETG" }],
+      "mapping": { "1": [1], "2": [2] },
+      "checks": [
+        { "check": "Wrong filament type", "level": "warning", "tool": 2 }
+      ]
+    },
+    {
+      "name": "names compare exactly: TPU is not FLEX",
+      "header": { "filament used [g]": "5, 3", "filament_type": "PLA;TPU" },
+      "tools": [{ "material": "PLA" }, { "material": "FLEX" }],
+      "mapping": { "1": [1], "2": [2] },
+      "checks": [
+        { "check": "Wrong filament type", "level": "warning", "tool": 2 }
+      ]
+    },
+    {
+      "name": "no filament type in the file: no type check",
+      "header": { "filament used [g]": "5, 3" },
+      "tools": [{ "material": "PLA" }, { "material": "PETG" }],
+      "mapping": { "1": [1], "2": [2] },
+      "checks": []
+    },
+    {
+      "name": "an empty tool: the sensor sees no filament, the type differs",
+      "header": { "filament used [g]": "5, 3", "filament_type": "PLA;PLA" },
+      "tools": [{ "material": "PLA" }, {}],
+      "mapping": { "1": [1], "2": [2] },
+      "checks": [
+        { "check": "Filament not loaded", "level": "warning", "tool": 2 },
+        { "check": "Wrong filament type", "level": "warning", "tool": 2 }
+      ]
+    },
+    {
+      "name": "a used G-code tool left unmapped aborts",
+      "header": { "filament used [g]": "5, 3", "filament_type": "PLA;PLA" },
+      "tools": [{ "material": "PLA" }, { "material": "PLA" }],
+      "mapping": { "1": [1] },
+      "checks": [
+        { "check": "Unmapped tool", "level": "abort", "gcode_tool": 2 }
+      ]
+    },
+    {
+      "name": "a disabled tool is the wrong tool, a fixed abort",
+      "header": { "filament used [g]": "5", "filament_type": "PLA" },
+      "tools": [{ "material": "PLA" }, { "disabled": true }],
+      "mapping": { "1": [2] },
+      "checks": [{ "check": "Wrong tool", "level": "abort", "tool": 2 }]
+    },
+    {
+      "name": "0.0002 g is not used; 0.02 g is",
+      "header": {
+        "filament used [g]": "5, 0.0002, 0.02",
+        "filament_type": "PLA;PLA;PLA"
+      },
+      "tools": [
+        { "material": "PLA" },
+        { "material": "PLA" },
+        { "material": "PLA" }
+      ],
+      "mapping": { "1": [1] },
+      "checks": [
+        { "check": "Unmapped tool", "level": "abort", "gcode_tool": 3 }
+      ]
+    },
+    {
+      "name": "nozzle diameter by hw_checks.nozzle",
+      "header": {
+        "filament used [g]": "5",
+        "filament_type": "PLA",
+        "nozzle_diameter": "0.6"
+      },
+      "tools": [{ "material": "PLA" }, { "material": "PLA" }],
+      "nozzleCheck": "abort",
+      "mapping": { "1": [1] },
+      "checks": [
+        { "check": "Wrong nozzle diameter", "level": "abort", "tool": 1 }
+      ]
+    },
+    {
+      "name": "nozzle checks off",
+      "header": {
+        "filament used [g]": "5",
+        "filament_type": "PLA",
+        "nozzle_diameter": "0.6",
+        "filament_abrasive": "1"
+      },
+      "tools": [{ "material": "PLA" }, { "material": "PLA" }],
+      "nozzleCheck": "ignore",
+      "mapping": { "1": [1] },
+      "checks": []
+    },
+    {
+      "name": "abrasive filament, nozzle not hardened",
+      "header": {
+        "filament used [g]": "5",
+        "filament_type": "PLA",
+        "filament_abrasive": "1"
+      },
+      "tools": [{ "material": "PLA" }, { "material": "PLA", "hardened": true }],
+      "mapping": { "1": [1] },
+      "checks": [
+        { "check": "Nozzle not hardened", "level": "warning", "tool": 1 }
+      ]
+    },
+    {
+      "name": "high-flow G-code on a standard nozzle",
+      "header": {
+        "filament used [g]": "5",
+        "filament_type": "PLA",
+        "nozzle_high_flow": "1"
+      },
+      "tools": [{ "material": "PLA" }, { "material": "PLA" }],
+      "mapping": { "1": [1] },
+      "checks": [
+        { "check": "Nozzle not high-flow", "level": "warning", "tool": 1 }
+      ]
+    },
+    {
+      "name": "MMU: high-flow G-code on the standard head also fails the MMU check; no sensor check",
+      "mmu": true,
+      "header": {
+        "filament used [g]": "5, 3",
+        "filament_type": "PLA;PLA",
+        "nozzle_high_flow": "1,1"
+      },
+      "tools": [{ "material": "PLA" }, {}],
+      "mapping": { "1": [1], "2": [2] },
+      "checks": [
+        { "check": "Nozzle high-flow mismatch", "level": "warning", "tool": 1 },
+        { "check": "Nozzle not high-flow", "level": "warning", "tool": 1 },
+        { "check": "Nozzle high-flow mismatch", "level": "warning", "tool": 2 },
+        { "check": "Nozzle not high-flow", "level": "warning", "tool": 2 },
+        { "check": "Wrong filament type", "level": "warning", "tool": 2 }
+      ]
+    },
+    {
+      "name": "a spool join backup is checked like its primary",
+      "header": {
+        "filament used [g]": "5",
+        "filament_type": "PLA",
+        "nozzle_diameter": "0.4"
+      },
+      "tools": [{ "material": "PLA" }, { "material": "PLA", "nozzle": 0.6 }],
+      "nozzleCheck": "abort",
+      "mapping": { "1": [1, 2] },
+      "checks": [
+        { "check": "Wrong nozzle diameter", "level": "abort", "tool": 2 }
+      ]
+    },
+    {
+      "name": "more used G-code tools than enabled tools",
+      "header": {
+        "filament used [g]": "5, 3, 2",
+        "filament_type": "PLA;PLA;PLA"
+      },
+      "tools": [{ "material": "PLA" }, { "material": "PLA" }],
+      "mapping": { "1": [1], "2": [2] },
+      "checks": [
+        { "check": "Not enough tools", "level": "warning" },
+        { "check": "Unmapped tool", "level": "abort", "gcode_tool": 3 }
+      ]
+    },
+    {
+      "name": "sliced for another printer, by hw_checks.model",
+      "header": {
+        "filament used [g]": "5",
+        "filament_type": "PLA",
+        "printer_model": "MINI"
+      },
+      "tools": [{ "material": "PLA" }, { "material": "PLA" }],
+      "printer": "3.1.0",
+      "modelCheck": "abort",
+      "mapping": { "1": [1] },
+      "checks": [{ "check": "Incompatible printer model", "level": "abort" }]
+    }
+  ]
+}

@@ -1,4 +1,5 @@
 import type { paths } from '../src/lib/api/schema';
+import { invalidMapping, parseMapping } from './checks.ts';
 import {
   type Change,
   filePath,
@@ -73,6 +74,7 @@ const FEATURES = [
   'preheat',
   'tune',
   'filament',
+  'print_checks',
 ] as const;
 
 /// `8.0.2`, `6.4.0-rc1` from a release file name.
@@ -533,8 +535,8 @@ export function handleApi(
       const mapping = req.body?.length
         ? (readJson(req)?.tool_mapping as Record<string, unknown> | undefined)
         : undefined;
-      if (mapping !== undefined && !validMapping(printer, mapping))
-        return json({ title: 'Unprocessable', text: 'Bad tool mapping' }, 422);
+      const invalid = mapping && invalidMapping(printer, mapping);
+      if (invalid) return json({ message: invalid }, 400);
       return printer.startPrint(
         name,
         mapping as Record<string, number[]> | undefined,
@@ -554,31 +556,20 @@ export function handleApi(
   };
 }
 
-/// Like the firmware's handle_tool_mapping: each extruder (1-based) to one
-/// or more enabled tools, no tool twice.
-function validMapping(
+/// The mock's stand-in for the change all checks: an abrasive filament
+/// on a nozzle that is not hardened warns, one too hot for the hotend
+/// refuses.
+function changeCheck(
   printer: MockPrinter,
-  mapping: Record<string, unknown>,
-): boolean {
-  const used = new Set<number>();
-  for (const [from, to] of Object.entries(mapping)) {
-    if (!/^[1-9]\d*$/.test(from) || !Array.isArray(to) || !to.length)
-      return false;
-    for (const tool of to) {
-      const target =
-        typeof tool === 'number' ? printer.targets[tool - 1] : undefined;
-      if (
-        typeof tool !== 'number' ||
-        !target ||
-        target.tool.absent ||
-        target.tool.material === '---' ||
-        used.has(tool)
-      )
-        return false;
-      used.add(tool);
-    }
-  }
-  return true;
+  c: Change,
+): { check: string; level: 'warning' | 'abort' } | undefined {
+  if (c.material === '---') return undefined;
+  const nozzle = FILAMENTS.find((f) => f.name === c.material)?.nozzle ?? 0;
+  if (nozzle > 300 && !printer.nozzle.highTemp)
+    return { check: 'Nozzle temperature too low', level: 'abort' };
+  if (['PA', 'PPA', 'PPS'].includes(c.material) && !printer.nozzle.hardened)
+    return { check: 'Nozzle not hardened', level: 'warning' };
+  return undefined;
 }
 
 /// Uploads up to this size keep their bytes, for downloads (cancel object
@@ -599,6 +590,24 @@ function handleV2(
   const idle = IDLE_STATES.includes(printer.state);
   const conflict = (message: string) =>
     json({ title: 'Conflict', text: message }, 409);
+
+  if (path === '/api/v1/print/checks') {
+    const job = printer.job;
+    if (printer.dialog?.kind !== 'preview' || !job)
+      return json({ message: 'No print in the preview' }, 409);
+    if (method !== 'GET') return empty(405);
+    const query = new URLSearchParams(req.query ?? '').get('tool_mapping');
+    let mapping = job.mapping;
+    if (query !== null) {
+      const parsed = parseMapping(query);
+      const invalid = parsed
+        ? invalidMapping(printer, parsed)
+        : 'Invalid tools mapping';
+      if (invalid || !parsed) return json({ message: invalid }, 400);
+      mapping = parsed;
+    }
+    return json(printer.checks(job.file, mapping));
+  }
 
   if (path === '/api/v1/dialog' && method === 'GET') {
     const d = printer.dialog;
@@ -622,6 +631,8 @@ function handleV2(
     const button = readJson(req)?.button;
     if (typeof button !== 'string') return empty(400);
     const result = printer.press(Number(press[1]), button);
+    if (typeof result === 'object')
+      return json({ message: result.refused }, 409);
     return empty({ ok: 204, stale: 404, invalid: 400 }[result]);
   }
 
@@ -731,7 +742,8 @@ function handleV2(
     if (method === 'GET') return conflict('Not on the print preview');
     if (method === 'POST') {
       if (!idle) return conflict('Printer is busy');
-      const items = readJson(req)?.items as
+      const request = readJson(req);
+      const items = request?.items as
         | Record<string, { action?: string; filament?: string; color?: string }>
         | undefined;
       if (!items) return empty(400);
@@ -747,6 +759,29 @@ function handleV2(
           changes.push({ tool, material: name, color: item.color });
         } else if (item.action !== 'keep') return empty(422);
       }
+      // The change all screen's filament checks (multi_filament_change):
+      // a fatal one refuses, warnings wait for "confirm": true.
+      const warnings = changes.flatMap((c) => {
+        const check = changeCheck(printer, c);
+        const tool = String(
+          printer.targets.findIndex((t) => t.tool === c.tool),
+        );
+        return check ? [{ tool, ...check }] : [];
+      });
+      const fatal = warnings.find((w) => w.level === 'abort');
+      if (fatal)
+        return json(
+          { reason: 'incompatible', tool: fatal.tool, check: fatal.check },
+          409,
+        );
+      if (warnings.length && request?.confirm !== true)
+        return json(
+          {
+            reason: 'needs_confirm',
+            warnings: warnings.map(({ tool, check }) => ({ tool, check })),
+          },
+          409,
+        );
       printer.changeFilaments(changes);
       return empty(202);
     }

@@ -1,3 +1,4 @@
+import { reason } from '../../lib/api/reason';
 import { api } from '../../lib/api/client';
 import { isHidden } from '../../lib/files/filter';
 import { listings } from './crawl';
@@ -39,6 +40,15 @@ export interface Crumb {
   name: string;
   /// The long name people see.
   label: string;
+}
+
+/// A print start: 204 means the printer took it, and still checks it in
+/// its print preview.
+export interface Started {
+  ok: boolean;
+  status: number;
+  /// The printer's reason for a refusal.
+  message?: string | undefined;
 }
 
 export class FilesStore {
@@ -150,7 +160,7 @@ export class FilesStore {
     name: string,
     dir = this.path,
     mapping?: Record<string, number[]>,
-  ): Promise<boolean> {
+  ): Promise<Started> {
     const { response } = await api.POST('/api/v1/files/{storage}/{path}', {
       params: {
         path: {
@@ -160,7 +170,11 @@ export class FilesStore {
       },
       ...(mapping && { body: { tool_mapping: mapping } }),
     });
-    return response.ok;
+    return {
+      ok: response.ok,
+      status: response.status,
+      message: response.ok ? undefined : await reason(response),
+    };
   }
 }
 

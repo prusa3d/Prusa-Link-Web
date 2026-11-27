@@ -1,3 +1,4 @@
+import { defaultMapping, report } from './checks.ts';
 import type { components } from '../src/lib/api/schema';
 import { parseFileName } from '../src/lib/files/name.ts';
 import { gcodeFilaments } from '../src/lib/printer/tool-mapping.ts';
@@ -44,7 +45,9 @@ export interface MockDialog {
   title: string;
   text: string;
   buttons: string[];
-  kind?: 'mismatch' | undefined;
+  /// mismatch: the filament question; preview: the print preview's tools
+  /// mapping screen (or its G-code warning on a single-tool printer).
+  kind?: 'mismatch' | 'preview' | undefined;
 }
 
 export interface Change {
@@ -227,6 +230,9 @@ export class MockPrinter {
   }
 
   reset() {
+    this.extraCheck = undefined;
+    this.nozzleCheck = 'warning';
+    this.modelCheck = 'warning';
     this.usb = true;
     this.offline = false;
     this.#transition = undefined;
@@ -280,10 +286,30 @@ export class MockPrinter {
   }
 
   /// A button pressed on the printer's dialog, from its screen or the API.
-  press(id: number, button: string): 'ok' | 'stale' | 'invalid' {
+  /// A refusal is the failing check's title.
+  press(
+    id: number,
+    button: string,
+  ): 'ok' | 'stale' | 'invalid' | { refused: string } {
     const d = this.dialog;
     if (d?.id !== id) return 'stale';
     if (!d.buttons.includes(button)) return 'invalid';
+    if (d.kind === 'preview' && this.job) {
+      if (button === 'Print') {
+        // The firmware's tool_mapping_print_blocker: no Print past an abort.
+        const fatal = this.checks(this.job.file, this.job.mapping)?.checks.find(
+          (c) => c.level === 'abort',
+        );
+        if (fatal) return { refused: fatal.check };
+      } else {
+        this.dialog = undefined;
+        this.job = undefined;
+        this.bed.target = 0;
+        this.cool();
+        this.state = 'IDLE';
+        return 'ok';
+      }
+    }
     this.dialog = undefined;
     this.question = undefined;
     if (d.kind === 'mismatch' && button === 'Abort') {
@@ -498,9 +524,40 @@ export class MockPrinter {
 
   /// Starts a print; with a tool mapping (extruder to tools, 1-based) the
   /// printer skips its own mapping and filament check, as the firmware does.
+  /// Whether a print's G-code tools map to the printer's tools or slots.
+  get mapsTools() {
+    return this.mmu || this.tools.length > 1;
+  }
+
+  /// The firmware's report of a print with a mapping (the printer's default
+  /// without one); undefined on firmware without PrusaLink 2.
+  checks(file: MockFile, mapping?: Record<string, number[]>) {
+    if (!this.apiV2) return undefined;
+    const r = report(
+      this,
+      file,
+      mapping ?? (this.mapsTools ? defaultMapping(this, file) : {}),
+      this.mapsTools,
+    );
+    const extra = this.extraCheck;
+    if (!extra) return r;
+    const abort = !r.printable || extra.level === 'abort';
+    let level = r.level === 'ok' ? 'warning' : r.level;
+    if (abort) level = 'abort';
+    return { printable: !abort, level, checks: [...r.checks, extra] };
+  }
+
+  /// A check of the printer's the page does not make (the dev panel's).
+  extraCheck: { check: string; level: 'warning' | 'abort' } | undefined;
+
   startPrint(path: string, mapping?: Record<string, number[]>): boolean {
     const f = this.file(path);
-    if (!f || this.state === 'PRINTING' || this.state === 'PAUSED') {
+    if (
+      !f ||
+      this.state === 'PRINTING' ||
+      this.state === 'PAUSED' ||
+      this.dialog?.kind === 'preview'
+    ) {
       return false;
     }
     this.job = {
@@ -546,6 +603,36 @@ export class MockPrinter {
         buttons: ['Print', 'Abort'],
         kind: 'mismatch',
       });
+    } else if (this.checks(f, mapping)?.level === 'abort' && !this.mapsTools) {
+      // A single-tool printer's preview aborts on an abort check.
+      this.job = undefined;
+      this.bed.target = 0;
+      this.cool();
+    } else if (this.checks(f, mapping)?.level !== 'ok' && this.apiV2) {
+      // Anything but fully compatible stops on the printer's preview, as
+      // PreviewSkipIfAble::all does.
+      let code = '13';
+      if (this.model.startsWith('XL')) code = '17';
+      if (this.model.startsWith('COREONE')) code = '27';
+      this.showDialog(
+        this.mapsTools
+          ? {
+              state: 'ATTENTION',
+              code: `${code}814`,
+              title: 'Tool mapping',
+              text: 'Changes of mapping available only in the Printer UI. Select Print to start the print with defaults.',
+              buttons: ['Abort', 'Print'],
+              kind: 'preview',
+            }
+          : {
+              state: 'ATTENTION',
+              code: `${code}803`,
+              title: 'Warning',
+              text: "The G-code isn't fully compatible",
+              buttons: ['Abort', 'Print'],
+              kind: 'preview',
+            },
+      );
     } else {
       this.state = 'PRINTING';
       this.question = undefined;
