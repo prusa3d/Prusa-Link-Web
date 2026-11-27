@@ -137,9 +137,9 @@ function toolInfo(printer: MockPrinter, i: number) {
     type: 'FFF_PRINT_HEAD',
     features: {
       nozzle_diameter: 0.4,
-      nozzle_hardened: false,
-      // The INDX ships with high-flow nozzles.
-      nozzle_high_flow: printer.model === 'COREONE_INDX',
+      nozzle_hardened: printer.nozzle.hardened,
+      nozzle_high_flow: printer.nozzle.highFlow,
+      nozzle_high_temp: printer.nozzle.highTemp,
     },
     ...materialOf(tool),
   };
@@ -286,7 +286,7 @@ export function handleApi(
                   `0.${String(i)}`,
                   {
                     type: 'FFF_FEEDER_SLOT',
-                    active: printer.job !== undefined && i === 0,
+                    active: i === printer.activeSlot,
                   },
                 ]),
               )),

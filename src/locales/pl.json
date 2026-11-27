@@ -291,5 +291,15 @@
   "tools.preheat": "Podgrzej {tool}",
   "controls.preheatFor": "Podgrzej dla {material}",
   "controls.modelWarn": "Pocięte dla {file}, nie dla tej {printer}. Drukarka zapyta przed drukiem.",
-  "controls.modelAbort": "Pocięte dla {file}, nie dla tej {printer}: jej kontrola drukarki odrzuca wydruk."
+  "controls.modelAbort": "Pocięte dla {file}, nie dla tej {printer}: jej kontrola drukarki odrzuca wydruk.",
+  "nozzle.highFlow": "Dysza wysokoprzepływowa",
+  "nozzle.highTemp": "Hotend wysokotemperaturowy",
+  "nozzle.hardened": "Dysza hartowana",
+  "tools.edit": "Edytuj",
+  "tools.slot": "Gniazdo {n}",
+  "tools.changeFilaments": "Wymień filamenty",
+  "tools.change": "Wymień",
+  "tools.keep": "Zostaw",
+  "tools.preheatTitle": "Podgrzej",
+  "tools.preheatBody": "Wybrane narzędzia nagrzeją się dla swojego filamentu, a z nimi stół."
 }

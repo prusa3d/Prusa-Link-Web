@@ -57,14 +57,16 @@ const BUILD_FEATURES: Record<string, readonly Feature[]> = {
   ix: SINGLE,
   mini: ['apiV2', 'controls', 'firmwareFlash'],
 };
-/// The messages only a feature uses, by key prefix.
-const MESSAGES: Record<Feature, string[]> = {
-  apiV2: ['dialog.', 'status.chamber'],
-  multiTool: ['tools.'],
-  toolMapping: ['mapping.'],
-  cancelObject: ['objects.'],
-  controls: ['controls.'],
-  firmwareFlash: ['flash.'],
+/// The messages only some features use, by key prefix: dropped from a build
+/// with none of them.
+const MESSAGES: Record<string, Feature[]> = {
+  'dialog.': ['apiV2'],
+  'status.chamber': ['apiV2'],
+  'tools.': ['multiTool', 'toolMapping'],
+  'mapping.': ['toolMapping'],
+  'objects.': ['cancelObject'],
+  'controls.': ['controls'],
+  'flash.': ['firmwareFlash'],
 };
 const buildFeatures = (variant: string | undefined): readonly string[] => {
   const forced = process.env.PRUSALINK_FEATURES;
@@ -93,8 +95,8 @@ export default defineConfig(({ command, mode }) => ({
     locales(
       process.env.PRUSALINK_LANG,
       Object.entries(MESSAGES)
-        .filter(([f]) => !buildFeatures(VARIANT).includes(f))
-        .flatMap(([, prefixes]) => prefixes),
+        .filter(([, by]) => !by.some((f) => buildFeatures(VARIANT).includes(f)))
+        .map(([prefix]) => prefix),
     ),
     command === 'serve' &&
       mode !== 'test' &&

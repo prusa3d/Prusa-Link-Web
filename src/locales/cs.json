@@ -288,5 +288,15 @@
   "tools.preheat": "Předehřát {tool}",
   "controls.preheatFor": "Předehřát pro {material}",
   "controls.modelWarn": "Slicováno pro {file}, ne pro tuto {printer}. Tiskárna se před tiskem zeptá.",
-  "controls.modelAbort": "Slicováno pro {file}, ne pro tuto {printer}: její kontrola tiskárny tisk odmítne."
+  "controls.modelAbort": "Slicováno pro {file}, ne pro tuto {printer}: její kontrola tiskárny tisk odmítne.",
+  "nozzle.highFlow": "Vysokoprůtoková tryska",
+  "nozzle.highTemp": "Vysokoteplotní hotend",
+  "nozzle.hardened": "Kalená tryska",
+  "tools.edit": "Upravit",
+  "tools.slot": "Slot {n}",
+  "tools.changeFilaments": "Vyměnit filamenty",
+  "tools.change": "Vyměnit",
+  "tools.keep": "Ponechat",
+  "tools.preheatTitle": "Předehřát",
+  "tools.preheatBody": "Vybrané nástroje se nahřejí pro svůj filament a s nimi podložka."
 }

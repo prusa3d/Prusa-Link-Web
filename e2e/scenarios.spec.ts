@@ -37,7 +37,7 @@ test.describe('filament before a print', () => {
     await openApp(page);
     await expect(page.getByTestId('tool-row')).toHaveCount(5);
     await expect(
-      page.getByRole('button', { name: /^Filament T\d$/ }),
+      page.getByRole('button', { name: /^Edit Tool \d$/ }),
     ).toHaveCount(5);
     await page
       .getByRole('button', { name: /^Print / })

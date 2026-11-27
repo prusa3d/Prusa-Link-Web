@@ -285,5 +285,15 @@
   "tools.preheat": "Precalentar {tool}",
   "controls.preheatFor": "Precalentar para {material}",
   "controls.modelWarn": "Laminado para {file}, no para esta {printer}. La impresora preguntará antes de imprimir.",
-  "controls.modelAbort": "Laminado para {file}, no para esta {printer}: su comprobación de impresora rechaza la impresión."
+  "controls.modelAbort": "Laminado para {file}, no para esta {printer}: su comprobación de impresora rechaza la impresión.",
+  "nozzle.highFlow": "Boquilla de alto flujo",
+  "nozzle.highTemp": "Hotend de alta temperatura",
+  "nozzle.hardened": "Boquilla endurecida",
+  "tools.edit": "Editar",
+  "tools.slot": "Ranura {n}",
+  "tools.changeFilaments": "Cambiar filamentos",
+  "tools.change": "Cambiar",
+  "tools.keep": "Mantener",
+  "tools.preheatTitle": "Precalentar",
+  "tools.preheatBody": "Las herramientas elegidas se calientan para su filamento, y la base con ellas."
 }

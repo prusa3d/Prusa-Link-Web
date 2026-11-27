@@ -285,5 +285,15 @@
   "tools.preheat": "Preheat {tool}",
   "controls.preheatFor": "Preheat for {material}",
   "controls.modelWarn": "Sliced for {file}, not this {printer}. The printer will ask before printing.",
-  "controls.modelAbort": "Sliced for {file}, not this {printer}: its printer check refuses the print."
+  "controls.modelAbort": "Sliced for {file}, not this {printer}: its printer check refuses the print.",
+  "nozzle.highFlow": "High flow nozzle",
+  "nozzle.highTemp": "High temperature hotend",
+  "nozzle.hardened": "Hardened nozzle",
+  "tools.edit": "Edit",
+  "tools.slot": "Slot {n}",
+  "tools.changeFilaments": "Change filaments",
+  "tools.change": "Change",
+  "tools.keep": "Keep",
+  "tools.preheatTitle": "Preheat",
+  "tools.preheatBody": "The chosen tools heat for their filament, and the bed with them."
 }

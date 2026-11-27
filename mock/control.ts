@@ -52,7 +52,13 @@ export interface MockPatch {
   model?: PrinterModel;
   state?: PrinterState;
   startPrint?: string;
-  tool?: { index: number; temp?: number; target?: number; material?: string };
+  tool?: {
+    index: number;
+    temp?: number;
+    target?: number;
+    material?: string;
+    color?: string;
+  };
   /// A toolchanger with no tool picked.
   parked?: boolean;
   /// The tool a toolchanger picks (0-based); null puts it back.
@@ -80,6 +86,8 @@ export interface MockPatch {
   firmwareFiles?: boolean;
   /// The printer's nozzle check (hw_checks in /info).
   nozzleCheck?: 'ignore' | 'warning' | 'abort';
+  /// Every tool's nozzle: hardened, high flow, high temperature.
+  nozzle?: { hardened?: boolean; highFlow?: boolean; highTemp?: boolean };
 }
 
 export function applyPatch(printer: MockPrinter, patch: MockPatch) {
@@ -122,6 +130,7 @@ export function applyPatch(printer: MockPrinter, patch: MockPatch) {
     });
   }
   if (patch.nozzleCheck) printer.nozzleCheck = patch.nozzleCheck;
+  if (patch.nozzle) Object.assign(printer.nozzle, patch.nozzle);
   if (patch.firmwareFiles)
     printer.firmwareUploads = seedFirmware(printer.model);
   if (patch.press && printer.dialog)
@@ -162,6 +171,7 @@ export function snapshot(printer: MockPrinter) {
     currentObject: printer.currentObject,
     zOffset: printer.zOffset,
     nozzleCheck: printer.nozzleCheck,
+    nozzle: printer.nozzle,
     mapping: printer.job?.mapping,
     speed: printer.speed,
     flow: printer.flow,

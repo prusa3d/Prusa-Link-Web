@@ -285,5 +285,15 @@
   "tools.preheat": "{tool}を予熱",
   "controls.preheatFor": "{material}用に予熱",
   "controls.modelWarn": "{file}用にスライスされており、この{printer}用ではありません。印刷前に確認されます。",
-  "controls.modelAbort": "{file}用にスライスされており、この{printer}用ではありません。プリンターチェックにより印刷が拒否されます。"
+  "controls.modelAbort": "{file}用にスライスされており、この{printer}用ではありません。プリンターチェックにより印刷が拒否されます。",
+  "nozzle.highFlow": "ハイフローノズル",
+  "nozzle.highTemp": "高温ホットエンド",
+  "nozzle.hardened": "硬化ノズル",
+  "tools.edit": "編集",
+  "tools.slot": "スロット{n}",
+  "tools.changeFilaments": "フィラメントを交換",
+  "tools.change": "交換",
+  "tools.keep": "そのまま",
+  "tools.preheatTitle": "予熱",
+  "tools.preheatBody": "選んだツールがフィラメントに合わせて加熱し、ベッドも加熱します。"
 }

@@ -55,7 +55,19 @@
     tools?: ToolRow[] | undefined;
     ontoolfilament?: ((tool: number) => void) | undefined;
     ontoolunload?: ((tool: number) => void) | undefined;
-    ontoolpreheat?: ((tool: ToolRow) => void) | undefined;
+    /// The tools are an MMU's slots.
+    toolSlots?: boolean;
+    /// One heated nozzle whatever the tools (no per_tool_heating): its
+    /// reading stays a row.
+    heatedHead?: boolean;
+    /// The single tool's nozzle, for its badges.
+    badges?:
+      | {
+          hardened?: boolean | undefined;
+          highFlow?: boolean | undefined;
+          highTemp?: boolean | undefined;
+        }
+      | undefined;
     /// The chamber's reading, where the printer reports one.
     chamber?: { temp?: number; target_temp?: number | null } | undefined;
     /// Under the readings: preheat, babysteps.
@@ -81,11 +93,15 @@
     tools,
     ontoolfilament,
     ontoolunload,
-    ontoolpreheat,
+    toolSlots = false,
+    heatedHead = true,
+    badges,
     chamber,
     controls,
   }: Props = $props();
-  const multi = $derived(__MULTI_TOOL__ && (tools?.length ?? 0) > 1);
+  const multi = $derived(
+    (__MULTI_TOOL__ || __TOOL_MAPPING__) && (tools?.length ?? 0) > 1,
+  );
 
   /// The action waiting for the person's yes.
   const FINISHED_SHOWN_MS = 5000;
@@ -338,13 +354,13 @@
           </p>
         {/if}
       {/if}
-      {#if __MULTI_TOOL__ && multi && tools}
+      {#if (__MULTI_TOOL__ || __TOOL_MAPPING__) && multi && tools}
         <ToolCards
           {tools}
           printing={status.state === 'PRINTING'}
           onfilament={ontoolfilament}
           onunload={ontoolunload}
-          onpreheat={ontoolpreheat}
+          slots={toolSlots}
         />
       {:else}
         <ToolCard
@@ -354,6 +370,9 @@
           {nozzle}
           onchange={onfilament}
           {onunload}
+          hardened={badges?.hardened}
+          highFlow={badges?.highFlow}
+          highTemp={badges?.highTemp}
         />
       {/if}
       {#if preheating}
@@ -376,7 +395,7 @@
         </div>
       {:else}
         <div class="flex flex-col divide-y">
-          {#if !multi}
+          {#if !multi || heatedHead}
             <HeaterRow
               kind="nozzle"
               label={t('status.tool')}

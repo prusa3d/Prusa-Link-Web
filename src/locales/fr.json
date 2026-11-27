@@ -285,5 +285,15 @@
   "tools.preheat": "Préchauffer {tool}",
   "controls.preheatFor": "Préchauffer pour {material}",
   "controls.modelWarn": "Tranché pour {file}, pas pour cette {printer}. L’imprimante demandera avant d’imprimer.",
-  "controls.modelAbort": "Tranché pour {file}, pas pour cette {printer} : son contrôle d’imprimante refuse l’impression."
+  "controls.modelAbort": "Tranché pour {file}, pas pour cette {printer} : son contrôle d’imprimante refuse l’impression.",
+  "nozzle.highFlow": "Buse haut débit",
+  "nozzle.highTemp": "Hotend haute température",
+  "nozzle.hardened": "Buse trempée",
+  "tools.edit": "Modifier",
+  "tools.slot": "Emplacement {n}",
+  "tools.changeFilaments": "Changer les filaments",
+  "tools.change": "Changer",
+  "tools.keep": "Garder",
+  "tools.preheatTitle": "Préchauffer",
+  "tools.preheatBody": "Les outils choisis chauffent pour leur filament, et le plateau avec eux."
 }

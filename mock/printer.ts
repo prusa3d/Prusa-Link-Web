@@ -1,5 +1,6 @@
 import type { components } from '../src/lib/api/schema';
 import { parseFileName } from '../src/lib/files/name.ts';
+import { gcodeFilaments } from '../src/lib/printer/tool-mapping.ts';
 import {
   type Header,
   type PlateObject,
@@ -245,6 +246,12 @@ export class MockPrinter {
     this.zOffset = 0;
     if (!this.takesMmu) this.mmu = false;
     this.slots = this.takesMmu ? seedSlots() : [];
+    this.activeSlot = undefined;
+    this.nozzle = {
+      hardened: false,
+      highFlow: this.model === 'COREONE_INDX',
+      highTemp: false,
+    };
     this.axis = { x: 0, y: -4, z: 5 };
     this.speed = 100;
     this.flow = 100;
@@ -319,6 +326,10 @@ export class MockPrinter {
 
   /// The MMU3's five slots, which tool mapping maps to while it is on.
   slots: MockTool[] = [];
+  /// The slot feeding the nozzle; undefined while none is loaded.
+  activeSlot: number | undefined;
+  /// Every tool's nozzle (/api/v1/info features); the INDX ships high flow.
+  nozzle = { hardened: false, highFlow: false, highTemp: false };
 
   /// What a print's extruders map to: the MMU's slots while it is on, else
   /// the tools; Connect's ids are `"0.N"` and `"N"`.
@@ -400,6 +411,32 @@ export class MockPrinter {
   }
 
   #skipping: { id: number; ticks: number } | undefined;
+
+  /// A print of several filaments changes tools as it goes: every five
+  /// seconds the next extruder's tool (or MMU slot), by the start's mapping
+  /// or 1:1; the INDX heats the one it picks.
+  #changeTools(job: MockJob) {
+    const used = gcodeFilaments(this.header(job.file)).map(
+      (f) => (job.mapping?.[String(f.index)]?.[0] ?? f.index) - 1,
+    );
+    if (used.length < 2) return;
+    const next =
+      used[Math.floor(job.time_printing / (5 * this.timeScale)) % used.length];
+    if (next === undefined) return;
+    if (this.mmu) {
+      this.activeSlot = next;
+      return;
+    }
+    const tool = this.tools[next];
+    if (!tool || tool.absent) return;
+    if (this.activeTool !== next && !this.perToolHeating) {
+      const old = this.tools[this.activeTool];
+      if (old) old.target = 0;
+    }
+    this.activeTool = next;
+    this.parked = false;
+    tool.target = 215;
+  }
 
   setCanceled(id: number, canceled: boolean): boolean {
     const o = this.job?.objects[id];
@@ -694,6 +731,7 @@ export class MockPrinter {
     }
     if (this.#skipping && --this.#skipping.ticks <= 0)
       this.#skipping = undefined;
+    if (this.state === 'PRINTING' && this.job) this.#changeTools(this.job);
     if (this.state === 'PRINTING' && this.job) {
       const total = this.job.time_printing + this.job.time_remaining;
       const dt = Math.min(this.timeScale, this.job.time_remaining);

@@ -38,8 +38,8 @@ test.describe('tools', () => {
     await expect(rows).toHaveCount(5);
     await expect(rows.nth(0)).toHaveAttribute('data-active', 'true');
     await expect(rows.nth(1)).toContainText('PETG');
-    await expect(rows.nth(1)).toContainText('215');
-    await expect(page.getByText('Per tool, on the printer')).toHaveCount(0);
+    // Temperatures are on the picture, not the cards.
+    await expect(rows.nth(1)).not.toContainText('215');
   });
 
   test('an XL with an empty dock keeps its tools’ numbers', async ({
@@ -233,17 +233,17 @@ test.describe('controls', () => {
     await expect.poll(async () => (await mock(request)).bed.target).toBe(85);
   });
 
-  test('an INDX heats the picked tool only, from its card', async ({
-    page,
-    request,
-  }) => {
+  test('an INDX preheats the picked tool only', async ({ page, request }) => {
     await printer(request, { model: 'COREONE_INDX', reset: true });
     await printer(request, { pick: 2 });
     await openApp(page);
-    const cards = page.getByTestId('tool-row');
-    await expect(cards.nth(2).getByTestId('tool-temp')).toBeVisible();
-    await expect(cards.nth(0).getByTestId('tool-temp')).toHaveCount(0);
-    await cards.nth(2).getByRole('button', { name: 'Preheat T3' }).click();
+    await page
+      .getByTestId('preheat')
+      .getByRole('button', { name: 'Preheat' })
+      .click();
+    const dialog = page.getByRole('dialog', { name: 'Preheat' });
+    await expect(dialog.getByRole('checkbox')).toHaveCount(1);
+    await dialog.getByRole('button', { name: 'Preheat' }).click();
     await expect
       .poll(async () => (await mock(request)).tools[2]?.target)
       .toBeGreaterThan(0);
@@ -274,7 +274,8 @@ test.describe('controls', () => {
   }) => {
     await printer(request, { model: 'XL', reset: true });
     await openApp(page);
-    await page.getByRole('button', { name: 'Filament T3' }).click();
+    await page.getByRole('button', { name: 'Edit Tool 3' }).click();
+    await page.getByRole('menuitem', { name: 'Change filament' }).click();
     const dialog = page.getByRole('dialog');
     await dialog.getByRole('button', { name: 'PETG' }).click();
     await swapAtPrinter(request);
