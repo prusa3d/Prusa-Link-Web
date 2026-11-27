@@ -28,4 +28,4 @@ class DiagnosticsStore {
   }
 }
 
-export const diagnostics = new DiagnosticsStore();
+export const diagnostics = /* @__PURE__ */ new DiagnosticsStore();

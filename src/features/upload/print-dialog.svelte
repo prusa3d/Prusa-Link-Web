@@ -408,10 +408,11 @@
 
   /// The printer's dialog in its print preview: a question (calibrations,
   /// filament…), its G-code warning or its tools mapping screen.
-  const asked = $derived(starting ? dialog.current : undefined);
+  const asked = $derived(__API_V2__ && starting ? dialog.current : undefined);
   const offersPrint = $derived(!!asked?.buttons.includes('Print'));
 
   async function press(button: 'Print' | 'Abort') {
+    if (!__API_V2__) return false;
     let current = asked;
     // Just answered, the next dialog is not read yet: read it now.
     if (!current?.buttons.includes(button)) {
@@ -486,6 +487,7 @@
   });
 
   async function readReport(proposed?: Mapping) {
+    if (!__API_V2__) return undefined;
     const { data, response } = await api.GET('/api/v1/print/checks', {
       params: { query: proposed ? { tool_mapping: wire(proposed) } : {} },
     });
@@ -753,8 +755,8 @@
           <DialogActions
             dialog={asked}
             fault={false}
-            pressing={dialog.pressing}
-            onbutton={(b: string) => void dialog.press(b)}
+            pressing={__API_V2__ ? dialog.pressing : undefined}
+            onbutton={(b: string) => void (__API_V2__ && dialog.press(b))}
           />
         </div>
       </Alert>

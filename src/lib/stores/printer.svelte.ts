@@ -59,7 +59,7 @@ type FetchStatus = (expanded: boolean) => Promise<{
 const fetchStatus: FetchStatus = async (expanded) => {
   const { data, response } = await api.GET(
     '/api/v1/status',
-    expanded ? { params: { query: { expanded: true } } } : {},
+    __API_V2__ && expanded ? { params: { query: { expanded: true } } } : {},
   );
   if (!response.ok) throw new Error(`status ${String(response.status)}`);
   return data ?? {};
