@@ -27,6 +27,7 @@ export interface PrinterTool {
   nozzle?: number | undefined;
   hardened?: boolean | undefined;
   highFlow?: boolean | undefined;
+  highTemp?: boolean | undefined;
   /// Switched off on the printer (null in /info).
   disabled?: boolean | undefined;
 }
@@ -45,7 +46,7 @@ const UNUSED_GRAMS = 0.03;
 /// printcompat's nozzleTolerance, mm.
 const NOZZLE_TOLERANCE = 0.001;
 /// Below this ΔE00 two colours pass for the same.
-const SAME_COLOUR = 3;
+const SAME_COLOUR = 10;
 
 /// The extruders a file uses, as Connect's gcodeSlots builds them: a
 /// per-extruder value with fewer items than extruders is not trusted, and a
@@ -182,43 +183,6 @@ export function suggest(
     const t = tools[j];
     if (f && t) out[f.index] = [t.index];
   });
-  return out;
-}
-
-export interface ChangeItem {
-  action: 'change';
-  /// A preset or user filament name, as the firmware calls it.
-  filament: string;
-  color?: string;
-}
-
-/// What the printer's change all should load so the mapped slots hold the
-/// file's filaments, by Connect tool id: every slot whose material or
-/// colour differs, or just slot `only`, whatever it holds.
-export function changeItems(
-  filaments: readonly GcodeFilament[],
-  slots: readonly PrinterTool[],
-  mapping: Mapping,
-  only?: number,
-): Record<string, ChangeItem> {
-  const out: Record<string, ChangeItem> = {};
-  for (const f of filaments) {
-    const first = mapping[f.index]?.[0];
-    if (first === undefined || (only !== undefined && first !== only)) continue;
-    const slot = slots.find((s) => s.index === first);
-    if (!slot?.id) continue;
-    const d = colourDistance(f.color, slot.color);
-    const same =
-      !!slot.material &&
-      firmwareFilament(slot.material) === firmwareFilament(f.material) &&
-      !(Number.isFinite(d) && d >= SAME_COLOUR);
-    if (only === undefined && same) continue;
-    out[slot.id] = {
-      action: 'change',
-      filament: firmwareFilament(f.material),
-      ...(f.color && { color: f.color }),
-    };
-  }
   return out;
 }
 

@@ -42,7 +42,11 @@
   </div>
   <div class="min-w-0 flex-1">
     <p class="flex items-center gap-1 text-sm font-medium">
-      {label}<NozzleBadges {hardened} {highFlow} {highTemp} />
+      {label}{#if __TOOL_MAPPING__}<NozzleBadges
+          {hardened}
+          {highFlow}
+          {highTemp}
+        />{/if}
     </p>
     <p class="truncate text-sm text-muted-foreground">
       {note ?? (material ? '' : t('filament.none'))}

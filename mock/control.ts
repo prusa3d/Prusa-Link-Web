@@ -86,6 +86,7 @@ export interface MockPatch {
   firmwareFiles?: boolean;
   /// The printer's nozzle check (hw_checks in /info).
   nozzleCheck?: 'ignore' | 'warning' | 'abort';
+  modelCheck?: 'ignore' | 'warning' | 'abort';
   /// Every tool's nozzle: hardened, high flow, high temperature.
   nozzle?: { hardened?: boolean; highFlow?: boolean; highTemp?: boolean };
 }
@@ -130,6 +131,7 @@ export function applyPatch(printer: MockPrinter, patch: MockPatch) {
     });
   }
   if (patch.nozzleCheck) printer.nozzleCheck = patch.nozzleCheck;
+  if (patch.modelCheck) printer.modelCheck = patch.modelCheck;
   if (patch.nozzle) Object.assign(printer.nozzle, patch.nozzle);
   if (patch.firmwareFiles)
     printer.firmwareUploads = seedFirmware(printer.model);
