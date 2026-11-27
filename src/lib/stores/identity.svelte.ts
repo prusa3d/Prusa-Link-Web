@@ -2,6 +2,7 @@ import { api } from '../api/client';
 import { modelOf, printerTitle, type Model } from '../printer/models';
 import { rememberVariant } from '../printer/picture';
 import type { components } from '../api/schema';
+import { printerTools, type ToolEntry } from '../printer/printer-tools';
 import type { PrinterTool, Severity } from '../printer/tool-mapping';
 
 /// A tool as /api/v1/info describes it (PrusaLink 2); undefined for a
@@ -36,27 +37,32 @@ type FetchIdentity = () => Promise<{
 /// What tool mapping maps to: the MMU's slots (`"0.N"`) where the printer
 /// reports them, else its tools; numbered from 1 as Connect's tool_mapping.
 export function mappingTargets(info: Info | undefined): PrinterTool[] {
-  const entries = Object.entries(info?.tools ?? {});
-  const slots = entries.filter(([k]) => /^\d+\.\d+$/.test(k));
-  return (slots.length ? slots : entries.filter(([k]) => /^\d+$/.test(k))).map(
-    ([key, tool]) => {
-      const material = tool?.material_package_instance?.package?.material;
-      // An MMU's slots all feed the head's nozzle.
-      const features = (slots.length ? info?.tools?.['0'] : tool)?.features;
-      const loaded = material?.abbreviation;
-      return {
-        id: key,
-        index: Number(key.split('.').pop()) + 1,
-        material: loaded && loaded !== '---' ? loaded : undefined,
-        color: material?.primary_color?.color_rgba,
-        nozzle: features?.nozzle_diameter,
-        hardened: features?.nozzle_hardened,
-        highFlow: features?.nozzle_high_flow,
-        highTemp: features?.nozzle_high_temp,
-        disabled: tool === null,
-      };
-    },
-  );
+  const tree = printerTools(info?.tools);
+  const mmu = tree.mmu();
+  const target = (
+    id: string,
+    tool: ToolEntry | null,
+    nozzleOf: ToolEntry | null,
+  ) => {
+    const material = tool?.material_package_instance?.package?.material;
+    const features = nozzleOf?.features;
+    const loaded = material?.abbreviation;
+    return {
+      id,
+      index: Number(id.split('.').pop()) + 1,
+      material: loaded && loaded !== '---' ? loaded : undefined,
+      color: material?.primary_color?.color_rgba,
+      nozzle: features?.nozzle_diameter,
+      hardened: features?.nozzle_hardened,
+      highFlow: features?.nozzle_high_flow,
+      highTemp: features?.nozzle_high_temp,
+      disabled: tool === null,
+    };
+  };
+  if (mmu) return mmu.slots.map((s) => target(s.id, s.slot, mmu.head));
+  return tree
+    .tools()
+    .map(({ toolId, tool }) => target(String(toolId), tool, tool));
 }
 
 /// Tools by index from the `"0"`, `"1"`… keys; MMU slots (`"0.N"`) are left

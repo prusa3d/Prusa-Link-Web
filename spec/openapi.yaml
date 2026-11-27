@@ -1837,6 +1837,20 @@ components:
         type:
           type: string
           example: FFF_PRINT_HEAD
+        feeder:
+          description: A head's MMU while it is on; null when off (printers that take one)
+          type: object
+          nullable: true
+          properties:
+            type:
+              type: string
+              example: MMU
+            model:
+              type: string
+            base_model:
+              type: string
+            slot_count:
+              type: integer
         features:
           type: object
           properties:
@@ -1850,6 +1864,7 @@ components:
               type: boolean
         material_package_instance:
           type: object
+          nullable: true
           properties:
             class:
               type: string

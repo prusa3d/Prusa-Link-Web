@@ -115,8 +115,9 @@ function firmwareMeta(printer: MockPrinter, name: string) {
 }
 
 function materialOf(tool: MockTool) {
+  if (tool.material === '---') return { material_package_instance: null };
   return {
-    ...(tool.material !== '---' && {
+    ...{
       material_package_instance: {
         class: 'FFF',
         package: {
@@ -128,22 +129,32 @@ function materialOf(tool: MockTool) {
           },
         },
       },
-    }),
+    },
   };
 }
 
 function toolInfo(printer: MockPrinter, i: number) {
   const tool = printer.tools[i];
   if (!tool || tool.absent) return null;
+  // A head feeding an MMU has no filament of its own: its slots have.
+  const feeding = printer.mmu && i === 0;
   return {
     type: 'FFF_PRINT_HEAD',
     features: {
       nozzle_diameter: 0.4,
       nozzle_hardened: printer.nozzle.hardened,
       nozzle_high_flow: printer.nozzle.highFlow,
-      nozzle_high_temp: printer.nozzle.highTemp,
+      // HAS_HT_HOTEND: the CORE One only.
+      ...(printer.model === 'COREONE' && {
+        nozzle_high_temp: printer.nozzle.highTemp,
+      }),
     },
-    ...materialOf(tool),
+    ...(printer.takesMmu && {
+      feeder: printer.mmu
+        ? { type: 'MMU', model: 'MMU3', base_model: 'MMU3', slot_count: 5 }
+        : null,
+    }),
+    ...(!feeding && materialOf(tool)),
   };
 }
 
