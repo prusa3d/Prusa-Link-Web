@@ -43,13 +43,16 @@
 
 {#snippet choice(material: string)}
   {#if material === filament.loaded}
-    <span
-      class="flex h-11 items-center justify-center gap-1 rounded-sm border-2 border-primary font-mono text-sm font-medium md:h-9"
+    <!-- The same material again is a new spool. -->
+    <Button
+      variant="ghost"
+      class="gap-1 border-2 border-primary! font-mono text-foreground max-sm:h-11"
       aria-current="true"
+      onclick={() => void run('change', material)}
     >
       <Icon node={Check} class="size-4 text-primary" />{filamentLabel(material)}
       <span class="sr-only">{t('filament.current')}</span>
-    </span>
+    </Button>
   {:else}
     <Button
       variant="secondary"
