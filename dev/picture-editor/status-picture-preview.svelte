@@ -200,6 +200,7 @@
         {label}
         style={status.style}
         reading={readings[label.heater]}
+        fit={viewBox}
       />
     {/each}
   </svg>

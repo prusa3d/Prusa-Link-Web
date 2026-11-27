@@ -9,6 +9,10 @@
     statusStyle,
   } from '../../src/lib/printer/bed-heat.ts';
   import { STATE_TONE } from '../../src/lib/printer/state.ts';
+  import {
+    leavesPicture,
+    WIDEST_VALUE,
+  } from '../../src/lib/printer/status-picture.ts';
   import { partCopies } from './part-copies.ts';
   import { previewFanTurn, stateColor } from './preview.ts';
 
@@ -1501,9 +1505,18 @@
       ]),
     ) as Record<Heater, Reading>,
   );
+  const overflowing = $derived(
+    doc.labels
+      .filter((l) => leavesPicture(l, doc.style, viewBox))
+      .map((l) => heaterName(l.heater)),
+  );
+  let widestPreview = $state(false);
   const previewReadings = $derived(
     Object.fromEntries(
-      HEATERS.map((h) => [h, sampleReading(h, clock)]),
+      HEATERS.map((h) => [
+        h,
+        widestPreview ? { current: 888, target: 908 } : sampleReading(h, clock),
+      ]),
     ) as Record<Heater, Reading>,
   );
 
@@ -1582,6 +1595,12 @@
           >
         {/each}
       </span>
+      {#if tab === 'preview'}
+        <label title="Every reading at three digits, heating"
+          ><input type="checkbox" bind:checked={widestPreview} />
+          {WIDEST_VALUE}</label
+        >
+      {/if}
       {#if tab === 'edit'}
         <label title="Hide the parts whose condition does not hold"
           ><input type="checkbox" bind:checked={equipmentView} /> Only what this equipment
@@ -1805,6 +1824,7 @@
                 {label}
                 style={doc.style}
                 reading={editorReadings[label.heater]}
+                bounds={viewBox}
               />
               {#if selectedLabel === i}
                 {#each ['anchor', 'elbow', 'end'] as const as h (h)}
@@ -2507,6 +2527,12 @@
             <button class:on={mode === 'row'} onclick={startRow}
               >Add tool row</button
             >
+          </div>
+        {/if}
+        {#if overflowing.length}
+          <div class="small warning" data-testid="labels-overflow">
+            {WIDEST_VALUE} leaves the picture: {overflowing.join(', ')}. Move
+            the line's end or elbow inward.
           </div>
         {/if}
         {#if labelSel.length > 1}
