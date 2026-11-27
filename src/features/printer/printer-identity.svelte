@@ -85,8 +85,11 @@
   const carriage = $derived(
     __PICTURE_PARTS__ ? picture?.status?.carriage : undefined,
   );
+  // A single-tool XL has no dock to leave its tool in: it always carries T1,
+  // whatever the status says is picked.
+  const carriageTool = $derived(has.tools > 1 ? (activeTool ?? 0) : 1);
   const carriageAt = $derived(
-    carriage?.positions[String(activeTool ?? 0)] ?? [0, 0],
+    carriage?.positions[String(carriageTool)] ?? [0, 0],
   );
   const uid = $props.id();
   const drawn = $derived(
@@ -152,7 +155,7 @@
                 style:transform="translate({carriageAt[0]}px, {carriageAt[1]}px)"
                 class="transition-transform duration-700 ease-in-out motion-reduce:transition-none"
                 data-testid="printer-carriage"
-                data-tool={activeTool ?? 0}
+                data-tool={carriageTool}
               >
                 {#each carriage.shapes.filter( (s) => met(s.when, has) ) as shape, k (k)}
                   <path {...shape} />

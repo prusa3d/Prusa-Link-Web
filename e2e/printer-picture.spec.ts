@@ -341,7 +341,7 @@ test("an XL's carriage slides in front of the picked tool's dock", async ({
   const x = () =>
     carriage.evaluate((g) => new DOMMatrix(getComputedStyle(g).transform).e);
   await expect(carriage).toHaveAttribute('data-tool', '0');
-  expect(await x()).toBe(0);
+  expect(await x()).toBe(25);
   expect(
     await carriage.evaluate((g) => getComputedStyle(g).transitionDuration),
   ).toBe('0.7s');
@@ -356,7 +356,22 @@ test("an XL's carriage slides in front of the picked tool's dock", async ({
   ).toBe('none');
   await printer(request, { pick: null });
   await expect(carriage).toHaveAttribute('data-tool', '0', { timeout: 15_000 });
-  expect(await x()).toBe(0);
+  expect(await x()).toBe(25);
+});
+
+test("a single-tool XL's carriage always carries T1", async ({
+  page,
+  request,
+}) => {
+  await printer(request, { model: 'XL', reset: true, docks: [1], pick: null });
+  await openApp(page);
+  const carriage = page.getByTestId('printer-carriage');
+  await expect(carriage).toHaveAttribute('data-tool', '1');
+  expect(
+    await carriage.evaluate(
+      (g) => new DOMMatrix(getComputedStyle(g).transform).e,
+    ),
+  ).toBe(0);
 });
 
 test('a picture without a bed area has none', async ({ page }) => {
