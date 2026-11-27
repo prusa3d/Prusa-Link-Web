@@ -37,6 +37,11 @@ export const FEATURES = {
   redScreen: 'red screen',
   /// The card of the print that ended last, to print it again.
   lastPrint: 'last print card',
+  /// The printer picture's fans, status light, chamber and toolchanger
+  /// carriage. A picture without them (the MINI's) needs none of it.
+  pictureParts: 'picture fans, status light, chamber, carriage',
+  /// Signing in by confirming a code on the printer, besides the password.
+  pairing: 'sign-in by pairing at the printer',
 } as const;
 
 export type Feature = keyof typeof FEATURES;
@@ -58,7 +63,9 @@ const SINGLE = without(
 /// By build variant; `mini-<lang>` builds use `mini`.
 export const BUILDS: Record<string, readonly Feature[]> = {
   generic: ALL,
-  xl: ALL,
+  // Its picture is the largest: the crash dump notice and log toggle of a
+  // running printer make room (the red screen keeps its dump).
+  xl: without('diagnostics'),
   coreone_indx: ALL,
   coreonel_indx: ALL,
   mk35: MMU,
@@ -67,9 +74,9 @@ export const BUILDS: Record<string, readonly Feature[]> = {
   coreonel: MMU,
   ix: SINGLE,
   // 80 KB per language: firmware updates are the printer menu's (and
-  // Connect's), cancel object waits for room. The red screen (with its
-  // crash dump) stays; the dump notice and log toggle of a running
-  // printer do not.
+  // Connect's), cancel object waits for room. The controls stay; the red
+  // screen, the dump notice and log toggle and pairing (the password
+  // signs in) do not. Its picture has no fans, light or chamber.
   mini: without(
     'firmwareUpdate',
     'diagnostics',
@@ -81,6 +88,9 @@ export const BUILDS: Record<string, readonly Feature[]> = {
     'changeFilaments',
     'firmwareFlash',
     'cancelObject',
+    'pictureParts',
+    'redScreen',
+    'pairing',
   ),
 };
 

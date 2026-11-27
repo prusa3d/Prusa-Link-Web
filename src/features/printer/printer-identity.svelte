@@ -39,7 +39,7 @@
     /// None while the printer is unreachable.
     state?: PrinterState | undefined;
     /// Seconds per turn of a fan, or none while it stands.
-    fanTurn?: (fan: Fan) => number | undefined;
+    fanTurn?: ((fan: Fan) => number | undefined) | undefined;
     /// What PrusaLink 2 says the printer has besides the MMU.
     equipment?: Partial<Omit<Equipment, 'mmu'>>;
     /// The picked tool, from 1, on a toolchanger.
@@ -69,14 +69,22 @@
   const bedHeatNow = $derived(
     readings.bed && bedHeat(readings.bed.current, bedTop(readings.bed.target)),
   );
-  const chamber = $derived(readings.chamber && picture?.status?.chamber);
+  const chamber = $derived(
+    __PICTURE_PARTS__ && readings.chamber
+      ? picture?.status?.chamber
+      : undefined,
+  );
   const chamberHeat = $derived(
     readings.chamber &&
       bedHeat(readings.chamber.current, chamberTop(readings.chamber.target)),
   );
-  const lit = $derived(picture?.status?.status);
-  const fans = $derived(picture?.status?.fans ?? []);
-  const carriage = $derived(picture?.status?.carriage);
+  const lit = $derived(__PICTURE_PARTS__ ? picture?.status?.status : undefined);
+  const fans = $derived(
+    (__PICTURE_PARTS__ ? picture?.status?.fans : undefined) ?? [],
+  );
+  const carriage = $derived(
+    __PICTURE_PARTS__ ? picture?.status?.carriage : undefined,
+  );
   const carriageAt = $derived(
     carriage?.positions[String(activeTool ?? 0)] ?? [0, 0],
   );
@@ -124,43 +132,45 @@
           class="absolute inset-0 size-full text-(--color-orange-light-9)"
           data-testid="printer-labels"
         >
-          {#each fans as fan, i (i)}
-            {@const turn = fanTurn(fan)}
-            <g
-              class:turning={turn !== undefined}
-              style:transform-origin="{fan.center[0]}px {fan.center[1]}px"
-              style:animation-duration={turn && `${String(turn)}s`}
-              data-testid="printer-fan"
-              data-turn={turn?.toFixed(2)}
-            >
-              {#each fan.shapes.filter((s) => met(s.when, has)) as shape, k (k)}
-                <path {...shape} />
-              {/each}
-            </g>
-          {/each}
-          {#if carriage}
-            <g
-              style:transform="translate({carriageAt[0]}px, {carriageAt[1]}px)"
-              class="transition-transform duration-700 ease-in-out motion-reduce:transition-none"
-              data-testid="printer-carriage"
-              data-tool={activeTool ?? 0}
-            >
-              {#each carriage.shapes.filter( (s) => met(s.when, has) ) as shape, k (k)}
-                <path {...shape} />
-              {/each}
-            </g>
+          {#if __PICTURE_PARTS__}
+            {#each fans as fan, i (i)}
+              {@const turn = fanTurn(fan)}
+              <g
+                class:turning={turn !== undefined}
+                style:transform-origin="{fan.center[0]}px {fan.center[1]}px"
+                style:animation-duration={turn && `${String(turn)}s`}
+                data-testid="printer-fan"
+                data-turn={turn?.toFixed(2)}
+              >
+                {#each fan.shapes.filter( (s) => met(s.when, has) ) as shape, k (k)}
+                  <path {...shape} />
+                {/each}
+              </g>
+            {/each}
+            {#if carriage}
+              <g
+                style:transform="translate({carriageAt[0]}px, {carriageAt[1]}px)"
+                class="transition-transform duration-700 ease-in-out motion-reduce:transition-none"
+                data-testid="printer-carriage"
+                data-tool={activeTool ?? 0}
+              >
+                {#each carriage.shapes.filter( (s) => met(s.when, has) ) as shape, k (k)}
+                  <path {...shape} />
+                {/each}
+              </g>
+            {/if}
           {/if}
           {#if bed && bedHeatNow !== undefined}
             {@render area(bed, bedStyle(bedHeatNow), 'printer-bed', bedHeatNow)}
           {/if}
-          {#if lit}
+          {#if __PICTURE_PARTS__ && lit}
             {@render area(
               lit,
               statusStyle(state && `var(--state-${STATE_TONE[state]}-edge)`),
               'printer-status',
             )}
           {/if}
-          {#if chamber && chamberHeat !== undefined}
+          {#if __PICTURE_PARTS__ && chamber && chamberHeat !== undefined}
             <!-- The chamber's warmth fades out towards its edges. -->
             <radialGradient id="{uid}-chamber">
               <stop style:stop-color={bedFill(chamberHeat)} />

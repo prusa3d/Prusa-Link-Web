@@ -40,6 +40,10 @@ const MESSAGES: Record<string, Feature[]> = {
   'redScreen.': ['redScreen', 'diagnostics'],
   'dump.': ['diagnostics'],
   'log.': ['diagnostics'],
+  'login.pair': ['pairing'],
+  'login.subtitle': ['pairing'],
+  'login.havePassword': ['pairing'],
+  'login.back': ['pairing'],
 };
 const VERSION = process.env.PRUSALINK_VERSION;
 
