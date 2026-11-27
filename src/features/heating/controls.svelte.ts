@@ -38,6 +38,7 @@ export class Controls {
   }
 
   async babystep(delta: number) {
+    if (!__BABYSTEP__) return false;
     const ok = await this.#send(() =>
       api.PUT('/api/v1/printer', { body: { z_offset_delta: delta } }),
     );

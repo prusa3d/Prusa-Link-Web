@@ -18,8 +18,11 @@ export const FEATURES = {
   toolMapping: 'tool mapping at print start',
   /// Cancel object, with the bed map of the objects.
   cancelObject: 'cancel object',
-  /// Tune, preheat, cool down, Z offset.
-  controls: 'printer controls',
+  /// Preheat for a filament and cool down while idle; the nozzle warning
+  /// of the print dialog.
+  controls: 'preheat, cool down',
+  /// Babysteps of the first layer (Z offset) while printing.
+  babystep: 'Z offset while printing',
   /// The notice of a newer firmware release and the dialog that downloads
   /// it and puts it on the USB stick.
   firmwareUpdate: 'firmware release notice and download',
@@ -74,9 +77,10 @@ export const BUILDS: Record<string, readonly Feature[]> = {
   coreonel: MMU,
   ix: SINGLE,
   // 80 KB per language: firmware updates are the printer menu's (and
-  // Connect's), cancel object waits for room. The controls stay; the red
-  // screen, the dump notice and log toggle and pairing (the password
-  // signs in) do not. Its picture has no fans, light or chamber.
+  // Connect's), cancel object waits for room. Pairing stays; preheat,
+  // babysteps, the red screen and the dump notice and log toggle do not
+  // fit beside it. Filament load and unload stay (they are not
+  // PrusaLink 2). Its picture has no fans, light or chamber.
   mini: without(
     'firmwareUpdate',
     'diagnostics',
@@ -90,7 +94,8 @@ export const BUILDS: Record<string, readonly Feature[]> = {
     'cancelObject',
     'pictureParts',
     'redScreen',
-    'pairing',
+    'controls',
+    'babystep',
   ),
 };
 
