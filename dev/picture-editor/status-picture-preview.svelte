@@ -58,8 +58,11 @@
     pickedTool = 0,
     animate = true,
   }: Props = $props();
+  // As the app: a single-tool XL always carries T1.
   const carriageAt = $derived(
-    status.carriage?.positions[String(pickedTool)] ?? [0, 0],
+    status.carriage?.positions[
+      String(equipment.tools > 1 ? pickedTool : 1)
+    ] ?? [0, 0],
   );
 
   const uid = $props.id();
