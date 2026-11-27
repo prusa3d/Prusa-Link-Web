@@ -1,6 +1,6 @@
 {
   "name": "prusalink-web",
-  "version": "2.0.0-dev",
+  "version": "2.1.0",
   "private": true,
   "license": "GPL-3.0",
   "description": "PrusaLink web interface served by the Buddy firmware: one self-contained index.html.",
