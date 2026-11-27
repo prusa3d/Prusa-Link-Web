@@ -128,7 +128,22 @@ describe('heaterReadings without a heater per tool', () => {
         },
         { offline: false, toolPicked: true, perTool: false },
       ),
-    ).toEqual({ T1: { current: 210, target: 215, active: true } });
+    ).toEqual({ T1: { current: 210, target: 215, active: true, picked: 3 } });
+  });
+
+  it('names the MMU slot the one nozzle prints from', () => {
+    expect(
+      heaterReadings(
+        {
+          tools: {
+            '0': { nozzle_temp: 200, nozzle_target_temp: 210 },
+            '0.0': { active: false },
+            '0.3': { active: true },
+          },
+        },
+        { offline: false, toolPicked: true, perTool: false },
+      ),
+    ).toEqual({ T1: { current: 200, target: 210, picked: 4 } });
   });
 });
 

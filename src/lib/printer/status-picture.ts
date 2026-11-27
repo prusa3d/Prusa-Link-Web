@@ -67,6 +67,9 @@ export interface Reading {
   target: number;
   /// The tool picked now, on a printer with several.
   active?: boolean;
+  /// One heated nozzle for several tools or MMU slots (the INDX, an MMU):
+  /// the tool or slot it prints with, 1-based.
+  picked?: number;
 }
 
 /// Within this many degrees of the target, or without one, it is steady.
@@ -136,13 +139,21 @@ export function heaterReadings(
   const tools = Object.entries(status.tools ?? {}).filter(([k]) =>
     /^\d$/.test(k),
   );
+  const slot = Object.entries(status.tools ?? {}).find(
+    ([k, t]) => k.includes('.') && t?.active,
+  );
   for (const [key, tool] of tools)
-    if (tool?.nozzle_temp !== undefined)
+    if (tool?.nozzle_temp !== undefined) {
+      let picked: number | undefined;
+      if (slot) picked = Number(slot[0].split('.')[1]) + 1;
+      else if (!perTool && tools.length > 1) picked = Number(key) + 1;
       out[`T${String(perTool ? Number(key) + 1 : 1)}` as Heater] = {
         current: tool.nozzle_temp,
         target: tool.nozzle_target_temp ?? 0,
         ...(tools.length > 1 && tool.active && { active: true }),
+        ...(picked !== undefined && { picked }),
       };
+    }
   if (status.chamber?.temp !== undefined)
     out.chamber = {
       current: status.chamber.temp,
