@@ -122,6 +122,16 @@
   });
 
   const chip = 'rounded-md border px-2.5 py-1 text-sm hover:border-primary';
+  // Today's firmware (API v1) reports the active tool only: not which tool a
+  // toolchanger picked, nor the others' temperatures and materials.
+  const pickable = $derived(!!snap && snap.apiV2 && snap.tools.length > 1);
+  const shownTools = $derived(
+    (snap?.tools ?? [])
+      .map((tool, index) => ({ tool, index }))
+      .filter(
+        ({ index }) => snap?.apiV2 === true || index === snap?.activeTool,
+      ),
+  );
   const on = 'border-primary bg-primary text-primary-foreground';
 </script>
 
@@ -354,18 +364,18 @@
       <table class="w-full">
         <thead class="text-muted-foreground"
           ><tr
-            ><th class="text-start font-normal">Tool</th
-            >{#if snap.tools.length > 1}<th class="font-normal">Picked</th
+            ><th class="text-start font-normal">Tool</th>{#if pickable}<th
+                class="font-normal">Picked</th
               >{/if}<th class="font-normal">Temp</th><th class="font-normal"
               >Target</th
             ><th class="font-normal">Material</th></tr
           ></thead
         >
         <tbody>
-          {#each snap.tools as tool, index (index)}
+          {#each shownTools as { tool, index } (index)}
             <tr>
               <td>T{index + 1}</td>
-              {#if snap.tools.length > 1}
+              {#if pickable}
                 <td class="text-center"
                   ><input
                     type="radio"
@@ -411,7 +421,7 @@
           {/each}
           {#if snap.chamber}
             <tr>
-              <td>Chamber</td>{#if snap.tools.length > 1}<td></td>{/if}
+              <td>Chamber</td>{#if pickable}<td></td>{/if}
               <td class="text-center tabular-nums"
                 >{snap.chamber.temp.toFixed(0)}</td
               >
@@ -420,7 +430,7 @@
             </tr>
           {/if}
           <tr>
-            <td>Bed</td>{#if snap.tools.length > 1}<td></td>{/if}
+            <td>Bed</td>{#if pickable}<td></td>{/if}
             <td class="text-center tabular-nums">{snap.bed.temp.toFixed(0)}</td>
             <td
               ><input
@@ -436,7 +446,7 @@
           </tr>
         </tbody>
       </table>
-      {#if snap.tools.length > 1}
+      {#if pickable}
         <label class="flex items-center gap-1.5"
           ><input
             type="radio"
@@ -445,6 +455,11 @@
             onchange={() => patch({ pick: null })}
           />No tool picked</label
         >
+      {:else if snap.tools.length > 1}
+        <p class="text-muted-foreground">
+          Today's firmware reports the active tool only, not which tool is
+          picked or the others.
+        </p>
       {/if}
     </fieldset>
     <fieldset class="flex min-w-0 flex-col gap-2">
