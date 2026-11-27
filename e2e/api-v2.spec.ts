@@ -7,7 +7,13 @@ import {
   type Locator,
 } from '@playwright/test';
 
-import { freshPrinter, openApp, printer, swapAtPrinter } from './support';
+import {
+  freshPrinter,
+  mockKey,
+  openApp,
+  printer,
+  swapAtPrinter,
+} from './support';
 
 // The printer's firmware has the PrusaLink 2 API (doc/prusalink-api-v2.md in
 // Buddy): every tool, dialogs, cancel object, preheat, babysteps, filament
@@ -19,6 +25,7 @@ test.beforeEach(async ({ page, request }) => {
 
 interface Snapshot {
   state: string;
+  crashDump?: { exported: boolean };
   dialog?: unknown;
   objects?: { canceled: boolean }[];
   bed: { target: number };
@@ -100,17 +107,6 @@ test.describe('dialogs', () => {
     await alert.getByRole('button', { name: 'Continue' }).click();
     await expect(alert).toHaveCount(0);
     expect((await mock(request)).state).toBe('PRINTING');
-  });
-
-  test('a red screen shows its message and help, with nothing to press', async ({
-    page,
-    request,
-  }) => {
-    await openApp(page);
-    await printer(request, { dialog: 'thermal' });
-    const alert = page.getByTestId('printer-alert');
-    await expect(alert).toContainText('THERMAL RUNAWAY');
-    await expect(alert.getByRole('button')).toHaveCount(0);
   });
 });
 
@@ -547,6 +543,38 @@ test.describe('print dialog', () => {
       .toEqual({ '1': [1], '2': [2], '3': [3], '4': [4] });
   });
 
+  test('the printer’s own question in its preview is answered in the dialog', async ({
+    page,
+    request,
+  }) => {
+    await indx(request);
+    await printer(request, {
+      previewQuestion: true,
+      extraCheck: {
+        check: 'Dock position not calibrated',
+        level: 'abort',
+        tool: '0',
+      },
+    });
+    await openApp(page);
+    await page.getByRole('button', { name: 'Print four colours' }).click();
+    const dialog = page.getByRole('dialog');
+    await dialog.getByRole('button', { name: 'Print now' }).click();
+    const question = dialog.getByTestId('printer-question');
+    await expect(question).toContainText('Please complete Calibrations');
+    await expect(dialog.getByTestId('printer-report')).toContainText(
+      'Dock position not calibrated · T1',
+    );
+    await question.getByRole('button', { name: 'Ignore' }).click();
+    await expect(question).toBeHidden();
+    // The printer refuses: Print stays off; Close leaves its preview.
+    await expect(
+      dialog.getByRole('button', { name: /^Print/ }).last(),
+    ).toBeDisabled();
+    await dialog.getByRole('button', { name: 'Close' }).last().click();
+    await expect.poll(async () => (await mock(request)).state).toBe('IDLE');
+  });
+
   test('a warning only the printer knows is shown before it prints', async ({
     page,
     request,
@@ -644,4 +672,48 @@ test('a file uploaded here shows what it says about itself, also from the list',
   await expect(dialog).toContainText('43m');
   await expect(dialog.getByTestId('file-grams')).toHaveText('18.6 g');
   await expect(dialog.locator('img').first()).toHaveAttribute('src', /^blob:/);
+});
+
+test.describe('diagnostics', () => {
+  test('the red screen: what the printer says, the dump, a restart', async ({
+    page,
+    request,
+  }) => {
+    await printer(request, { model: 'MK4S', reset: true });
+    await printer(request, {
+      redScreen: {
+        code: '12201',
+        title: 'THERMAL RUNAWAY',
+        text: 'Check the heater.',
+      },
+    });
+    // Error mode: no /api/v1/info, so no printer name to wait for.
+    await page.goto(`/#key=${await mockKey(page)}`);
+    const red = page.getByTestId('red-screen');
+    await expect(red).toContainText('THERMAL RUNAWAY');
+    await expect(
+      red.getByRole('link', { name: /Help · 12201/ }),
+    ).toHaveAttribute('href', 'https://prusa.io/12201');
+    // Nothing else of the page: the printer answers nothing else.
+    await expect(page.getByRole('heading', { name: 'Storage' })).toHaveCount(0);
+    const download = page.waitForEvent('download');
+    await red.getByRole('button', { name: 'Download crash dump' }).click();
+    expect((await download).suggestedFilename()).toMatch(/^dump_MOCK_.*\.bin$/);
+    await red.getByRole('button', { name: 'Restart printer' }).click();
+    await expect(red).toContainText('The printer is restarting');
+    await expect(red).toBeHidden({ timeout: 15_000 });
+  });
+
+  test('a crash dump from earlier: download, then hide', async ({
+    page,
+    request,
+  }) => {
+    await printer(request, { model: 'MK4S', reset: true, crashDump: true });
+    await openApp(page);
+    const notice = page.getByTestId('dump-notice');
+    await expect(notice).toContainText('The printer crashed earlier');
+    await notice.getByRole('button', { name: 'Sent, hide' }).click();
+    await expect(notice).toBeHidden();
+    expect((await mock(request)).crashDump).toMatchObject({ exported: true });
+  });
 });

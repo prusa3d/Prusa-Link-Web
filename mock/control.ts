@@ -91,7 +91,17 @@ export interface MockPatch {
   nozzle?: { hardened?: boolean; highFlow?: boolean; highTemp?: boolean };
   /// A check of the printer's the page does not make (a dock not
   /// calibrated, not enough filament…), added to its reports; null drops it.
-  extraCheck?: { check: string; level: 'warning' | 'abort' } | null;
+  extraCheck?: {
+    check: string;
+    level: 'warning' | 'abort';
+    tool?: string;
+  } | null;
+  /// Boots into the red screen (with a crash dump); null boots normally.
+  redScreen?: { code?: string; title: string; text: string } | null;
+  /// A crash dump from an earlier crash, the printer running normally.
+  crashDump?: boolean;
+  /// The print preview asks about calibrations before its checks.
+  previewQuestion?: boolean;
 }
 
 export function applyPatch(printer: MockPrinter, patch: MockPatch) {
@@ -136,6 +146,14 @@ export function applyPatch(printer: MockPrinter, patch: MockPatch) {
   if (patch.nozzleCheck) printer.nozzleCheck = patch.nozzleCheck;
   if (patch.modelCheck) printer.modelCheck = patch.modelCheck;
   if (patch.nozzle) Object.assign(printer.nozzle, patch.nozzle);
+  if (patch.previewQuestion !== undefined)
+    printer.previewQuestion = patch.previewQuestion;
+  if (patch.redScreen !== undefined)
+    printer.crash(patch.redScreen ?? undefined);
+  if (patch.crashDump !== undefined)
+    printer.crashDump = patch.crashDump
+      ? { size: 262_667, exported: false }
+      : undefined;
   if (patch.extraCheck !== undefined)
     printer.extraCheck = patch.extraCheck ?? undefined;
   if (patch.firmwareFiles)
@@ -180,6 +198,8 @@ export function snapshot(printer: MockPrinter) {
     nozzleCheck: printer.nozzleCheck,
     nozzle: printer.nozzle,
     mapping: printer.job?.mapping,
+    crashDump: printer.crashDump,
+    logToFile: printer.logToFile,
     speed: printer.speed,
     flow: printer.flow,
     axis: printer.axis,

@@ -183,15 +183,21 @@ function keyValue(header: Header, line: string) {
   if (eq > 0) header[line.slice(0, eq).trim()] = line.slice(eq + 1).trim();
 }
 
+/// G-code lines of the start G-code looked through for its printer model
+/// check, after the comments.
+const START_LINES = 100;
+
 /// `; key = value` lines until a bare `;` or a line that is not a comment;
 /// a line is read to its end however long (objects_info is one line).
-/// Lines are looked at as they arrive, so nothing past the block is asked
-/// for.
+/// Then the start G-code's printer model check, `M862.3 P "XL"`, which the
+/// firmware judges the model by (header key `M862.3`). Lines are looked at
+/// as they arrive, so nothing past that is asked for.
 async function readText(bytes: Bytes) {
   const decoder = new TextDecoder();
   const header: Header = {};
   let text = '';
   let read = 0;
+  let code = 0;
   for (;;) {
     const chunk = await bytes.next();
     read += chunk?.length ?? 0;
@@ -202,7 +208,16 @@ async function readText(bytes: Bytes) {
       const line = (nl < 0 ? text : text.slice(0, nl)).trim();
       text = nl < 0 ? '' : text.slice(nl + 1);
       if (!line) continue;
-      if (line === ';' || !line.startsWith(';')) return header;
+      if (code || line === ';' || !line.startsWith(';')) {
+        code ||= 1;
+        // Comments (thumbnails, settings) on the way do not count.
+        if (line.startsWith(';')) continue;
+        const model = /^M862\.3 P\s*"([^"]*)"/.exec(line);
+        if (model?.[1] !== undefined) header['M862.3'] = model[1];
+        if (model || /^G(0|1|28)\b/.test(line) || ++code > START_LINES)
+          return header;
+        continue;
+      }
       keyValue(header, line.slice(1));
     }
     if (!chunk || (read > TEXT_CAP && !text.includes('='))) return header;

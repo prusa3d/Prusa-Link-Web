@@ -350,11 +350,12 @@ paths:
       - in: path
         name: tool
         required: true
+        description: Connect's tool id, "0".."4", or "0.N" for an MMU slot
         schema:
-          type: integer
+          type: string
     post:
       summary: load, change or unload filament
-      description: Load and unload only when idle, change while printing or paused
+      description: The printer then runs its own dialogs, bridged to /api/v1/dialog
       requestBody:
         content:
           application/json:
@@ -364,40 +365,29 @@ paths:
                 command:
                   type: string
                   enum: [ load, change, unload ]
-                material:
-                  $ref: "#/components/schemas/Material"
+                filament:
+                  type: string
+                  description: A filament preset's or user filament's name; required to load or change
+                color:
+                  type: string
+                  description: "#RRGGBB"
               required:
                 - command
       responses:
         202:
-          description: Accepted
+          description: Queued
         401:
           $ref: "#/components/responses/Unauthorized"
+        404:
+          description: Unknown or disabled tool
+        405:
+          description: Not a POST
         409:
-          $ref: "#/components/responses/Conflict"
+          description: Not idle, a dialog is open, or the dock is not calibrated
         422:
-          description: Field out of range or incompatible
-    put:
-      summary: update the loaded filament in place
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                material:
-                  $ref: "#/components/schemas/Material"
-              required:
-                - material
-      responses:
-        202:
-          description: Accepted
-        401:
-          $ref: "#/components/responses/Unauthorized"
-        409:
-          $ref: "#/components/responses/Conflict"
-        422:
-          description: Field out of range or incompatible
+          description: Bad command, filament or colour
+        503:
+          description: The command queue is full
 
   /api/v1/filament/change-all:
     get:
@@ -464,6 +454,85 @@ paths:
                           type: string
         422:
           description: Unknown tool or material
+
+  /api/v1/diagnostics:
+    get:
+      summary: the crash dump and logging
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  crash_dump:
+                    type: object
+                    properties:
+                      present:
+                        type: boolean
+                      size:
+                        type: integer
+                      exported:
+                        type: boolean
+                  message:
+                    type: object
+                    properties:
+                      code:
+                        type: string
+                      title:
+                        type: string
+                      text:
+                        type: string
+                  log_to_file:
+                    type: boolean
+        401:
+          $ref: "#/components/responses/Unauthorized"
+    put:
+      summary: log to /usb/log.txt, or stop
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                log_to_file:
+                  type: boolean
+      responses:
+        204:
+          description: Done
+        409:
+          description: The log file cannot be opened
+        422:
+          description: No log_to_file
+
+  /api/v1/diagnostics/dump:
+    get:
+      summary: the crash dump, also on the red screen
+      responses:
+        200:
+          description: The dump
+          content:
+            application/octet-stream:
+              schema:
+                type: string
+                format: binary
+        404:
+          description: No dump
+    delete:
+      summary: mark the dump sent; it stays on the printer
+      responses:
+        204:
+          description: Done
+
+  /api/v1/printer/reset:
+    post:
+      summary: restart the printer, from the red screen
+      responses:
+        202:
+          description: The printer restarts in a second
+        404:
+          description: Not on the red screen
 
   /api/v1/print/checks:
     get:
@@ -1613,7 +1682,7 @@ components:
           description: What this firmware's API can do
           items:
             type: string
-            enum: [ status_expanded, cancel_object, chamber, dialogs, firmware_update, crash_dump, preheat, tune, filament, pairing, tool_mapping, change_all, filament_change_all, per_tool_heating, print_checks ]
+            enum: [ status_expanded, cancel_object, chamber, dialogs, firmware_update, crash_dump, preheat, tune, filament, pairing, tool_mapping, change_all, filament_change_all, per_tool_heating, print_checks, crash_dump ]
         hw_checks:
           type: object
           description: The printer's severity of each check before a print (HWCheckSeverity); read-only

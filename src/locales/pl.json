@@ -325,5 +325,18 @@
   "print.filamentN": "filament {n}",
   "print.allGood": "Wszystko w porządku",
   "print.printerAsks": "Drukarka pyta na ekranie; odpowiedz tam lub na stronie.",
-  "print.accept": "Rozumiem; drukuj mimo to"
+  "print.accept": "Rozumiem; drukuj mimo to",
+  "redScreen.title": "Drukarka zatrzymała się z błędem",
+  "redScreen.body": "Do restartu drukarka nie odpowiada na nic innego.",
+  "redScreen.dump": "Pobierz zrzut awarii",
+  "redScreen.mail": "Napisz do wsparcia",
+  "redScreen.restart": "Uruchom ponownie drukarkę",
+  "redScreen.secrets": "Zrzut to kopia pamięci drukarki i może zawierać prywatne dane: wysyłaj go tylko do wsparcia Prusa.",
+  "redScreen.noDump": "Drukarka nie ma zrzutu awarii.",
+  "redScreen.restarting": "Drukarka uruchamia się ponownie…",
+  "dump.title": "Drukarka wcześniej uległa awarii",
+  "dump.body": "Zachowała zrzut awarii, który pomoże wsparciu Prusa znaleźć przyczynę.",
+  "dump.sent": "Wysłano, ukryj",
+  "log.off": "Log na USB: wył.",
+  "log.on": "Log na USB (log.txt): wł."
 }

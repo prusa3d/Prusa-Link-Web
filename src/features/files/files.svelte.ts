@@ -161,19 +161,22 @@ export class FilesStore {
     dir = this.path,
     mapping?: Record<string, number[]>,
   ): Promise<Started> {
-    const { response } = await api.POST('/api/v1/files/{storage}/{path}', {
-      params: {
-        path: {
-          storage: 'usb',
-          path: dir ? `${dir}/${name}` : name,
+    const { response, error } = await api.POST(
+      '/api/v1/files/{storage}/{path}',
+      {
+        params: {
+          path: {
+            storage: 'usb',
+            path: dir ? `${dir}/${name}` : name,
+          },
         },
+        ...(mapping && { body: { tool_mapping: mapping } }),
       },
-      ...(mapping && { body: { tool_mapping: mapping } }),
-    });
+    );
     return {
       ok: response.ok,
       status: response.status,
-      message: response.ok ? undefined : await reason(response),
+      message: response.ok ? undefined : reason(error),
     };
   }
 }

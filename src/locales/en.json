@@ -319,5 +319,18 @@
   "print.filamentN": "filament {n}",
   "print.allGood": "All fine",
   "print.printerAsks": "The printer asks on its screen; answer it there or in the page.",
-  "print.accept": "I know; print anyway"
+  "print.accept": "I know; print anyway",
+  "redScreen.title": "The printer stopped on an error",
+  "redScreen.body": "Until it restarts, the printer answers nothing else.",
+  "redScreen.dump": "Download crash dump",
+  "redScreen.mail": "Write to support",
+  "redScreen.restart": "Restart printer",
+  "redScreen.secrets": "The dump is a copy of the printer's memory and may contain private data: send it only to Prusa support.",
+  "redScreen.noDump": "The printer has no crash dump.",
+  "redScreen.restarting": "The printer is restarting…",
+  "dump.title": "The printer crashed earlier",
+  "dump.body": "It kept a crash dump that helps Prusa support find the cause.",
+  "dump.sent": "Sent, hide",
+  "log.off": "Log to USB: off",
+  "log.on": "Log to USB (log.txt): on"
 }

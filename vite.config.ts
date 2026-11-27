@@ -37,6 +37,9 @@ const MESSAGES: Record<string, Feature[]> = {
   'controls.': ['controls'],
   'flash.': ['firmwareFlash'],
   'firmware.': ['firmwareUpdate'],
+  'redScreen.': ['redScreen', 'diagnostics'],
+  'dump.': ['diagnostics'],
+  'log.': ['diagnostics'],
 };
 const VERSION = process.env.PRUSALINK_VERSION;
 

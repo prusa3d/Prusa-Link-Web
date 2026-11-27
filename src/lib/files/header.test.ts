@@ -45,23 +45,26 @@ describe('objects_info', () => {
     expect(seen.cancelled).toBe(true);
   });
 
-  it('reads the same shapes from plain G-code before its thumbnails', async () => {
+  it('reads the same shapes from plain G-code, on to its start G-code', async () => {
     const bytes = fixture('three-shapes.gcode');
     const { stream, seen } = counted(bytes, 256);
     const objects = await readObjectsInfo(stream);
     expect(objects?.map((o) => o.name)).toEqual(NAMES);
     const text = new TextDecoder().decode(bytes);
-    const blockEnd = text.indexOf('\n;\n');
-    // The block, and at most the chunk the stream already queued after it.
-    expect(seen.read).toBeLessThanOrEqual(blockEnd + 2 * 256);
-    expect(seen.cancelled).toBe(true);
+    // On to the start G-code's model check or first move, no further.
+    // This sample has none: it is read to its end.
+    const start = text.search(/\n(M862\.3|G28|G1 )/);
+    expect(seen.read).toBeLessThanOrEqual(
+      start < 0 ? bytes.length : start + 2 * 256,
+    );
   });
 
-  it('gives up at the end of the plain header without shapes', async () => {
-    const text = `; printer_model = MK4S\n;\n${'; thumbnail data\n'.repeat(100)}G28\n`;
+  it('gives up at the start G-code’s first move without shapes', async () => {
+    const text = `; printer_model = MK4S\n;\n${'; thumbnail data\n'.repeat(100)}G28\n${'G1 X1\n'.repeat(100)}`;
     const { stream, seen } = counted(new TextEncoder().encode(text), 8);
     expect(await readObjectsInfo(stream)).toBeUndefined();
-    expect(seen.read).toBeLessThan(64);
+    // The first move ends the start G-code's model check.
+    expect(seen.read).toBeLessThan(text.indexOf('G28') + 24);
     expect(seen.cancelled).toBe(true);
   });
 
@@ -96,5 +99,23 @@ describe('objects_info', () => {
       [{ name: '', polygon: [[1, 2]] }],
     );
     expect(parseObjectsInfo('nope')).toBeUndefined();
+  });
+});
+
+describe('the start G-code’s printer model check', () => {
+  it('reads M862.3 past the thumbnails of real slicer output', async () => {
+    // PrusaSlicer 2.6 for an XL5: printer_model XL5, M862.3 P "XL".
+    const header = await readHeader(
+      new Blob([fixture('xl-start-prusaslicer-2.6.gcode')]).stream(),
+    );
+    expect(header?.['M862.3']).toBe('XL');
+  });
+
+  it('has none where the file has no start G-code to read', async () => {
+    const header = await readHeader(
+      new Blob([fixture('four-colours.gcode')]).stream(),
+    );
+    expect(header?.['M862.3']).toBeUndefined();
+    expect(header?.printer_model).toBe('COREONE_INDX4T');
   });
 });

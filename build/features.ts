@@ -35,6 +35,8 @@ export const FEATURES = {
   diagnostics: 'crash dump and logs',
   /// The printer's red screen (BSOD, fatal error) in the page.
   redScreen: 'red screen',
+  /// The card of the print that ended last, to print it again.
+  lastPrint: 'last print card',
 } as const;
 
 export type Feature = keyof typeof FEATURES;
@@ -65,9 +67,13 @@ export const BUILDS: Record<string, readonly Feature[]> = {
   coreonel: MMU,
   ix: SINGLE,
   // 80 KB per language: firmware updates are the printer menu's (and
-  // Connect's), cancel object waits for room.
+  // Connect's), cancel object waits for room. The red screen (with its
+  // crash dump) stays; the dump notice and log toggle of a running
+  // printer do not.
   mini: without(
     'firmwareUpdate',
+    'diagnostics',
+    'lastPrint',
     'multiTool',
     'toolMapping',
     'nozzleBadges',

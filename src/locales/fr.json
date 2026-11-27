@@ -319,5 +319,18 @@
   "print.filamentN": "filament {n}",
   "print.allGood": "Tout est bon",
   "print.printerAsks": "L'imprimante pose une question sur son écran ; répondez-y là ou sur la page.",
-  "print.accept": "Compris ; imprimer quand même"
+  "print.accept": "Compris ; imprimer quand même",
+  "redScreen.title": "L'imprimante s'est arrêtée sur une erreur",
+  "redScreen.body": "Jusqu'à son redémarrage, l'imprimante ne répond à rien d'autre.",
+  "redScreen.dump": "Télécharger le crash dump",
+  "redScreen.mail": "Écrire au support",
+  "redScreen.restart": "Redémarrer l'imprimante",
+  "redScreen.secrets": "Le dump est une copie de la mémoire de l'imprimante et peut contenir des données privées : envoyez-le uniquement au support Prusa.",
+  "redScreen.noDump": "L'imprimante n'a pas de crash dump.",
+  "redScreen.restarting": "L'imprimante redémarre…",
+  "dump.title": "L'imprimante a planté précédemment",
+  "dump.body": "Elle a gardé un crash dump qui aide le support Prusa à trouver la cause.",
+  "dump.sent": "Envoyé, masquer",
+  "log.off": "Journal sur USB : non",
+  "log.on": "Journal sur USB (log.txt) : oui"
 }

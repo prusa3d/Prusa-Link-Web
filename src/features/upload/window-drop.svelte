@@ -35,7 +35,7 @@
   function ondragleave(e: DragEvent) {
     if (!hasFiles(e)) return;
     depth = Math.max(0, depth - 1);
-    if (depth === 0) firmwareUpdate.dragging = false;
+    if (__FIRMWARE_UPDATE__ && depth === 0) firmwareUpdate.dragging = false;
   }
 
   function ondragover(e: DragEvent) {
@@ -46,7 +46,7 @@
     if (!hasFiles(e)) return;
     e.preventDefault();
     depth = 0;
-    firmwareUpdate.dragging = false;
+    if (__FIRMWARE_UPDATE__) firmwareUpdate.dragging = false;
     const data = e.dataTransfer;
     if (!data) return;
     // With the firmware dialog open the whole window is its drop area.
@@ -71,7 +71,7 @@
   {ondragover}
   ondropcapture={() => {
     depth = 0;
-    firmwareUpdate.dragging = false;
+    if (__FIRMWARE_UPDATE__) firmwareUpdate.dragging = false;
   }}
   ondrop={(e: DragEvent) => void ondrop(e)}
 />

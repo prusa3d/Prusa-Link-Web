@@ -319,5 +319,18 @@
   "print.filamentN": "filamento {n}",
   "print.allGood": "Todo correcto",
   "print.printerAsks": "La impresora pregunta en su pantalla; responde allí o en la página.",
-  "print.accept": "Entendido; imprimir de todos modos"
+  "print.accept": "Entendido; imprimir de todos modos",
+  "redScreen.title": "La impresora se detuvo por un error",
+  "redScreen.body": "Hasta que se reinicie, la impresora no responde a nada más.",
+  "redScreen.dump": "Descargar volcado",
+  "redScreen.mail": "Escribir a soporte",
+  "redScreen.restart": "Reiniciar impresora",
+  "redScreen.secrets": "El volcado es una copia de la memoria de la impresora y puede contener datos privados: envíalo solo al soporte de Prusa.",
+  "redScreen.noDump": "La impresora no tiene volcado.",
+  "redScreen.restarting": "La impresora se está reiniciando…",
+  "dump.title": "La impresora falló antes",
+  "dump.body": "Guardó un volcado que ayuda al soporte de Prusa a encontrar la causa.",
+  "dump.sent": "Enviado, ocultar",
+  "log.off": "Registro en USB: no",
+  "log.on": "Registro en USB (log.txt): sí"
 }
