@@ -2462,6 +2462,14 @@ export interface components {
         ToolInfo: {
             /** @example FFF_PRINT_HEAD */
             type?: string;
+            /** @description A head's MMU while it is on; null when off (printers that take one) */
+            feeder?: {
+                /** @example MMU */
+                type?: string;
+                model?: string;
+                base_model?: string;
+                slot_count?: number;
+            } | null;
             features?: {
                 nozzle_diameter?: number;
                 nozzle_hardened?: boolean;
@@ -2489,7 +2497,7 @@ export interface components {
                         properties?: components["schemas"]["MaterialTemperatures"];
                     };
                 };
-            };
+            } | null;
         };
         MaterialTemperatures: {
             min_print_temperature?: number;
