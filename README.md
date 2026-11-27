@@ -13,6 +13,11 @@ gzipped exactly as the firmware embeds them.
 Budget, gzipped as the firmware stores it: 80 KB for the MINI builds, 140 KB for
 every other printer, enforced by `pnpm build`.
 
+To change what a printer's page includes, edit the table in
+`build/features.ts`: one list of features per build, each a compile-time flag,
+so a feature that is off leaves its code and its messages out. The size check
+prints every build's features next to its size.
+
 |                                                                                                                  |                                                                                              |
 | ---------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------- |
 | ![The page and the printer's own screen swap PLA for PETG in sync](docs/media/simulator-filament-swap.gif)       | ![Ten files upload with their own progress, then a search](docs/media/upload-and-search.gif) |

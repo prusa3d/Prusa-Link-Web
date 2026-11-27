@@ -13,6 +13,7 @@
     "e2e",
     "e2e-demo",
     "scripts",
+    "build",
     ".storybook/**/*",
     "*.config.ts",
     "*.config.js",

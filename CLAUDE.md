@@ -17,6 +17,7 @@ and serves it from the printer's own web server. Every decision follows from tha
 
 - **Budget**: each `dist/<variant>/index.html` stays under 80 KB gzip for the MINI builds and 140 KB gzip for every other printer (`scripts/check-size.ts`)
   (`scripts/check-size.ts`, run by `make build`). Check it after adding a dependency.
+- **Per-build features live in one place**: `build/features.ts`. To change what a printer's page includes, edit that table; gate the code with its `__FLAG__` constant, never with a check of the variant. A new feature gets a flag there (and a line in `src/virtual.d.ts`).
 - **Nothing dev-only ships**: `mock/`, `dev/`, `demo/`, `scripts/`, `e2e/`, `e2e-demo/` are never imported from `src/`.
   The Pages demo (`demo/`, `make demo`) bundles `mock/` and `dev/` into a browser
   page, so those stay free of Node-only imports at runtime (`mock/vite-plugin.ts` is

@@ -73,7 +73,7 @@
   "firmware.download": "Pobierz firmware",
   "firmware.notes": "Informacje o wydaniu",
   "firmware.dismiss": "Ukryj do następnego wydania",
-  "firmware.version": "Firmware {version}",
+  "printer.firmware": "Firmware {version}",
   "firmware.install": "Pobierz i prześlij",
   "firmware.howToInstall": "Strona pobierze plik i zapisze go na dysku USB drukarki; potem uruchom drukarkę ponownie.",
   "firmware.howToUpload": "Pobierz plik, a potem upuść go tutaj, aby trafił na dysk USB drukarki.",

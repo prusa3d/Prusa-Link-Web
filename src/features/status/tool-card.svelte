@@ -42,7 +42,7 @@
   </div>
   <div class="min-w-0 flex-1">
     <p class="flex items-center gap-1 text-sm font-medium">
-      {label}{#if __TOOL_MAPPING__}<NozzleBadges
+      {label}{#if __NOZZLE_BADGES__}<NozzleBadges
           {hardened}
           {highFlow}
           {highTemp}

@@ -13,8 +13,8 @@
   import FilamentDialog from './features/filament/filament-dialog.svelte';
   import { filament, isHelper } from './features/filament/filament.svelte';
   import { filamentLabel } from './lib/printer/filaments';
-  import UpdateNotice from './features/firmware/update-notice.svelte';
-  import UpdateDialog from './features/firmware/update-dialog.svelte';
+  import UpdateNoticeView from './features/firmware/update-notice.svelte';
+  import UpdateDialogView from './features/firmware/update-dialog.svelte';
   import { firmwareUpdate } from './features/firmware/update.svelte';
   import {
     files,
@@ -60,6 +60,8 @@
   // A build without the feature drops the component: a constant the bundler
   // folds, which a branch of the markup is not.
   const UsbFirmware = __FIRMWARE_FLASH__ ? UsbFirmwareCard : undefined;
+  const UpdateNotice = __FIRMWARE_UPDATE__ ? UpdateNoticeView : undefined;
+  const UpdateDialog = __FIRMWARE_UPDATE__ ? UpdateDialogView : undefined;
 
   session.takeKeyFromFragment(globalThis.location, globalThis.history);
 
@@ -165,7 +167,7 @@
   });
 
   $effect(() => {
-    if (identity.firmware)
+    if (__FIRMWARE_UPDATE__ && identity.firmware)
       void firmwareUpdate.check(identity.firmware, identity.model?.variant);
   });
 
@@ -299,7 +301,7 @@
     </div>
     <div class="flex shrink-0 items-center sm:gap-1">
       <QueueIndicator />
-      <UpdateNotice as="icon" />
+      {#if UpdateNotice}<UpdateNotice as="icon" />{/if}
       {#if Object.keys(LANGUAGES).length > 1}<LanguagePicker />{/if}
       <UnitToggle />
       <ThemeToggle />
@@ -447,7 +449,7 @@
             }}
           />
         {/if}
-        <UpdateNotice as="card" />
+        {#if UpdateNotice}<UpdateNotice as="card" />{/if}
         {#if UsbFirmware}
           <UsbFirmware {canStart} />
         {/if}
@@ -476,7 +478,7 @@
     onclose={() => (filamentOpen = false)}
   />
   <ClashDialog />
-  <UpdateDialog />
+  {#if UpdateDialog}<UpdateDialog />{/if}
   <PrintDialog
     file={candidate}
     dir={files.path}

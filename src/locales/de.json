@@ -69,7 +69,7 @@
   "firmware.download": "Firmware herunterladen",
   "firmware.notes": "Versionshinweise",
   "firmware.dismiss": "Bis zur nächsten Version ausblenden",
-  "firmware.version": "Firmware {version}",
+  "printer.firmware": "Firmware {version}",
   "firmware.install": "Herunterladen und hochladen",
   "firmware.howToInstall": "Die Seite lädt die Datei herunter und legt sie auf das USB-Laufwerk des Druckers; danach den Drucker neu starten.",
   "firmware.howToUpload": "Datei herunterladen und dann hier ablegen, um sie auf das USB-Laufwerk des Druckers zu bringen.",

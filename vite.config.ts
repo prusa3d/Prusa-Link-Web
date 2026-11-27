@@ -7,6 +7,12 @@ import { printerImages } from './mock/printer-images.ts';
 import { locales } from './mock/locales.ts';
 import { devPrinter } from './mock/vite-plugin.ts';
 import { demoPage } from './demo/vite-plugin.ts';
+import {
+  buildFeatures,
+  type Feature,
+  FEATURES,
+  flagName,
+} from './build/features.ts';
 import { pictureEditor } from './dev/picture-editor/vite-plugin.ts';
 
 // The production build is index.html alone, with every script and stylesheet
@@ -19,47 +25,8 @@ import { pictureEditor } from './dev/picture-editor/vite-plugin.ts';
 // the app, the mock printer and its panel, for a static host such as GitHub
 // Pages. Never embedded in firmware, so neither one file nor budgeted.
 const VARIANT = process.env.PRUSALINK_VARIANT;
-// apiV2: the expanded status (every tool, chamber, change counters) and the
-// printer's dialogs, which the rest builds on.
-// PrusaLink 2 features each firmware build has room for (scripts/check-size.ts
-// budgets). The dev server, tests and the demo have all of them;
-// PRUSALINK_FEATURES (comma-separated) overrides the table, to measure.
-// multiTool: only printers with several tools need the per-tool views.
-const FEATURES = [
-  'apiV2',
-  'multiTool',
-  'toolMapping',
-  'cancelObject',
-  'controls',
-  'firmwareFlash',
-] as const;
-type Feature = (typeof FEATURES)[number];
-// toolMapping where the firmware has HAS_TOOL_MAPPING (a tool changer or an
-// MMU: not the MINI and the iX); multiTool on the tool changers. The MINI's
-// one-language builds take what fits their 80 KB (scripts/check-size.ts).
-const SINGLE: Feature[] = [
-  'apiV2',
-  'cancelObject',
-  'controls',
-  'firmwareFlash',
-];
-const MMU: Feature[] = [...SINGLE, 'toolMapping'];
-const MULTI: Feature[] = [...MMU, 'multiTool'];
-const BUILD_FEATURES: Record<string, readonly Feature[]> = {
-  generic: MULTI,
-  xl: MULTI,
-  coreone_indx: MULTI,
-  coreonel_indx: MULTI,
-  mk35: MMU,
-  mk4: MMU,
-  coreone: MMU,
-  coreonel: MMU,
-  ix: SINGLE,
-  // Firmware flash is the printer menu's on the MINI: no room.
-  mini: ['apiV2', 'controls'],
-};
 /// The messages only some features use, by key prefix: dropped from a build
-/// with none of them.
+/// with none of them. What each build includes: build/features.ts.
 const MESSAGES: Record<string, Feature[]> = {
   'dialog.': ['apiV2'],
   'status.chamber': ['apiV2'],
@@ -69,12 +36,7 @@ const MESSAGES: Record<string, Feature[]> = {
   'objects.': ['cancelObject'],
   'controls.': ['controls'],
   'flash.': ['firmwareFlash'],
-};
-const buildFeatures = (variant: string | undefined): readonly string[] => {
-  const forced = process.env.PRUSALINK_FEATURES;
-  if (forced !== undefined) return forced.split(',');
-  if (!variant) return FEATURES;
-  return BUILD_FEATURES[variant.replace(/-\w+$/, '')] ?? FEATURES;
+  'firmware.': ['firmwareUpdate'],
 };
 const VERSION = process.env.PRUSALINK_VERSION;
 
@@ -83,8 +45,8 @@ export default defineConfig(({ command, mode }) => ({
     base: process.env.DEMO_BASE ?? '/Prusa-Link-Web/',
   }),
   define: Object.fromEntries(
-    FEATURES.map((f) => [
-      `__${f.replace(/[A-Z]/g, (c) => `_${c}`).toUpperCase()}__`,
+    (Object.keys(FEATURES) as Feature[]).map((f) => [
+      flagName(f),
       JSON.stringify(buildFeatures(VARIANT).includes(f)),
     ]),
   ),

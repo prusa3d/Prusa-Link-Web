@@ -1,5 +1,6 @@
 import { readdirSync, readFileSync } from 'node:fs';
 
+import { buildFeatures } from '../build/features.ts';
 import { firmwareGzip } from './firmware-gzip.ts';
 
 // The firmware embeds dist/<variant>/index.html gzipped; both sizes are budgets.
@@ -23,7 +24,7 @@ for (const variant of readdirSync(dist).sort()) {
   const bad = raw > budget.raw || gzip > budget.gzip;
   over ||= bad;
   console.log(
-    `${bad ? '✗' : '✓'} ${variant.padEnd(14)} ${kb(raw).padStart(9)} raw  ${kb(gzip).padStart(8)} gzip  (budget ${kb(budget.gzip)})`,
+    `${bad ? '✗' : '✓'} ${variant.padEnd(14)} ${kb(raw).padStart(9)} raw  ${kb(gzip).padStart(8)} gzip  (budget ${kb(budget.gzip)})  ${buildFeatures(variant).join(' ')}`,
   );
 }
 if (over) process.exit(1);

@@ -19,7 +19,7 @@
       >{/if}
     {#if model && firmware}<span aria-hidden="true">·</span>{/if}
     {#if firmware}<span
-        >{t('firmware.version', {
+        >{t('printer.firmware', {
           version: firmware.replace(/\+.*$/, ''),
         })}</span
       >{/if}
