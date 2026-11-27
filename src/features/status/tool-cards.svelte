@@ -5,7 +5,7 @@
      has a ring around its circle, turning while it prints. Temperatures are
      on the printer's picture. -->
 <script lang="ts">
-  import NozzleBadges from './nozzle-badges.svelte';
+  import NozzleInfo from './nozzle-info.svelte';
   import { t } from '../../lib/i18n.svelte';
   import { filamentLabel } from '../../lib/printer/filaments';
   import { textOn, type ToolRow } from '../../lib/printer/tools';
@@ -13,7 +13,6 @@
   import { Icon } from '../../lib/ui/icon';
   import { ArrowDownToLine, Pencil } from '../../lib/ui/icon/icons';
   import { Spinner } from '../../lib/ui/spinner';
-  import { TelemetryIcon } from '../../lib/ui/telemetry-icon';
 
   interface Props {
     tools: ToolRow[];
@@ -92,21 +91,12 @@
     >
       <div class="flex w-full min-w-0 items-center gap-1 text-xs">
         <span class="min-w-0 flex-1 truncate font-semibold">{label(tool)}</span>
-        {#if __NOZZLE_BADGES__}
-          <NozzleBadges
-            hardened={tool.hardened}
-            highFlow={tool.highFlow}
-            highTemp={tool.highTemp}
-          />
-        {/if}
-        {#if tool.nozzle}
-          <span class="text-muted-foreground">{tool.nozzle}</span>
-          <TelemetryIcon
-            kind="nozzle"
-            size="size-3"
-            class="text-muted-foreground"
-          />
-        {/if}
+        <NozzleInfo
+          diameter={tool.nozzle}
+          hardened={tool.hardened}
+          highFlow={tool.highFlow}
+          highTemp={tool.highTemp}
+        />
       </div>
       <div class="relative grid size-18 place-items-center">
         {#if tool.active && printing}

@@ -209,7 +209,6 @@
   "upload.item.cancelled": "Скасовано",
   "filament.perTool": "Для кожного інструмента, на принтері",
   "upload.item.saving": "Збереження на USB…",
-  "tool.nozzle": "сопло {size} мм",
   "footer.api": "REST API",
   "footer.apiHint": "Довідка REST API PrusaLink (OpenAPI). /api/version, /api/printer і /api/job також відповідають як OctoPrint, для сумісних з OctoPrint інструментів.",
   "files.storage": "Сховище",

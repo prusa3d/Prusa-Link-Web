@@ -209,7 +209,6 @@
   "upload.item.cancelled": "Anulowano",
   "filament.perTool": "Dla każdego narzędzia, na drukarce",
   "upload.item.saving": "Zapisywanie na USB…",
-  "tool.nozzle": "dysza {size} mm",
   "footer.api": "REST API",
   "footer.apiHint": "Dokumentacja REST API PrusaLink (OpenAPI). /api/version, /api/printer i /api/job odpowiadają też jak OctoPrint, dla narzędzi zgodnych z OctoPrint.",
   "files.storage": "Pamięć",

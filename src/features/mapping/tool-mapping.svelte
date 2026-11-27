@@ -5,6 +5,7 @@
      what the resolver says (print-check.ts). -->
 <script lang="ts">
   import SlotPicker from './slot-picker.svelte';
+  import NozzleInfo from '../status/nozzle-info.svelte';
   import { t, type MessageKey } from '../../lib/i18n.svelte';
   import { filamentLabel } from '../../lib/printer/filaments';
   import {
@@ -116,8 +117,12 @@
           {#if f.grams}<span class="text-muted-foreground"
               >{f.grams.toFixed(1)} g</span
             >{/if}
-          {#if f.nozzle}<span class="text-muted-foreground">{f.nozzle} mm</span
-            >{/if}
+          <!-- The nozzle it was sliced for: abrasive wants a hardened one. -->
+          <NozzleInfo
+            diameter={f.nozzle}
+            hardened={f.abrasive}
+            highFlow={f.highFlow}
+          />
           <span class="text-xs text-muted-foreground" data-testid="row-status"
             >{t(`mapping.status.${row.status}` as MessageKey, {
               material: material(f.material),

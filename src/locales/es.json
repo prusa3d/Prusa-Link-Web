@@ -203,7 +203,6 @@
   "upload.item.cancelled": "Cancelado",
   "filament.perTool": "Por cabezal, en la impresora",
   "upload.item.saving": "Guardando en USB…",
-  "tool.nozzle": "boquilla de {size} mm",
   "footer.api": "API REST",
   "footer.apiHint": "Referencia de la API REST de PrusaLink (OpenAPI). /api/version, /api/printer y /api/job también responden como OctoPrint, para herramientas compatibles.",
   "files.storage": "Almacenamiento",
