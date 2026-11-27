@@ -1123,6 +1123,84 @@ paths:
         409:
           $ref: "#/components/responses/BadRequest"
 
+  /api/v1/pairing:
+    post:
+      summary: ask the person at the printer to pair this client
+      description: |
+        Unauthenticated. The printer shows the code with Pair and Cancel for
+        60 s, only when it is idle and shows no other dialog. One request is
+        pending at a time. After Cancel, a timeout, or 3 requests within
+        5 minutes, requests are refused with 429 for 5 minutes. Firmware
+        without pairing checks the key first and answers 401.
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PairingRequest"
+      responses:
+        202:
+          description: Accepted, the printer shows the code
+        400:
+          $ref: "#/components/responses/BadRequest"
+        409:
+          description: Another request is pending, or the printer is not idle
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PairingRefusal"
+        422:
+          description: The name is longer than 20 bytes, or the Prusa Connect host does not fit the printer
+        429:
+          description: Locked out after Cancel, a timeout or too many requests; `disabled` until the printer restarts
+          headers:
+            Retry-After:
+              schema:
+                type: integer
+              description: Seconds, with `locked_out`
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PairingRefusal"
+
+  /api/v1/pairing/{code}:
+    parameters:
+      - in: path
+        name: code
+        required: true
+        schema:
+          type: string
+          example: K7QX-29FM
+    get:
+      summary: result of a pairing request
+      description: |
+        Unauthenticated. Polled every second. The result is kept for 20 s
+        after the decision and the key is returned once.
+      security: []
+      responses:
+        200:
+          description: Paired
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PairingResult"
+        202:
+          description: Waiting for the person at the printer
+        403:
+          $ref: "#/components/responses/Forbidden"
+        404:
+          $ref: "#/components/responses/NotFound"
+    delete:
+      summary: withdraw a pending pairing request
+      description: Unauthenticated. Closes the printer's dialog.
+      security: []
+      responses:
+        204:
+          description: Withdrawn
+        404:
+          $ref: "#/components/responses/NotFound"
+
 components:
   schemas:
     Version:
@@ -2302,6 +2380,60 @@ components:
       required:
         - title
         - text
+
+    PairingRequest:
+      type: object
+      properties:
+        code:
+          type: string
+          description: 8 characters of Crockford base32 (0-9 A-Z without I, L, O, U) as XXXX-XXXX, made by the client; 400 otherwise
+          example: K7QX-29FM
+        client:
+          type: string
+          enum: ["PrusaLink", "Prusa Connect"]
+        name:
+          type: string
+          description: What the printer shows as the client's name, up to 20 bytes
+          example: Chrome
+        connect:
+          type: object
+          properties:
+            host:
+              type: string
+            port:
+              type: integer
+            tls:
+              type: boolean
+          required:
+            - host
+            - port
+            - tls
+      required:
+        - code
+        - client
+
+    PairingRefusal:
+      type: object
+      properties:
+        reason:
+          type: string
+          enum: ["pending", "busy", "locked_out", "disabled"]
+      required:
+        - reason
+
+    PairingResult:
+      type: object
+      properties:
+        api_key:
+          type: string
+          description: The PrusaLink password, also the Digest password
+        user:
+          type: string
+          description: The Digest user
+          example: maker
+        paired:
+          type: boolean
+          description: Only for Prusa Connect with PrusaLink off, without api_key
 
     ResponsePlaintext:
       type: string

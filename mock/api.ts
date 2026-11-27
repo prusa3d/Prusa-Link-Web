@@ -230,6 +230,13 @@ export function handleApi(
   const { method, path } = req;
   if (printer.offline) return empty(503);
 
+  // Answered before the key check, like the firmware; without pairing the
+  // firmware checks the key on every /api/v1 path first.
+  if (printer.pairing.supported) {
+    const paired = pairing(printer, req);
+    if (paired) return paired;
+  }
+
   const denied = authorize(printer, req);
   if (denied) return denied;
 
@@ -963,6 +970,46 @@ function handleV2(
       );
       return empty(204);
     }
+  }
+  return undefined;
+}
+
+function pairing(
+  printer: MockPrinter,
+  { method, path, body }: MockRequest,
+): MockResponse | undefined {
+  if (method === 'POST' && path === '/api/v1/pairing') {
+    let request: unknown;
+    try {
+      request = JSON.parse(new TextDecoder().decode(body));
+    } catch {
+      return empty(400);
+    }
+    const idle = IDLE_STATES.includes(printer.state) && !printer.question;
+    const { status, reason, retryAfter } = printer.pairing.request(
+      request,
+      idle,
+    );
+    return {
+      status,
+      ...(reason && { body: { reason } }),
+      ...(retryAfter && { headers: { 'retry-after': String(retryAfter) } }),
+    };
+  }
+  const code = /^\/api\/v1\/pairing\/([^/]+)$/.exec(path)?.[1];
+  if (method === 'DELETE' && code)
+    return empty(printer.pairing.withdraw(decodeURIComponent(code)).status);
+  if (method === 'GET' && code) {
+    const out = printer.pairing.result(
+      decodeURIComponent(code),
+      printer.apiKey,
+    );
+    if (!out.apiKey) return empty(out.status);
+    const result: Ok<'/api/v1/pairing/{code}', 'get'> = {
+      api_key: out.apiKey,
+      user: 'maker',
+    };
+    return json(result);
   }
   return undefined;
 }

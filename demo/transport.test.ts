@@ -43,6 +43,28 @@ describe('demo transport', () => {
     expect(printer.state).toBe('PAUSED');
   });
 
+  it('pairs without a key, the person at the printer played from the panel', () => {
+    const printer = new MockPrinter();
+    const code = 'K7QX-29FM';
+    const asked = answer(
+      printer,
+      'POST',
+      '/api/v1/pairing',
+      { 'x-api-key': 'pairing' },
+      bytes(JSON.stringify({ code, client: 'PrusaLink' })),
+    );
+    expect(asked.status).toBe(202);
+    answer(printer, 'PATCH', '/__mock/state', {}, bytes('{"pairing":"pair"}'));
+    const out = answer(
+      printer,
+      'GET',
+      `/api/v1/pairing/${code}`,
+      {},
+      undefined,
+    );
+    expect(out.body).toEqual({ api_key: printer.apiKey, user: 'maker' });
+  });
+
   it('stores an upload with its G-code', () => {
     const printer = new MockPrinter();
     const out = answer(

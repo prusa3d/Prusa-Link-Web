@@ -106,6 +106,10 @@ export interface MockPatch {
   crashDump?: boolean;
   /// The print preview asks about calibrations before its checks.
   previewQuestion?: boolean;
+  /// The person at the printer answers the pairing dialog, or nobody does.
+  pairing?: 'pair' | 'cancel' | 'timeout' | 'lock' | 'unlock';
+  /// Firmware with the pairing endpoints.
+  pairingSupported?: boolean;
 }
 
 export function applyPatch(printer: MockPrinter, patch: MockPatch) {
@@ -170,6 +174,33 @@ export function applyPatch(printer: MockPrinter, patch: MockPatch) {
   if (patch.filament) printer.answer(patch.filament);
   if (patch.transitionSeconds !== undefined)
     printer.transitionSeconds = patch.transitionSeconds;
+  if (patch.pairingSupported !== undefined)
+    printer.pairing.supported = patch.pairingSupported;
+  if (patch.pairing === 'pair' || patch.pairing === 'cancel')
+    printer.pairing.decide(patch.pairing === 'pair');
+  if (patch.pairing === 'timeout') printer.pairing.timeOut();
+  if (patch.pairing === 'lock' || patch.pairing === 'unlock')
+    printer.pairing.lock(patch.pairing === 'lock');
+}
+
+function pairingSnapshot({ pairing }: MockPrinter) {
+  const locked = pairing.lockedFor;
+  return {
+    supported: pairing.supported,
+    disabled: pairing.disabled,
+    lockedSeconds: Number.isFinite(locked) ? Math.ceil(locked / 1000) : 0,
+    ...(pairing.dialog && {
+      dialog: {
+        code: pairing.dialog.code,
+        client: pairing.dialog.client,
+        name: pairing.dialog.name,
+        seconds: Math.max(
+          0,
+          Math.ceil((pairing.dialog.until - Date.now()) / 1000),
+        ),
+      },
+    }),
+  };
 }
 
 export function snapshot(printer: MockPrinter) {
@@ -210,5 +241,6 @@ export function snapshot(printer: MockPrinter) {
     speed: printer.speed,
     flow: printer.flow,
     axis: printer.axis,
+    pairing: pairingSnapshot(printer),
   };
 }

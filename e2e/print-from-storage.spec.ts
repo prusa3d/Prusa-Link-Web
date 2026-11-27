@@ -9,6 +9,7 @@ async function mockKey(page: Page) {
 
 async function signIn(page: Page, password: string) {
   await page.goto('/');
+  await page.getByRole('button', { name: 'I have the password' }).click();
   await page.getByLabel('PrusaLink password').fill(password);
   await page.getByRole('button', { name: 'Sign in' }).click();
 }
@@ -21,6 +22,7 @@ test.beforeEach(async ({ page, request }) => {
       firmware: '8.0.1',
       transitionSeconds: 1,
       apiV2: true,
+      pairingSupported: true,
     },
   });
   // The firmware release check asks GitHub; tests answer for it.
